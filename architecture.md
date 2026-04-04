@@ -35,7 +35,7 @@ The system consists of:
 2. Web client (future)
 3. Firebase Authentication
 4. Firebase Data Connect
-5. Firebase Storage (primary asset storage, future)
+5. Firebase Storage (asset storage — dependency added, ready to use)
 6. Optional Google Drive integration (user-owned assets, future)
 7. Background processing / AI pipeline (future)
 
@@ -55,7 +55,7 @@ The system consists of:
 ### Backend / cloud
 - Firebase Authentication (Google Sign-In)
 - Firebase Data Connect (PostgreSQL)
-- Firebase Storage (future)
+- Firebase Storage (asset uploads)
 - Cloud Functions (future)
 
 ---
@@ -67,7 +67,7 @@ The system consists of:
 - Repository abstraction (interface in domain, implementation in data)
 - Room as single source of truth; Firebase as sync target
 - AI as asynchronous enhancement (future)
-- Storage abstraction for assets (future)
+- Storage abstraction for assets (Firebase Storage dependency available)
 
 ---
 
@@ -149,9 +149,9 @@ Supported storage types (future):
 - google_drive_user
 - external_url
 
-### 9.3 Primary storage (future)
+### 9.3 Primary storage
 
-Firebase Storage for: uploads, previews, thumbnails, voice notes.
+Firebase Storage for: uploads, previews, thumbnails, voice notes. Dependency is added to the project; integration code will be built alongside the Asset model.
 
 ### 9.4 Google Drive usage (future)
 
@@ -230,6 +230,8 @@ Phase 0 (done):
 - Project skeleton
 - Compose + Hilt + Room + MVI setup
 - Domain layer, data layer, UI screens
+- Entry model with entryDate + source fields
+- Firebase Storage dependency added
 
 Phase 1 (current):
 - Firebase project setup
@@ -237,8 +239,8 @@ Phase 1 (current):
 - Data Connect schema + sync
 
 Phase 2:
-- Entry model enrichment (entryDate, source)
-- Assets + media attachments
+- Assets + media attachments (Firebase Storage integration)
+- Asset model, EntryAsset relation
 
 Phase 3:
 - AI pipeline
@@ -263,7 +265,7 @@ AI Diary uses:
 
 - Room → offline-first local database (single source of truth)
 - Firebase Data Connect → cloud sync and relational storage
-- Firebase Storage → operational assets (future)
+- Firebase Storage → operational assets (dependency ready, integration in Phase 2)
 - Google Drive → optional user-owned archive (future)
 
 This provides fast MVP development with a scalable long-term model.
