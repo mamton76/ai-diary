@@ -1,29 +1,27 @@
-# Architecture — AI Diary (MVP)
+# Architecture — AI Diary
 
 ## 1. Purpose
 
-This document describes the technical architecture of **AI Diary**, based on the current PRD and the chosen backend direction: **Firebase Data Connect** as the primary cloud database, with Firebase Storage as primary operational asset storage and optional Google Drive integration for user-owned assets.
+This document describes the technical architecture of **AI Diary**, an Android-first, offline-first diary application with cloud sync via Firebase Data Connect.
 
-AI Diary is a personal journaling system that allows users to capture daily life in a lightweight way, starting with text entries and later expanding to voice, links, photos, AI enrichment, and integration with ZoomAlbum.
+AI Diary is the foundational layer for ZoomAlboom. It starts with text entries and will expand to voice, media, AI enrichment, and spatial album integration.
 
 ---
 
 ## 2. Architectural goals
 
-The architecture should support:
-
-- very fast MVP development
-- clean, extensible domain model
+- Offline-first: the app works fully without internet
+- Room as the single source of truth for the client UI
+- Clean, extensible domain model
 - Android-first implementation
-- simple web access to the same data
-- offline-first UX with cloud sync
-- gradual introduction of AI processing
-- future export of diary content into ZoomAlbum
+- Cloud sync via Firebase Data Connect (background, non-blocking)
+- Gradual introduction of AI processing
+- Future export of diary content into ZoomAlboom
 
 Core principle:
 
-> **Diary stores events and meaning.  
-> ZoomAlbum stores visual composition and navigation.**
+> **Diary stores events and meaning.
+> ZoomAlboom stores visual composition and navigation.**
 
 ---
 
@@ -31,13 +29,13 @@ Core principle:
 
 The system consists of:
 
-1. Android client
-2. Web client (future)
-3. Firebase Authentication
-4. Firebase Data Connect
-5. Firebase Storage (asset storage — dependency added, ready to use)
-6. Optional Google Drive integration (user-owned assets, future)
-7. Background processing / AI pipeline (future)
+1. Android client (offline-first)
+2. Firebase Authentication (Google Sign-In)
+3. Firebase Data Connect (cloud sync for structured data)
+4. Firebase Storage (asset storage — dependency added, ready to use)
+5. Web client (future)
+6. Google Drive integration (future)
+7. AI pipeline (future)
 
 ---
 
@@ -49,7 +47,7 @@ The system consists of:
 - MVI (StateFlow + Channel for side effects)
 - Clean Architecture (presentation / domain / data)
 - Hilt (DI)
-- Room (local database, offline-first)
+- Room (local database, single source of truth)
 - Coroutines
 
 ### Backend / cloud
@@ -65,9 +63,11 @@ The system consists of:
 - Clean layering (presentation / domain / data)
 - Domain independent from Android and Firebase (pure Kotlin)
 - Repository abstraction (interface in domain, implementation in data)
-- Room as single source of truth; Firebase as sync target
+- Room is the single source of truth — UI reads only from Room
+- Writes happen locally first, sync to cloud in the background
+- Firebase Data Connect is the sync target, not the primary data source
+- Last-write-wins conflict resolution (sufficient for MVP)
 - AI as asynchronous enhancement (future)
-- Storage abstraction for assets (Firebase Storage dependency available)
 
 ---
 
@@ -94,13 +94,15 @@ com.mamton.aidiary/
 
 ## 7. Backend architecture
 
-Firebase Data Connect is used for structured relational data:
+Firebase Data Connect stores structured relational data in the cloud:
 
-- Entry
+- Entry (synced from local Room)
 - Asset metadata (future)
 - EntryAsset (future)
 - Tags / People / Places (future)
-- AI analysis (future)
+- AI analysis results (future)
+
+The client never reads directly from Data Connect for UI rendering. Data Connect is a sync target — data flows through Room.
 
 ---
 
@@ -112,18 +114,32 @@ Firebase Data Connect is used for structured relational data:
 |-------|------|-------|
 | id | String (UUID) | Generated client-side |
 | title | String | Optional, can be blank |
-| body | String | Main content (maps to rawText in PRD) |
+| body | String | Main text content |
+| entryDate | LocalDate | What date this entry is about |
+| source | enum | TEXT (MVP), VOICE / IMPORT (future) |
 | createdAt | Instant / Long | When the record was created |
 | updatedAt | Instant / Long | Last modification time |
-| entryDate | LocalDate | What date this entry is about (may differ from createdAt) |
-| source | enum | TEXT (MVP), VOICE / IMPORT (future) |
-| isSynced | Boolean | Local-only flag for offline sync |
+| isSynced | Boolean | Local-only sync flag |
 
-The MVP model is a simplified subset of the PRD's full Entry spec. Fields like `cleanedText`, `eventDateTime`, and `status` will be added when the AI pipeline is introduced.
+### Sync state
+
+MVP uses a simple `isSynced: Boolean` flag. The conceptual direction for future phases is a richer sync state:
+
+- `LOCAL_ONLY` — created locally, not yet synced
+- `SYNCING` — sync in progress
+- `SYNCED` — successfully synced to cloud
+- `ERROR` — sync failed, will retry
+
+For MVP, `isSynced = false` covers LOCAL_ONLY and ERROR; `isSynced = true` covers SYNCED. This is intentionally simple and will be expanded when multi-device sync or retry logic is added.
 
 ### Entry (remote — Data Connect)
 
-Same fields as above plus `uid` (Firebase Auth user ID) for row-level security. `isSynced` is local-only and not stored remotely.
+Same fields as the local entry plus `uid` (Firebase Auth user ID) for row-level security. `isSynced` is local-only and not stored remotely.
+
+### Entry (future enrichment)
+
+Fields to be added when the AI pipeline is introduced:
+- cleanedText, eventDateTime, status (RAW / PROCESSED)
 
 ### Asset (future)
 - id, ownerUserId, type, storageType, storagePath, url, previewUrl, metadataJson
@@ -133,14 +149,14 @@ Same fields as above plus `uid` (Firebase Auth user ID) for row-level security. 
 
 ---
 
-## 9. Asset Storage Strategy
+## 9. Asset storage strategy
 
-### 9.1 Principle
+### Principle
 
-Structured data lives in Data Connect.  
+Structured data lives in Data Connect.
 Heavy files live in storage systems.
 
-### 9.2 Storage abstraction
+### Storage abstraction
 
 Asset does not store the file — it stores a reference.
 
@@ -149,11 +165,11 @@ Supported storage types (future):
 - google_drive_user
 - external_url
 
-### 9.3 Primary storage
+### Firebase Storage
 
-Firebase Storage for: uploads, previews, thumbnails, voice notes. Dependency is added to the project; integration code will be built alongside the Asset model.
+For: uploads, previews, thumbnails, voice notes. Dependency is added to the project; integration code will be built alongside the Asset model in Phase 4.
 
-### 9.4 Google Drive usage (future)
+### Google Drive (future)
 
 Optional: backups, exports, long-term storage, user-owned originals.
 
@@ -168,25 +184,46 @@ Optional: backups, exports, long-term storage, user-owned originals.
 
 ---
 
-## 11. Android data strategy
+## 11. Offline-first data strategy
 
-### MVP: Offline-first with Room
+### How it works
 
-- **Room is the single source of truth.** UI observes Room via Flow.
-- **Write path:** Insert into Room with `isSynced=false` (instant UI update) → push to Data Connect in background → mark synced on success.
-- **Read/sync path:** On app start + pull-to-refresh: fetch remote entries → upsert into Room → push unsynced local entries.
-- **Conflict resolution:** Last-write-wins by `updatedAt`. MVP is create-only, so real conflicts are not expected.
+1. **Room is the single source of truth.** The UI observes Room via Flow. The UI never reads from the network directly.
+2. **Writes go to Room first.** When the user creates an entry, it is inserted into Room with `isSynced = false`. The UI sees it instantly.
+3. **Sync runs in the background.** After a local write, a background coroutine pushes the entry to Data Connect. On success, the entry is marked `isSynced = true`.
+4. **Pull sync on app start and pull-to-refresh.** Remote entries are fetched from Data Connect and upserted into Room. Unsynced local entries are pushed to the cloud.
+5. **Conflict resolution: last-write-wins by `updatedAt`.** MVP is create-only, so real conflicts are not expected.
 
-### Future enhancements
+### What MVP sync does NOT include
+
 - Background sync via WorkManager
-- Realtime subscriptions from Data Connect
+- Realtime subscriptions
 - Retry with exponential backoff
 - Deletion sync
 - Multi-device conflict merge
 
+These are future enhancements. MVP sync is simple and pragmatic: sync on app start, sync after writes, no retry on failure.
+
 ---
 
-## 12. Web client (future)
+## 12. Data operations (MVP)
+
+Mutations:
+- createEntry (write to Room, push to Data Connect in background)
+- syncEntries (bidirectional: pull remote → upsert local, push unsynced → remote)
+
+Queries:
+- listEntries (from Room, sorted by entryDate DESC)
+- getEntry (from Room by id)
+- listEntriesByUser (from Data Connect, for sync)
+
+Future:
+- updateEntry
+- deleteEntry
+
+---
+
+## 13. Web client (future)
 
 Thin client:
 - list entries
@@ -197,75 +234,79 @@ Out of scope for MVP.
 
 ---
 
-## 13. Data operations (MVP)
-
-Mutations:
-- createEntry (local + remote)
-- syncEntries (bidirectional)
-
-Queries:
-- listEntries (from Room, sorted by entryDate DESC)
-- getEntry (from Room by id)
-- listEntriesByUser (remote, for sync)
-
-Future:
-- updateEntry
-- deleteEntry
-
----
-
 ## 14. Processing pipeline (future)
 
-- transcription
-- cleaning (rawText → cleanedText)
+- transcription (voice → text)
+- cleaning (body → cleanedText)
 - summarization
 - tagging
-- album preparation
+- album preparation (ZoomAlboom export)
 
 ---
 
 ## 15. Development phases
 
-Phase 0 (done):
-- Project skeleton
-- Compose + Hilt + Room + MVI setup
+Phase 0 — Foundation (done):
+- Project skeleton: Compose + Hilt + Room + MVI
 - Domain layer, data layer, UI screens
 - Entry model with entryDate + source fields
-- Firebase Storage dependency added
+- Firebase dependencies added (Auth, Data Connect, Storage)
+- Firebase project connected (google-services.json)
 
-Phase 1 (current):
-- Firebase project setup
-- Auth (Google Sign-In)
-- Data Connect schema + sync
+Phase 1 — Local diary CRUD (done):
+- Create text entries
+- View entry list sorted by date
+- View entry detail
+- Local persistence with Room
+- Loading/error/empty states
 
-Phase 2:
-- Assets + media attachments (Firebase Storage integration)
-- Asset model, EntryAsset relation
+Phase 2 — Auth + cloud sync (current):
+- Firebase Auth (Google Sign-In)
+- Auth screen and navigation gating
+- Data Connect schema, queries, mutations
+- Background sync logic in repository
+- EntryRemoteDataSource
 
-Phase 3:
-- AI pipeline
+Phase 3 — Edit, delete, polish:
+- Edit existing entries
+- Delete entries (local + remote)
+- Basic search/filter
+- Material3 styling refinements
 
-Phase 4:
-- ZoomAlbum integration
+Phase 4 — Media and assets:
+- Asset model and Firebase Storage integration
+- Photo/voice attachments on entries
+- EntryAsset relation
+
+Phase 5 — AI enrichment:
+- AI pipeline (cleaning, summarization, tagging)
+- cleanedText, status fields on Entry
+
+Phase 6 — ZoomAlboom integration:
+- Spatial positioning model
+- Infinite canvas view
+- Frame/card UI for entries
+- Animated transitions
 
 ---
 
 ## 16. MVP scope
 
-- text entry only
-- offline-first with Room + Firebase Data Connect sync
-- Android UI (Compose)
+- Text entries only
+- Offline-first with Room as source of truth
+- Background sync to Firebase Data Connect
+- Android UI (Jetpack Compose)
 - Google Sign-In
 
 ---
 
 ## 17. Summary
 
-AI Diary uses:
+AI Diary is an offline-first Android diary app:
 
-- Room → offline-first local database (single source of truth)
-- Firebase Data Connect → cloud sync and relational storage
-- Firebase Storage → operational assets (dependency ready, integration in Phase 2)
-- Google Drive → optional user-owned archive (future)
+- **Room** → local database, single source of truth for the UI
+- **Firebase Data Connect** → cloud sync and backup
+- **Firebase Storage** → media assets (Phase 4)
+- **ZoomAlboom** → spatial album integration (Phase 6)
 
-This provides fast MVP development with a scalable long-term model.
+Writes happen locally first. Sync runs in the background. The MVP is intentionally simple.

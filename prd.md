@@ -2,11 +2,11 @@
 
 ## 1. Overview
 
-Product name: AI Diary  
-Type: Mobile-first application (Android MVP) with cloud backend  
-Role: Foundational layer for ZoomAlbum
+Product name: AI Diary
+Type: Android-first, offline-first diary application with cloud sync
+Role: Foundational layer for ZoomAlboom
 
-AI Diary is a personal journaling system that allows users to quickly capture their daily experiences (text, voice, links, media), and uses AI to structure and enrich this data for future transformation into interactive albums.
+AI Diary is a personal journaling system that allows users to quickly capture their daily experiences as text entries. Entries are stored locally first and synced to the cloud in the background. AI will later structure and enrich this data for transformation into interactive albums.
 
 ---
 
@@ -14,74 +14,85 @@ AI Diary is a personal journaling system that allows users to quickly capture th
 
 People want to remember their lives, but:
 
-- writing structured diaries is hard  
-- media is scattered across apps  
-- memories are not connected  
+- writing structured diaries is hard
+- media is scattered across apps
+- memories are not connected
 
 AI Diary solves this by:
 
-- making capture fast and effortless  
-- structuring data automatically with AI  
-- preparing data for visual storytelling (ZoomAlbum)
+- making capture fast and effortless
+- storing entries locally for instant access (offline-first)
+- syncing to the cloud for backup and multi-device access
+- preparing data for AI enrichment and visual storytelling (ZoomAlboom)
 
 ---
 
 ## 3. MVP Scope
 
 ### Goal
-Enable fast daily capture and reliable storage.
+Enable fast daily capture with reliable local storage and basic cloud sync.
 
 ### Included
 
-- Create text entry
-- Automatic timestamps
-- Entry list
+- Create text entry (title + body)
+- Automatic timestamps (createdAt, updatedAt)
+- Entry date (what day the entry is about — may differ from creation time)
+- Entry source tracking (TEXT for MVP; VOICE, IMPORT later)
+- Entry list sorted by date
 - Entry detail view
-- Cloud persistence (Firebase)
-- Basic loading/error states
+- Local persistence (Room — works fully offline)
+- Background sync to Firebase Data Connect
+- Google Sign-In
+- Basic loading/error/empty states
 
-### Not included (yet)
+### Not included (future phases)
 
-- media attachments
-- tagging UI
-- album generation
+- Media attachments
+- Tagging UI
+- Album generation
 - AI summaries
+- Edit/delete entries (Phase 3)
 
 ---
 
 ## 4. Core Concepts
 
-### Entry
+### Entry (MVP)
 
-Represents a normalized diary record.
+Represents a diary record stored locally and synced to the cloud.
 
 Fields:
 
-- id
-- rawText
-- cleanedText (optional)
-- createdAt
-- entryDate
-- eventDateTime (optional)
-- source (TEXT / VOICE / IMPORT)
-- status (RAW / PROCESSED)
+- id — UUID, generated client-side
+- title — optional, can be blank
+- body — main text content
+- entryDate — what date this entry is about
+- source — TEXT (MVP), VOICE / IMPORT (future)
+- createdAt — when the record was created
+- updatedAt — last modification time
+- isSynced — local-only flag for sync status
+
+### Entry (future enrichment)
+
+These fields will be added when the AI pipeline is introduced:
+
+- cleanedText — AI-processed version of body
+- eventDateTime — specific time of the event described
+- status — RAW / PROCESSED
 
 ---
 
 ### Asset (future)
 
-Represents external content:
+Represents external content attached to an entry:
 
-- photo
-- audio
-- video
-- link
+- photo, audio, video, link
 
 Fields:
 
 - id
 - type
-- storageType
+- storageType (firebase_storage, google_drive_user, external_url)
 - url
 - previewUrl
 - metadata
@@ -101,23 +112,42 @@ Fields:
 ### Create Entry
 
 1. Open app
-2. Tap "New Entry"
-3. Enter text
+2. Tap "+" button
+3. Enter title (optional) and body text
 4. Save
-5. Entry appears in list
+5. Entry is stored locally and appears in list immediately
+6. Sync to cloud happens in background
 
 ---
 
 ### View Entries
 
 1. Open app
-2. See list sorted by date
+2. See list sorted by entry date
 3. Tap entry
 4. View detail
 
 ---
 
-## 6. AI Role (Post-MVP)
+## 6. Data Strategy
+
+### Offline-first
+
+- Room is the local database and single source of truth for the UI
+- All writes go to Room first — the UI updates instantly
+- Background sync pushes local entries to Firebase Data Connect
+- On app start and pull-to-refresh, remote entries are fetched and merged into Room
+- Conflict resolution: last-write-wins by updatedAt (sufficient for MVP)
+
+### Cloud backend
+
+- Firebase Data Connect (PostgreSQL) stores structured data
+- Firebase Storage will store media assets (future)
+- All data is user-scoped via Firebase Auth UID
+
+---
+
+## 7. AI Role (Post-MVP)
 
 AI will:
 
@@ -126,36 +156,8 @@ AI will:
 - detect structure (tasks, events, reflections)
 
 Important:
-- rawText is always preserved
+- original body text is always preserved
 - AI output is optional and replaceable
-
----
-
-## 7. Storage Strategy
-
-### Structured data
-
-Stored in Firebase Data Connect:
-
-- Entry
-- Asset metadata
-- relations
-
----
-
-### Asset storage
-
-Hybrid model:
-
-#### Firebase Storage (primary)
-- uploads
-- previews
-- active files
-
-#### Google Drive (optional)
-- backups
-- user-owned originals
-- archive/export
 
 ---
 
@@ -169,80 +171,69 @@ Stack:
 - Clean Architecture
 - StateFlow
 - Hilt
+- Room (local DB)
 - Coroutines
 
 Layers:
 
-- Presentation
-- Domain
-- Data
+- Presentation (Compose + ViewModels)
+- Domain (pure Kotlin models, use cases)
+- Data (Room, Firebase, repository implementations)
 
 ---
 
 ## 9. Screens (MVP)
 
 - Entry List
-- Entry Detail
-- Create Entry
+- Entry Detail / Create
+- Auth (Google Sign-In)
 
 ---
 
 ## 10. Non-functional Requirements
 
-- fast input (<1s)
-- stable storage
-- simple UX
-- scalable model
+- fast input (<1s to start writing)
+- works fully offline
+- reliable local storage
+- simple, clear UX
+- scalable data model
 
 ---
 
 ## 11. Future Extensions
 
-### Phase 2
-- media attachments
-- voice input
-
 ### Phase 3
-- AI summaries
-- tagging
-- search
+- Edit/delete entries
+- Basic search/filter
 
 ### Phase 4
-- ZoomAlbum integration
+- Media attachments (photos, voice notes)
+- Firebase Storage integration
+
+### Phase 5
+- AI summaries and tagging
+
+### Phase 6
+- ZoomAlboom integration (spatial canvas, frames, navigation)
 
 ---
 
 ## 12. Design Principles
 
-- capture first, structure later  
-- minimal friction  
-- AI is assistant, not blocker  
-- user data is always preserved  
+- capture first, structure later
+- offline-first — the app must work without internet
+- minimal friction
+- AI is assistant, not blocker
+- user data is always preserved
 
 ---
 
 ## 13. Success Criteria
 
-- entry created in <10 seconds  
-- reliable storage  
-- clean architecture  
-- ready for extension  
-
----
-
-## 14. Open Questions
-
-- rawText retention policy  
-- AI trigger timing  
-- offline strategy  
-
----
-
-## 15. Development Strategy
-
-1. Build minimal flow  
-2. Validate architecture  
-3. Expand gradually  
+- entry created in <10 seconds
+- app works fully offline
+- reliable local + cloud storage
+- clean architecture ready for extension
 
 ---
 
