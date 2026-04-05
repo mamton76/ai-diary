@@ -1,0 +1,10 @@
+type Entry @table {
+  id: String! @col(name: "id")
+  uid: String! @col(name: "uid")
+  title: String! @col(name: "title")
+  body: String! @col(name: "body")
+  entryDate: Date! @col(name: "entry_date")
+  source: String! @col(name: "source") @default(value: "TEXT")
+  createdAt: Timestamp! @col(name: "created_at")
+  updatedAt: Timestamp! @col(name: "updated_at")
+}

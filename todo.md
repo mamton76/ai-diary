@@ -17,18 +17,19 @@
 - [x] Navigation between screens
 
 ## Phase 2: Auth + Cloud Sync
-- [ ] Create `FirebaseModule.kt` (provides FirebaseAuth + Data Connect connector)
-- [ ] Create `AuthViewModel.kt` (Google Sign-In via Credential Manager)
-- [ ] Create `AuthScreen.kt` (sign-in UI)
-- [ ] Add Auth route to `Screen.kt` and gate navigation in `DiaryNavHost.kt`
-- [ ] Define Data Connect schema (`schema.gql` — Entry table with `uid`)
-- [ ] Define queries (`queries.gql` — ListEntriesByUser, GetEntryById)
-- [ ] Define mutations (`mutations.gql` — UpsertEntry)
-- [ ] Run `firebase dataconnect:sdk:generate`
-- [ ] Create `EntryRemoteDataSource.kt` (wraps generated SDK)
-- [ ] Update `EntryMapper.kt` with remote DTO mappings
-- [ ] Wire real sync logic in `EntryRepositoryImpl.kt`
+- [x] Create `FirebaseModule.kt` (provides FirebaseAuth)
+- [x] Create `AuthViewModel.kt` (Google Sign-In via Credential Manager)
+- [x] Create `AuthScreen.kt` (sign-in UI)
+- [x] Add Auth route to `Screen.kt` and gate navigation in `DiaryNavHost.kt`
+- [x] Define Data Connect schema (`schema.gql` — Entry table with `uid`)
+- [x] Define queries (`queries.gql` — ListEntriesByUser, GetEntryById)
+- [x] Define mutations (`mutations.gql` — UpsertEntry)
+- [x] Run `firebase dataconnect:sdk:generate`
+- [x] Create `EntryRemoteDataSource.kt` (wraps generated SDK)
+- [x] Wire real sync logic in `EntryRepositoryImpl.kt`
 - [ ] Test end-to-end: create locally → sync to Firebase → pull from Firebase
+- [ ] Tighten Data Connect security: use `auth.uid` in queries/mutations instead of `$uid` parameter
+- [ ] Consider additional sync triggers: app resume (onResume), network reconnect, after edit/delete, periodic WorkManager sync, Firebase Cloud Messaging push notifications for multi-device sync
 
 ## Phase 3: Edit, Delete, Polish
 - [ ] Edit existing entries

@@ -1,0 +1,25 @@
+query ListEntriesByUser($uid: String!) @auth(level: USER) {
+  entries(where: { uid: { eq: $uid } }, orderBy: [{ entryDate: DESC }, { createdAt: DESC }]) {
+    id
+    uid
+    title
+    body
+    entryDate
+    source
+    createdAt
+    updatedAt
+  }
+}
+
+query GetEntryById($id: String!) @auth(level: USER) {
+  entry(id: $id) {
+    id
+    uid
+    title
+    body
+    entryDate
+    source
+    createdAt
+    updatedAt
+  }
+}

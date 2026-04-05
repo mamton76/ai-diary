@@ -3,6 +3,10 @@ package com.mamton.aidiary.core.navigation
 sealed interface Screen {
     val route: String
 
+    data object Auth : Screen {
+        override val route = "auth"
+    }
+
     data object EntryList : Screen {
         override val route = "entry_list"
     }

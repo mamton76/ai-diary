@@ -1,0 +1,21 @@
+mutation UpsertEntry(
+  $id: String!
+  $uid: String!
+  $title: String!
+  $body: String!
+  $entryDate: Date!
+  $source: String!
+  $createdAt: Timestamp!
+  $updatedAt: Timestamp!
+) @auth(level: USER) {
+  entry_upsert(data: {
+    id: $id
+    uid: $uid
+    title: $title
+    body: $body
+    entryDate: $entryDate
+    source: $source
+    createdAt: $createdAt
+    updatedAt: $updatedAt
+  })
+}
