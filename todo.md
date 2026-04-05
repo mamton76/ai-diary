@@ -33,6 +33,8 @@
 ## Phase 3: Edit, Delete, Polish
 - [ ] Edit existing entries
 - [ ] Delete entries (local + remote sync)
+- [ ] Add `startTime` / `endTime` fields to Entry (optional, for event duration)
+- [ ] Time picker UI for startTime/endTime
 - [ ] Basic search / filter entries
 - [ ] Better date formatting (relative: "Today", "Yesterday")
 - [ ] Empty state improvements
@@ -48,11 +50,14 @@
 - [ ] Asset previews in entry list and detail
 
 ## Phase 5: AI Enrichment
+- [ ] Research: text processing libraries (tokenization, cleaning, spell correction) — OpenNLP, LanguageTool, on-device vs server-side LLM
+- [ ] AI Agent implementation (see [agent-idea.md](agent-idea.md) — hybrid model: deterministic pipeline + LLM decisions)
 - [ ] AI pipeline: text cleaning (body → cleanedText)
 - [ ] AI pipeline: summarization
 - [ ] AI pipeline: tagging and topic extraction
 - [ ] Entry status field (RAW / PROCESSED)
 - [ ] Display AI-generated content alongside original
+- [ ] Auto-generate text entry from media (media → signals → draft → user confirmation)
 
 ## Phase 6: ZoomAlboom Integration
 - [ ] Spatial positioning model (x, y, scale on canvas)
