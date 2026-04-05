@@ -218,7 +218,50 @@ Layers:
 
 ---
 
-## 12. Design Principles
+## 12. Use Cases / Verticals
+
+AI Diary is not a single-purpose journal — it is a personal memory system that works across multiple life contexts through the same capture → structure → explore pipeline.
+
+### 12.1 Life Diary (default)
+
+General-purpose daily journaling. Users capture thoughts, events, links, moods, plans on the go — via voice or text. AI structures entries, extracts topics/people/emotions, finds patterns over time.
+
+This is the "modern LiveJournal without the effort" — you live, AI writes your story.
+
+### 12.2 Baby & Early Years Diary
+
+Parents capture milestones, funny moments, first words, health notes, growth observations — often as quick voice memos while multitasking. AI auto-tags developmental milestones (first steps, first tooth, first day at kindergarten), builds a timeline, connects photos to entries.
+
+High emotional value, natural shareability (with partner, grandparents), built-in time horizon (pregnancy → first 3–5 years).
+
+This vertical has the strongest product-market fit for launch: clear audience, high motivation, willingness to pay, almost no AI competitors in this niche.
+
+### 12.3 Travel Diary
+
+Users capture experiences during a single trip or across multiple trips — places, food, impressions, recommendations, photos, links. AI structures by location/day, extracts places and highlights, builds a trip narrative.
+
+ZoomAlboom integration is most natural here: trips literally map to spatial exploration. Can serve both as personal memory and as shareable travel story.
+
+### Architecture note
+
+These are not separate apps or modules — they are "lenses" on the same engine:
+
+- Same Entry model, same AI pipeline, same storage
+- Differences are in:
+  - AI prompt templates (what to extract and how to tag)
+  - Suggested capture triggers and reminders
+  - ZoomAlboom visualization defaults (timeline vs map vs milestone view)
+  - Sharing defaults
+
+### Sharing and retention
+
+Pure private diaries suffer from retention drop-off. LiveJournal proved that even minimal audience (friends, family) dramatically improves motivation.
+
+AI Diary should support selective sharing of moments, AI-generated summaries, and ZoomAlboom visual stories — not as a social network, but as a way to share memory artifacts with close people. Sharing is a retention mechanism, not a social feature.
+
+---
+
+## 13. Design Principles
 
 - capture first, structure later
 - offline-first — the app must work without internet
@@ -228,7 +271,7 @@ Layers:
 
 ---
 
-## 13. Success Criteria
+## 14. Success Criteria
 
 - entry created in <10 seconds
 - app works fully offline
