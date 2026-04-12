@@ -78,7 +78,7 @@ com.mamton.aidiary/
 
 ## Roadmap
 
-See [todo.md](todo.md) for detailed next steps.
+See [todo.md](docs/todo.md) for detailed next steps.
 
 - **Phase 2** — Auth + cloud sync (Firebase Data Connect)
 - **Phase 3** — Edit, delete, polish, search
@@ -88,5 +88,5 @@ See [todo.md](todo.md) for detailed next steps.
 
 ## Related docs
 
-- [PRD](prd.md) — product requirements
-- [Architecture](architecture.md) — technical architecture decisions
+- [PRD](docs/prd.md) — product requirements
+- [Architecture](docs/architecture.md) — technical architecture decisions

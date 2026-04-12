@@ -85,8 +85,8 @@ The system consists of:
 com.mamton.aidiary/
   DiaryApp.kt, MainActivity.kt
   core/       — DI modules, navigation, theme
-  domain/     — model, repository interfaces, use cases
-  data/       — local (Room), remote (Data Connect), mapper, repository impl
+  domain/     — model (14 models + enums), repository interfaces (Entry, Tag, Asset), use cases
+  data/       — local/entity (17 Room entities), local/dao (17 DAOs), remote, mapper, repository impl
   feature/    — entrylist, entrydetail, auth (each: Contract, ViewModel, Screen)
 ```
 
@@ -96,11 +96,10 @@ com.mamton.aidiary/
 
 Firebase Data Connect stores structured relational data in the cloud:
 
-- Entry (synced from local Room)
-- Asset metadata (future)
-- EntryAsset (future)
-- Tags / People / Places (future)
-- AI analysis results (future)
+- Entry (synced, with entryDateStart/End, originType, status, currentRevisionId)
+- EntryRevision, Tag, TagLabel, EntryRevisionTag, EntryTag (deployed)
+- Asset, EntryRevisionAsset, EntryAsset, EntryRevisionSourceLink (deployed)
+- AI layer tables (AIRequest, AIResult, etc. — in Room locally, Data Connect deferred to Phase 5)
 
 The client never reads directly from Data Connect for UI rendering. Data Connect is a sync target — data flows through Room.
 
@@ -108,44 +107,70 @@ The client never reads directly from Data Connect for UI rendering. Data Connect
 
 ## 8. Data model
 
-### Entry (MVP)
+The data model follows the architecture from `data-model-proposal.md`. The core principle:
+
+> **Entry is the current product object. EntryRevision is the canonical historical truth.**
+
+Room v2 has 17 tables. The full schema is detailed in `data-model-proposal.md`; key tables summarized below.
+
+### Entry
 
 | Field | Type | Notes |
 |-------|------|-------|
 | id | String (UUID) | Generated client-side |
 | title | String | Optional, can be blank |
 | body | String | Main text content |
-| entryDate | LocalDate | What date this entry is about |
-| source | enum | TEXT (MVP), VOICE / IMPORT (future) |
-| createdAt | Instant / Long | When the record was created |
-| updatedAt | Instant / Long | Last modification time |
+| entryDateStart | LocalDate | Start of calendar interval |
+| entryDateEnd | LocalDate | End of calendar interval (= start for single-day) |
+| eventStartAt | Instant? | Precise event time, if known |
+| eventEndAt | Instant? | Precise event end, if known |
+| originType | enum | USER_CREATED, IMPORTED, AI_SYNTHETIC |
+| source | enum | TEXT, VOICE, IMPORT |
+| status | enum | ACTIVE, ARCHIVED, MERGED, DELETED |
+| currentRevisionId | String? | Pointer to latest EntryRevision |
+| createdAt | Instant | When the record was created |
+| updatedAt | Instant | Last modification time |
 | isSynced | Boolean | Local-only sync flag |
+
+Validation: `entryDateStart <= entryDateEnd` enforced in domain model constructor.
+
+### EntryRevision
+
+Stores canonical historical content. Every meaningful change creates a new revision with a monotonic `revisionNumber` per entry. `createEntry` creates entry + initial revision atomically; `updateEntry` creates a new revision and updates the entry's denormalized fields.
+
+### Tags
+
+Tag identity is separate from display text. TagLabel stores primary label, synonyms, normalized forms, and locale. Each Tag has exactly one primary TagLabel (enforced at application level). Tags can be merged via `mergedIntoTagId`.
+
+### Assets
+
+Represent photos, videos, audio, links, files. Linked to entries via EntryAsset (denormalized current) and EntryRevisionAsset (canonical historical).
+
+### Provenance
+
+EntryRevisionSourceLink records what a revision was derived from (other revisions, AI results, assets, tags) with a `role` field (primary_source, context, supporting_evidence).
+
+### AI layer (Room only, Data Connect deferred)
+
+- AIRequest / AIResult — what was sent to the model and what came back
+- AIFeedback — user feedback on AI results
+- UserPreferences — explicit user settings
+- UserAIContext / UserAIContextVersion — accumulated AI memory over time
+- AIContextSnapshot — FK to UserAIContextVersion (not a full blob copy), recording exact context used per AI call
+
+### Repositories
+
+- **EntryRepository** — CRUD with revision tracking, sync
+- **TagRepository** — create tag with label, search by normalized text, add/remove from entries
+- **AssetRepository** — create assets, link/unlink from entries
 
 ### Sync state
 
-MVP uses a simple `isSynced: Boolean` flag. The conceptual direction for future phases is a richer sync state:
-
-- `LOCAL_ONLY` — created locally, not yet synced
-- `SYNCING` — sync in progress
-- `SYNCED` — successfully synced to cloud
-- `ERROR` — sync failed, will retry
-
-For MVP, `isSynced = false` covers LOCAL_ONLY and ERROR; `isSynced = true` covers SYNCED. This is intentionally simple and will be expanded when multi-device sync or retry logic is added.
+Uses a simple `isSynced: Boolean` flag. `isSynced = false` means pending sync; `true` means synced. Will be expanded when multi-device sync or retry logic is added.
 
 ### Entry (remote — Data Connect)
 
-Same fields as the local entry plus `uid` (Firebase Auth user ID) for row-level security. `isSynced` is local-only and not stored remotely.
-
-### Entry (future enrichment)
-
-Fields to be added when the AI pipeline is introduced:
-- cleanedText, eventDateTime, status (RAW / PROCESSED)
-
-### Asset (future)
-- id, ownerUserId, type, storageType, storagePath, url, previewUrl, metadataJson
-
-### EntryAsset (future)
-- entryId, assetId, role
+Same fields as the local entry plus `uid` (Firebase Auth user ID) for row-level security. `isSynced` is local-only and not stored remotely. Core tables (Entry, EntryRevision, Tag, TagLabel, Asset, join tables, provenance) are deployed to Data Connect. AI layer tables are deferred to Phase 5.
 
 ---
 
@@ -206,20 +231,23 @@ These are future enhancements. MVP sync is simple and pragmatic: sync on app sta
 
 ---
 
-## 12. Data operations (MVP)
+## 12. Data operations
 
 Mutations:
-- createEntry (write to Room, push to Data Connect in background)
+- createEntry (write Entry + initial EntryRevision to Room, push to Data Connect in background)
+- updateEntry (create new EntryRevision, update Entry denormalized fields, push to Data Connect)
 - syncEntries (bidirectional: pull remote → upsert local, push unsynced → remote)
+- createTag (create Tag + primary TagLabel)
+- addTagToEntry / removeTagFromEntry
+- createAsset, addAssetToEntry / removeAssetFromEntry
 
 Queries:
-- listEntries (from Room, sorted by entryDate DESC)
+- listEntries (from Room, sorted by entryDateStart DESC, excludes DELETED)
+- listEntries by date range, status, originType
 - getEntry (from Room by id)
+- getRevisions (all revisions for an entry, ordered by revisionNumber)
+- searchTags (by normalized text)
 - listEntriesByUser (from Data Connect, for sync)
-
-Future:
-- updateEntry
-- deleteEntry
 
 ---
 
@@ -249,44 +277,44 @@ Out of scope for MVP.
 Phase 0 — Foundation (done):
 - Project skeleton: Compose + Hilt + Room + MVI
 - Domain layer, data layer, UI screens
-- Entry model with entryDate + source fields
 - Firebase dependencies added (Auth, Data Connect, Storage)
 - Firebase project connected (google-services.json)
 
 Phase 1 — Local diary CRUD (done):
-- Create text entries
-- View entry list sorted by date
-- View entry detail
+- Create text entries, view list and detail
 - Local persistence with Room
 - Loading/error/empty states
 
-Phase 2 — Auth + cloud sync (current):
-- Firebase Auth (Google Sign-In)
-- Auth screen and navigation gating
-- Data Connect schema, queries, mutations
+Phase 2 — Auth + cloud sync (done):
+- Firebase Auth (Google Sign-In), auth screen, navigation gating
+- Data Connect schema, queries, mutations, EntryRemoteDataSource
 - Background sync logic in repository
-- EntryRemoteDataSource
 
-Phase 3 — Edit, delete, polish:
-- Edit existing entries
-- Delete entries (local + remote)
-- Basic search/filter
-- Material3 styling refinements
+Phase 2.5 — Data model expansion (done):
+- Full data model from `data-model-proposal.md` implemented
+- Room v2: 17 tables with indexes and validation
+- Entry/EntryRevision split, Tag/TagLabel, Asset, provenance, AI layer
+- TagRepository, AssetRepository with full CRUD
+- Data Connect schema deployed with all core tables
+- Existing remote data migrated (entry_date → entry_date_start/end)
+
+Phase 3 — Edit, delete, polish (next):
+- Wire edit/delete to UI (repository already supports it)
+- Soft delete via status = DELETED
+- Search/filter, Material3 refinements
 
 Phase 4 — Media and assets:
-- Asset model and Firebase Storage integration
-- Photo/voice attachments on entries
-- EntryAsset relation
+- Firebase Storage integration
+- Photo/voice attachments using AssetRepository
+- Sync assets to Data Connect
 
 Phase 5 — AI enrichment:
 - AI pipeline (cleaning, summarization, tagging)
-- cleanedText, status fields on Entry
+- Synthetic entries (originType = AI_SYNTHETIC)
+- Wire AIRequest/AIResult/AIFeedback + UserAIContext to Data Connect
 
 Phase 6 — ZoomAlboom integration:
-- Spatial positioning model
-- Infinite canvas view
-- Frame/card UI for entries
-- Animated transitions
+- Spatial positioning, infinite canvas, frame UI, animated transitions
 
 ---
 

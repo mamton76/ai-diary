@@ -97,7 +97,7 @@ fun EntryDetailScreen(
                         style = MaterialTheme.typography.headlineMedium,
                     )
                     Text(
-                        text = entry.entryDate.format(DateTimeFormatter.ofPattern("EEEE, MMM d, yyyy")),
+                        text = entry.entryDateStart.format(DateTimeFormatter.ofPattern("EEEE, MMM d, yyyy")),
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
                     )

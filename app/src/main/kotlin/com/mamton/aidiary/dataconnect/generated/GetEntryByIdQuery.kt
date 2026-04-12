@@ -51,8 +51,14 @@ public interface GetEntryByIdQuery :
     val uid: String,
     val title: String,
     val body: String,
-    val entryDate: com.google.firebase.dataconnect.LocalDate,
+    val entryDateStart: com.google.firebase.dataconnect.LocalDate,
+    val entryDateEnd: com.google.firebase.dataconnect.LocalDate,
+    val eventStartAt: @kotlinx.serialization.Serializable(with = com.google.firebase.dataconnect.serializers.TimestampSerializer::class) com.google.firebase.Timestamp?,
+    val eventEndAt: @kotlinx.serialization.Serializable(with = com.google.firebase.dataconnect.serializers.TimestampSerializer::class) com.google.firebase.Timestamp?,
+    val originType: String,
     val source: String,
+    val status: String,
+    val currentRevisionId: String?,
     val createdAt: @kotlinx.serialization.Serializable(with = com.google.firebase.dataconnect.serializers.TimestampSerializer::class) com.google.firebase.Timestamp,
     val updatedAt: @kotlinx.serialization.Serializable(with = com.google.firebase.dataconnect.serializers.TimestampSerializer::class) com.google.firebase.Timestamp
   ) {

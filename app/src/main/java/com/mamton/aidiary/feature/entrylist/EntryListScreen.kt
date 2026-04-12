@@ -120,7 +120,7 @@ private fun EntryItem(entry: Entry, onClick: () -> Unit) {
                 modifier = Modifier.padding(top = 4.dp),
             )
             Text(
-                text = entry.entryDate.format(dateFormatter),
+                text = entry.entryDateStart.format(dateFormatter),
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(top = 8.dp),
             )

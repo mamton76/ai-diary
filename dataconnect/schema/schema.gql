@@ -3,8 +3,93 @@ type Entry @table {
   uid: String! @col(name: "uid")
   title: String! @col(name: "title")
   body: String! @col(name: "body")
-  entryDate: Date! @col(name: "entry_date")
+  entryDateStart: Date! @col(name: "entry_date_start")
+  entryDateEnd: Date! @col(name: "entry_date_end")
+  eventStartAt: Timestamp @col(name: "event_start_at")
+  eventEndAt: Timestamp @col(name: "event_end_at")
+  originType: String! @col(name: "origin_type") @default(value: "USER_CREATED")
   source: String! @col(name: "source") @default(value: "TEXT")
+  status: String! @col(name: "status") @default(value: "ACTIVE")
+  currentRevisionId: String @col(name: "current_revision_id")
   createdAt: Timestamp! @col(name: "created_at")
   updatedAt: Timestamp! @col(name: "updated_at")
+}
+
+type EntryRevision @table {
+  id: String! @col(name: "id")
+  entryId: String! @col(name: "entry_id")
+  revisionNumber: Int! @col(name: "revision_number")
+  title: String! @col(name: "title")
+  body: String! @col(name: "body")
+  entryDateStart: Date! @col(name: "entry_date_start")
+  entryDateEnd: Date! @col(name: "entry_date_end")
+  eventStartAt: Timestamp @col(name: "event_start_at")
+  eventEndAt: Timestamp @col(name: "event_end_at")
+  changeType: String! @col(name: "change_type")
+  createdAt: Timestamp! @col(name: "created_at")
+}
+
+type Tag @table {
+  id: String! @col(name: "id")
+  userId: String! @col(name: "user_id")
+  type: String @col(name: "type")
+  source: String! @col(name: "source")
+  mergedIntoTagId: String @col(name: "merged_into_tag_id")
+  createdAt: Timestamp! @col(name: "created_at")
+  updatedAt: Timestamp! @col(name: "updated_at")
+}
+
+type TagLabel @table {
+  id: String! @col(name: "id")
+  tagId: String! @col(name: "tag_id")
+  text: String! @col(name: "text")
+  normalizedText: String! @col(name: "normalized_text")
+  isPrimary: Boolean! @col(name: "is_primary")
+  locale: String @col(name: "locale")
+  source: String! @col(name: "source")
+  createdAt: Timestamp! @col(name: "created_at")
+  updatedAt: Timestamp! @col(name: "updated_at")
+}
+
+type EntryRevisionTag @table {
+  revisionId: String! @col(name: "revision_id")
+  tagId: String! @col(name: "tag_id")
+  createdAt: Timestamp! @col(name: "created_at")
+}
+
+type EntryTag @table {
+  entryId: String! @col(name: "entry_id")
+  tagId: String! @col(name: "tag_id")
+}
+
+type Asset @table {
+  id: String! @col(name: "id")
+  userId: String! @col(name: "user_id")
+  type: String! @col(name: "type")
+  storageUrl: String @col(name: "storage_url")
+  mimeType: String @col(name: "mime_type")
+  originalFilename: String @col(name: "original_filename")
+  sizeBytes: Int64 @col(name: "size_bytes")
+  createdAt: Timestamp! @col(name: "created_at")
+  updatedAt: Timestamp! @col(name: "updated_at")
+}
+
+type EntryRevisionAsset @table {
+  revisionId: String! @col(name: "revision_id")
+  assetId: String! @col(name: "asset_id")
+  createdAt: Timestamp! @col(name: "created_at")
+}
+
+type EntryAsset @table {
+  entryId: String! @col(name: "entry_id")
+  assetId: String! @col(name: "asset_id")
+}
+
+type EntryRevisionSourceLink @table {
+  id: String! @col(name: "id")
+  revisionId: String! @col(name: "revision_id")
+  sourceType: String! @col(name: "source_type")
+  sourceId: String! @col(name: "source_id")
+  role: String! @col(name: "role")
+  createdAt: Timestamp! @col(name: "created_at")
 }

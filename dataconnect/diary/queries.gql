@@ -1,11 +1,17 @@
 query ListEntriesByUser($uid: String!) @auth(level: USER) {
-  entries(where: { uid: { eq: $uid } }, orderBy: [{ entryDate: DESC }, { createdAt: DESC }]) {
+  entries(where: { uid: { eq: $uid } }, orderBy: [{ entryDateStart: DESC }, { createdAt: DESC }]) {
     id
     uid
     title
     body
-    entryDate
+    entryDateStart
+    entryDateEnd
+    eventStartAt
+    eventEndAt
+    originType
     source
+    status
+    currentRevisionId
     createdAt
     updatedAt
   }
@@ -17,8 +23,14 @@ query GetEntryById($id: String!) @auth(level: USER) {
     uid
     title
     body
-    entryDate
+    entryDateStart
+    entryDateEnd
+    eventStartAt
+    eventEndAt
+    originType
     source
+    status
+    currentRevisionId
     createdAt
     updatedAt
   }

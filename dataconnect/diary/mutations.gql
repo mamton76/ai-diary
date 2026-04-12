@@ -3,8 +3,14 @@ mutation UpsertEntry(
   $uid: String!
   $title: String!
   $body: String!
-  $entryDate: Date!
+  $entryDateStart: Date!
+  $entryDateEnd: Date!
+  $eventStartAt: Timestamp
+  $eventEndAt: Timestamp
+  $originType: String!
   $source: String!
+  $status: String!
+  $currentRevisionId: String
   $createdAt: Timestamp!
   $updatedAt: Timestamp!
 ) @auth(level: USER) {
@@ -13,8 +19,14 @@ mutation UpsertEntry(
     uid: $uid
     title: $title
     body: $body
-    entryDate: $entryDate
+    entryDateStart: $entryDateStart
+    entryDateEnd: $entryDateEnd
+    eventStartAt: $eventStartAt
+    eventEndAt: $eventEndAt
+    originType: $originType
     source: $source
+    status: $status
+    currentRevisionId: $currentRevisionId
     createdAt: $createdAt
     updatedAt: $updatedAt
   })

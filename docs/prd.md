@@ -47,63 +47,60 @@ Enable fast daily capture with reliable local storage and basic cloud sync.
 
 ### Not included (future phases)
 
-- Media attachments
-- Tagging UI
+- Tagging UI (data model ready)
+- Media attachment UI (data model + repository ready)
 - Album generation
 - AI summaries
-- Edit/delete entries (Phase 3)
+- Edit/delete entry UI (repository supports it, UI in Phase 3)
 
 ---
 
 ## 4. Core Concepts
 
-### Entry (MVP)
+### Entry
 
-Represents a diary record stored locally and synced to the cloud.
+Represents a diary record stored locally and synced to the cloud. Full architecture in `data-model-proposal.md`.
 
 Fields:
 
 - id — UUID, generated client-side
 - title — optional, can be blank
 - body — main text content
-- entryDate — what date this entry is about
+- entryDateStart / entryDateEnd — inclusive calendar interval (same value for single-day entries)
+- eventStartAt / eventEndAt — optional precise event timestamps
+- originType — USER_CREATED (default), IMPORTED, AI_SYNTHETIC
 - source — TEXT (MVP), VOICE / IMPORT (future)
+- status — ACTIVE, ARCHIVED, MERGED, DELETED
+- currentRevisionId — pointer to the latest EntryRevision
 - createdAt — when the record was created
 - updatedAt — last modification time
 - isSynced — local-only flag for sync status
 
-### Entry (future enrichment)
+Validation: entryDateStart must be <= entryDateEnd.
 
-These fields will be added when the AI pipeline is introduced:
+### EntryRevision
 
-- cleanedText — AI-processed version of body
-- eventDateTime — specific time of the event described
-- status — RAW / PROCESSED
+Every meaningful content change creates a new EntryRevision with a monotonic `revisionNumber`. Entry stores the current denormalized state; EntryRevision stores the canonical history.
 
----
+### Tag + TagLabel
 
-### Asset (future)
+Tags are separate from their display text. TagLabel supports primary label, synonyms, normalization, and locale. Tags can optionally have a type (topic, mood, activity, person_like, place_like) and can be merged.
 
-Represents external content attached to an entry:
+### Asset
 
-- photo, audio, video, link
+Represents external content attached to an entry: photo, video, audio, link, file.
 
-Fields:
+Fields: id, userId, type, storageUrl, mimeType, originalFilename, sizeBytes, timestamps.
 
-- id
-- type
-- storageType (firebase_storage, google_drive_user, external_url)
-- url
-- previewUrl
-- metadata
+### Relations
 
----
+- Entry → Tags (via EntryTag, denormalized; via EntryRevisionTag, canonical)
+- Entry → Assets (via EntryAsset, denormalized; via EntryRevisionAsset, canonical)
+- EntryRevision → source provenance (via EntryRevisionSourceLink)
 
-### Relations (future)
+### AI layer (future use)
 
-- Entry → Assets
-- Entry → Tags
-- Entry → People / Places
+Tables exist in Room for: AIRequest, AIResult, AIFeedback, UserPreferences, UserAIContext, UserAIContextVersion, AIContextSnapshot. These will be used when the AI pipeline is introduced in Phase 5.
 
 ---
 
@@ -203,15 +200,15 @@ Layers:
 ## 11. Future Extensions
 
 ### Phase 3
-- Edit/delete entries
+- Edit/delete entry UI (repository already supports revision-based edits)
 - Basic search/filter
 
 ### Phase 4
-- Media attachments (photos, voice notes)
-- Firebase Storage integration
+- Media attachment UI (AssetRepository + Firebase Storage integration)
 
 ### Phase 5
-- AI summaries and tagging
+- AI pipeline: cleaning, summarization, tagging (AI tables ready in Room)
+- Synthetic entries (originType = AI_SYNTHETIC)
 
 ### Phase 6
 - ZoomAlboom integration (spatial canvas, frames, navigation)

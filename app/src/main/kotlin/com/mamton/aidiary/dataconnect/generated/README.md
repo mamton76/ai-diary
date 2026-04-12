@@ -205,15 +205,36 @@ last argument of the `execute()` method.
 If a mutation has _required_ variables then they must be specified as
 arguments to the `execute()` method.
 
-For example, the "UpsertEntry" mutation has 8 required variables ("id", "uid", "title", "body", "entryDate", "source", "createdAt", and "updatedAt")
+For example, the "UpsertEntry" mutation has 11 required variables ("id", "uid", "title", "body", "entryDateStart", "entryDateEnd", "originType", "source", "status", "createdAt", and "updatedAt")
 and can be executed via the [DiaryConnector.upsertEntry]
 property as follows:
 
 ```kotlin
 val connector = DiaryConnector.instance
-val mutationResult = connector.upsertEntry.execute(id="corge", uid="qux", title="thud", body="grault", entryDate=LocalDate(1876, 4, 21), source="thud", createdAt=Timestamp(529506644, 777595443), updatedAt=Timestamp(1688896353, 900970428))
+val mutationResult = connector.upsertEntry.execute(id="corge", uid="qux", title="thud", body="grault", entryDateStart=LocalDate(1793, 3, 5), entryDateEnd=LocalDate(1906, 7, 21), originType="foo", source="thud", status="garply", createdAt=Timestamp(529506644, 777595443), updatedAt=Timestamp(1688896353, 900970428))
 println("UpsertEntry mutation returned: ${mutationResult.data}")
 ```
 
 
+### Executing Mutations with Optional Variables
+
+If a mutation has _optional_ variables then, by definition,
+they are _not_ required to be specified to the `execute()` method;
+however, if they _are_ specified,
+then they are specified in a Kotlin DSL block as the last argument
+of the `execute()` method.
+
+For example, the "UpsertEntry" mutation has 3 optional variables ("eventStartAt", "eventEndAt", and "currentRevisionId")
+and can be executed via the [DiaryConnector.upsertEntry]
+property as follows:
+
+```kotlin
+val connector = DiaryConnector.instance
+val mutationResult = connector.upsertEntry.execute(id="corge", uid="qux", title="thud", body="grault", entryDateStart=LocalDate(1793, 3, 5), entryDateEnd=LocalDate(1906, 7, 21), originType="foo", source="thud", status="garply", createdAt=Timestamp(529506644, 777595443), updatedAt=Timestamp(1688896353, 900970428)) {
+  eventStartAt = Timestamp(467408748, 960060649)
+  eventEndAt = Timestamp(466773886, 171902998)
+  currentRevisionId = "fred"
+}
+println("UpsertEntry mutation returned: ${mutationResult.data}")
+```
 
