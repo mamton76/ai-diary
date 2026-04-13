@@ -107,70 +107,13 @@ The client never reads directly from Data Connect for UI rendering. Data Connect
 
 ## 8. Data model
 
-The data model follows the architecture from `data-model-proposal.md`. The core principle:
+The full data model is described in [data-model-proposal.md](data-model-proposal.md). Room v2 has 17 tables; Firebase Data Connect mirrors core tables for cloud sync.
 
 > **Entry is the current product object. EntryRevision is the canonical historical truth.**
 
-Room v2 has 17 tables. The full schema is detailed in `data-model-proposal.md`; key tables summarized below.
+Key entities: Entry, EntryRevision, Tag/TagLabel, Asset, EntryRevisionSourceLink (provenance), and AI layer tables (AIRequest, AIResult, AIFeedback, UserAIContext). Entry stores current denormalized state; EntryRevision stores canonical history. History, tags, assets, and provenance all live at the revision level.
 
-### Entry
-
-| Field | Type | Notes |
-|-------|------|-------|
-| id | String (UUID) | Generated client-side |
-| title | String | Optional, can be blank |
-| body | String | Main text content |
-| entryDateStart | LocalDate | Start of calendar interval |
-| entryDateEnd | LocalDate | End of calendar interval (= start for single-day) |
-| eventStartAt | Instant? | Precise event time, if known |
-| eventEndAt | Instant? | Precise event end, if known |
-| originType | enum | USER_CREATED, IMPORTED, AI_SYNTHETIC |
-| source | enum | TEXT, VOICE, IMPORT |
-| status | enum | ACTIVE, ARCHIVED, MERGED, DELETED |
-| currentRevisionId | String? | Pointer to latest EntryRevision |
-| createdAt | Instant | When the record was created |
-| updatedAt | Instant | Last modification time |
-| isSynced | Boolean | Local-only sync flag |
-
-Validation: `entryDateStart <= entryDateEnd` enforced in domain model constructor.
-
-### EntryRevision
-
-Stores canonical historical content. Every meaningful change creates a new revision with a monotonic `revisionNumber` per entry. `createEntry` creates entry + initial revision atomically; `updateEntry` creates a new revision and updates the entry's denormalized fields.
-
-### Tags
-
-Tag identity is separate from display text. TagLabel stores primary label, synonyms, normalized forms, and locale. Each Tag has exactly one primary TagLabel (enforced at application level). Tags can be merged via `mergedIntoTagId`.
-
-### Assets
-
-Represent photos, videos, audio, links, files. Linked to entries via EntryAsset (denormalized current) and EntryRevisionAsset (canonical historical).
-
-### Provenance
-
-EntryRevisionSourceLink records what a revision was derived from (other revisions, AI results, assets, tags) with a `role` field (primary_source, context, supporting_evidence).
-
-### AI layer (Room only, Data Connect deferred)
-
-- AIRequest / AIResult — what was sent to the model and what came back
-- AIFeedback — user feedback on AI results
-- UserPreferences — explicit user settings
-- UserAIContext / UserAIContextVersion — accumulated AI memory over time
-- AIContextSnapshot — FK to UserAIContextVersion (not a full blob copy), recording exact context used per AI call
-
-### Repositories
-
-- **EntryRepository** — CRUD with revision tracking, sync
-- **TagRepository** — create tag with label, search by normalized text, add/remove from entries
-- **AssetRepository** — create assets, link/unlink from entries
-
-### Sync state
-
-Uses a simple `isSynced: Boolean` flag. `isSynced = false` means pending sync; `true` means synced. Will be expanded when multi-device sync or retry logic is added.
-
-### Entry (remote — Data Connect)
-
-Same fields as the local entry plus `uid` (Firebase Auth user ID) for row-level security. `isSynced` is local-only and not stored remotely. Core tables (Entry, EntryRevision, Tag, TagLabel, Asset, join tables, provenance) are deployed to Data Connect. AI layer tables are deferred to Phase 5.
+Repositories: EntryRepository (CRUD + revision tracking + sync), TagRepository, AssetRepository. Sync uses a simple `isSynced` boolean flag; remote entries add `uid` for row-level security.
 
 ---
 

@@ -1,358 +1,220 @@
-You are helping design the data model for an AI Diary product.
+# Data Model — AI Diary
 
-Please read the following model carefully and treat it as the current intended architecture, not as a random draft. Your task is to understand it, preserve its core principles, and then help refine / critique / extend it without collapsing its distinctions.
+## Core Principle
 
-## Product idea
+> **Entry is the current product object.
+> EntryRevision is the canonical historical truth.**
 
-This is a personal AI Diary / memory system.
+- The user sees and interacts with Entry
+- The system preserves real historical content in EntryRevision
+- Current state is denormalized back onto Entry for performance and simpler UI
 
-The product should support:
-- normal user-created diary entries
-- AI-generated synthetic entries (summaries, inferred episodes, life periods, clusters)
-- canonical history of edits and AI transformations
-- tags and assets
-- provenance / derivation tracking
-- long-lived user AI context
-- future AI learning / debugging / training workflows
-
-The key principle is:
-
-**Entry is the current product object.  
-EntryRevision is the canonical historical truth.**
-
-In other words:
-- the user sees and interacts with Entry
-- the system preserves the real historical content in EntryRevision
-- current state is denormalized back onto Entry for performance and simpler UI
+Room v2 has 17 tables. Firebase Data Connect mirrors core tables for cloud sync.
 
 ---
 
-## High-level model
+## 1. Entry
 
-### 1. Entry
-Entry is the main product object shown in lists and screens.
+Main product object shown in lists and screens. Stores the current snapshot.
 
-It stores the current snapshot:
-- current primary text / title
-- current date interval
-- current tags/assets
-- pointer to current revision
+| Field | Type | Notes |
+|-------|------|-------|
+| id | String (UUID) | Generated client-side |
+| title | String | Optional, can be blank |
+| body | String | Main text content |
+| entryDateStart | LocalDate | Start of calendar interval |
+| entryDateEnd | LocalDate | End of calendar interval (= start for single-day) |
+| eventStartAt | Instant? | Precise event time, if known |
+| eventEndAt | Instant? | Precise event end, if known |
+| originType | enum | USER_CREATED, IMPORTED, AI_SYNTHETIC |
+| source | enum | TEXT, VOICE, IMPORT |
+| status | enum | ACTIVE, ARCHIVED, MERGED, DELETED |
+| currentRevisionId | String? | Pointer to latest EntryRevision |
+| createdAt | Instant | When the record was created |
+| updatedAt | Instant | Last modification time |
+| isSynced | Boolean | Local-only sync flag |
 
-Entry can be:
-- user-created
-- imported
-- AI-synthetic
+Validation: `entryDateStart <= entryDateEnd` enforced in domain model constructor.
 
-Synthetic entries are **not** a separate table.
-They are normal Entry records with:
-- `originType = ai_synthetic`
-
-This is important because synthetic objects should:
-- appear in the same lists as normal entries
-- be filterable like entries
-- have their own revisions
-- be further processed by AI
-- behave like first-class product objects
+Entry can be user-created, imported, or AI-synthetic. Synthetic entries are not a separate table — they are normal Entry records with `originType = AI_SYNTHETIC`. This ensures synthetic objects appear in the same lists, are filterable, have their own revisions, and behave as first-class product objects.
 
 ---
 
-### 2. EntryRevision
-EntryRevision stores canonical historical content.
+## 2. EntryRevision
 
-This is the source of truth for:
-- text/title
-- date interval
-- event timestamps
-- revision metadata
-- historical tag and asset relations
-- provenance / derivation
+Stores canonical historical content. Every meaningful content change creates a new revision with a monotonic `revisionNumber` per entry.
 
-The model assumes:
-- every meaningful content change creates a new EntryRevision
-- Entry stores the current denormalized state
-- historical reconstruction should come from revisions, not from current Entry only
+- `createEntry` creates Entry + initial EntryRevision atomically
+- `updateEntry` creates a new revision and updates the Entry's denormalized fields
+
+EntryRevision is the source of truth for: text/title, date interval, event timestamps, revision metadata, historical tag and asset relations, provenance/derivation.
 
 ---
 
-### 3. Date handling
-The model uses:
+## 3. Date Handling
 
-- `entryDateStart`
-- `entryDateEnd`
+Two levels of date:
 
-Both are required and represent an inclusive calendar interval.
+- **entryDateStart / entryDateEnd** — inclusive calendar interval where the entry belongs. Both required. For single-day entries: `entryDateStart = entryDateEnd`.
+- **eventStartAt / eventEndAt** — precise event timestamps, if known. Optional.
 
-For a single-day entry:
-- `entryDateStart = entryDateEnd`
-
-This is preferred over a nullable end date.
-
-Exact event timestamps are separate:
-- `eventStartAt`
-- `eventEndAt`
-
-Important distinction:
-- entryDateStart / entryDateEnd = calendar span where the entry belongs
-- eventStartAt / eventEndAt = more precise event time, if known
-
-Canonical dates live in EntryRevision.
-Current dates are denormalized into Entry.
+Canonical dates live in EntryRevision. Current dates are denormalized into Entry.
 
 ---
 
-### 4. Tags
-Tags are separate objects.
+## 4. Tags
 
-A Tag itself does **not** directly store a single name field.
-Instead, text forms are stored in a separate label/synonym table.
+Tag identity is separate from display text.
 
-#### Tag
-Stores:
-- identity
-- owner
-- optional type
-- source
-- createdAt / updatedAt
+### Tag
 
-`type` is optional, not required.
-A tag may simply be a generic user tag.
+| Field | Notes |
+|-------|-------|
+| id | Identity |
+| userId | Owner |
+| type | Optional: topic, mood, activity, person_like, place_like |
+| source | How the tag was created |
+| mergedIntoTagId | For tag merging |
+| createdAt / updatedAt | Timestamps |
 
-Possible tag types later may include:
-- topic
-- mood
-- activity
-- person_like
-- place_like
+A tag may be a generic user tag without a type.
 
-But the model must not require every tag to have a type.
+### TagLabel
 
-#### TagLabel
-Stores:
-- tagId
-- text
-- normalizedText
-- isPrimary
-- locale
-- source
-- createdAt / updatedAt
+| Field | Notes |
+|-------|-------|
+| tagId | FK to Tag |
+| text | Display text |
+| normalizedText | For search/matching |
+| isPrimary | One primary label per tag |
+| locale | Language |
+| source | How the label was created |
+| createdAt / updatedAt | Timestamps |
 
-This table is used for:
-- primary display label
-- synonyms
-- alternative spellings
-- normalization
-- future merge / search / alias handling
+Used for: primary display label, synonyms, alternative spellings, normalization, merge/search/alias handling.
 
-Rule:
-- each Tag should have exactly one primary TagLabel
+Rule: each Tag must have exactly one primary TagLabel (enforced at application level).
 
 ---
 
-### 5. Tag relations
-Tag relations exist on two levels:
+## 5. Tag Relations
 
-#### EntryRevisionTag
-Canonical historical relation between a revision and a tag.
+Two levels, mirroring the Entry/EntryRevision split:
 
-#### EntryTag
-Current denormalized relation between an entry and a tag.
-
-This is intentional.
-
-The model assumes:
-- the real historical state belongs to EntryRevision
-- the fast current state belongs to Entry
+- **EntryRevisionTag** — canonical historical relation between a revision and a tag
+- **EntryTag** — current denormalized relation between an entry and a tag
 
 ---
 
-### 6. Assets
-Assets represent:
-- photo
-- video
-- audio
-- link
-- file
+## 6. Assets
 
-Assets also exist on two levels:
+Represent external content attached to an entry: photo, video, audio, link, file.
 
-#### EntryRevisionAsset
-Canonical historical relation to a revision.
+### Asset
 
-#### EntryAsset
-Current denormalized relation to an entry.
+| Field | Notes |
+|-------|-------|
+| id | Identity |
+| userId | Owner |
+| type | photo, video, audio, link, file |
+| storageUrl | Reference to stored file |
+| mimeType | Content type |
+| originalFilename | Original name |
+| sizeBytes | File size |
+| createdAt / updatedAt | Timestamps |
 
-This mirrors the text/tag model:
-- history on revision level
-- current snapshot on entry level
+Asset does not store the file — it stores a reference. Supported storage types (future): firebase_storage, google_drive_user, external_url.
 
----
+### Asset Relations
 
-### 7. Provenance / derivation
-The model includes:
+Two levels:
 
-#### EntryRevisionSourceLink
-
-This is used to record what a revision was derived from.
-
-This is especially important for synthetic entries and AI-generated revisions.
-
-A revision may be derived from:
-- other EntryRevisions
-- AI results
-- assets
-- tags
-- synthetic entries
-
-This layer should make it possible to answer:
-- what evidence was used
-- what this synthetic object was built from
-- which earlier records contributed to this result
-
-This is a provenance layer, not just a simple many-to-many link.
+- **EntryRevisionAsset** — canonical historical relation to a revision
+- **EntryAsset** — current denormalized relation to an entry
 
 ---
 
-### 8. AI layer
-AI processing is explicitly split into request and result.
+## 7. Provenance / Derivation
 
-#### AIRequest
-Represents what was sent to the model.
+### EntryRevisionSourceLink
 
-It should store:
-- request type
-- model name
-- prompt version
-- input payload
-- context snapshot used
-- timestamps
+Records what a revision was derived from. Especially important for synthetic entries and AI-generated revisions.
 
-This separation is important for:
-- debugging
-- training
-- reproducibility
-- prompt iteration
-- understanding what the model actually received
+A revision may be derived from: other EntryRevisions, AI results, assets, tags, synthetic entries.
 
-#### AIResult
-Represents what came back from the model.
+Fields include a `role` (primary_source, context, supporting_evidence) to describe the relationship.
 
-It should store:
-- request reference
-- output payload
-- status
-- timestamps
-
-#### AIFeedback
-Stores user feedback on AIResult.
-
-Important principle:
-- feedback should attach to the AI result, not to the entry in general
+This is a provenance layer — it answers: what evidence was used, what this synthetic object was built from, which earlier records contributed.
 
 ---
 
-### 9. User AI memory
-The product distinguishes between explicit preferences and accumulated AI context.
+## 8. AI Layer
 
-#### UserPreferences
-Explicit user-configured settings.
+In Room locally. Data Connect deployment deferred to Phase 5.
 
-Examples:
-- summary style
-- AI aggressiveness
-- whether AI suggestions are shown
+### AIRequest
 
-#### UserAIContext
-Current accumulated AI memory/profile of the user.
+What was sent to the model: request type, model name, prompt version, input payload, context snapshot used, timestamps.
 
-This is not just UI settings.
-It is the long-lived AI-oriented context built over time.
+### AIResult
 
-It may include:
-- learned stylistic preferences
-- recurring entities
-- preferred cleanup behavior
-- patterns in accepted/rejected suggestions
-- rendered summary for LLM use
-- structured signals
+What came back: request reference, output payload, status, timestamps.
 
-#### UserAIContextVersion
-History of UserAIContext over time.
+### AIFeedback
 
-This exists because the evolution of the user AI profile matters independently from individual AI calls.
+User feedback on a specific AIResult (not on the entry in general).
 
-#### AIContextSnapshot
-Snapshot of the exact AI context actually used in one AI request.
+---
 
-This is important because:
-- current UserAIContext may later change
-- but the system should still know what context was actually sent during a specific AI request
+## 9. User AI Memory
 
-Important distinction:
+### UserPreferences
+
+Explicit user-configured settings: summary style, AI aggressiveness, whether AI suggestions are shown.
+
+### UserAIContext
+
+Current accumulated AI memory/profile of the user. Long-lived, built over time. May include: learned stylistic preferences, recurring entities, preferred cleanup behavior, patterns in accepted/rejected suggestions, rendered summary for LLM use, structured signals.
+
+### UserAIContextVersion
+
+History of UserAIContext over time. The evolution of the user AI profile matters independently from individual AI calls.
+
+### AIContextSnapshot
+
+FK to UserAIContextVersion (not a full blob copy). Records the exact AI context used in one specific AI request.
+
+Distinction:
 - UserAIContext = current long-lived accumulated profile
 - UserAIContextVersion = history of that profile
 - AIContextSnapshot = exact snapshot used in one specific AI call
 
 ---
 
-## Core structural principles to preserve
+## 10. Repositories
 
-Please preserve these principles in any refinement:
-
-1. **Entry and EntryRevision must remain distinct**
-    - Entry = current product object
-    - EntryRevision = canonical history
-
-2. **History belongs on revision level**
-    - text history
-    - canonical dates
-    - canonical tag relations
-    - canonical asset relations
-    - provenance
-
-3. **Current state may be denormalized onto Entry**
-    - current text
-    - current date interval
-    - current tags
-    - current assets
-
-4. **Synthetic entries are first-class entries**
-    - not just hidden AI artifacts
-    - not just temporary clustering objects
-    - not just tags
-
-5. **AIRequest and AIResult are separate**
-    - request = what was sent
-    - result = what came back
-
-6. **User AI memory is separate from simple settings**
-    - UserPreferences != UserAIContext
-
-7. **Tag labels / synonyms are modeled explicitly**
-    - do not collapse them back into a single name field unless you have a strong reason
+- **EntryRepository** — CRUD with revision tracking, sync
+- **TagRepository** — create tag with label, search by normalized text, add/remove from entries
+- **AssetRepository** — create assets, link/unlink from entries
 
 ---
 
-## What I want from you
+## 11. Sync
 
-Please do the following:
+- `isSynced: Boolean` — `false` means pending sync, `true` means synced
+- Remote Entry has the same fields plus `uid` (Firebase Auth user ID) for row-level security
+- `isSynced` is local-only, not stored remotely
+- Core tables deployed to Data Connect; AI layer tables deferred to Phase 5
+- Will be expanded when multi-device sync or retry logic is added
 
-1. Summarize this model in your own words.
-2. Identify its strongest architectural choices.
-3. Identify possible weak points / complexity risks.
-4. Suggest improvements, but only if they preserve the core principles above.
-5. If relevant, propose:
-    - database schema refinements
-    - naming improvements
-    - indexing ideas
-    - lifecycle rules
-    - validation rules
-    - migration concerns
-6. Explicitly say if you think any table is unnecessary or missing.
-7. Be careful not to oversimplify away the historical model.
+---
 
-When analyzing this model, prioritize:
-- conceptual clarity
-- future extensibility
-- support for AI workflows
-- support for provenance
-- support for synthetic entries as first-class objects
+## 12. Structural Principles
+
+1. **Entry and EntryRevision must remain distinct** — Entry = current product object, EntryRevision = canonical history
+2. **History belongs on revision level** — text, dates, tags, assets, provenance
+3. **Current state may be denormalized onto Entry** — text, dates, tags, assets
+4. **Synthetic entries are first-class entries** — not hidden artifacts
+5. **AIRequest and AIResult are separate** — request = what was sent, result = what came back
+6. **User AI memory is separate from settings** — UserPreferences != UserAIContext
+7. **Tag labels/synonyms are modeled explicitly** — not collapsed into a single name field

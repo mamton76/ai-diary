@@ -57,50 +57,15 @@ Enable fast daily capture with reliable local storage and basic cloud sync.
 
 ## 4. Core Concepts
 
-### Entry
+The data model is described in detail in [data-model-proposal.md](data-model-proposal.md). Key entities:
 
-Represents a diary record stored locally and synced to the cloud. Full architecture in `data-model-proposal.md`.
+- **Entry** — main diary record (text, dates, status, origin type). Stores current denormalized state.
+- **EntryRevision** — canonical historical content. Every meaningful change creates a new revision.
+- **Tag / TagLabel** — tags with separate identity and display text (labels, synonyms, normalization).
+- **Asset** — external content (photo, video, audio, link, file) attached to entries.
+- **AI layer** — AIRequest, AIResult, AIFeedback, UserAIContext (Phase 5).
 
-Fields:
-
-- id — UUID, generated client-side
-- title — optional, can be blank
-- body — main text content
-- entryDateStart / entryDateEnd — inclusive calendar interval (same value for single-day entries)
-- eventStartAt / eventEndAt — optional precise event timestamps
-- originType — USER_CREATED (default), IMPORTED, AI_SYNTHETIC
-- source — TEXT (MVP), VOICE / IMPORT (future)
-- status — ACTIVE, ARCHIVED, MERGED, DELETED
-- currentRevisionId — pointer to the latest EntryRevision
-- createdAt — when the record was created
-- updatedAt — last modification time
-- isSynced — local-only flag for sync status
-
-Validation: entryDateStart must be <= entryDateEnd.
-
-### EntryRevision
-
-Every meaningful content change creates a new EntryRevision with a monotonic `revisionNumber`. Entry stores the current denormalized state; EntryRevision stores the canonical history.
-
-### Tag + TagLabel
-
-Tags are separate from their display text. TagLabel supports primary label, synonyms, normalization, and locale. Tags can optionally have a type (topic, mood, activity, person_like, place_like) and can be merged.
-
-### Asset
-
-Represents external content attached to an entry: photo, video, audio, link, file.
-
-Fields: id, userId, type, storageUrl, mimeType, originalFilename, sizeBytes, timestamps.
-
-### Relations
-
-- Entry → Tags (via EntryTag, denormalized; via EntryRevisionTag, canonical)
-- Entry → Assets (via EntryAsset, denormalized; via EntryRevisionAsset, canonical)
-- EntryRevision → source provenance (via EntryRevisionSourceLink)
-
-### AI layer (future use)
-
-Tables exist in Room for: AIRequest, AIResult, AIFeedback, UserPreferences, UserAIContext, UserAIContextVersion, AIContextSnapshot. These will be used when the AI pipeline is introduced in Phase 5.
+Core principle: Entry is the current product object; EntryRevision is the canonical historical truth.
 
 ---
 
