@@ -59,13 +59,14 @@ Enable fast daily capture with reliable local storage and basic cloud sync.
 
 The data model is described in detail in [data-model-proposal.md](data-model-proposal.md). Key entities:
 
-- **Entry** — main diary record (text, dates, status, origin type). Stores current denormalized state.
-- **EntryRevision** — canonical historical content. Every meaningful change creates a new revision.
-- **Tag / TagLabel** — tags with separate identity and display text (labels, synonyms, normalization).
+- **Entry** — main diary record (text, dates, origin type). Lifecycle status: DRAFT, ACTIVE, ARCHIVED, DELETED. Stores current denormalized state. All entries are user-scoped via `userId`.
+- **EntryRevision** — canonical historical content. Every meaningful change creates a new revision. Tracks AI processing status (`aiStatus`) independently from the entry lifecycle.
+- **Tag / TagLabel** — tags with separate identity and display text (labels, synonyms, normalization). Tags have a lifecycle state (ACTIVE, HIDDEN, BLOCKED, CANDIDATE, MERGED) and may be user-created or AI-generated.
 - **Asset** — external content (photo, video, audio, link, file) attached to entries.
-- **AI layer** — AIRequest, AIResult, AIFeedback, UserAIContext (Phase 5).
+- **AI layer** — AIRequest (what was sent), AIResult (what came back, with its own review status), AIFeedback (explicit + implicit), UserAIContext (Phase 5).
+- **Provenance** — EntryRevisionSourceLink records what each revision was derived from and why.
 
-Core principle: Entry is the current product object; EntryRevision is the canonical historical truth.
+Core principle: Entry is the current product object; EntryRevision is the canonical historical truth. Status fields live where they belong — entry lifecycle on Entry, AI processing on EntryRevision, review outcome on AIResult.
 
 ---
 
@@ -116,10 +117,13 @@ AI will:
 - clean text
 - extract topics
 - detect structure (tasks, events, reflections)
+- generate synthetic entries (summaries, episode narratives, life period overviews)
+- propose candidate grouping tags for emerging clusters
 
 Important:
-- original body text is always preserved
+- original body text is always preserved in EntryRevision history
 - AI output is optional and replaceable
+- AI processing status and user review status are tracked separately (see [data-model-proposal.md](data-model-proposal.md))
 
 ---
 
@@ -173,7 +177,9 @@ Layers:
 
 ### Phase 5
 - AI pipeline: cleaning, summarization, tagging (AI tables ready in Room)
-- Synthetic entries (originType = AI_SYNTHETIC)
+- Synthetic entries (originType = AI_SYNTHETIC) and candidate grouping tags
+- AI processing flow: AIRequest → AIResult → user review → AIFeedback
+- Wire AI layer tables to Data Connect
 
 ### Phase 6
 - ZoomAlboom integration (spatial canvas, frames, navigation)

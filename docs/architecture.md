@@ -96,24 +96,32 @@ com.mamton.aidiary/
 
 Firebase Data Connect stores structured relational data in the cloud:
 
-- Entry (synced, with entryDateStart/End, originType, status, currentRevisionId)
-- EntryRevision, Tag, TagLabel, EntryRevisionTag, EntryTag (deployed)
-- Asset, EntryRevisionAsset, EntryAsset, EntryRevisionSourceLink (deployed)
-- AI layer tables (AIRequest, AIResult, etc. — in Room locally, Data Connect deferred to Phase 5)
+- Entry (synced, with userId, entryDateStart/End, originType, status, currentRevisionId)
+- EntryRevision (synced, with userId, aiStatus), Tag (with userId, state), TagLabel, EntryRevisionTag, EntryTag (deployed)
+- Asset (with userId), EntryRevisionAsset, EntryAsset, EntryRevisionSourceLink (deployed)
+- AI layer tables (AIRequest, AIResult, AIFeedback, UserAIContext — in Room locally, Data Connect deferred to Phase 5)
 
-The client never reads directly from Data Connect for UI rendering. Data Connect is a sync target — data flows through Room.
+All synced tables carry `userId` for row-level security. The client never reads directly from Data Connect for UI rendering. Data Connect is a sync target — data flows through Room.
 
 ---
 
 ## 8. Data model
 
-The full data model is described in [data-model-proposal.md](data-model-proposal.md). Room v2 has 17 tables; Firebase Data Connect mirrors core tables for cloud sync.
+The full data model is described in [data-model-proposal.md](data-model-proposal.md). Room v2 has 17+ tables; Firebase Data Connect mirrors core tables for cloud sync.
 
 > **Entry is the current product object. EntryRevision is the canonical historical truth.**
 
 Key entities: Entry, EntryRevision, Tag/TagLabel, Asset, EntryRevisionSourceLink (provenance), and AI layer tables (AIRequest, AIResult, AIFeedback, UserAIContext). Entry stores current denormalized state; EntryRevision stores canonical history. History, tags, assets, and provenance all live at the revision level.
 
-Repositories: EntryRepository (CRUD + revision tracking + sync), TagRepository, AssetRepository. Sync uses a simple `isSynced` boolean flag; remote entries add `uid` for row-level security.
+All user-owned data is scoped by `userId` (Firebase Auth UID). Root entities carry `userId` directly; child entities that are queried independently denormalize it from their parent.
+
+Status fields are separated by concern:
+- `Entry.status` — lifecycle (DRAFT, ACTIVE, ARCHIVED, DELETED)
+- `EntryRevision.aiStatus` — AI processing (NOT_REQUESTED, QUEUED, PROCESSING, SUCCEEDED, FAILED, STALE)
+- `AIResult.aiReviewStatus` — user review (NOT_NEEDED, PENDING_REVIEW, ACCEPTED, REJECTED, PARTIALLY_ACCEPTED)
+- `Tag.state` — tag lifecycle (ACTIVE, HIDDEN, BLOCKED, CANDIDATE, MERGED)
+
+Repositories: EntryRepository (CRUD + revision tracking + sync), TagRepository, AssetRepository. Sync uses a simple `isSynced` boolean flag.
 
 ---
 
@@ -145,10 +153,12 @@ Optional: backups, exports, long-term storage, user-owned originals.
 
 ## 10. Auth and security
 
-- All data is user-scoped
+- All data is user-scoped via `userId` (Firebase Auth UID) on every user-owned table
 - Firebase Auth (Google Sign-In)
 - No cross-user access
-- Data Connect queries filtered by `uid`
+- Data Connect queries filtered by `userId`
+- Root entities (Entry, Tag, Asset, AIRequest, UserPreferences, UserAIContext) carry `userId` directly
+- Child entities queried independently (EntryRevision, AIResult, AIFeedback) denormalize `userId` from their parent
 
 ---
 
@@ -177,19 +187,19 @@ These are future enhancements. MVP sync is simple and pragmatic: sync on app sta
 ## 12. Data operations
 
 Mutations:
-- createEntry (write Entry + initial EntryRevision to Room, push to Data Connect in background)
+- createEntry (write Entry with status=DRAFT or ACTIVE + initial EntryRevision with aiStatus=NOT_REQUESTED to Room, push to Data Connect in background)
 - updateEntry (create new EntryRevision, update Entry denormalized fields, push to Data Connect)
 - syncEntries (bidirectional: pull remote → upsert local, push unsynced → remote)
-- createTag (create Tag + primary TagLabel)
+- createTag (create Tag with state=ACTIVE + primary TagLabel)
 - addTagToEntry / removeTagFromEntry
 - createAsset, addAssetToEntry / removeAssetFromEntry
 
 Queries:
-- listEntries (from Room, sorted by entryDateStart DESC, excludes DELETED)
+- listEntries (from Room, sorted by entryDateStart DESC, filtered by userId, excludes DELETED)
 - listEntries by date range, status, originType
-- getEntry (from Room by id)
+- getEntry (from Room by id, scoped to userId)
 - getRevisions (all revisions for an entry, ordered by revisionNumber)
-- searchTags (by normalized text)
+- searchTags (by normalized text, scoped to userId)
 - listEntriesByUser (from Data Connect, for sync)
 
 ---
@@ -210,8 +220,11 @@ Out of scope for MVP.
 - transcription (voice → text)
 - cleaning (body → cleanedText)
 - summarization
-- tagging
+- tagging (including AI-proposed candidate tags)
+- synthetic entry generation (summaries, episodes, life periods)
 - album preparation (ZoomAlboom export)
+
+AI processing follows the flow described in [data-model-proposal.md](data-model-proposal.md): AIRequest → EntryRevision.aiStatus transitions → AIResult with review status → user review → new EntryRevision if accepted → AIFeedback (explicit + implicit).
 
 ---
 
@@ -253,7 +266,9 @@ Phase 4 — Media and assets:
 
 Phase 5 — AI enrichment:
 - AI pipeline (cleaning, summarization, tagging)
-- Synthetic entries (originType = AI_SYNTHETIC)
+- Synthetic entries (originType = AI_SYNTHETIC) and candidate grouping tags (Tag.state = CANDIDATE)
+- AI processing flow: EntryRevision.aiStatus tracking, AIResult.aiReviewStatus for user review
+- AIFeedback capture (explicit + implicit behavioral feedback)
 - Wire AIRequest/AIResult/AIFeedback + UserAIContext to Data Connect
 
 Phase 6 — ZoomAlboom integration:

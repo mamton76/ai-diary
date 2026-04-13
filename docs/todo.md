@@ -52,11 +52,27 @@
 - [x] Data Connect SDK regenerated, EntryRemoteDataSource updated for new fields
 - [x] Data migration: existing remote entries migrated from `entry_date` → `entry_date_start`/`entry_date_end`
 
+## Phase 2.6: Data Model Refinement (pending)
+- [ ] Entry.status: update enum to DRAFT, ACTIVE, ARCHIVED, DELETED (remove MERGED)
+- [ ] Add `userId` to Entry, EntryRevision, AIRequest, AIResult, AIFeedback, UserPreferences, UserAIContext
+- [ ] Add `EntryRevision.aiStatus` field (NOT_REQUESTED, QUEUED, PROCESSING, SUCCEEDED, FAILED, STALE)
+- [ ] Add `AIResult.aiReviewStatus` field (NOT_NEEDED, PENDING_REVIEW, ACCEPTED, REJECTED, PARTIALLY_ACCEPTED)
+- [ ] Add `Tag.state` field (ACTIVE, HIDDEN, BLOCKED, CANDIDATE, MERGED)
+- [ ] Update EntryRevisionTag: add `source`, `sourceAiResultId?`, `createdAt`, `removedAt?`
+- [ ] Update EntryRevisionSourceLink: rename `role` → `sourceRole` (INPUT, EVIDENCE, CONTEXT, TRIGGER)
+- [ ] Add `AIFeedback.feedbackType` (explicit, implicit)
+- [ ] Update Room schema version, write migration
+- [ ] Update Data Connect schema for synced tables
+- [ ] Regenerate Data Connect SDK, update EntryRemoteDataSource
+- [ ] Update domain models, enums, mappers
+
 ## Phase 3: Edit, Delete, Polish
 - [ ] Edit existing entries (repository supports it; wire to UI)
 - [ ] Delete entries (soft delete via `status = DELETED`, local + remote sync)
+- [ ] Entry draft flow (`status = DRAFT` → `ACTIVE` on save)
+- [ ] Archive entries (`status = ARCHIVED`, hidden from default list)
 - [ ] Time picker UI for eventStartAt/eventEndAt
-- [ ] Basic search / filter entries
+- [ ] Basic search / filter entries (by status, originType, date range, userId-scoped)
 - [ ] Better date formatting (relative: "Today", "Yesterday")
 - [ ] Empty state improvements
 - [ ] Loading skeleton / shimmer
@@ -72,13 +88,18 @@
 ## Phase 5: AI Enrichment
 - [ ] Research: text processing libraries (tokenization, cleaning, spell correction) — OpenNLP, LanguageTool, on-device vs server-side LLM
 - [ ] AI Agent implementation (see [agent-idea.md](agent-idea.md) — hybrid model: deterministic pipeline + LLM decisions)
+- [ ] AI processing flow: AIRequest → EntryRevision.aiStatus transitions → AIResult → user review
 - [ ] AI pipeline: text cleaning (body → cleanedText)
 - [ ] AI pipeline: summarization
 - [ ] AI pipeline: tagging and topic extraction (use TagRepository)
-- [ ] Synthetic entries (`originType = AI_SYNTHETIC`) — summaries, inferred episodes
+- [ ] Candidate grouping tags (`Tag.state = CANDIDATE`) — AI-discovered clusters before full synthesis
+- [ ] Synthetic entries (`originType = AI_SYNTHETIC`) — summaries, inferred episodes, life periods
+- [ ] Provenance tracking for all AI-derived content (EntryRevisionSourceLink with sourceRole)
+- [ ] User review flow: AIResult.aiReviewStatus (ACCEPTED / REJECTED / PARTIALLY_ACCEPTED → new EntryRevision)
+- [ ] AIFeedback capture: explicit ratings + implicit behavioral feedback (which changes survived, what user edited)
 - [ ] Display AI-generated content alongside original
 - [ ] Auto-generate text entry from media (media → signals → draft → user confirmation)
-- [ ] Wire AIRequest/AIResult/AIFeedback tables (already in Room, add Data Connect sync)
+- [ ] Wire AIRequest/AIResult/AIFeedback tables to Data Connect (add userId scoping)
 - [ ] Wire UserAIContext/UserAIContextVersion for accumulated AI memory
 - [ ] AIContextSnapshot used to record exact context per AI call
 
