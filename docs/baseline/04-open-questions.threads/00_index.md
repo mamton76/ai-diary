@@ -11,7 +11,7 @@
 
 | № | ID | Вопрос | Статус | Чей ход | Тред | Куда переносим решение |
 |---|---|---|---|---|---|---|
-| 1 | PQ-001 | Что считается canonical source of truth? | обсуждаем | совместное обсуждение | [тред](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 1 | PQ-001 | Что считается canonical source of truth? | решён | — | [тред](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Структура узла
 
