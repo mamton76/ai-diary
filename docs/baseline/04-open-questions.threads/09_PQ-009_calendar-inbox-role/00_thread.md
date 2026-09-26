@@ -1,10 +1,10 @@
 # PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
 
 **Источник:** [04-open-questions.md / PQ-009](../../04-open-questions.md#pq-009--нужен-ли-calendar-inbox-как-постоянная-production-feature)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -31,10 +31,10 @@ Google Calendar inbox — временный мост для voice capture ил�
 
 ### Сводка 2 — отдельно от inbox существует timeline projection
 
-Пользователь отдельно поднял вопрос о публикации обновлений/ревизий готовых записей в Calendar.
+Пользователь уточнил: речь не о публикации revision history отдельными Calendar events. Для одной diary entry должен существовать один Calendar event; при появлении новой committed revision этого entry существующий event обновляется до текущего состояния.
 
-Текущий historical projection уже предполагает one-entry -> one-calendar-event mapping и обновление существующего event при изменении entry. Это покрывает публикацию текущего committed состояния записи.
+Это соответствует уже описанному historical projection workflow: one-entry -> one-calendar-event mapping с update существующего event при изменении entry.
 
-Отдельно не решено, нужно ли публиковать/показывать revision history в Calendar как отдельные события/версии или только отображать current state. Это вынесено в future question.
+Pending proposals в Calendar не публикуются, потому что они ещё не committed состоянием diary entry.
 
-**Решение:** —
+**Решение:** [принято] (2026-09-27) Google Calendar остаётся optional production transport/adapter для capture, а не core dependency и не обязательно временный hack. Отдельно Calendar timeline остаётся derived one-way projection: одна diary entry соответствует одному Calendar event, который обновляется при новых committed revisions/current-state changes; отдельные events на каждую revision не создаются.
