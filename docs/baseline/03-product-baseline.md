@@ -333,7 +333,9 @@ AI должен:
 - восстановить систему из canonical data;
 - мигрировать на другой storage backend без полной потери смысла.
 
-Отсюда текущее сильное направление — file-based representation и user-owned storage.
+Отсюда следует принятое продуктовое правило: **user-owned portable files являются canonical source of truth**.
+
+Operational DB, search index, cache и другие ускоряющие/служебные слои допустимы, но должны быть rebuildable из canonical files и не должны содержать единственную копию существенных diary data.
 
 ### 11.1 Google Drive
 
