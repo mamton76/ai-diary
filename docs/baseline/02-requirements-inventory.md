@@ -487,6 +487,25 @@ Workflow, prompt, provider/model, входы, выходы, time, validation; п
 Старые модели уже различали explicit preferences и learned context. Точная реализация позже.
 
 ### AI-014 — Provider не должен знать структуру Google Drive
+
+### AI-015 — Pending AI proposals должны быть first-class state
+
+Для AI-изменений существующей entry результат до принятия пользователя является proposal, а не committed revision.
+
+Proposal должен:
+
+- переживать reload/session;
+- иметь target/scope/base revision или эквивалентное base state;
+- поддерживать Accept/Reject и supersede;
+- становиться stale/conflicted при несовместимом изменении base state;
+- не попадать в обычную revision history до Accept/Apply.
+
+Несколько proposals могут существовать параллельно, если их scopes не конфликтуют.
+
+### AI-016 — Auto-apply policy определяется per workflow/type of change
+
+Первая normalized entry может создаваться автоматически при сохранённом raw и явной uncertainty. Existing tags могут auto-apply при высокой уверенности; новые tags по умолчанию предлагаются. Точные confidence thresholds и policy для будущих metadata не являются blocking requirement для MVP.
+
 **Статус:** ПОДТВЕРЖДЕНО  
 Context building и storage access выполняются внутри приложения/backend.
 
