@@ -469,15 +469,11 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-001 — Identity model
 
+**Статус:** решён  
 **Обсуждение:** [AQ-AUTH-001 thread](04-open-questions.threads/12_AQ-AUTH-001_identity-model/00_thread.md)
 
-Google account — естественный first path.
+**Решение:** AI Diary использует собственный stable internal user/account ID, независимый от конкретного login provider. Google — первый login method для MVP, но external identities должны привязываться к internal user отдельно, чтобы позже можно было добавить другие способы входа без миграции основной user model. Конкретный auth service/framework сейчас не фиксируется и выбирается вместе с backend/hosting.
 
-Нужно решить, использовать ли:
-
-- Firebase Auth;
-- direct Google OIDC/OAuth;
-- другой auth middleware.
 
 ## AQ-AUTH-002 — Drive/Calendar OAuth
 
