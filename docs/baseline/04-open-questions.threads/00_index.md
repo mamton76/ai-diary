@@ -21,7 +21,7 @@
 | 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 8 | PQ-007 | Sharing входит в обозримый MVP? | решён | ✅ resolved | none | — | [📁](08_PQ-007_sharing-mvp/) | [00_thread.md](08_PQ-007_sharing-mvp/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / 06-future-questions.md |
 
-| 9 | PQ-009 | Нужен ли Calendar inbox как постоянная production feature? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](09_PQ-009_calendar-inbox-role/) | [00_thread.md](09_PQ-009_calendar-inbox-role/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 9 | PQ-009 | Нужен ли Calendar inbox как постоянная production feature? | решён | ✅ resolved | none | — | [📁](09_PQ-009_calendar-inbox-role/) | [00_thread.md](09_PQ-009_calendar-inbox-role/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
 
