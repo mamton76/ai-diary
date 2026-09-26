@@ -632,12 +632,14 @@ Hosting, storage, LLM usage, logs/egress не должны неожиданно 
 # Q. Sharing
 
 ### SHARE-001 — Selective sharing потенциально полезен
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
+**Статус:** FUTURE / PARKED  
 Market/PRD материалы связывали sharing с retention и семейными сценариями.
 
 ### SHARE-002 — Sharing обязателен для ближайшего MVP
-**Статус:** ОТКРЫТО/СКОРЕЕ НЕТ  
-Нужна явная приоритизация позже.
+**Статус:** НЕТ  
+Selective sharing не входит в обозримый MVP и не должен сейчас определять auth/data model. Возвращаемся к access/sharing requirements только при появлении реального near-term use case.
+
+См. `06-future-questions.md / FQ-SHARING-001`.
 
 ---
 
