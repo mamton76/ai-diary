@@ -469,6 +469,8 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-001 — Identity model
 
+**Обсуждение:** [AQ-AUTH-001 thread](04-open-questions.threads/12_AQ-AUTH-001_identity-model/00_thread.md)
+
 Google account — естественный first path.
 
 Нужно решить, использовать ли:
