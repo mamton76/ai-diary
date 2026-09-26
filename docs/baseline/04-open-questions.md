@@ -66,7 +66,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
-**Обсуждение:** [PQ-004 thread](04-open-questions.threads/03_PQ-004_raw-revisions-ux/00_thread.md)
+**Обсуждение:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)
 
 Продукт требует их сохранять. UX может:
 
