@@ -14,13 +14,12 @@
 |---:|---|---|---|---|---|---|---|---|---|
 | 1 | PQ-001 | Что считается canonical source of truth? | решён | ✅ resolved | — | — | [📁](01_PQ-001_source-of-truth/) | [00_thread.md](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 2 | PQ-003 | Какой minimum viable web? | решён | ✅ resolved | — | — | [📁](02_PQ-003_minimum-viable-web/) | [00_thread.md](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-| 3 | PQ-002 | Насколько обязателен full offline-first? | обсуждаем | 🔒 in discussion* | active* | другой ChatGPT conversation* | [📁](03_PQ-002_offline-first/) | [00_thread.md](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 3 | PQ-002 | Насколько обязателен full offline-first? | решён | ✅ resolved | none | — | [📁](03_PQ-002_offline-first/) | [00_thread.md](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | решён | ✅ completed | released | — | [📁](04_PQ-004_raw-revisions-ux/) | [00_thread.md](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 5 | PQ-005 | Насколько AI автоматичен? | отложен | 🟢 open | none | — | [📁](05_PQ-005_ai-automation-policy/) | [00_thread.md](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 4.1 | AQ-DATA-010 | Как хранить autosave / working state editing session? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](04_1_AQ-DATA-010_autosave-working-state/) | [00_thread.md](04_1_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 | 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | отложен | 🟢 open | none | — | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-\* У PQ-002 старый thread ещё не содержит lifecycle/claim metadata. В таблице состояние отражено по фактическому текущему использованию: вопрос обсуждается в другом ChatGPT-чате. При следующем сохранении этого треда metadata нужно привести к текущему формату skill.
 
 ## Быстрая легенда lifecycle
 
