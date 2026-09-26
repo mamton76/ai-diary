@@ -77,4 +77,21 @@
 
 Отдельный открытый UX-вопрос: должны ли непринятые proposals переживать reload/session или достаточно runtime-only состояния.
 
+
+### Сводка 5 — proposal как uncommitted state
+
+Связка с PQ-004: пользователь не хочет сохранять в revision history промежуточные AI-варианты, которые ещё не приняты.
+
+Рабочая продуктовая модель:
+- AI result для существующей entry сначала является proposal / uncommitted state;
+- proposal может содержать snapshot/diff и provenance, но ещё не входит в committed History;
+- Accept/Apply создаёт новую revision;
+- Reject не создаёт revision;
+- если proposal нужно переживать reload/session, он может храниться как pending state; если нет — оставаться runtime-only;
+- будет ли proposal технически отдельной сущностью или той же записью со статусом pending — архитектурная деталь. На продуктовом уровне важно различие pending vs committed.
+
+Связанный note добавлен в [PQ-004](../04_PQ-004_raw-revisions-ux/00_thread.md).
+
+Открытый вопрос: нужен ли отдельный rollback именно для последних committed revisions, или proposal-before-commit + обычный restore уже закрывают этот UX.
+
 **Решение:** —
