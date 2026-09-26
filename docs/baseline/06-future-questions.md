@@ -135,3 +135,28 @@
 Это именно presentation layer: данные revisions должны позволять улучшать UI позже без миграции истории.
 
 ---
+
+
+---
+
+## FQ-ENTRY-001 — Merge / split entries
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** PQ-005 — AI automation policy  
+**Триггер для возвращения:** когда появится реальный пользовательский сценарий объединения нескольких entries или разделения одной существующей entry на несколько.
+
+### Почему отложено
+
+Для текущего MVP merge/split не нужен и только усложняет semantics identity, revisions, provenance и links.
+
+### Что потребуется решить позже
+
+- сохраняется ли identity одной из entries при merge или создаётся новая;
+- как хранить provenance исходных entries;
+- что происходит с revisions и raw sources;
+- как ведут себя tags, links и timeline;
+- split создаёт новые entry IDs или производные identities;
+- нужен ли proposal/preview перед применением;
+- как представить undo/restore без ветвления пользовательской revision history.
+
+До появления такого use case не учитывать merge/split при проектировании текущей AI automation policy.
