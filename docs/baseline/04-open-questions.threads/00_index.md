@@ -13,6 +13,8 @@
 |---|---|---|---|---|---|---|
 | 1 | PQ-001 | Что считается canonical source of truth? | решён | — | [тред](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
+| 2 | PQ-003 | Какой minimum viable web? | обсуждаем | совместное обсуждение | [тред](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+
 ## Структура узла
 
 ```text
