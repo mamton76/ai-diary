@@ -24,6 +24,8 @@
 
 | 10 | PQ-008 | Какова судьба старого Android-приложения? | решён | ✅ resolved | none | — | [📁](10_PQ-008_android-legacy/) | [00_thread.md](10_PQ-008_android-legacy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
+| 11 | AQ-AUTH-003 | Single-user vs multi-user readiness | решён | ✅ resolved | none | — | [📁](11_AQ-AUTH-003_multi-user-readiness/) | [00_thread.md](11_AQ-AUTH-003_multi-user-readiness/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+
 ## Быстрая легенда lifecycle
 
 - 🟢 `open` — свободен для продолжения;
