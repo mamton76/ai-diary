@@ -453,6 +453,11 @@ AI Diary имеет собственный stable internal user/account ID. Goog
 **Статус:** ПОДТВЕРЖДЕНО  
 Приложение должно просить только те Google permissions, которые реально нужны.
 
+
+### AUTH-006 — Backend получает доступ к Drive от имени пользователя
+**Статус:** ПОДТВЕРЖДЕНО  
+Для user-owned Google Drive backend использует OAuth grant конкретного пользователя и действует от его имени. Service account + shared folder не является основным multi-user access pattern. Детали token storage, revocation, re-auth и scopes определяются отдельно.
+
 ### AUTH-004 — Конкретный auth service/framework не фиксируется заранее
 **Статус:** ПОДТВЕРЖДЕНО  
 Firebase Auth, direct OIDC или другой auth middleware выбирается вместе с backend/hosting. Продуктовый контракт важнее конкретного провайдера: internal user identity должна оставаться независимой от login method.
