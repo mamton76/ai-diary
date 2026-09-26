@@ -18,9 +18,11 @@
 
 | 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | решён | — | [тред](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 5 | PQ-005 | Насколько AI автоматичен? | обсуждаем | совместное обсуждение | [тред](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 5 | PQ-005 | Насколько AI автоматичен? | отложен / open | — | [тред](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 | 6 | AQ-DATA-010 | Как хранить autosave / working state editing session? | на паузе | — | [тред](06_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+
+| 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | in_discussion | ChatGPT conversation (claimed) | [тред](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Структура узла
 
