@@ -95,17 +95,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-008 — Какова судьба старого Android-приложения?
 
+**Статус:** решён  
 **Обсуждение:** [PQ-008 thread](04-open-questions.threads/10_PQ-008_android-legacy/00_thread.md)
 
-Варианты:
+**Решение:** старый Android/Firebase codebase остаётся historical prototype/reference и не развивается в текущем цикле. Новая web/backend архитектура не должна от него зависеть; отдельные идеи можно переиспользовать opportunistically. К native Android возвращаемся позже при реальной потребности, в частности вместе с offline-first. Уникальных ценных данных в старом Firebase/Room, требующих отдельной миграции, нет; migration tooling сейчас не нужен.
 
-- оставить как исторический prototype;
-- сохранить доменные куски;
-- превратить позже в native client нового API;
-- мигрировать постепенно;
-- отказаться от кода, но сохранить идеи.
-
-Этот вопрос можно решить после лёгкого code audit и не блокировать первую архитектуру web/backend.
 
 ## PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
 
