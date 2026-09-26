@@ -466,6 +466,35 @@ React/TypeScript — кандидат, не решение.
 - compare AI proposal;
 - merge conflict screen.
 
+
+## AQ-WEB-006 — ChatGPT Sites или обычный web-проект?
+
+ChatGPT Sites можно рассмотреть как быстрый способ собрать и захостить первый интерактивный web-прототип AI Diary.
+
+Нужно отдельно решить, какую роль Sites играет в проекте:
+
+- только disposable UX prototype на mock/demo data;
+- ранний настоящий frontend поверх отдельного AI Diary backend API;
+- внутренний/admin/debug UI;
+- полноценный production frontend;
+- не использовать и сразу развивать обычный web-клиент в репозитории.
+
+Критерии сравнения:
+
+- возможность работать с нашим отдельным backend API и live data;
+- Google OAuth / Drive / Calendar integration;
+- versioning и data synchronization;
+- background jobs и long-running AI workflows;
+- source-code ownership и GitHub workflow;
+- testability;
+- portability между hosting providers;
+- custom domain/deployment;
+- ограничения публичной beta;
+- работа с sensitive diary data;
+- насколько легко ChatGPT/Codex и Claude Code могут совместно поддерживать один и тот же код.
+
+Рабочая гипотеза на 2026-09-26: Sites хорошо подходит для быстрого UI/UX prototype или лёгкого приложения, но не следует автоматически выбирать его production runtime для AI Diary до проверки перечисленных ограничений.
+
 ---
 
 # 5. Authentication / Authorization
