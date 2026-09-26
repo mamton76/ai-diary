@@ -48,15 +48,9 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-002 — Насколько обязателен full offline-first?
 
-Старый Android проект делал offline-first центральным принципом.
-
-В новых обсуждениях точно требуется:
-
-- не терять capture при плохой сети;
-- быть устойчивым к временным сбоям;
-- не зависеть от постоянной идеальной connectivity.
-
-Но пока не подтверждено, что новый web/backend MVP должен полностью редактироваться offline с последующим conflict-aware sync.
+**Статус:** РЕШЕНО  
+**Решение:** первый web/backend MVP — online-first. Full offline browsing/editing и conflict-aware offline sync откладываются. Уже введённый текст/capture не должен тихо теряться при кратковременной потере сети; safe retry и видимые failures обязательны. Архитектура не должна блокировать будущий offline-capable native/mobile client.  
+**История обсуждения:** [PQ-002 thread](04-open-questions.threads/03_PQ-002_offline-first/00_thread.md)
 
 ## PQ-003 — Какой minimum viable web?
 
