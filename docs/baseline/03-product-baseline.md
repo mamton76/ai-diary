@@ -699,7 +699,11 @@ Merge/split entries отложены на future stage; bulk AI mutation/delete 
 - где хранятся refresh tokens;
 - как пользователь отзывает доступ.
 
-Даже если первый deployment фактически single-user, data contracts желательно не делать принципиально неспособными к user ownership.
+AI Diary с самого начала считается **multi-user application**: один backend/application может обслуживать нескольких авторизованных пользователей, и у каждого пользователя свой логический дневник и изолированные данные.
+
+User ownership должен быть явным в authenticated backend context и во всём shared operational/server-side state. При этом canonical files в user-owned storage не обязаны содержать дублирующий `ownerId`, если ownership уже задаётся storage/account boundary.
+
+Это не означает social/collaborative модель: sharing между пользователями и сложные ACL остаются вне MVP.
 
 ---
 
