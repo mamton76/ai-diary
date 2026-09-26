@@ -40,22 +40,11 @@
 
 ## PQ-001 — Что именно считается canonical source of truth?
 
-Наиболее сильное новое направление — user-owned file-based diary, где canonical content хранится в переносимом формате, а индексы/БД — derived.
+**Статус:** РЕШЕНО  
+**Решение:** user-owned portable files являются canonical source of truth. Operational DB/index/cache допустимы как rebuildable derived layers и не должны содержать единственную копию существенных diary data.  
+**История обсуждения:** [PQ-001 thread](04-open-questions.threads/01_PQ-001_source-of-truth/00_thread.md)
 
-Но архитектуре нужно проверить, насколько это совместимо с:
-
-- web editing;
-- multi-device;
-- concurrency;
-- search;
-- background jobs;
-- manual Drive edits.
-
-Нужно выбрать формулировку уровня продукта:
-
-- files — канонический источник;
-- files — канонический пользовательский export, а operational source иной;
-- hybrid с чётко определённым ownership.
+Manual Drive edits, conflict UX и конкретный механизм optimistic concurrency остаются отдельными data/architecture вопросами и не меняют этот продуктовый принцип.
 
 ## PQ-002 — Насколько обязателен full offline-first?
 
