@@ -19,7 +19,7 @@
 - editing session начинается с первой реальной ручной правки;
 - autosave должен защищать текущую работу от потери;
 - autosave сам по себе не создаёт revision;
-- manual revision создаётся при явном Save или после 10 минут inactivity.
+- manual revision создаётся при явном Save или после **1 часа inactivity**.
 
 ## Что нужно решить
 
@@ -55,11 +55,26 @@
 - `maxLocalSnapshots = 5`;
 - локальные snapshots считаются настраиваемой policy constant, а не жёсткой частью модели;
 - после успешного создания revision snapshots не удаляются сразу, а переходят в grace period;
-- grace period по умолчанию — **8 часов**;
+- grace period по умолчанию — **24 часа**;
 - после grace period snapshots этой editing session удаляются;
 - это правило одинаково применяется и к manual Save, и к auto-revision после inactivity.
 
-Остаются открытыми детали: формат backend draft, recovery UX, concurrency и поведение при AI mutation во время активной session.
+### Сводка 3 — operational working draft
+
+Зафиксировано:
+
+- server-side `current working draft` живёт в **operational state**;
+- canonical и operational storage могут на первом этапе физически совпадать;
+- при этом они должны быть **семантически разделены** по роли и lifecycle;
+- canonical data — это зафиксированные revisions и другие долговечные данные;
+- operational state — временный working draft, autosave/sync metadata, locks и подобное;
+- auto-revision создаётся из server-side `current working draft`, а не из local recovery snapshots;
+- inactivity timeout для auto-revision по умолчанию — **1 час**;
+- local recovery snapshots хранятся **24 часа после успешного создания revision**.
+
+Все численные значения считаются настраиваемыми policy constants.
+
+Остаются открытыми детали: recovery UX, concurrency и поведение при AI mutation во время активной session.
 
 ## Решение
 
