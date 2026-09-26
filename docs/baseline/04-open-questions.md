@@ -491,9 +491,10 @@ Google account — естественный first path.
 
 ## AQ-AUTH-003 — Single-user vs multi-user readiness
 
-Первый production может быть только для одного владельца.
+**Статус:** решён  
+**Обсуждение:** [AQ-AUTH-003 thread](04-open-questions.threads/11_AQ-AUTH-003_multi-user-readiness/00_thread.md)
 
-Вопрос: стоит ли с первого дня иметь explicit `userId/ownerId` в domain/API, чтобы не делать болезненную миграцию позже.
+**Решение:** AI Diary с самого начала считается multi-user application: один backend/application может обслуживать нескольких авторизованных пользователей, у каждого свой логический дневник и изолированные данные. Shared operational/server-side state должен быть user-scoped. При user-owned canonical storage explicit ownerId не обязан дублироваться внутри каждого diary file. Sharing/ACL между пользователями остаются отдельной future feature и не входят в MVP.
 
 ## AQ-AUTH-004 — Доступ backend к user-owned Drive
 
