@@ -507,6 +507,19 @@ Workflow, prompt, provider/model, входы, выходы, time, validation; п
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Технически желательно, UI может появиться позже.
 
+
+### AI-017 — Model preference имеет иерархию
+**Статус:** ПОДТВЕРЖДЕНО  
+Выбор LLM model разрешается по иерархии: explicit task/run override → workflow preference → global user preference → system default. Global user preference является основным пользовательским сценарием; более локальные уровни используются как override.
+
+### AI-018 — Provider отдельно не выбирается
+**Статус:** ПОДТВЕРЖДЕНО  
+Пользователь выбирает конкретную LLM model; provider определяется выбранной моделью. Отдельная provider-настройка не требуется как самостоятельный пользовательский выбор.
+
+### AI-019 — Silent fallback на другую model/provider не допускается
+**Статус:** ПОДТВЕРЖДЕНО  
+Если preferred model недоступна, система не должна молча переключаться на другую модель/provider. Для такого fallback требуется явное согласие пользователя. Конкретный UX, retry и обработка deprecated models относятся к implementation policy.
+
 ### AI-013 — User AI context / memory
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Старые модели уже различали explicit preferences и learned context. Точная реализация позже.
