@@ -95,6 +95,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-008 — Какова судьба старого Android-приложения?
 
+**Обсуждение:** [PQ-008 thread](04-open-questions.threads/10_PQ-008_android-legacy/00_thread.md)
+
 Варианты:
 
 - оставить как исторический prototype;
