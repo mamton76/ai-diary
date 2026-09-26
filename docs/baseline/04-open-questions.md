@@ -63,7 +63,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
 **Статус:** РЕШЕНО  
-**Решение:** current Entry и History/Revisions разделены; AI mutation создаёт revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 10 минут inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; история линейная без branches; Restore создаёт новую revision из старого snapshot и сохраняет provenance-ссылку на source revision.  
+**Решение:** current Entry и History/Revisions разделены; AI mutation создаёт revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; история линейная без branches; Restore создаёт новую revision из старого snapshot и сохраняет provenance-ссылку на source revision.  
 **История обсуждения:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)
 
 Техническое хранение autosave/working draft вынесено в AQ-DATA-010.
@@ -278,9 +278,16 @@ File-first ценность подразумевает inspectability, но manu
 
 **Обсуждение:** [AQ-DATA-010 thread](04-open-questions.threads/04_1_AQ-DATA-010_autosave-working-state/00_thread.md)
 
-PQ-004 определил пользовательскую семантику: autosave защищает working state, но не создаёт revision; manual revision создаётся при Save или после 10 минут inactivity.
+PQ-004 определил пользовательскую семантику: autosave защищает working state, но не создаёт revision; manual revision создаётся при Save или после 1 часа inactivity.
 
-Отдельно нужно решить техническую persistence model:
+Рабочая техническая модель:
+- server-side `current working draft` хранится в operational state;
+- canonical и operational storage могут физически совпадать на MVP, но семантически разделены;
+- локально хранится до 5 recovery snapshots с интервалом не более 30 секунд;
+- после успешной revision local snapshots живут ещё 24 часа;
+- auto-revision создаётся из server-side working draft после 1 часа inactivity.
+
+Остаётся решить:
 
 - один mutable working draft или несколько autosave snapshots;
 - где хранить draft;
