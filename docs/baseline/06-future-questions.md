@@ -191,9 +191,7 @@ Sharing не входит в обозримый MVP и не должен сей�
 До появления такого use case не усложнять текущую auth/data model ради sharing.
 
 
----
 
-## FQ-CALENDAR-001 — Revision history in Calendar projection
 
 **Статус:** PARKED / FUTURE  
 **Происхождение:** [PQ-009 — Calendar inbox role](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md)  
