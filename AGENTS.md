@@ -24,11 +24,13 @@ docs/baseline/
 skills/
 ```
 
-Перед работой с открытыми вопросами, спорными требованиями и design decisions прочитать:
+Перед работой с открытыми вопросами, спорными требованиями и design decisions **обязательно** прочитать и соблюдать:
 
 ```text
 skills/discussion-threads/SKILL.md
 ```
+
+Не полагаться на память чата о правилах discussion threads. Перед тем как взять PQ/SQ в работу, проверить canonical thread, его lifecycle state и claim. Тред со статусом `in_discussion` или `paused` и активным claim другим агентом не забирается.
 
 ## Правила решений
 
