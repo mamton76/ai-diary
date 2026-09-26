@@ -122,4 +122,16 @@ Proposal должен явно знать, к чему он относится �
 
 Новый rerun того же workflow для того же target/scope может supersede предыдущий proposal. Временного auto-expiry по умолчанию не предполагается: pending proposal живёт до явного resolution или supersede.
 
+
+### Сводка 8 — scope current vs future
+
+Пользователь предложил не раздувать PQ-005 гипотетическими destructive workflows, которых сейчас нет.
+
+Уточнение scope:
+- merge/split entries откладываются в future backlog;
+- массовые AI-изменения и AI-delete не являются текущими заявленными workflows и не должны влиять на MVP-policy без отдельного реального use case;
+- смена/уточнение даты остаётся релевантной, потому что Inbox-to-Entry уже умеет infer `entryDate`;
+- отдельный риск смены даты не столько в самом metadata field, сколько в последствиях для chronology/derived views и текущей file convention, где дата входит в folder path/name;
+- при первоначальном ingestion дата может быть inferred автоматически с confidence/needs_review; изменение даты уже существующей entry AI-ом лучше рассматривать как proposal, если это не прямое действие пользователя.
+
 **Решение:** —
