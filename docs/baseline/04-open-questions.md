@@ -496,6 +496,8 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-004 — Доступ backend к user-owned Drive
 
+**Обсуждение:** [AQ-AUTH-004 thread](04-open-questions.threads/13_AQ-AUTH-004_drive-access/00_thread.md)
+
 Нужно решить модель:
 
 - backend действует от имени пользователя по OAuth token;
