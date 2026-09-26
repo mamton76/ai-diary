@@ -477,17 +477,11 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-002 — Drive/Calendar OAuth
 
+**Статус:** решён  
 **Обсуждение:** [AQ-AUTH-002 thread](04-open-questions.threads/14_AQ-AUTH-002_google-oauth/00_thread.md)
 
-Нужно определить:
+**Решение:** Google API permissions выдаются incremental/per-feature: login отдельно, Drive consent при подключении diary storage, Calendar consent только при включении Calendar features. Предпочтение — минимально необходимые permissions и отсутствие full-Drive access, если это реализуемо разумно. Точные scopes, folder access mechanics, refresh-token storage, revocation, account switch и re-auth UX относятся к implementation/security details и не блокируют MVP.
 
-- где хранится refresh token;
-- какие scopes запрашиваются;
-- incremental consent;
-- token revocation;
-- account switch;
-- expired permissions;
-- re-auth UX.
 
 ## AQ-AUTH-003 — Single-user vs multi-user readiness
 
