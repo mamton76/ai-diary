@@ -714,7 +714,7 @@ Privacy-first является сильным направлением и соо
 
 ## 21. Sharing
 
-Selective sharing — потенциально полезная будущая функция:
+Selective sharing остаётся потенциально полезной **future feature**:
 
 - поделиться конкретной записью;
 - family memory;
@@ -722,7 +722,9 @@ Selective sharing — потенциально полезная будущая �
 - AI-generated summary;
 - ZoomAlboom story.
 
-Но сейчас sharing не должен определять базовую архитектуру, если нет отдельного решения включить его в ближайший MVP.
+Для текущего MVP sharing **out of scope** и не должен определять auth/data model. Это не social-network requirement и не collaborative editing. К access/sharing model возвращаемся только при появлении реального near-term use case.
+
+См. [FQ-SHARING-001](06-future-questions.md#fq-sharing-001--selective-sharing).
 
 ---
 
