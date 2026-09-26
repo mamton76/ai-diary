@@ -1,10 +1,10 @@
 # PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
 **Источник:** [04-open-questions.md / PQ-006](../../04-open-questions.md#pq-006--насколько-пользователь-выбирает-llm-providermodel)  
-**Статус:** отложен  
-**Состояние:** open  
-**Claim:** none  
-**Ведёт:** —  
+**Статус:** обсуждаем  
+**Состояние:** in_discussion  
+**Claim:** active  
+**Ведёт:** ChatGPT conversation  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
