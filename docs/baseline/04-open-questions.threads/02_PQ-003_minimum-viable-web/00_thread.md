@@ -1,7 +1,7 @@
 # PQ-003 — Какой minimum viable web?
 
 **Источник:** [04-open-questions.md / PQ-003](../../04-open-questions.md#pq-003--какой-minimum-viable-web)  
-**Статус:** обсуждаем  
+**Статус:** решён  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -51,4 +51,16 @@ Baseline уже предполагает полноценный адаптивн
 При этом пользователь не считает web-create принципиально нежелательным. Если простая форма создания записи почти не увеличивает сложность реализации, её можно добавить opportunistically, но она не должна расширять scope или задерживать read/search/edit/versioning.
 
 
-**Решение:** —
+### Сводка 4 — minimum search и закрытие scope
+
+Для первого search достаточно:
+
+- обычного текстового поиска по entry content/title;
+- даты или диапазона дат;
+- фильтра по tags.
+
+Semantic search, embeddings, cross-entry Q&A и более сложные filters не входят в первый web slice.
+
+Таким образом первый полезный web slice — **browse/list + read + search/filter по тексту, дате и tags для существующих записей**. Следующий этап — **editing + versioning/history**, затем **просмотр/редактирование tags**, затем **AI processing/workflows**. Создание новой записи через web не является requirement первых этапов, но может быть добавлено opportunistically, если это не увеличивает scope и не задерживает основные шаги.
+
+**Решение:** [принято] (2026-09-26) Первый web slice — работа с существующими entries: browse/list, read и search по тексту, дате/date range и tags. Дальше по приоритету: editing + versioning/history → tags view/edit → AI processing/workflows. Web create не обязателен в первых этапах и допускается как дешёвое дополнительное действие.
