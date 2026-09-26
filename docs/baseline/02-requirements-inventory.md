@@ -237,8 +237,8 @@ Domain/client logic не должны быть напрямую завязаны
 Операции уровня `list/get/save entry`, revisions, changes выглядят предпочтительнее абстракции «универсальная файловая система».
 
 ### DATA-006 — Files как canonical source of truth
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Это наиболее сильное новое направление, но архитектура должна проверить concurrency, indexing, search и multi-device behavior.
+**Статус:** ПОДТВЕРЖДЕНО  
+User-owned portable files являются canonical source of truth. Operational DB/index/cache допустимы как rebuildable derived layers и не должны содержать единственную копию существенных diary data. Concurrency, indexing, search, manual edits и multi-device behavior остаются архитектурными вопросами реализации этого принципа.
 
 ### DATA-007 — Наличие БД не считается обязательным заранее
 **Статус:** ПОДТВЕРЖДЕНО  
