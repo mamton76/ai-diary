@@ -76,6 +76,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-005 — Насколько AI автоматичен?
 
+**Обсуждение:** [PQ-005 thread](04-open-questions.threads/05_PQ-005_ai-automation-policy/00_thread.md)
+
 Для разных workflows можно выбрать разные policies:
 
 - suggestion only;
