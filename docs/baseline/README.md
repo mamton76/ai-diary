@@ -33,6 +33,26 @@ AI Diary за время обсуждения прошёл через неско
 - [`04-open-questions.md`](04-open-questions.md) — вопросы, которые нужно явно решить или осознанно отложить перед архитектурой.
 - [`05-source-ledger.md`](05-source-ledger.md) — карта источников: GitHub, project-документы и наши обсуждения.
 
+## Project skills и файловые обсуждения
+
+Повторяемые правила работы агентов хранятся в репозитории как общие project skills:
+
+- [`skills/README.md`](../../skills/README.md) — соглашение о skills;
+- [`skills/discussion-threads/SKILL.md`](../../skills/discussion-threads/SKILL.md) — правила длинных обсуждений и принятия решений;
+- [`AGENTS.md`](../../AGENTS.md) — короткая точка входа для ChatGPT/Codex и других агентов;
+- [`CLAUDE.md`](../../CLAUDE.md) и `.claude/skills/` — Claude Code adapter.
+
+Для `04-open-questions.md` обсуждения хранятся в sibling-каталоге:
+
+```text
+04-open-questions.md
+04-open-questions.threads/
+```
+
+Тред заводится **только когда вопрос реально начинают обсуждать**. Вложенные подпапки используются для самостоятельных подтем. Тред хранит аргументацию и историю пересмотров; принятое текущее состояние переносится обратно в соответствующий source-документ.
+
+См. [индекс обсуждений](04-open-questions.threads/00_index.md).
+
 ## Статусы требований
 
 В inventory используются четыре статуса:
