@@ -477,6 +477,8 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-002 — Drive/Calendar OAuth
 
+**Обсуждение:** [AQ-AUTH-002 thread](04-open-questions.threads/14_AQ-AUTH-002_google-oauth/00_thread.md)
+
 Нужно определить:
 
 - где хранится refresh token;
