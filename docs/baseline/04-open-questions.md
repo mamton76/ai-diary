@@ -91,13 +91,12 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-007 — Sharing входит в обозримый MVP?
 
-Ранее sharing рассматривался как полезный retention/family механизм.
+**Статус:** решён  
+**Обсуждение:** [PQ-007 thread](04-open-questions.threads/08_PQ-007_sharing-mvp/00_thread.md)  
+**Future:** [FQ-SHARING-001 — Selective sharing](06-future-questions.md#fq-sharing-001--selective-sharing)
 
-Нужно определить:
+**Решение:** sharing не входит в обозримый MVP и не должен сейчас определять auth/data model. Сохраняется как future requirement.
 
-- out of scope;
-- future requirement;
-- near-term requirement, влияющий уже сейчас на auth/data model.
 
 ## PQ-008 — Какова судьба старого Android-приложения?
 
