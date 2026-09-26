@@ -496,15 +496,11 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-004 — Доступ backend к user-owned Drive
 
+**Статус:** решён  
 **Обсуждение:** [AQ-AUTH-004 thread](04-open-questions.threads/13_AQ-AUTH-004_drive-access/00_thread.md)
 
-Нужно решить модель:
+**Решение:** backend получает доступ к Google Drive каждого пользователя через OAuth и действует от имени этого пользователя. Service account + shared folder не является основным access pattern для multi-user приложения. Детали scopes, refresh-token storage, revocation и re-auth определяются отдельно в AQ-AUTH-002.
 
-- backend действует от имени пользователя по OAuth token;
-- service account + shared folder;
-- другой pattern.
-
-Это сильно влияет на security и deployment.
 
 ---
 
