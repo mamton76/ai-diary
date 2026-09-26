@@ -26,7 +26,7 @@
 
 | 11 | AQ-AUTH-003 | Single-user vs multi-user readiness | решён | ✅ resolved | none | — | [📁](11_AQ-AUTH-003_multi-user-readiness/) | [00_thread.md](11_AQ-AUTH-003_multi-user-readiness/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 12 | AQ-AUTH-001 | Identity model | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](12_AQ-AUTH-001_identity-model/) | [00_thread.md](12_AQ-AUTH-001_identity-model/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 12 | AQ-AUTH-001 | Identity model | решён | ✅ resolved | none | — | [📁](12_AQ-AUTH-001_identity-model/) | [00_thread.md](12_AQ-AUTH-001_identity-model/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
 
