@@ -50,7 +50,16 @@
 - после завершения editing session и успешного создания revision локальные recovery snapshots этой session могут быть удалены;
 - при кратком отсутствии сети локальное состояние продолжает сохраняться, а backend draft синхронизируется после восстановления соединения.
 
-Остаются открытыми детали: точный retention/количество snapshots, формат backend draft, recovery UX, concurrency и поведение при AI mutation во время активной session.
+Дополнительно зафиксированы MVP-defaults:
+
+- `maxLocalSnapshots = 5`;
+- локальные snapshots считаются настраиваемой policy constant, а не жёсткой частью модели;
+- после успешного создания revision snapshots не удаляются сразу, а переходят в grace period;
+- grace period по умолчанию — **8 часов**;
+- после grace period snapshots этой editing session удаляются;
+- это правило одинаково применяется и к manual Save, и к auto-revision после inactivity.
+
+Остаются открытыми детали: формат backend draft, recovery UX, concurrency и поведение при AI mutation во время активной session.
 
 ## Решение
 
