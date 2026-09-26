@@ -67,6 +67,13 @@ Restore старой revision:
 
 Таким образом, история сохраняется полностью и остаётся линейной.
 
+
+### Сводка 6 — proposal vs revision
+
+Из PQ-005 возникло уточнение: AI-результат до принятия пользователем лучше считать proposal, а не revision. Proposal не входит в committed History. Apply создаёт revision; Reject оставляет History без новой revision. Поэтому вопрос об очистке последних committed revisions нужно обсуждать отдельно: для непринятых AI-вариантов он, возможно, не нужен.
+
+См. [PQ-005](../05_PQ-005_ai-automation-policy/00_thread.md).
+
 ## Решение
 
 Для MVP:
