@@ -42,4 +42,10 @@
 Вопрос пока не закрыт полностью: нужно определить эксплуатационные ограничения file-canonical модели — прежде всего concurrency/conflicts, atomicity/partial failures, change detection, migrations, referential integrity, производительность, manual edits и backup/restore semantics.
 
 
-**Решение:** —
+### Сводка 3 — manual edits не блокируют решение
+
+Ручное редактирование canonical files полностью запретить технически нельзя и не требуется. Для первого рабочего варианта достаточно лёгкой optimistic-защиты: при чтении/сохранении запоминать last-seen fingerprint/version metadata; перед следующим destructive write сравнивать его с текущим состоянием файла. Если файл изменился вне приложения, не перетирать его молча, а сохранить external state как новую revision/conflict и отправить случай на review.
+
+Полноценные Drive change feeds, автоматический merge, богатый conflict UI и более строгая reconciliation-модель можно отложить. Вопрос официально поддерживаемого manual editing остаётся отдельным AQ-DATA-007 и не блокирует выбор canonical source of truth.
+
+**Решение:** [принято] (2026-09-26) Канонический источник пользовательских данных AI Diary — user-owned portable files. Operational DB/index/cache допустимы как производные слои, если они восстанавливаемы из canonical files и не содержат единственную копию существенных diary data.
