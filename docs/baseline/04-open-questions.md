@@ -114,6 +114,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-001 — Files-only или files + derived DB/index?
 
+**Обсуждение:** [AQ-DATA-001 thread](04-open-questions.threads/15_AQ-DATA-001_files-vs-derived-index/00_thread.md)
+
 Web UI нужен быстрый listing/filter/search.
 
 Реалистичные варианты:
