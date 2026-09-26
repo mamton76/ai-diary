@@ -258,6 +258,27 @@ User-owned portable files являются canonical source of truth. Operationa
 Особенно важно, если canonical data остаётся в Drive и пользователь теоретически может открыть файлы напрямую.
 
 
+### DATA-012 — Незавершённое редактирование хранится как operational working draft
+**Статус:** ПОДТВЕРЖДЕНО  
+Для entry допускается один server-side current working draft как временное operational state. Он не является canonical revision. Canonical и operational storage могут физически совпадать на MVP, но их роли и lifecycle должны оставаться различимыми.
+
+### DATA-013 — Нужны local recovery snapshots
+**Статус:** ПОДТВЕРЖДЕНО  
+Клиент хранит bounded local recovery snapshots для защиты от случайных пользовательских действий и кратких сбоев. MVP-default: до 5 snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision. Эти значения являются configurable policy constants. Local snapshots не входят в обычную revision history.
+
+### DATA-014 — Один active mutation owner на entry
+**Статус:** ПОДТВЕРЖДЕНО  
+Для ручного редактирования и AI mutation используется lease-based модель: у entry в каждый момент один active mutation owner. Manual editing может перехватить lease у другой session или AI job; активная AI mutation не вытесняет пользователя.
+
+### DATA-015 — AI mutation должна быть безопасна относительно новых revisions
+**Статус:** ПОДТВЕРЖДЕНО  
+AI result привязан к base revision. Если entry изменилась, сначала выполняется deterministic compatibility check; AI revalidation используется только когда совместимость неочевидна. Текстовые mutation workflows по умолчанию не auto-merge при содержательных изменениях.
+
+### DATA-016 — Working draft синхронизируется debounce + guaranteed flush
+**Статус:** ПОДТВЕРЖДЕНО  
+Локальное working state синхронизируется на backend комбинированно: debounce после паузы во вводе плюс гарантированный flush при наличии unsynced changes. Обязательный flush выполняется перед Save, передачей lease и auto-revision. Конкретные интервалы настраиваемы.
+
+
 ---
 
 # G2. Версионирование и синхронизация данных
