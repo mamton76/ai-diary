@@ -32,6 +32,7 @@ AI Diary за время обсуждения прошёл через неско
 - [`03-product-baseline.md`](03-product-baseline.md) — собранное продуктовое описание AI Diary без преждевременной фиксации архитектуры.
 - [`04-open-questions.md`](04-open-questions.md) — вопросы, которые нужно явно решить или осознанно отложить перед архитектурой.
 - [`05-source-ledger.md`](05-source-ledger.md) — карта источников: GitHub, project-документы и наши обсуждения.
+- [`06-future-questions.md`](06-future-questions.md) — parking lot для важных вопросов, сознательно отложенных за пределы текущего MVP/архитектурного этапа.
 
 ## Project skills и файловые обсуждения
 
