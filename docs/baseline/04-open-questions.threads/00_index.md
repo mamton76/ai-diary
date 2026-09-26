@@ -1,28 +1,33 @@
 # AI Diary — индекс обсуждений открытых вопросов
 
 **Source:** [`../04-open-questions.md`](../04-open-questions.md)  
-**Workflow:** [`../../../skills/discussion-threads/SKILL.md`](../../../skills/discussion-threads/SKILL.md)
+**Workflow:** [`../../../skills/discussion-threads/SKILL.md`](../../../skills/discussion-threads/SKILL.md)  
+**Папка всех тредов:** [`04-open-questions.threads/`](./)
 
-Эта папка содержит только те вопросы из `04-open-questions.md`, которые **реально начали обсуждаться**.
+Эта папка содержит только те вопросы из `04-open-questions.md`, для которых уже создан canonical thread.
 
 Треды создаются лениво. Отсутствие папки для вопроса означает только «детальное обсуждение ещё не заведено», а не «вопрос решён».
 
-## Активные треды
+## Все созданные треды
 
-| № | ID | Вопрос | Статус | Чей ход | Тред | Куда переносим решение |
-|---|---|---|---|---|---|---|
-| 1 | PQ-001 | Что считается canonical source of truth? | решён | — | [тред](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| № | ID | Вопрос | Статус | Lifecycle | Claim | Ведёт | Папка | Тред | Куда переносим решение |
+|---:|---|---|---|---|---|---|---|---|---|
+| 1 | PQ-001 | Что считается canonical source of truth? | решён | ✅ resolved | — | — | [📁](01_PQ-001_source-of-truth/) | [00_thread.md](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 2 | PQ-003 | Какой minimum viable web? | решён | ✅ resolved | — | — | [📁](02_PQ-003_minimum-viable-web/) | [00_thread.md](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 3 | PQ-002 | Насколько обязателен full offline-first? | обсуждаем | 🔒 in discussion* | active* | другой ChatGPT conversation* | [📁](03_PQ-002_offline-first/) | [00_thread.md](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | решён | ✅ completed | released | — | [📁](04_PQ-004_raw-revisions-ux/) | [00_thread.md](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 5 | PQ-005 | Насколько AI автоматичен? | отложен | 🟢 open | none | — | [📁](05_PQ-005_ai-automation-policy/) | [00_thread.md](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 6 | AQ-DATA-010 | Как хранить autosave / working state editing session? | открытый | ⏸ paused | released | — | [📁](06_AQ-DATA-010_autosave-working-state/) | [00_thread.md](06_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+| 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 2 | PQ-003 | Какой minimum viable web? | решён | — | [тред](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-| 3 | PQ-002 | Насколько обязателен full offline-first? | обсуждаем | совместное обсуждение | [тред](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+\* У PQ-002 старый thread ещё не содержит lifecycle/claim metadata. В таблице состояние отражено по фактическому текущему использованию: вопрос обсуждается в другом ChatGPT-чате. При следующем сохранении этого треда metadata нужно привести к текущему формату skill.
 
-| 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | решён | — | [тред](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+## Быстрая легенда lifecycle
 
-| 5 | PQ-005 | Насколько AI автоматичен? | отложен / open | — | [тред](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
-| 6 | AQ-DATA-010 | Как хранить autosave / working state editing session? | на паузе | — | [тред](06_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
-
-| 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | in_discussion | ChatGPT conversation (claimed) | [тред](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+- 🟢 `open` — свободен для продолжения;
+- 🔒 `in_discussion` — активно обсуждается, claim занят;
+- ⏸ `paused` — обсуждение поставлено на паузу;
+- ✅ `resolved` / legacy `completed` — решение принято.
 
 ## Структура узла
 
@@ -39,6 +44,8 @@ NN_<QUESTION-ID>_<slug>/
 ## Важно
 
 - Один выбор — один канонический тред.
+- Перед созданием нового треда нужно перечитать этот index и проверить sibling-каталог по QUESTION-ID.
 - Решения не принимаются от имени пользователя без явного делегирования.
 - После решения обновляется source-документ.
 - Тред сохраняет rationale и историю пересмотров.
+- Статус/lifecycle в index должен отражать metadata самого `00_thread.md`; если они расходятся, сначала исправляется thread, затем index.
