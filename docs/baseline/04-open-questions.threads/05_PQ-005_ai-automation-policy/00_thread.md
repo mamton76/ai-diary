@@ -134,4 +134,16 @@ Proposal должен явно знать, к чему он относится �
 - отдельный риск смены даты не столько в самом metadata field, сколько в последствиях для chronology/derived views и текущей file convention, где дата входит в folder path/name;
 - при первоначальном ingestion дата может быть inferred автоматически с confidence/needs_review; изменение даты уже существующей entry AI-ом лучше рассматривать как proposal, если это не прямое действие пользователя.
 
+
+### Сводка 9 — что реально зависит от policy
+
+Пользователь согласен с общим правилом per-workflow policy, но отметил, что не видит необходимости сейчас классифицировать каждое возможное metadata field отдельно.
+
+Практический смысл решения для MVP:
+- система должна различать auto-applied результаты и pending proposals;
+- proposal должен быть persistent, иметь target/scope/base state и lifecycle;
+- Accept/Apply — граница между proposal и committed revision;
+- конкретная policy для title/people/place и других будущих metadata может определяться позже при появлении реального workflow;
+- точные confidence thresholds и перечень auto-apply полей не являются blocking product decisions для текущей архитектуры.
+
 **Решение:** —
