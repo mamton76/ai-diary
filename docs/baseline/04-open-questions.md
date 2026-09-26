@@ -78,16 +78,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
+**Статус:** решён  
 **Обсуждение:** [PQ-006 thread](04-open-questions.threads/07_PQ-006_llm-provider-model-choice/00_thread.md)
 
-Варианты UX:
+**Решение:** пользователь выбирает LLM model, а provider определяется выбранной моделью. Иерархия: task/run override → workflow preference → global user preference → system default. Global preference — основной пользовательский сценарий. Если preferred model недоступна, система не должна молча переключаться на другую модель/provider без явного согласия пользователя. Детали retry/deprecation/fallback UX относятся к implementation policy.
 
-- система выбирает сама;
-- один global preferred provider/model;
-- выбор per workflow;
-- advanced compare mode.
-
-Архитектурно multi-provider поддержка желательна независимо от того, насколько эта настройка видима пользователю.
 
 ## PQ-007 — Sharing входит в обозримый MVP?
 
