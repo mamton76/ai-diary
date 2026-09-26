@@ -189,3 +189,27 @@ Sharing не входит в обозримый MVP и не должен сей�
 - как ZoomAlboom stories используют ту же access model или отдельную.
 
 До появления такого use case не усложнять текущую auth/data model ради sharing.
+
+
+---
+
+## FQ-CALENDAR-001 — Revision history in Calendar projection
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** [PQ-009 — Calendar inbox role](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md)  
+**Триггер для возвращения:** когда Calendar timeline projection станет реальной пользовательской feature и понадобится решить, как в ней отражать историю изменений entry.
+
+### Что уже есть
+
+Текущий projection workflow использует one-entry -> one-calendar-event mapping и обновляет существующий Calendar event, когда изменилось проецируемое состояние entry. Calendar остаётся derived/rebuildable view, diary files — source of truth.
+
+### Что нужно решить позже
+
+- Calendar event должен показывать только current committed state или ещё и revision history;
+- если revision history нужна, показывать её отдельными events, ссылкой/summary внутри основного event или отдельным audit/debug view;
+- нужно ли показывать current revision id / updatedAt / provenance;
+- что происходит с Calendar event при restore старой revision;
+- должны ли pending AI proposals вообще быть видимы в Calendar;
+- как избежать превращения life timeline в timeline редакторских действий.
+
+Рабочая гипотеза: обычный Calendar timeline показывает одно событие на entry и обновляет его до current committed state; полноценную revision history туда по умолчанию не публиковать.
