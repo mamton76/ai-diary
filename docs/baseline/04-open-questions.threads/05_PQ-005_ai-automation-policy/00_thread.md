@@ -106,4 +106,20 @@
 - техническое место хранения pending proposal пока не фиксируется;
 - proposal по-прежнему не является committed revision и не должен попадать в обычную History до Apply.
 
+
+### Сводка 7 — scope, stale и supersede
+
+Proposal должен явно знать, к чему он относится и на каком состоянии был построен. На продуктовом уровне достаточно фиксировать:
+- target (entry / tags / metadata / другое);
+- kind/workflow (grammar, rewrite, add existing tags, create tags и т.п.);
+- base revision/state, относительно которого proposal рассчитан;
+- affected scope/fields;
+- lifecycle status.
+
+Несколько proposals могут существовать параллельно, если их scope не конфликтует (например, tags + grammar).
+
+Если underlying target изменился, proposal не обязательно удалять: его лучше пометить stale/conflicted. Применять его в один клик нельзя, пока он не проверен/перегенерирован/rebased.
+
+Новый rerun того же workflow для того же target/scope может supersede предыдущий proposal. Временного auto-expiry по умолчанию не предполагается: pending proposal живёт до явного resolution или supersede.
+
 **Решение:** —
