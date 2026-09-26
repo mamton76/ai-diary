@@ -701,6 +701,9 @@ Merge/split entries отложены на future stage; bulk AI mutation/delete 
 - где хранятся refresh tokens;
 - как пользователь отзывает доступ.
 
+
+Для доступа к user-owned Google Drive backend действует **от имени пользователя через OAuth**. Service account + shared folder не является основной моделью доступа для multi-user приложения. Пользователь явно предоставляет приложению Google API permissions, а canonical files продолжают принадлежать его Drive.
+
 AI Diary с самого начала считается **multi-user application**: один backend/application может обслуживать нескольких авторизованных пользователей, и у каждого пользователя свой логический дневник и изолированные данные.
 
 User ownership должен быть явным в authenticated backend context и во всём shared operational/server-side state. При этом canonical files в user-owned storage не обязаны содержать дублирующий `ownerId`, если ownership уже задаётся storage/account boundary.
