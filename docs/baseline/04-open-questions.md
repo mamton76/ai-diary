@@ -51,6 +51,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 **Статус:** РЕШЕНО  
 **Решение:** первый web/backend MVP — online-first. Full offline browsing/editing и conflict-aware offline sync откладываются. Уже введённый текст/capture не должен тихо теряться при кратковременной потере сети; safe retry и видимые failures обязательны. Архитектура не должна блокировать будущий offline-capable native/mobile client.  
 **История обсуждения:** [PQ-002 thread](04-open-questions.threads/03_PQ-002_offline-first/00_thread.md)
+**Будущее:** [FQ-OFFLINE-001 — full offline editing и version sync](06-future-questions.md#fq-offline-001--full-offline-editing-и-синхронизация-версий)
+
 
 ## PQ-003 — Какой minimum viable web?
 
