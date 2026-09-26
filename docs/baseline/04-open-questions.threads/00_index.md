@@ -16,7 +16,7 @@
 | 2 | PQ-003 | Какой minimum viable web? | решён | ✅ resolved | — | — | [📁](02_PQ-003_minimum-viable-web/) | [00_thread.md](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 3 | PQ-002 | Насколько обязателен full offline-first? | решён | ✅ resolved | none | — | [📁](03_PQ-002_offline-first/) | [00_thread.md](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | решён | ✅ completed | released | — | [📁](04_PQ-004_raw-revisions-ux/) | [00_thread.md](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-| 5 | PQ-005 | Насколько AI автоматичен? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](05_PQ-005_ai-automation-policy/) | [00_thread.md](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 5 | PQ-005 | Насколько AI автоматичен? | решён | ✅ resolved | none | — | [📁](05_PQ-005_ai-automation-policy/) | [00_thread.md](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 4.1 | AQ-DATA-010 | Как хранить autosave / working state editing session? | решён | ✅ resolved | none | — | [📁](04_1_AQ-DATA-010_autosave-working-state/) | [00_thread.md](04_1_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 | 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | отложен | 🟢 open | none | — | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
