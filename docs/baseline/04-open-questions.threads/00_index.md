@@ -22,6 +22,8 @@
 | 8 | PQ-007 | Sharing входит в обозримый MVP? | решён | ✅ resolved | none | — | [📁](08_PQ-007_sharing-mvp/) | [00_thread.md](08_PQ-007_sharing-mvp/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / 06-future-questions.md |
 | 9 | PQ-009 | Нужен ли Calendar inbox как постоянная production feature? | решён | ✅ resolved | none | — | [📁](09_PQ-009_calendar-inbox-role/) | [00_thread.md](09_PQ-009_calendar-inbox-role/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
+| 10 | PQ-008 | Какова судьба старого Android-приложения? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](10_PQ-008_android-legacy/) | [00_thread.md](10_PQ-008_android-legacy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+
 ## Быстрая легенда lifecycle
 
 - 🟢 `open` — свободен для продолжения;
