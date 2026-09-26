@@ -1,10 +1,10 @@
 # AQ-AUTH-002 — Drive/Calendar OAuth
 
 **Источник:** [04-open-questions.md / AQ-AUTH-002](../../04-open-questions.md#aq-auth-002--drivecalendar-oauth)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -41,4 +41,10 @@
 
 Цель — не просить permissions раньше, чем они реально нужны, и держать Drive/Calendar integrations независимыми.
 
-**Решение:** пока частичное; остальные OAuth policy details обсуждаются дальше.
+### Сводка 2 — scope details deferred
+
+Для MVP уже существует рабочий access workaround, поэтому точная Drive scope/picker/folder-access схема не должна блокировать архитектуру. Предпочтение остаётся за минимально необходимыми permissions и отсутствием full-Drive access, если это можно реализовать разумно.
+
+Точные scopes, folder access mechanics, refresh-token storage, revocation, account switch и re-auth UX считаются implementation/security details и определяются при техническом spike/реализации.
+
+**Решение:** [принято] OAuth permissions выдаются incremental/per-feature; Drive/Calendar consent разделены. High-level contract зафиксирован, а точная scope/token/re-auth mechanics не блокирует MVP и откладывается до implementation.
