@@ -30,7 +30,7 @@
 
 | 13 | AQ-AUTH-004 | Доступ backend к user-owned Drive | решён | ✅ resolved | none | — | [📁](13_AQ-AUTH-004_drive-access/) | [00_thread.md](13_AQ-AUTH-004_drive-access/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 14 | AQ-AUTH-002 | Drive/Calendar OAuth | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](14_AQ-AUTH-002_google-oauth/) | [00_thread.md](14_AQ-AUTH-002_google-oauth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 14 | AQ-AUTH-002 | Drive/Calendar OAuth | решён | ✅ resolved | none | — | [📁](14_AQ-AUTH-002_google-oauth/) | [00_thread.md](14_AQ-AUTH-002_google-oauth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
 
