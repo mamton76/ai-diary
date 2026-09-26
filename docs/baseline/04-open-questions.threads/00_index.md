@@ -13,7 +13,7 @@
 |---|---|---|---|---|---|---|
 | 1 | PQ-001 | Что считается canonical source of truth? | решён | — | [тред](01_PQ-001_source-of-truth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 2 | PQ-003 | Какой minimum viable web? | обсуждаем | совместное обсуждение | [тред](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 2 | PQ-003 | Какой minimum viable web? | решён | — | [тред](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 3 | PQ-002 | Насколько обязателен full offline-first? | обсуждаем | совместное обсуждение | [тред](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Структура узла
