@@ -160,3 +160,32 @@
 - как представить undo/restore без ветвления пользовательской revision history.
 
 До появления такого use case не учитывать merge/split при проектировании текущей AI automation policy.
+
+
+---
+
+## FQ-SHARING-001 — Selective sharing
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** [PQ-007 — Sharing входит в обозримый MVP?](04-open-questions.threads/08_PQ-007_sharing-mvp/00_thread.md)  
+**Триггер для возвращения:** когда selective sharing станет реальным near-term use case, например появится задача делиться конкретной entry, family memory, trip narrative, AI-generated summary или ZoomAlboom story с близкими людьми.
+
+### Что уже решено сейчас
+
+Sharing не входит в обозримый MVP и не должен сейчас определять auth/data model.
+
+Речь идёт не о социальной сети и не о collaborative editing, а о selective sharing отдельных memory artifacts.
+
+### Что потребуется решить позже
+
+- что именно можно шарить: entry, summary, collection/story;
+- read-only ли sharing или появляются comments/collaboration;
+- кому выдаётся доступ и как он отзывается;
+- нужен ли account у получателя или достаточно share link;
+- какие privacy defaults и expiration нужны;
+- как sharing взаимодействует с user-owned canonical data;
+- что происходит с revisions/proposals после публикации;
+- нужен ли отдельный export/publication snapshot;
+- как ZoomAlboom stories используют ту же access model или отдельную.
+
+До появления такого use case не усложнять текущую auth/data model ради sharing.
