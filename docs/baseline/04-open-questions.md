@@ -280,7 +280,7 @@ File-first ценность подразумевает inspectability, но manu
 
 ## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
 
-**Обсуждение:** [AQ-DATA-010 thread](04-open-questions.threads/06_AQ-DATA-010_autosave-working-state/00_thread.md)
+**Обсуждение:** [AQ-DATA-010 thread](04-open-questions.threads/04_1_AQ-DATA-010_autosave-working-state/00_thread.md)
 
 PQ-004 определил пользовательскую семантику: autosave защищает working state, но не создаёт revision; manual revision создаётся при Save или после 10 минут inactivity.
 
