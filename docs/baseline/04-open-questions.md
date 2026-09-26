@@ -1,0 +1,680 @@
+# AI Diary — открытые вопросы перед архитектурой
+
+**Дата:** 2026-09-26  
+**Назначение:** не дать нерешённым вопросам превратиться в неявные технические решения. Здесь собраны вопросы, которые нужно либо решить до архитектуры, либо явно принять как допущения первого архитектурного draft.
+
+---
+
+# 1. Продуктовые вопросы
+
+## PQ-001 — Что именно считается canonical source of truth?
+
+Наиболее сильное новое направление — user-owned file-based diary, где canonical content хранится в переносимом формате, а индексы/БД — derived.
+
+Но архитектуре нужно проверить, насколько это совместимо с:
+
+- web editing;
+- multi-device;
+- concurrency;
+- search;
+- background jobs;
+- manual Drive edits.
+
+Нужно выбрать формулировку уровня продукта:
+
+- files — канонический источник;
+- files — канонический пользовательский export, а operational source иной;
+- hybrid с чётко определённым ownership.
+
+## PQ-002 — Насколько обязателен full offline-first?
+
+Старый Android проект делал offline-first центральным принципом.
+
+В новых обсуждениях точно требуется:
+
+- не терять capture при плохой сети;
+- быть устойчивым к временным сбоям;
+- не зависеть от постоянной идеальной connectivity.
+
+Но пока не подтверждено, что новый web/backend MVP должен полностью редактироваться offline с последующим conflict-aware sync.
+
+## PQ-003 — Какой minimum viable web?
+
+Нужно утвердить точный минимум первой полезной web-версии.
+
+Предварительно:
+
+- login;
+- list/timeline;
+- read;
+- create;
+- edit;
+- search/filter;
+- tags;
+- basic revision/history visibility.
+
+Вопрос: какие из этих пунктов обязательны в первом работающем slice, а какие во втором?
+
+## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
+
+Продукт требует их сохранять. UX может:
+
+- показывать их всегда;
+- прятать под History/Details;
+- показывать только при конфликте/AI proposal.
+
+## PQ-005 — Насколько AI автоматичен?
+
+Для разных workflows можно выбрать разные policies:
+
+- suggestion only;
+- auto-apply metadata;
+- user confirmation;
+- auto-apply при confidence threshold.
+
+Нужна общая policy или per-workflow policy.
+
+## PQ-006 — Насколько пользователь выбирает LLM provider/model?
+
+Варианты UX:
+
+- система выбирает сама;
+- один global preferred provider/model;
+- выбор per workflow;
+- advanced compare mode.
+
+Архитектурно multi-provider поддержка желательна независимо от того, насколько эта настройка видима пользователю.
+
+## PQ-007 — Sharing входит в обозримый MVP?
+
+Ранее sharing рассматривался как полезный retention/family механизм.
+
+Нужно определить:
+
+- out of scope;
+- future requirement;
+- near-term requirement, влияющий уже сейчас на auth/data model.
+
+## PQ-008 — Какова судьба старого Android-приложения?
+
+Варианты:
+
+- оставить как исторический prototype;
+- сохранить доменные куски;
+- превратить позже в native client нового API;
+- мигрировать постепенно;
+- отказаться от кода, но сохранить идеи.
+
+Этот вопрос можно решить после лёгкого code audit и не блокировать первую архитектуру web/backend.
+
+## PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
+
+Он удобен как прагматичный voice adapter, но long-term могут стать удобнее:
+
+- Telegram;
+- собственный web/mobile voice capture;
+- assistant integrations другого типа.
+
+Нужно понять: Calendar — первая полноценная интеграция или временный мост.
+
+---
+
+# 2. Data / storage вопросы
+
+## AQ-DATA-001 — Files-only или files + derived DB/index?
+
+Web UI нужен быстрый listing/filter/search.
+
+Реалистичные варианты:
+
+- прямое чтение Drive при небольшом объёме;
+- in-memory/cache index;
+- rebuildable server index;
+- relational DB как derived projection;
+- search-specific store;
+- комбинация.
+
+Ключевое ограничение: добавление operational index не должно молча менять ownership canonical data.
+
+## AQ-DATA-002 — Гранулярность storage abstraction
+
+Два полюса:
+
+### Низкоуровневый
+
+```text
+listFiles
+readFile
+writeFile
+moveFile
+```
+
+### Доменный
+
+```text
+listEntries
+getEntry
+saveRevision
+listChanges
+```
+
+Текущее направление предпочитает domain-level API, но migration/import tools могут потребовать lower-level access.
+
+## AQ-DATA-003 — Concurrency / optimistic locking
+
+Что происходит, если:
+
+- две browser tabs редактируют одну entry;
+- web и Android меняют её одновременно;
+- пользователь вручную меняет `entry.md` в Drive;
+- AI создаёт proposal, пока пользователь пишет;
+- background import обновляет related metadata.
+
+Возможные механизмы:
+
+- revision IDs;
+- ETag/version tokens;
+- append-only revisions;
+- compare-and-swap;
+- explicit conflict UI.
+
+## AQ-DATA-004 — Change detection
+
+Если Drive/files canonical, как backend эффективно узнаёт про изменения?
+
+Варианты:
+
+- Drive Changes API;
+- ETags/modified timestamps;
+- derived sync/index state;
+- MVP-ограничение: canonical writes только через backend;
+- периодический reconciliation.
+
+## AQ-DATA-005 — Asset storage
+
+Где хранятся originals:
+
+- в том же Drive/file backend;
+- object storage;
+- hybrid.
+
+Нужно учитывать:
+
+- размер;
+- previews/thumbnails;
+- streaming;
+- portability;
+- backup;
+- cost.
+
+## AQ-DATA-006 — Format schema и migrations
+
+Нужно определить:
+
+- format version granularity;
+- migration runner;
+- backward compatibility;
+- backup before migration;
+- validation;
+- возможность rebuild derived indexes после migration.
+
+## AQ-DATA-007 — Нужно ли позволять пользователю вручную редактировать canonical files?
+
+File-first ценность подразумевает inspectability, но manual editing резко усложняет:
+
+- schema validation;
+- conflict handling;
+- change detection.
+
+Можно различать:
+
+- readable/exportable files;
+- officially supported manual editing.
+
+## AQ-DATA-008 — Migration со старого Firebase/Room
+
+Сначала нужно выяснить:
+
+- есть ли там реальные уникальные пользовательские данные;
+- это test/prototype data или ценный diary history;
+- что нельзя восстановить из Drive.
+
+Только после этого решать, нужен ли migration tooling.
+
+---
+
+# 3. Backend / API вопросы
+
+## AQ-API-001 — Язык/framework backend
+
+Кандидаты, обсуждавшиеся сейчас:
+
+- Kotlin/Ktor;
+- Python/FastAPI;
+- TypeScript/Node.
+
+Критерии сравнения:
+
+- насколько удобно владельцу читать и исправлять код;
+- качество AI-generated implementation;
+- Google API ecosystem;
+- background/async jobs;
+- type safety;
+- testability;
+- library maturity;
+- deployment simplicity;
+- долгосрочное сопровождение.
+
+## AQ-API-002 — Hosting/runtime
+
+Cloud Run выглядит сильным кандидатом благодаря container model и scale-to-zero.
+
+Но нужно сравнить реальную потребность с альтернативами по:
+
+- стоимости;
+- cold starts;
+- background execution;
+- scheduler/queue integration;
+- Google OAuth/Drive convenience;
+- logs;
+- deployment complexity.
+
+## AQ-API-003 — API style
+
+REST выглядит простым default, но нужно определить:
+
+- endpoint/resource model;
+- versioning;
+- pagination;
+- errors;
+- optimistic concurrency fields;
+- long-running job semantics;
+- download/upload semantics;
+- auth scheme.
+
+## AQ-API-004 — Background processing
+
+Нужно выполнять:
+
+- capture normalization;
+- indexing;
+- Calendar sync;
+- AI workflows;
+- migrations/backfills;
+- retries.
+
+Варианты:
+
+- inline execution;
+- queue/jobs;
+- scheduler;
+- Cloud Run jobs;
+- external agent runner;
+- комбинация.
+
+## AQ-API-005 — Dev/staging/prod
+
+Минимум вероятны:
+
+- local/dev;
+- personal production.
+
+Нужно понять, нужен ли staging или он только усложнит личный проект.
+
+## AQ-API-006 — Monorepo структура
+
+Репозиторий может содержать:
+
+```text
+android/
+web/
+backend/
+docs/
+```
+
+Но нужно решить:
+
+- один Gradle root или независимые builds;
+- где frontend package manager;
+- shared schemas/types;
+- CI boundaries;
+- release versioning.
+
+Это не повод делить продукт на несколько repo заранее.
+
+---
+
+# 4. Web frontend вопросы
+
+## AQ-WEB-001 — Frontend stack
+
+React/TypeScript — кандидат, не решение.
+
+Критерии:
+
+- responsive/adaptive UI;
+- ecosystem;
+- Markdown/editor support;
+- auth integration;
+- AI-agent coding quality;
+- testing;
+- deployment;
+- maintainability.
+
+## AQ-WEB-002 — Feature parity на телефоне
+
+Нужно точно определить обязательный mobile web scope.
+
+Вероятно обязательно:
+
+- browse;
+- read;
+- capture/create;
+- basic edit;
+- search/filter.
+
+Можно оставить desktop-first:
+
+- revision diff;
+- bulk operations;
+- complex AI workflow configuration;
+- debugging/admin.
+
+## AQ-WEB-003 — Editor semantics
+
+Варианты:
+
+- textarea;
+- Markdown editor;
+- rich text с сериализацией в Markdown;
+- structured block editor.
+
+Продуктовое требование склоняет к durable human-readable representation, но UX не обязан выглядеть как сырой Markdown.
+
+## AQ-WEB-004 — Live updates
+
+Нужны ли:
+
+- WebSocket/SSE/push;
+- polling;
+- manual refresh;
+- обновление после завершения background job.
+
+Для MVP real-time может быть излишним.
+
+## AQ-WEB-005 — Работа с revisions
+
+Нужно решить первый UX:
+
+- просто history list;
+- diff;
+- restore old revision;
+- compare AI proposal;
+- merge conflict screen.
+
+---
+
+# 5. Authentication / Authorization
+
+## AQ-AUTH-001 — Identity model
+
+Google account — естественный first path.
+
+Нужно решить, использовать ли:
+
+- Firebase Auth;
+- direct Google OIDC/OAuth;
+- другой auth middleware.
+
+## AQ-AUTH-002 — Drive/Calendar OAuth
+
+Нужно определить:
+
+- где хранится refresh token;
+- какие scopes запрашиваются;
+- incremental consent;
+- token revocation;
+- account switch;
+- expired permissions;
+- re-auth UX.
+
+## AQ-AUTH-003 — Single-user vs multi-user readiness
+
+Первый production может быть только для одного владельца.
+
+Вопрос: стоит ли с первого дня иметь explicit `userId/ownerId` в domain/API, чтобы не делать болезненную миграцию позже.
+
+## AQ-AUTH-004 — Доступ backend к user-owned Drive
+
+Нужно решить модель:
+
+- backend действует от имени пользователя по OAuth token;
+- service account + shared folder;
+- другой pattern.
+
+Это сильно влияет на security и deployment.
+
+---
+
+# 6. AI subsystem вопросы
+
+## AQ-AI-001 — Provider adapter contract
+
+Нужен общий интерфейс, но нельзя потерять полезные provider-specific capabilities.
+
+Нужно определить common denominator и extension mechanism.
+
+## AQ-AI-002 — Где живёт workflow definition
+
+Возможный split:
+
+- code-defined orchestration;
+- versioned prompts/config;
+- user instructions;
+- output schema;
+- validators;
+- tools.
+
+Нужно решить, что принадлежит repo/code, а что user diary data/config.
+
+## AQ-AI-003 — Где хранить run records
+
+Потенциальные поля:
+
+- workflow/version;
+- prompt/version;
+- provider/model;
+- input references/snapshot;
+- parameters;
+- output;
+- validation;
+- timing;
+- token/cost;
+- user review/apply state.
+
+Вопрос: canonical file, operational DB, оба слоя?
+
+## AQ-AI-004 — Context building
+
+Как workflow выбирает материал дневника:
+
+- date range;
+- tags;
+- explicit selected entries;
+- recent context;
+- semantic retrieval;
+- long-term AI memory.
+
+Provider должен получать уже подготовленный context, а не сам лазить по storage.
+
+## AQ-AI-005 — Prompt customization
+
+Варианты:
+
+- только developer prompts;
+- user overrides;
+- user-created prompts;
+- full custom workflows.
+
+Вероятен гибрид, но нужна permission/versioning model.
+
+## AQ-AI-006 — Sensitive-data policy
+
+До полноценного multi-provider AI нужно определить:
+
+- что можно отправлять provider;
+- надо ли подтверждение;
+- как показывается provider;
+- можно ли запретить отдельному workflow external AI;
+- retention/logging policy.
+
+## AQ-AI-007 — Structured outputs / validation
+
+Для workflows, которые меняют metadata, желательно использовать schema validation.
+
+Нужно определить:
+
+- JSON schema/Pydantic/Kotlin model и т. п.;
+- retry/repair;
+- invalid output handling;
+- user review.
+
+---
+
+# 7. Integrations / Calendar / Telegram
+
+## AQ-INT-001 — Calendar inbox priority
+
+Оставляем production feature или считаем transition adapter?
+
+## AQ-INT-002 — Calendar timeline priority
+
+Полезная derived feature, но вероятно не critical path для новой web/backend архитектуры.
+
+## AQ-INT-003 — Telegram scope
+
+Какие inputs поддержать сначала:
+
+- text;
+- voice;
+- photo;
+- links;
+- forwarded files;
+- multi-message session.
+
+## AQ-INT-004 — Unified CaptureItem contract
+
+Нужно формализовать один normalized input, чтобы каждый adapter не знал final persistence schema.
+
+## AQ-INT-005 — Assistant-specific integrations
+
+Если ChatGPT/Gemini/другие ассистенты умеют напрямую писать в Calendar или API, нужно решить, считать ли это официальным integration path или просто удобным external capture mechanism.
+
+---
+
+# 8. Search / Indexing
+
+## AQ-SEARCH-001 — MVP search semantics
+
+Минимум определить поддержку:
+
+- title/body substring/full-text;
+- tags;
+- date range;
+- source;
+- status.
+
+## AQ-SEARCH-002 — Semantic search timing
+
+Cross-entry AI почти наверняка со временем потребует semantic retrieval, но можно оставить extension point и не тащить vector DB в MVP.
+
+## AQ-SEARCH-003 — Rebuild semantics
+
+Если index derived, должен существовать способ:
+
+- удалить его;
+- пересобрать из canonical data;
+- проверить consistency.
+
+---
+
+# 9. Reliability / Observability / Operations
+
+## AQ-OPS-001 — Минимальный run log
+
+Что обязаны хранить capture, sync и AI workflows?
+
+Нужно найти баланс между debuggability и лишним объёмом sensitive data.
+
+## AQ-OPS-002 — Retry/idempotency contract
+
+Каждый external/background workflow должен определять:
+
+- deterministic source identity;
+- safe retry;
+- partial failure behavior;
+- duplicate prevention.
+
+## AQ-OPS-003 — Backup и restore test
+
+Недостаточно иметь кнопку «backup».
+
+Нужно в будущем проверить сценарий:
+
+1. потерять derived state;
+2. взять canonical storage/backup;
+3. восстановить indexes;
+4. открыть entries в UI;
+5. убедиться, что provenance/revisions сохранились.
+
+## AQ-OPS-004 — Cost guardrails
+
+Нужны разумные лимиты/наблюдение для:
+
+- hosting;
+- storage;
+- LLM;
+- logs;
+- network egress.
+
+## AQ-OPS-005 — CI/CD
+
+Нужно решить:
+
+- что тестируется на PR;
+- как deploy backend/web;
+- нужен ли manual approval;
+- как хранить secrets;
+- как rollback.
+
+---
+
+# 10. Вопросы, которые НЕ должны блокировать первый архитектурный draft
+
+Можно оставить placeholders для:
+
+- финального sharing model;
+- advanced AI memory;
+- provider comparison UI;
+- ZoomAlboom-specific export format;
+- semantic search implementation;
+- сложной people/place ontology;
+- full media processing;
+- real-time collaboration;
+- on-device LLM;
+- полноценного Android migration plan.
+
+Перед сравнением архитектур обязательно должны быть **решены или явно приняты как assumptions** следующие пункты:
+
+1. canonical data direction;
+2. роль Drive/files;
+3. required web capabilities;
+4. отдельный backend API;
+5. capture normalization boundary;
+6. revision/provenance guarantees;
+7. full offline-first: да/нет/позже;
+8. auth + Google integration model на высоком уровне;
+9. multi-provider LLM requirement;
+10. отношение к старому Android/Firebase implementation;
+11. ожидаемый single-user/multi-user horizon;
+12. допустимая operational complexity/cost.
