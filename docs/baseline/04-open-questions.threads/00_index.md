@@ -20,7 +20,6 @@
 | 4.1 | AQ-DATA-010 | Как хранить autosave / working state editing session? | решён | ✅ resolved | none | — | [📁](04_1_AQ-DATA-010_autosave-working-state/) | [00_thread.md](04_1_AQ-DATA-010_autosave-working-state/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 | 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 8 | PQ-007 | Sharing входит в обозримый MVP? | решён | ✅ resolved | none | — | [📁](08_PQ-007_sharing-mvp/) | [00_thread.md](08_PQ-007_sharing-mvp/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / 06-future-questions.md |
-
 | 9 | PQ-009 | Нужен ли Calendar inbox как постоянная production feature? | решён | ✅ resolved | none | — | [📁](09_PQ-009_calendar-inbox-role/) | [00_thread.md](09_PQ-009_calendar-inbox-role/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
