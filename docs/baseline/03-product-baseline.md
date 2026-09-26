@@ -623,6 +623,20 @@ AI automation policy определяется per workflow/type of change, а н
 Merge/split entries отложены на future stage; bulk AI mutation/delete не являются текущими MVP workflows.
 
 
+### 15.6 Выбор LLM model
+
+Пользователь может задавать preferred model на нескольких уровнях. Приоритет:
+
+1. override для конкретной task/run;
+2. preferred model workflow;
+3. global preferred model пользователя;
+4. system default.
+
+Ожидаемый основной сценарий — один global preferred model, который наследуют большинство workflows. Отдельный provider пользователю выбирать не нужно: provider определяется выбранной model.
+
+Если preferred model недоступна, AI Diary не должен тихо переключаться на другую model/provider без явного согласия пользователя. Детали fallback/retry/deprecation относятся к implementation и UX policy.
+
+
 ---
 
 ## 16. AI memory / персонализация
