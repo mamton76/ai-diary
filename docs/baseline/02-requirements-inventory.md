@@ -81,9 +81,9 @@ Capture adapters и background workflows должны быть идемпоте�
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Желаемый канал, но конкретный UX пока не определён.
 
-### CAP-010 — Web должен уметь создавать записи
-**Статус:** ПОДТВЕРЖДЕНО  
-Новый web — не только viewer.
+### CAP-010 — Web create/capture
+**Статус:** ОТЛОЖЕНО / НЕ ОБЯЗАТЕЛЬНО ДЛЯ ПЕРВЫХ ЭТАПОВ  
+Первый полезный web slice работает с существующими entries. Простую форму create можно добавить opportunistically, если она почти не увеличивает scope, но она не должна задерживать browse/read/search/edit/versioning.
 
 ### CAP-011 — Raw file drop / import
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
@@ -334,12 +334,13 @@ Derived слой можно пересобрать; его рассинхрон�
 ### WEB-002 — Web должен адаптироваться под desktop и phone
 **Статус:** ПОДТВЕРЖДЕНО.
 
-### WEB-003 — Базовые функции web: browse/read/create/edit
-**Статус:** ПОДТВЕРЖДЕНО.
+### WEB-003 — Пошаговый scope web
+**Статус:** ПОДТВЕРЖДЕНО  
+Первый slice: browse/list + read + search/filter существующих entries. Следующий этап: edit + versioning/history. Затем tags view/edit. Затем AI processing/workflows. Web create не является обязательным для первых этапов.
 
 ### WEB-004 — Нужны search/filter/navigation
 **Статус:** ПОДТВЕРЖДЕНО  
-Минимум: текст, date range, tags/status/source в разумном объёме.
+Минимум первого slice: текст, date/date range и tags. Status/source и другие filters можно добавить позже.
 
 ### WEB-005 — Web не должен быть единственным местом бизнес-логики
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -497,8 +498,9 @@ Context building и storage access выполняются внутри прил�
 ### SEARCH-001 — Нужен обычный текстовый поиск
 **Статус:** ПОДТВЕРЖДЕНО.
 
-### SEARCH-002 — Нужны date/tag/status/source filters
-**Статус:** ПОДТВЕРЖДЕНО В БАЗОВОМ ВИДЕ.
+### SEARCH-002 — Нужны date/tag filters
+**Статус:** ПОДТВЕРЖДЕНО В БАЗОВОМ ВИДЕ.  
+Для первого slice обязательны date/date range и tags. Status/source не являются обязательными на старте.
 
 ### SEARCH-003 — Semantic search / embeddings
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
