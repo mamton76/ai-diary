@@ -1,7 +1,10 @@
 # PQ-002 — Насколько обязателен full offline-first?
 
 **Источник:** [04-open-questions.md / PQ-002](../../04-open-questions.md#pq-002--насколько-обязателен-full-offline-first)  
-**Статус:** обсуждаем  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -47,3 +50,9 @@
 - Будущую offline-capable native/mobile архитектуру не блокировать необратимыми решениями.
 
 Окончательное решение и перенос формулировок в product/requirements baseline будут сделаны после завершения обсуждения связанных архитектурных вопросов.
+
+### Итог
+
+Для первого web/backend MVP принимается online-first модель. Полный offline browsing/editing и conflict-aware offline sync откладываются. Уже введённый текст/capture не должен тихо теряться при кратковременной потере сети; safe retry и видимые failures обязательны. Архитектура не должна блокировать будущий offline-capable native/mobile client. Конкретный механизм autosave/local persistence/sync остаётся отдельным implementation/architecture вопросом.
+
+**Решение:** [принято] (2026-09-26) Первый web/backend MVP — online-first; full offline-first отложен; защита введённого текста/capture от кратковременной потери сети обязательна.
