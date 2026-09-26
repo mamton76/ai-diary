@@ -441,8 +441,9 @@ AI, indexing, import, Calendar sync и migrations не всегда стоит �
 
 # J. Authentication и Google integration
 
-### AUTH-001 — Google identity — естественный первый login path
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ.
+### AUTH-001 — Internal user identity независима от login provider
+**Статус:** ПОДТВЕРЖДЕНО  
+AI Diary имеет собственный stable internal user/account ID. Google — первый login method для MVP, но Google account ID не должен быть единственным внутренним user identity. External login identities должны привязываться к internal user отдельно, чтобы позже можно было добавить другие способы входа без миграции основной user model.
 
 ### AUTH-002 — Login и доступ к Google API — разные вещи
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -452,9 +453,9 @@ AI, indexing, import, Calendar sync и migrations не всегда стоит �
 **Статус:** ПОДТВЕРЖДЕНО  
 Приложение должно просить только те Google permissions, которые реально нужны.
 
-### AUTH-004 — Firebase Auth обязателен
-**Статус:** ОТКРЫТО  
-Можно использовать, но это не следует из требования «логин через Google».
+### AUTH-004 — Конкретный auth service/framework не фиксируется заранее
+**Статус:** ПОДТВЕРЖДЕНО  
+Firebase Auth, direct OIDC или другой auth middleware выбирается вместе с backend/hosting. Продуктовый контракт важнее конкретного провайдера: internal user identity должна оставаться независимой от login method.
 
 ### AUTH-005 — Multi-user application с изолированными данными
 **Статус:** ПОДТВЕРЖДЕНО  
