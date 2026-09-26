@@ -1,10 +1,10 @@
 # AQ-AUTH-004 — Доступ backend к user-owned Drive
 
 **Источник:** [04-open-questions.md / AQ-AUTH-004](../../04-open-questions.md#aq-auth-004--доступ-backend-к-user-owned-drive)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -34,4 +34,12 @@
 
 Нужно выбрать high-level access model. Детали scopes, refresh-token storage, revocation и incremental consent относятся к AQ-AUTH-002.
 
-**Решение:** —
+### Сводка 2 — решение
+
+Backend получает доступ к canonical Google Drive пользователя через OAuth и действует от имени самого пользователя. Service account + shared folder не используется как основной multi-user access pattern.
+
+Это согласуется с user-owned storage: данные остаются в Drive пользователя, а backend получает только явно предоставленные Google API permissions.
+
+Детали scopes, refresh-token storage, revocation, incremental consent и re-auth остаются в AQ-AUTH-002.
+
+**Решение:** [принято] Backend accesses each user's Drive on the user's behalf via OAuth; service-account/shared-folder pattern is not the primary model.
