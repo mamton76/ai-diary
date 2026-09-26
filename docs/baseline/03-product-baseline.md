@@ -576,14 +576,24 @@ Workflow не должен знать Drive paths, а provider не должен
 
 ### 15.5 Пользовательский контроль
 
-AI output может быть:
+AI automation policy определяется per workflow/type of change, а не одной глобальной настройкой.
 
-- informational only;
-- proposal;
-- применяемым после review;
-- автоматически применяемым только для безопасных derived metadata.
+Для MVP:
 
-Точная policy будет определяться по workflow.
+- informational/derived AI output может создаваться автоматически;
+- если raw capture сохранён, первая normalized/processed entry может создаваться автоматически; uncertainty должна оставаться явной;
+- существующие tags могут auto-apply при высокой уверенности;
+- создание новых tags по умолчанию идёт через proposal;
+- AI не удаляет user-added tags автоматически;
+- изменение существующего content или неоднозначного metadata через AI сначала создаёт **persistent proposal**, даже если workflow запущен пользователем вручную;
+- proposal не является revision до Accept/Apply;
+- pending proposal хранит target/scope/base state и живёт до Accept/Reject либо supersede;
+- если base state изменился, proposal может стать stale/conflicted и не должен silently применяться;
+- несколько proposals могут существовать параллельно, если их scopes не конфликтуют;
+- точные confidence thresholds и policy для будущих metadata определяются при появлении соответствующего workflow.
+
+Merge/split entries отложены на future stage; bulk AI mutation/delete не являются текущими MVP workflows.
+
 
 ---
 
