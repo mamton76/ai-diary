@@ -1,7 +1,7 @@
 # PQ-001 — Что именно считается canonical source of truth?
 
 **Источник:** [04-open-questions.md / PQ-001](../../04-open-questions.md#pq-001--что-именно-считается-canonical-source-of-truth)  
-**Статус:** обсуждаем  
+**Статус:** решён  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
