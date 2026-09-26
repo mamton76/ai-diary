@@ -78,3 +78,60 @@
 - понятного trigger-а, когда его пора вернуть в активную работу.
 
 Не создавать discussion thread, пока вопрос действительно не возвращён в активное обсуждение.
+
+## FQ-SEARCH-001 — Advanced search / semantic exploration
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** PQ-003 / product baseline search scope  
+**Триггер для возвращения:** когда обычного text/date/tag search перестанет хватать или появятся cross-entry AI сценарии.
+
+### Что уже решено сейчас
+
+Первый web slice использует обычный поиск по:
+
+- тексту;
+- date/date range;
+- tags.
+
+### Что сознательно отложено
+
+Позже можно вернуться к:
+
+- semantic search;
+- embedding-based retrieval;
+- cross-entry Q&A;
+- поиску паттернов;
+- тематическим clusters;
+- people/place exploration;
+- дополнительным source/status filters, если они окажутся полезны.
+
+Главный будущий вопрос — какой из этих сценариев реально нужен пользователю и какой retrieval/index слой оправдан под него. Не тянуть vector/semantic infrastructure в MVP только ради будущей возможности.
+
+---
+
+## FQ-REVISION-001 — Rich History / Revisions UX
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** PQ-004 — raw/revisions UX  
+**Триггер для возвращения:** когда базовый History/Revisions экран уже работает и становится важна более удобная навигация по длинной истории изменений.
+
+### Что уже решено сейчас
+
+Для MVP:
+
+- Current Entry отделён от History/Revisions;
+- manual revisions сохраняются отдельно;
+- подряд идущие manual revisions можно группировать визуально;
+- restore создаёт новую revision поверх текущей истории;
+- revision history остаётся линейной.
+
+### Что сознательно оставлено на потом
+
+- более богатая timeline/points-визуализация истории;
+- более удобное сравнение revisions/diff;
+- более подробный desktop History UX;
+- отдельная mobile presentation, если компактного списка станет недостаточно.
+
+Это именно presentation layer: данные revisions должны позволять улучшать UI позже без миграции истории.
+
+---
