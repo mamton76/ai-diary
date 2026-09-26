@@ -2,6 +2,9 @@
 
 **Источник:** [04-open-questions.md / PQ-004](../../04-open-questions.md#pq-004--нужно-ли-сразу-показывать-rawrevisions-пользователю)  
 **Статус:** обсуждаем  
+**Состояние:** in_discussion  
+**Claim:** active  
+**Ведёт:** ChatGPT conversation  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
