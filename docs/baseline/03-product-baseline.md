@@ -414,14 +414,14 @@ AI Diary должен восприниматься как **один логич�
 7. внешние проекции вроде Google Calendar имеют собственную sync policy и не равны core diary synchronization;
 8. если canonical files могут меняться вне backend, такие изменения нужно обнаруживать и reconciliate.
 
-При этом **полный offline-first режим для всей новой web/backend версии пока не является подтверждённым требованием**. Минимально обязательны:
+Для первого web/backend MVP принят **online-first** режим. Full offline browsing/editing и conflict-aware offline sync откладываются. Минимально обязательны:
 
 - не терять capture из-за кратковременного отсутствия сети;
 - уметь безопасно повторять операции;
 - явно показывать failure;
 - не уничтожать параллельные пользовательские изменения.
 
-Нужен ли полноценный offline edit + background merge для всего клиента — отдельный открытый вопрос.
+Архитектура не должна необратимо закрывать путь к будущему offline-capable native/mobile client. Конкретный механизм local persistence/autosave/sync определяется отдельно.
 
 ---
 
@@ -654,7 +654,7 @@ AI output может быть:
 - backup/restore;
 - прозрачный AI provenance.
 
-Полный offline-first для новой версии пока не зафиксирован как обязательное MVP-требование.
+Первый web/backend MVP — online-first; полный offline-first отложен, но защита уже введённого текста от кратковременных сетевых сбоев обязательна.
 
 ---
 
