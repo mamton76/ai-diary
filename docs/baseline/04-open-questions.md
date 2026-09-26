@@ -70,16 +70,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-005 — Насколько AI автоматичен?
 
+**Статус:** решён  
 **Обсуждение:** [PQ-005 thread](04-open-questions.threads/05_PQ-005_ai-automation-policy/00_thread.md)
 
-Для разных workflows можно выбрать разные policies:
+**Решение:** policy задаётся per workflow/type of change. Безопасные reversible изменения могут auto-apply, а изменения существующего содержимого через AI сначала оформляются как persistent proposal и становятся revision только после Accept/Apply. Первая normalized entry может создаваться автоматически при сохранённом raw; existing tags могут auto-apply при высокой уверенности; новые теги по умолчанию предлагаются. Точные thresholds и future metadata policies не блокируют MVP.
 
-- suggestion only;
-- auto-apply metadata;
-- user confirmation;
-- auto-apply при confidence threshold.
-
-Нужна общая policy или per-workflow policy.
 
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
