@@ -16,7 +16,7 @@
 | 2 | PQ-003 | Какой minimum viable web? | решён | — | [тред](02_PQ-003_minimum-viable-web/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 3 | PQ-002 | Насколько обязателен full offline-first? | обсуждаем | совместное обсуждение | [тред](03_PQ-002_offline-first/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | обсуждаем | совместное обсуждение | [тред](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 4 | PQ-004 | Нужно ли сразу показывать raw/revisions? | in_discussion | ChatGPT conversation (claimed) | [тред](04_PQ-004_raw-revisions-ux/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 | 5 | PQ-005 | Насколько AI автоматичен? | обсуждаем | совместное обсуждение | [тред](05_PQ-005_ai-automation-policy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
