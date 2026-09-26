@@ -41,7 +41,7 @@ Manual revision определяется не «размером» правки,
 - session начинается с **первой реальной ручной правки**;
 - с этого момента работает autosave;
 - autosave сохраняет промежуточный working state, но сам по себе **не создаёт revision**;
-- session завершается явным **Save** или после **10 минут без изменений**;
+- session завершается явным **Save** или после **1 часа без изменений**;
 - при завершении session последнее autosaved состояние фиксируется как manual revision.
 
 Не вводим эвристику «мелкая/крупная правка»: даже исправление одной запятой может быть отдельной revision, если это отдельная завершённая editing session.
@@ -73,7 +73,7 @@ Restore старой revision:
 
 1. Current Entry и History/Revisions разделены в UX.
 2. AI mutation существующей записи всегда создаёт revision.
-3. Manual editing session начинается с первой правки и создаёт одну revision при Save или после 10 минут inactivity.
+3. Manual editing session начинается с первой правки и создаёт одну revision при Save или после 1 часа inactivity.
 4. Autosave не является revision.
 5. Подряд идущие manual revisions группируются в раскрываемый блок только на уровне UI.
 6. Revision history линейная, без branches.
