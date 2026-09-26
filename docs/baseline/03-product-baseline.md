@@ -652,7 +652,12 @@ Merge/split entries отложены на future stage; bulk AI mutation/delete 
 В таком сценарии:
 
 - diary entries остаются canonical;
-- events создаются/обновляются из diary data;
+- Calendar inbox — optional transport/adapter, а не core dependency;
+- timeline projection работает отдельно от capture;
+- одна diary entry соответствует одному Calendar event;
+- при новой committed revision или другом изменении current state существующий Calendar event обновляется;
+- отдельные Calendar events для каждой revision не создаются;
+- pending AI proposals не публикуются как current diary state;
 - projection может быть удалена и перестроена;
 - внешние IDs остаются integration state;
 - Calendar manual edits не обязаны становиться diary edits.
