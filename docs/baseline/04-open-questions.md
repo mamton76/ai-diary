@@ -276,25 +276,10 @@ File-first ценность подразумевает inspectability, но manu
 
 ## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
 
-**Обсуждение:** [AQ-DATA-010 thread](04-open-questions.threads/04_1_AQ-DATA-010_autosave-working-state/00_thread.md)
+**Статус:** РЕШЕНО  
+**Решение:** один server-side current working draft хранится в operational state; локально клиент держит bounded recovery snapshots. Canonical revisions и operational draft семантически разделены, хотя физически могут жить в одном storage на MVP. Для manual editing используется soft lease с одним active editor и безопасным takeover между sessions. AI mutations используют mutation lease, могут ждать в очереди, уступают ручному редактированию и при устаревшем base state проходят compatibility/revalidation. MVP-defaults: до 5 local snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision, auto-revision после 1 часа inactivity. Server draft очищается после successful revision; при failed commit сохраняется. Draft sync: debounce + guaranteed flush, точные интервалы configurable.  
+**История обсуждения:** [AQ-DATA-010 thread](04-open-questions.threads/04_1_AQ-DATA-010_autosave-working-state/00_thread.md)
 
-PQ-004 определил пользовательскую семантику: autosave защищает working state, но не создаёт revision; manual revision создаётся при Save или после 1 часа inactivity.
-
-Рабочая техническая модель:
-- server-side `current working draft` хранится в operational state;
-- canonical и operational storage могут физически совпадать на MVP, но семантически разделены;
-- локально хранится до 5 recovery snapshots с интервалом не более 30 секунд;
-- после успешной revision local snapshots живут ещё 24 часа;
-- auto-revision создаётся из server-side working draft после 1 часа inactivity.
-
-Остаётся решить:
-
-- один mutable working draft или несколько autosave snapshots;
-- где хранить draft;
-- crash/reload/network recovery;
-- cleanup после revision и abandoned drafts;
-- взаимодействие с concurrency;
-- поведение при AI mutation во время активной editing session.
 
 ---
 
