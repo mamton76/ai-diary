@@ -112,13 +112,10 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
 
-Он удобен как прагматичный voice adapter, но long-term могут стать удобнее:
+**Статус:** решён  
+**Обсуждение:** [PQ-009 thread](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md)
 
-- Telegram;
-- собственный web/mobile voice capture;
-- assistant integrations другого типа.
-
-Нужно понять: Calendar — первая полноценная интеграция или временный мост.
+**Решение:** Calendar inbox остаётся optional production transport/adapter и не является core dependency. Calendar timeline — отдельная derived one-way projection: одна diary entry соответствует одному Calendar event; при новой committed revision/current-state change существующий event обновляется, а отдельные events для каждой revision не создаются.
 
 ---
 
