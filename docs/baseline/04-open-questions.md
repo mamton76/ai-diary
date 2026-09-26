@@ -87,6 +87,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
+**Обсуждение:** [PQ-006 thread](04-open-questions.threads/07_PQ-006_llm-provider-model-choice/00_thread.md)
+
 Варианты UX:
 
 - система выбирает сама;
