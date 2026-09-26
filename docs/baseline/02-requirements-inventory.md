@@ -456,9 +456,13 @@ AI, indexing, import, Calendar sync и migrations не всегда стоит �
 **Статус:** ОТКРЫТО  
 Можно использовать, но это не следует из требования «логин через Google».
 
-### AUTH-005 — Поддерживать явного owner/user ID в data contracts
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Даже если первое deployment — персональное.
+### AUTH-005 — Multi-user application с изолированными данными
+**Статус:** ПОДТВЕРЖДЕНО  
+AI Diary с самого начала проектируется как multi-user application: один backend/application может обслуживать нескольких авторизованных пользователей, у каждого свой логический дневник и изолированные данные.
+
+Authenticated user context обязателен для shared operational/server-side state. Drafts, leases, jobs, proposals, indexes/cache, OAuth tokens, settings и AI run records должны быть user-scoped.
+
+Explicit ownerId не обязан дублироваться внутри каждого canonical diary file, если ownership уже задаётся user-owned storage boundary. Sharing и сложные ACL между пользователями остаются отдельной future feature.
 
 ---
 
