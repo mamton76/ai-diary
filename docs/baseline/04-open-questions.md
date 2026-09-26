@@ -60,22 +60,9 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-003 — Какой minimum viable web?
 
-**Обсуждение:** [PQ-003 thread](04-open-questions.threads/02_PQ-003_minimum-viable-web/00_thread.md)
-
-Нужно утвердить точный минимум первой полезной web-версии.
-
-Предварительно:
-
-- login;
-- list/timeline;
-- read;
-- create;
-- edit;
-- search/filter;
-- tags;
-- basic revision/history visibility.
-
-Вопрос: какие из этих пунктов обязательны в первом работающем slice, а какие во втором?
+**Статус:** РЕШЕНО  
+**Решение:** первый полезный web slice работает с существующими entries: browse/list, read и search/filter по тексту, дате/date range и tags. Следующий этап — editing + versioning/history, затем tags view/edit, затем AI processing/workflows. Web-create не обязателен для первых этапов и может быть добавлен opportunistically, если почти не увеличивает scope.  
+**История обсуждения:** [PQ-003 thread](04-open-questions.threads/02_PQ-003_minimum-viable-web/00_thread.md)
 
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
