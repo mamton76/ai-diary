@@ -556,6 +556,11 @@ Context building и storage access выполняются внутри прил�
 ### INT-006 — Интеграции должны быть заменяемыми
 **Статус:** ПОДТВЕРЖДЕНО.
 
+### INT-007 — Calendar projection обновляет существующий event на committed revision
+**Статус:** ПОДТВЕРЖДЕНО.
+
+Для одной diary entry должен существовать один Calendar event. При новой committed revision или другом изменении current state существующий event обновляется. Отдельные Calendar events для каждой revision не создаются; pending proposals не считаются current diary state.
+
 ---
 
 # M. Search / navigation
