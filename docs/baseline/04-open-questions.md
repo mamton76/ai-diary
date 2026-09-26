@@ -66,13 +66,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
-**Обсуждение:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)
+**Статус:** РЕШЕНО  
+**Решение:** current Entry и History/Revisions разделены; AI mutation создаёт revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 10 минут inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; история линейная без branches; Restore создаёт новую revision из старого snapshot и сохраняет provenance-ссылку на source revision.  
+**История обсуждения:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)
 
-Продукт требует их сохранять. UX может:
-
-- показывать их всегда;
-- прятать под History/Details;
-- показывать только при конфликте/AI proposal.
+Техническое хранение autosave/working draft вынесено в AQ-DATA-010.
 
 ## PQ-005 — Насколько AI автоматичен?
 
@@ -276,6 +274,22 @@ File-first ценность подразумевает inspectability, но manu
 - как выполняются retry/idempotency и duplicate prevention.
 
 Важно не смешивать core diary sync с Calendar projection, capture queue и backup/export — это разные sync contracts.
+
+
+## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
+
+**Обсуждение:** [AQ-DATA-010 thread](04-open-questions.threads/06_AQ-DATA-010_autosave-working-state/00_thread.md)
+
+PQ-004 определил пользовательскую семантику: autosave защищает working state, но не создаёт revision; manual revision создаётся при Save или после 10 минут inactivity.
+
+Отдельно нужно решить техническую persistence model:
+
+- один mutable working draft или несколько autosave snapshots;
+- где хранить draft;
+- crash/reload/network recovery;
+- cleanup после revision и abandoned drafts;
+- взаимодействие с concurrency;
+- поведение при AI mutation во время активной editing session.
 
 ---
 
