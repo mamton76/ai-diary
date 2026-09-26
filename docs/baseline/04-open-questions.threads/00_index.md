@@ -28,7 +28,7 @@
 
 | 12 | AQ-AUTH-001 | Identity model | решён | ✅ resolved | none | — | [📁](12_AQ-AUTH-001_identity-model/) | [00_thread.md](12_AQ-AUTH-001_identity-model/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 13 | AQ-AUTH-004 | Доступ backend к user-owned Drive | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](13_AQ-AUTH-004_drive-access/) | [00_thread.md](13_AQ-AUTH-004_drive-access/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 13 | AQ-AUTH-004 | Доступ backend к user-owned Drive | решён | ✅ resolved | none | — | [📁](13_AQ-AUTH-004_drive-access/) | [00_thread.md](13_AQ-AUTH-004_drive-access/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
 
