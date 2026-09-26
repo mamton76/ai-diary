@@ -23,6 +23,16 @@
 
 ## Контекст
 
+## Связанные источники
+
+- [Product baseline §15 — LLM / AI](../../03-product-baseline.md#15-llm--ai-как-отдельная-подсистема)
+- [Source ledger](../../05-source-ledger.md), где перечислены исходные workflow-документы:
+  - `02_Workflow_Inbox_To_Entry.md`
+  - `03_Workflow_Tag_Enrichment.md`
+  - `04_Workflow_Google_Calendar_Inbox.md`
+
+Вопрос PQ-005 возникает на границе между AI-result и изменением diary state: при создании/очистке entry из inbox, tag/metadata enrichment, изменении существующей entry, background workflows и массовой обработке.
+
 Нужно отделить удобство автоматизации от риска незаметно переписать личную историю. Уже принятые принципы требуют сохранять raw/provenance и не терять пользовательские изменения.
 
 Это голосовой тред: разговор не стенографируется. В файл попадают только смысловые сводки и явно принятые решения.
