@@ -689,9 +689,11 @@ Merge/split entries отложены на future stage; bulk AI mutation/delete 
 
 ## 18. Authentication и user model
 
-Поскольку Drive/Calendar находятся в Google ecosystem, Google identity — естественный первый вариант.
+Поскольку Drive/Calendar находятся в Google ecosystem, Google — естественный первый login method для MVP. При этом AI Diary использует собственный stable internal user/account ID, а external login identities привязываются к нему отдельно. Google account ID не является единственным внутренним identity, чтобы позже можно было добавить другие способы входа без миграции основной user model.
 
-Но необходимо различать:
+Конкретный auth service/framework (Firebase Auth, direct OIDC или другой middleware) сейчас не фиксируется и выбирается вместе с backend/hosting.
+
+Необходимо различать:
 
 - кто залогинен в AI Diary;
 - какие scopes пользователь дал для Drive;
