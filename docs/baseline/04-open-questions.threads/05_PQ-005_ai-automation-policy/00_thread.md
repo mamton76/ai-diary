@@ -1,10 +1,10 @@
 # PQ-005 — Насколько AI автоматичен?
 
 **Источник:** [04-open-questions.md / PQ-005](../../04-open-questions.md#pq-005--насколько-ai-автоматичен)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -146,4 +146,4 @@ Proposal должен явно знать, к чему он относится �
 - конкретная policy для title/people/place и других будущих metadata может определяться позже при появлении реального workflow;
 - точные confidence thresholds и перечень auto-apply полей не являются blocking product decisions для текущей архитектуры.
 
-**Решение:** —
+**Решение:** [принято] (2026-09-26) AI automation policy задаётся per workflow/type of change. Первая normalized entry может создаваться автоматически при сохранённом raw и явной uncertainty; существующие теги могут auto-apply при высокой уверенности, новые теги по умолчанию идут через proposal, user-added tags AI сам не удаляет. Изменения существующего content/metadata через AI сначала являются persistent proposal и становятся committed revision только после Accept/Apply. Proposal хранит target/scope/base state, может быть stale/conflicted или superseded и живёт до явного resolution. Точные confidence thresholds и policy для будущих metadata/workflows определяются позже; merge/split отложены, bulk/delete не входят в текущий scope.
