@@ -71,6 +71,8 @@
 
 ## PQ-003 — Какой minimum viable web?
 
+**Обсуждение:** [PQ-003 thread](04-open-questions.threads/02_PQ-003_minimum-viable-web/00_thread.md)
+
 Нужно утвердить точный минимум первой полезной web-версии.
 
 Предварительно:
