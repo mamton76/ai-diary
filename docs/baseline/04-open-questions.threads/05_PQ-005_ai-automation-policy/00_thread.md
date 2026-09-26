@@ -94,4 +94,16 @@
 
 Открытый вопрос: нужен ли отдельный rollback именно для последних committed revisions, или proposal-before-commit + обычный restore уже закрывают этот UX.
 
+
+### Сводка 6 — proposal живёт до явного разбора
+
+Пользователь предпочитает, чтобы proposal не был ephemeral runtime state. Он должен сохраняться до тех пор, пока пользователь с ним явно не разберётся.
+
+Продуктовое следствие:
+- proposal переживает reload/закрытие страницы и следующий session;
+- pending proposal должен быть видим как незавершённое действие;
+- нормальные terminal outcomes: Accept/Apply или Reject;
+- техническое место хранения pending proposal пока не фиксируется;
+- proposal по-прежнему не является committed revision и не должен попадать в обычную History до Apply.
+
 **Решение:** —
