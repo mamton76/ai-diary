@@ -573,7 +573,14 @@ Editing добавляется на следующем этапе вместе �
 - для Tags и Assets в edit mode появляются действия add и remove; Add должен позволять выбрать уже существующую сущность или создать новую (для assets — через Asset Library/new upload-or-link flow, для tags — через существующий catalog/new tag flow);
 - Base/Proposal в merge view используют тот же panel read-only, Result — editable.
 
-Расположение секций внутри panel и desktop/mobile layout пока не фиксируются окончательно; важно сохранить одинаковую структуру данных/визуального представления между view/edit/merge.
+EntryPanel использует adaptive layout по **собственной доступной ширине**:
+
+- при достаточной ширине Text занимает основную content column, а Assets, Tags и вторичные created/updated metadata показываются в правой secondary column;
+- при недостаточной ширине Assets, Tags и secondary metadata переходят под Text в одну вертикальную колонку;
+- Title и Event time остаются верхней частью panel;
+- точные breakpoint и пропорции колонок определяются на UI/implementation уровне.
+
+Такой container-responsive layout обязателен именно из-за reuse: одна EntryPanel на широком detail screen может иметь правую колонку, а три более узкие панели в `Base | Result | Proposal` автоматически складываются вертикально без отдельной merge-specific структуры.
 
 ### 12.3 UI не владеет бизнес-логикой
 
