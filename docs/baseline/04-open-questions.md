@@ -63,7 +63,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
 **Статус:** РЕШЕНО  
-**Решение:** current Entry и History/Revisions разделены; AI proposal до Apply не является revision; применённая AI mutation создаёт отдельную revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; committed revisions immutable/append-only, история линейная без branches; Restore/Undo создаёт новую revision с provenance и не удаляет прежнюю историю.  
+**Решение:** current Entry остаётся главным состоянием, а History/Revisions показывается под ней как компактная scrollable gallery/timeline с drill-down в read-only comparison `previous revision | selected revision`; AI proposal до Apply не является revision; применённая AI mutation создаёт отдельную revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions могут группироваться только в UI; committed revisions immutable/append-only, история линейная без branches; Restore/Undo создаёт новую revision с provenance и не удаляет прежнюю историю.  
 **История обсуждения:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)  
 **Будущее:** [FQ-REVISION-002 — revision history compaction / retention](06-future-questions.md#fq-revision-002--revision-history-compaction--retention)
 
@@ -117,7 +117,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 Нужно зафиксировать состав переиспользуемого представления одного Entry state и границу между ним и surrounding EntryScreen, чтобы один и тот же content component работал в обычном view, manual edit и proposal merge.
 
-Уже согласовано: EntryPanel показывает Title, Event date + optional start/end, Text, Assets, Tags и вторичные created/updated timestamps; в edit mode соответствующие поля становятся редактируемыми, а у Tags/Assets появляются add/remove actions. EntryScreen отдельно содержит Proposals, History/Revisions, Sources/Lineage, AI activity/details и screen-level actions. Layout/order секций ещё обсуждается.
+Уже согласовано: EntryPanel показывает Title, Event date + optional start/end, Text, Assets, Tags и вторичные created/updated timestamps; в edit mode соответствующие поля становятся редактируемыми, а у Tags/Assets появляются add/remove actions. EntryPanel адаптируется по собственной ширине: Assets/Tags/secondary metadata справа на широкой panel и под Text на узкой. EntryScreen содержит текущие Proposals, AI actions и History/Revisions; Sources/Lineage и полная AI activity не являются отдельными постоянными блоками, а доступны через revision details. History показывается под Entry как scrollable gallery/timeline revision snippets; клик открывает read-only comparison предыдущей и выбранной revision с отдельным provenance/details block. Точный визуальный polish и часть secondary controls ещё обсуждаются.
 
 ---
 
