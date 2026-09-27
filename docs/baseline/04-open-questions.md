@@ -207,13 +207,10 @@ File-first ценность подразумевает inspectability, но manu
 
 ## AQ-DATA-008 — Migration со старого Firebase/Room
 
-Сначала нужно выяснить:
+**Статус:** решён  
+**Обсуждение:** [AQ-DATA-008 thread](04-open-questions.threads/21_AQ-DATA-008_legacy-firebase-migration/00_thread.md)
 
-- есть ли там реальные уникальные пользовательские данные;
-- это test/prototype data или ценный diary history;
-- что нельзя восстановить из Drive.
-
-Только после этого решать, нужен ли migration tooling.
+**Решение:** отдельная migration со старого Android/Firebase/Room не нужна. В старом проекте нет уникальных ценных пользовательских данных, требующих migration tooling; новая web/backend architecture от legacy storage не зависит. Если позже обнаружатся уникальные данные, это будет отдельный scoped import/migration task.
 
 
 ## AQ-DATA-009 — Какая именно модель core data synchronization нужна?
