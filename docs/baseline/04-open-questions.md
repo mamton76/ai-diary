@@ -156,22 +156,11 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-005 — Asset storage
 
-**Обсуждение:** [AQ-DATA-005 thread](04-open-questions.threads/23_AQ-DATA-005_asset-storage/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-DATA-005 thread](04-open-questions.threads/23_AQ-DATA-005_asset-storage/00_thread.md)
 
-Где хранятся originals:
+**Решение:** Asset имеет storage-independent identity и contract: kind, authoritative original reference, basic technical metadata и provenance/source. Original поддерживает managed и external modes: managed media хранится под контролем AI Diary/user-owned storage, external media может оставаться у внешнего provider (например Google Photos/URL) без обязательного копирования. Preview/thumbnail/transcode и другие представления считаются отдельными rebuildable derivatives/cache. Для MVP managed originals могут жить в user-owned Drive/file backend; отдельный object storage/CDN не обязателен и добавляется только при реальной необходимости. Модель Asset не должна быть жёстко owned Entry и должна позволять позднее использовать общую media library с ZoomAlboom без выделения отдельного media service сейчас.
 
-- в том же Drive/file backend;
-- object storage;
-- hybrid.
-
-Нужно учитывать:
-
-- размер;
-- previews/thumbnails;
-- streaming;
-- portability;
-- backup;
-- cost.
 
 ## AQ-DATA-006 — Format schema и migrations
 
