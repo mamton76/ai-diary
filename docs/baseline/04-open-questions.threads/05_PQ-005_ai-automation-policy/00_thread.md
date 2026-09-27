@@ -146,4 +146,48 @@ Proposal должен явно знать, к чему он относится �
 - конкретная policy для title/people/place и других будущих metadata может определяться позже при появлении реального workflow;
 - точные confidence thresholds и перечень auto-apply полей не являются blocking product decisions для текущей архитектуры.
 
-**Решение:** [принято] (2026-09-26) AI automation policy задаётся per workflow/type of change. Первая normalized entry может создаваться автоматически при сохранённом raw и явной uncertainty; существующие теги могут auto-apply при высокой уверенности, новые теги по умолчанию идут через proposal, user-added tags AI сам не удаляет. Изменения существующего content/metadata через AI сначала являются persistent proposal и становятся committed revision только после Accept/Apply. Proposal хранит target/scope/base state, может быть stale/conflicted или superseded и живёт до явного resolution. Точные confidence thresholds и policy для будущих metadata/workflows определяются позже; merge/split отложены, bulk/delete не входят в текущий scope.
+### Сводка 10 — гранулярность AIResult и Proposal
+
+Уточнено, что core product model не фиксирует жёсткую гранулярность proposal:
+
+- один AI run / AIResult может породить один или несколько proposals;
+- один proposal может быть как маленьким, так и комплексным: например одновременно менять text, date и несколько tags;
+- «три добавляемых тега» не обязаны автоматически становиться тремя proposals;
+- конкретную гранулярность определяет workflow и его UX, а не глобальная схема;
+- Proposal остаётся единицей пользовательского решения, но в подробном review его отдельные части могут быть разобраны и смержены вручную.
+
+Для traceability пользователь должен иметь возможность из Entry провалиться в полную AI activity и затем в детали конкретного run/result: какой input revision использовался, какой workflow/model работал, какие proposals были получены, что было auto-applied/accepted/rejected и какие committed revisions в итоге появились. На продуктовом уровне AIResult связывает run с его proposals/outcomes; точная storage schema относится к архитектуре.
+
+
+### Сводка 11 — быстрый review и трёхсторонний merge
+
+Согласован UX применения proposals.
+
+На обычном Entry screen proposal показывается компактной карточкой/snippet:
+
+- для бесконфликтного proposal доступны быстрые **Apply**, **Reject** и **Подробнее**;
+- для stale/conflicted proposal быстрого Apply нет: доступны **Reject** и **Подробнее**;
+- Apply/Reject на карточке относятся к proposal целиком.
+
+**Подробнее** открывает единый трёхпанельный review/merge view:
+
+```text
+Base              Result              Proposal
+read-only         editable            read-only
+```
+
+Во всех трёх панелях используется одна и та же структура Entry. `Base` — состояние, на котором строился proposal; `Proposal` — предлагаемый результат; `Result` — реальный будущий результат применения.
+
+Правила merge:
+
+- если current state не изменился относительно base, начальный Result фактически совпадает с Proposal;
+- независимые изменения Current и Proposal могут автоматически объединяться в Result;
+- conflict подсвечивается локально на конкретном field/fragment, а не на всём proposal;
+- пользователь может для конфликтного участка оставить Current, взять Proposal или исправить Result вручную;
+- для complex proposal в detailed mode допустимо фактически частичное принятие через ручное редактирование Result;
+- после подтверждения создаётся **одна новая committed revision** с итоговым Result;
+- до подтверждения Result является только merge draft и не попадает в History.
+
+Этот review view должен использовать тот же переиспользуемый Entry content component, что обычный view/edit Entry; Base и Proposal read-only, Result editable.
+
+**Решение:** [принято] (2026-09-27) AI automation policy задаётся per workflow/type of change. Первая normalized entry может создаваться автоматически при сохранённом raw и явной uncertainty; существующие теги могут auto-apply при высокой уверенности, новые теги по умолчанию идут через proposal, user-added tags AI сам не удаляет. Изменения существующего content/metadata через AI сначала являются persistent proposal и становятся committed revision только после Accept/Apply. Proposal хранит target/scope/base state, может быть stale/conflicted или superseded и живёт до явного resolution. Один AIResult может содержать один или несколько proposals, а proposal может быть простым или комплексным — гранулярность задаёт workflow. Бесконфликтный proposal можно быстро Apply/Reject; stale/conflicted proposal применяется только через подробный review. Detailed review использует Base | editable Result | Proposal, автоматически сливает независимые изменения, локально показывает conflicts и позволяет вручную собрать Result; подтверждение создаёт одну новую revision. Entry должен давать drill-down в полную AI activity/run provenance. Точные confidence thresholds и policy для будущих metadata/workflows определяются позже; merge/split отложены, bulk/delete не входят в текущий scope.
