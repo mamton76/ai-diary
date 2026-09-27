@@ -381,13 +381,19 @@ AI должен:
 
 Желательно отделять asset identity от конкретной entry, чтобы один asset можно было использовать в нескольких связанных memories/entries.
 
-Точный storage backend для media пока не является продуктовым решением.
+Asset не обязан означать физическую копию файла внутри AI Diary. Поддерживаются два базовых режима authoritative original: **managed** (original находится под управлением приложения/user-owned storage) и **external** (original остаётся у внешнего provider/source, а AI Diary хранит reference и metadata). Для первого MVP managed media может использовать тот же user-owned Drive/file backend; отдельный object-storage слой не обязателен.
+
+Preview/thumbnail/transcode и другие производные представления не являются authoritative original Asset и могут существовать отдельно как rebuildable derivatives/cache.
 
 ### 10.1 Assets и revisions
 
 Asset имеет identity независимо от Entry и может использоваться более чем в одной записи. При этом набор assets является частью versioned состояния Entry: открытие/restore исторической revision должно восстанавливать тот набор asset links, который относился к этой revision.
 
 Поэтому на продуктовом уровне связь нужно мыслить как `EntryRevision ↔ Asset`; `Entry` получает текущий набор assets через current revision. Конкретная join/schema — архитектурная деталь.
+
+### 10.1.1 Asset как общая media identity
+
+Asset не должен быть жёстко owned одной Entry или только AI Diary. Его identity/storage contract должен позволять позднее использовать тот же Asset из ZoomAlboom или другого consumer. Это не означает, что в MVP нужен отдельный Media Library service: достаточно сохранить такую границу модели.
 
 ### 10.2 Удаление asset из Entry
 
