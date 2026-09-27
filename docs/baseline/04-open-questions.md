@@ -433,18 +433,12 @@ listChanges
 
 ## AQ-DATA-007 — Нужно ли позволять пользователю вручную редактировать canonical files?
 
-**Обсуждение:** [AQ-DATA-007 thread](04-open-questions.threads/24_AQ-DATA-007_manual-canonical-edits/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-DATA-007 thread](04-open-questions.threads/24_AQ-DATA-007_manual-canonical-edits/00_thread.md)  
+**Будущее:** [FQ-ASSET-001 — Asset/media versioning](06-future-questions.md#fq-asset-001--assetmedia-versioning)
 
-File-first ценность подразумевает inspectability, но manual editing резко усложняет:
+**Решение:** canonical files остаются readable/portable; полноценный ручной file-edit workflow не обязателен для MVP. Валидное внешнее изменение поддерживаемых content fields может быть импортировано как external manual edit и зафиксировано новой Entry revision. Изменение identity/system invariants или storage layout не считается обычным supported edit path и требует validation/recovery. Asset/media versioning не входит в текущий scope.
 
-- schema validation;
-- conflict handling;
-- change detection.
-
-Можно различать:
-
-- readable/exportable files;
-- officially supported manual editing.
 
 ## AQ-DATA-008 — Migration со старого Firebase/Room
 
