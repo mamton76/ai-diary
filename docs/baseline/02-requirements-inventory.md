@@ -247,9 +247,9 @@ Committed revision уже является историческим фактом
 ### ASSET-003 — Оригиналы media нужно сохранять
 **Статус:** ПОДТВЕРЖДЕНО.
 
-### ASSET-004 — Конкретный media backend
-**Статус:** ОТКРЫТО  
-Старое решение — Firebase Storage; file-first направление допускает Drive/file storage. Архитектура должна решить это отдельно.
+### ASSET-004 — Asset storage поддерживает managed и external originals
+**Статус:** ПОДТВЕРЖДЕНО  
+Asset имеет storage-independent identity и authoritative original reference. Как минимум поддерживаются managed originals и external references. Managed media в первом MVP может храниться в user-owned Drive/file backend; external media может оставаться у внешнего provider/source без обязательного копирования. Конкретные provider-specific locator/storage детали скрываются adapter layer.
 
 ### ASSET-005 — Одна media сущность может быть связана с несколькими entries
 **Статус:** ПОДТВЕРЖДЕНО.
@@ -257,6 +257,19 @@ Committed revision уже является историческим фактом
 ### ASSET-006 — Remove asset из Entry различает unlink и delete
 **Статус:** ПОДТВЕРЖДЕНО  
 В edit UX действие удаления asset открывает явный выбор: отвязать от текущей Entry и оставить в Asset Library либо удалить asset из системы. Если asset используется несколькими entries, destructive delete предупреждает о затрагиваемых связях; если после unlink asset станет orphaned, это также явно показывается.
+
+### ASSET-007 — Минимальный Asset contract не зависит от storage provider
+**Статус:** ПОДТВЕРЖДЕНО  
+Минимум: stable asset identity, kind, authoritative original mode/reference, basic technical metadata (mimeType, filename/title fallback, size и media dimensions/duration когда известны), provenance/source и createdAt. Checksum/hash для managed files допустим как optional implementation metadata.
+
+### ASSET-008 — Previews и transcodes являются derivatives
+**Статус:** ПОДТВЕРЖДЕНО  
+Thumbnail, preview, transcoded media, waveform и подобные представления не являются authoritative original. Они могут быть provider-supplied или храниться как отдельный rebuildable cache/derivative; их отсутствие не должно ломать Asset identity или original reference.
+
+### ASSET-009 — Asset identity допускает shared media library
+**Статус:** ПОДТВЕРЖДЕНО  
+Asset не должен быть жёстко owned одной Entry или только AI Diary. Модель должна позволять одному Asset использоваться AI Diary и позднее ZoomAlboom/другими consumers. Это не требует выделения отдельного Media Library service в MVP.
+
 
 ---
 
