@@ -738,6 +738,14 @@ Hosting, storage, LLM usage, logs/egress не должны неожиданно 
 **Статус:** УСТАРЕЛО/НЕ ТРЕБУЕТСЯ СЕЙЧАС  
 Нужен достаточный debug/trace, но не overengineering.
 
+### OPS-006 — Нужны structured application logs
+**Статус:** ПОДТВЕРЖДЕНО  
+Backend, background jobs и integrations должны писать структурированные логи, достаточные для диагностики ошибок и восстановления хода операции. Минимально полезный контекст включает request/job/workflow identity, timestamps, operation/result/status, retries и error details. Логи не должны без необходимости содержать полный diary content, OAuth tokens, prompts/responses или другие sensitive data.
+
+### OPS-007 — Product analytics отделены от operational logging
+**Статус:** ПОДТВЕРЖДЕНО  
+Продуктовые события пользовательского поведения, например `entry_opened`, `workflow_started`, `proposal_applied`, являются отдельным telemetry layer и не должны смешиваться с backend/debug logs. Конкретный analytics provider, включая Firebase Analytics, не является обязательной частью архитектуры и может быть выбран позже отдельно для web/native clients.
+
 ---
 
 # O. Offline и connectivity
