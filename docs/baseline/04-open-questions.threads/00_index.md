@@ -40,7 +40,7 @@
 
 | 18 | AQ-DATA-002 | Гранулярность storage abstraction | решён | ✅ resolved | none | — | [📁](18_AQ-DATA-002_storage-abstraction/) | [00_thread.md](18_AQ-DATA-002_storage-abstraction/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
-| 19 | AQ-DATA-004 | Change detection | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](19_AQ-DATA-004_change-detection/) | [00_thread.md](19_AQ-DATA-004_change-detection/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+| 19 | AQ-DATA-004 | Change detection | решён | ✅ resolved | none | — | [📁](19_AQ-DATA-004_change-detection/) | [00_thread.md](19_AQ-DATA-004_change-detection/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
 ## Быстрая легенда lifecycle
 
