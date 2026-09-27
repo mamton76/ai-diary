@@ -118,9 +118,9 @@
 
 Эти идеи не считаются окончательно зафиксированным layout, но их не нужно терять при следующем проходе:
 
-- Sources/Lineage должны быть доступны с EntryScreen, но не входить в reusable EntryPanel;
+- Sources/Lineage не являются отдельным постоянным блоком EntryScreen; они доступны как provenance/details конкретных revisions через History;
 - manual content editing и редактирование source/composition — разные по смыслу операции; не стоит случайно смешивать их в один незаметный режим;
-- старая идея отдельной AI-note/annotation должна быть переоценена уже с учётом новой Proposal/AI activity модели, а не переноситься автоматически;
+- старая идея отдельной AI-note/annotation должна быть переоценена уже с учётом новой Proposal/revision-details модели, а не переноситься автоматически;
 - конкретное положение History, Lineage, Tags и Assets на desktop/mobile пока остаётся открытым.
 
 ### Сводка 8 — adaptive layout по ширине самой EntryPanel
@@ -144,11 +144,29 @@
 
 Предпочтение продукта: **справа на широком, снизу на узком**.
 
+### Сводка 9 — Sources / Lineage живут у revisions
+
+Уточнена граница surrounding EntryScreen: отдельный постоянный блок `Sources / Lineage` на основном экране не нужен.
+
+Sources/provenance/lineage семантически относятся прежде всего к конкретной committed revision: от каких raw/source inputs она получена, из какой previous/base revision произошла, какой workflow/proposal/restore создал её и какие related provenance links есть.
+
+Поэтому эти данные показываются из **History / Revisions**:
+
+- у revision может быть компактный provenance/details affordance;
+- краткая информация может открываться во всплывающей/hover/popover панели;
+- из неё или прямо из revision item можно открыть `Подробнее` / revision details;
+- отдельный глубокий details screen допускается, но его внутренний UX сейчас сознательно не проектируется.
+
+На основном EntryScreen не нужно держать отдельные `Sources / Lineage` и `AI Activity / Details` блоки. Actionable AI state остаётся в Proposals; историческая трассировка доступна через revisions/details drill-down.
+
+Итого основной EntryScreen сейчас состоит из reusable EntryPanel, текущих Proposals (если они есть) и History/Revisions плюс обычного navigation/actions chrome.
+
 ### Что ещё не решено
 
 - точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
 - какие именно secondary controls/metadata видны всегда, а какие раскрываются;
-- финальная компоновка surrounding EntryScreen вокруг panel.
+- конкретное представление History/Revisions на EntryScreen (список/timeline/accordion и placement относительно panel);
+- нужен ли отдельный AI-note/annotation после появления Proposals и revision details.
 
 **Нужно от пользователя:** продолжить с layout/placement EntryPanel и затем surrounding EntryScreen.
 
