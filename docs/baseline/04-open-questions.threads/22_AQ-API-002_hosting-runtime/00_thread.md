@@ -56,3 +56,20 @@ AI/background workflows могут запускаться тремя основ�
 Следствие для hosting/runtime: кандидат должен хорошо поддерживать request-driven API, durable background execution/scheduler/queue semantics и SSE/long-lived HTTP connections либо разумный fallback.
 
 Детальная job state/retry/idempotency policy остаётся в AQ-API-004 / AQ-OPS-002; здесь это constraint на выбор runtime.
+
+
+### Сводка 2 — modular monolith, несколько runtime roles
+
+Пользователь подтвердил направление: не вводить бизнес-микросервисы на старте.
+
+Рабочая модель:
+- один backend codebase / modular monolith;
+- общие domain/repository/workflow layers;
+- несколько runtime roles / entry points из одной кодовой базы:
+  - API service — HTTP API + SSE;
+  - worker/job runtime — AI workflows, retries, backfills, indexing;
+  - scheduled job runtime — периодические workflows и maintenance;
+- при необходимости роли могут собираться из одного container image и запускаться разными hosting primitives;
+- позже отдельный runtime можно выделить в самостоятельный service, если появится реальная нагрузка, security boundary или технологическая причина.
+
+Не планируем отдельные бизнес-сервисы вроде Entry Service / Tag Service / Calendar Service / AI Service без необходимости.
