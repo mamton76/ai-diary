@@ -166,9 +166,9 @@ Versioned состояние, которое должно восстанавли
 
 Для пользовательского lifecycle Entry достаточно трёх состояний:
 
-- `ACTIVE` — обычная запись;
-- `ARCHIVED` — сохранена, но скрыта из обычного потока;
-- `DELETED` — soft-deleted / trash, с возможностью recovery policy.
+- `ACTIVE` — обычная запись, участвует в нормальном browse/search/timeline;
+- `ARCHIVED` — сохранена, но по умолчанию скрыта из обычного потока; доступна через archive/filter;
+- `DELETED` — soft-deleted / trash, исключена из обычных представлений, но сохраняется для recovery policy.
 
 Постоянный `DRAFT`-status для Entry сейчас не нужен: незавершённое ручное редактирование хранится как operational working draft, а непринятый AI output — как Proposal.
 
@@ -570,7 +570,7 @@ Editing добавляется на следующем этапе вместе �
 - в view mode title/text/event time read-only;
 - в edit mode title и text становятся редактируемыми;
 - date/start/end получают date/time controls;
-- для Tags и Assets в edit mode появляются действия add и remove;
+- для Tags и Assets в edit mode появляются действия add и remove; Add должен позволять выбрать уже существующую сущность или создать новую (для assets — через Asset Library/new upload-or-link flow, для tags — через существующий catalog/new tag flow);
 - Base/Proposal в merge view используют тот же panel read-only, Result — editable.
 
 Расположение секций внутри panel и desktop/mobile layout пока не фиксируются окончательно; важно сохранить одинаковую структуру данных/визуального представления между view/edit/merge.
