@@ -1,10 +1,10 @@
 # AQ-DATA-006 — Format schema и migrations
 
 **Источник:** [04-open-questions.md / AQ-DATA-006](../../04-open-questions.md#aq-data-006--format-schema-и-migrations)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -80,3 +80,19 @@
 - обычный application repository после успешной migration может работать только с current format (или небольшим окном совместимости), а исторические readers остаются частью migration tooling, а не core runtime.
 
 Нужно подтвердить этот вариант перед закрытием AQ-DATA-006.
+
+
+### Сводка 4 — последовательные migration steps и отложенный UX comparison
+
+Дополнительно согласовано:
+- migrations логически последовательные: если storage на `v1`, а current format `v5`, одна пользовательская операция выполняет цепочку `v1 -> v2 -> v3 -> v4 -> v5`;
+- direct migrations вроде `v1 -> v5` не обязательны;
+- каждый migration step знает только соседние source/target formats;
+- core application не обязан постоянно поддерживать чтение всех исторических форматов;
+- historical readers/transformers остаются в migration tooling;
+- before/after review должен быть semantic/domain-level, а raw JSON — secondary technical detail;
+- конкретный UI `before / after` сейчас не фиксируется.
+
+**Важно для первой реальной migration:** при реализации первой migration обязательно вернуться к UX migration report и способу отображения `before / after`; это отдельный implementation/design checkpoint и не должно потеряться.
+
+**Решение:** [принято] одна общая storage format version; явные последовательные migrations с maintenance lock, backup, validation и report; historical format support живёт в migration tooling; детали визуального comparison решаются при реализации первой migration.
