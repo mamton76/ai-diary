@@ -40,6 +40,26 @@
 
 ## PQ-001 — Что именно считается canonical source of truth?
 
+### Проблематика / на что отвечал вопрос
+
+Наиболее сильное новое направление — user-owned file-based diary, где canonical content хранится в переносимом формате, а индексы/БД — derived.
+
+Но архитектуре нужно проверить, насколько это совместимо с:
+
+- web editing;
+- multi-device;
+- concurrency;
+- search;
+- background jobs;
+- manual Drive edits.
+
+Нужно выбрать формулировку уровня продукта:
+
+- files — канонический источник;
+- files — канонический пользовательский export, а operational source иной;
+- hybrid с чётко определённым ownership.
+
+
 **Статус:** РЕШЕНО  
 **Решение:** user-owned portable files являются canonical source of truth. Operational DB/index/cache допустимы как rebuildable derived layers и не должны содержать единственную копию существенных diary data.  
 **История обсуждения:** [PQ-001 thread](04-open-questions.threads/01_PQ-001_source-of-truth/00_thread.md)
@@ -47,6 +67,19 @@
 Manual Drive edits, conflict UX и конкретный механизм optimistic concurrency остаются отдельными data/architecture вопросами и не меняют этот продуктовый принцип.
 
 ## PQ-002 — Насколько обязателен full offline-first?
+
+### Проблематика / на что отвечал вопрос
+
+Старый Android проект делал offline-first центральным принципом.
+
+В новых обсуждениях точно требуется:
+
+- не терять capture при плохой сети;
+- быть устойчивым к временным сбоям;
+- не зависеть от постоянной идеальной connectivity.
+
+Но пока не подтверждено, что новый web/backend MVP должен полностью редактироваться offline с последующим conflict-aware sync.
+
 
 **Статус:** РЕШЕНО  
 **Решение:** первый web/backend MVP — online-first. Full offline browsing/editing и conflict-aware offline sync откладываются. Уже введённый текст/capture не должен тихо теряться при кратковременной потере сети; safe retry и видимые failures обязательны. Архитектура не должна блокировать будущий offline-capable native/mobile client.  
@@ -56,11 +89,38 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-003 — Какой minimum viable web?
 
+### Проблематика / на что отвечал вопрос
+
+Нужно утвердить точный минимум первой полезной web-версии.
+
+Предварительно:
+
+- login;
+- list/timeline;
+- read;
+- create;
+- edit;
+- search/filter;
+- tags;
+- basic revision/history visibility.
+
+Вопрос: какие из этих пунктов обязательны в первом работающем slice, а какие во втором?
+
+
 **Статус:** РЕШЕНО  
 **Решение:** первый полезный web slice работает с существующими entries: browse/list, read и search/filter по тексту, дате/date range и tags. Следующий этап — editing + versioning/history, затем tags view/edit, затем AI processing/workflows. Web-create не обязателен для первых этапов и может быть добавлен opportunistically, если почти не увеличивает scope.  
 **История обсуждения:** [PQ-003 thread](04-open-questions.threads/02_PQ-003_minimum-viable-web/00_thread.md)
 
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
+
+### Проблематика / на что отвечал вопрос
+
+Продукт требует их сохранять. UX может:
+
+- показывать их всегда;
+- прятать под History/Details;
+- показывать только при конфликте/AI proposal.
+
 
 **Статус:** РЕШЕНО  
 **Решение:** current Entry остаётся главным состоянием, а History/Revisions показывается под ней как компактная scrollable gallery/timeline с drill-down в read-only comparison `previous revision | selected revision`; AI proposal до Apply не является revision; применённая AI mutation создаёт отдельную revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions могут группироваться только в UI; committed revisions immutable/append-only, история линейная без branches; Restore/Undo создаёт новую revision с provenance и не удаляет прежнюю историю.  
@@ -71,6 +131,18 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-005 — Насколько AI автоматичен?
 
+### Проблематика / на что отвечал вопрос
+
+Для разных workflows можно выбрать разные policies:
+
+- suggestion only;
+- auto-apply metadata;
+- user confirmation;
+- auto-apply при confidence threshold.
+
+Нужна общая policy или per-workflow policy.
+
+
 **Статус:** решён  
 **Обсуждение:** [PQ-005 thread](04-open-questions.threads/05_PQ-005_ai-automation-policy/00_thread.md)
 
@@ -79,6 +151,18 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
+### Проблематика / на что отвечал вопрос
+
+Варианты UX:
+
+- система выбирает сама;
+- один global preferred provider/model;
+- выбор per workflow;
+- advanced compare mode.
+
+Архитектурно multi-provider поддержка желательна независимо от того, насколько эта настройка видима пользователю.
+
+
 **Статус:** решён  
 **Обсуждение:** [PQ-006 thread](04-open-questions.threads/07_PQ-006_llm-provider-model-choice/00_thread.md)
 
@@ -86,6 +170,17 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 
 ## PQ-007 — Sharing входит в обозримый MVP?
+
+### Проблематика / на что отвечал вопрос
+
+Ранее sharing рассматривался как полезный retention/family механизм.
+
+Нужно определить:
+
+- out of scope;
+- future requirement;
+- near-term requirement, влияющий уже сейчас на auth/data model.
+
 
 **Статус:** решён  
 **Обсуждение:** [PQ-007 thread](04-open-questions.threads/08_PQ-007_sharing-mvp/00_thread.md)  
@@ -96,6 +191,19 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-008 — Какова судьба старого Android-приложения?
 
+### Проблематика / на что отвечал вопрос
+
+Варианты:
+
+- оставить как исторический prototype;
+- сохранить доменные куски;
+- превратить позже в native client нового API;
+- мигрировать постепенно;
+- отказаться от кода, но сохранить идеи.
+
+Этот вопрос можно решить после лёгкого code audit и не блокировать первую архитектуру web/backend.
+
+
 **Статус:** решён  
 **Обсуждение:** [PQ-008 thread](04-open-questions.threads/10_PQ-008_android-legacy/00_thread.md)
 
@@ -104,6 +212,17 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
 
+### Проблематика / на что отвечал вопрос
+
+Он удобен как прагматичный voice adapter, но long-term могут стать удобнее:
+
+- Telegram;
+- собственный web/mobile voice capture;
+- assistant integrations другого типа.
+
+Нужно понять: Calendar — первая полноценная интеграция или временный мост.
+
+
 **Статус:** решён  
 **Обсуждение:** [PQ-009 thread](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md)
 
@@ -111,6 +230,13 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 
 ## PQ-011 — Как устроен Entry detail/edit и переиспользуемый EntryPanel?
+
+### Проблематика / на что отвечал вопрос
+
+Как должен выглядеть основной экран одной Entry и какое представление состояния записи нужно сделать переиспользуемым между обычным просмотром, ручным редактированием и proposal merge/review?
+
+Главная развилка была в границе между reusable Entry content component и surrounding EntryScreen. Уже согласованный proposal review `Base | Result | Proposal` требовал, чтобы обычный Entry view/edit и proposal merge не расходились на разные несовместимые представления записи.
+
 
 **Статус:** РЕШЕНО  
 **История обсуждения:** [PQ-011 thread](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md)
@@ -125,6 +251,22 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-001 — Files-only или files + derived DB/index?
 
+### Проблематика / на что отвечал вопрос
+
+Web UI нужен быстрый listing/filter/search.
+
+Реалистичные варианты:
+
+- прямое чтение Drive при небольшом объёме;
+- in-memory/cache index;
+- rebuildable server index;
+- relational DB как derived projection;
+- search-specific store;
+- комбинация.
+
+Ключевое ограничение: добавление operational index не должно молча менять ownership canonical data.
+
+
 **Статус:** решён  
 **Обсуждение:** [AQ-DATA-001 thread](04-open-questions.threads/15_AQ-DATA-001_files-vs-derived-index/00_thread.md)
 
@@ -132,6 +274,31 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 
 ## AQ-DATA-002 — Гранулярность storage abstraction
+
+### Проблематика / на что отвечал вопрос
+
+Два полюса:
+
+#### Низкоуровневый
+
+```text
+listFiles
+readFile
+writeFile
+moveFile
+```
+
+#### Доменный
+
+```text
+listEntries
+getEntry
+saveRevision
+listChanges
+```
+
+Текущее направление предпочитает domain-level API, но migration/import tools могут потребовать lower-level access.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-DATA-002 thread](04-open-questions.threads/18_AQ-DATA-002_storage-abstraction/00_thread.md)
@@ -141,12 +308,44 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-003 — Concurrency / optimistic locking
 
+### Проблематика / на что отвечал вопрос
+
+Что происходит, если:
+
+- две browser tabs редактируют одну entry;
+- web и Android меняют её одновременно;
+- пользователь вручную меняет `entry.md` в Drive;
+- AI создаёт proposal, пока пользователь пишет;
+- background import обновляет related metadata.
+
+Возможные механизмы:
+
+- revision IDs;
+- ETag/version tokens;
+- append-only revisions;
+- compare-and-swap;
+- explicit conflict UI.
+
+
 **Статус:** РЕШЕНО  
 **История обсуждения:** [AQ-DATA-003 thread](04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md)
 
 **Решение:** mutation ownership scoped per Entry. Committed mutation разрешена только актуальному владельцу editing/mutation lease и должна указывать `baseRevisionId`/эквивалентный domain version. Потеря lease запрещает commit; устаревшая base revision не перезаписывает current state, а проходит compatibility/rebase/merge/conflict. На storage layer canonical write дополнительно защищается native conditional version token (`ETag`/generation/version или эквивалент), если storage его поддерживает; race приводит к reload/reconcile, не к last-write-wins. Разные Entries могут независимо редактироваться параллельно.
 
 ## AQ-DATA-004 — Change detection
+
+### Проблематика / на что отвечал вопрос
+
+Если Drive/files canonical, как backend эффективно узнаёт про изменения?
+
+Варианты:
+
+- Drive Changes API;
+- ETags/modified timestamps;
+- derived sync/index state;
+- MVP-ограничение: canonical writes только через backend;
+- периодический reconciliation.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-DATA-004 thread](04-open-questions.threads/19_AQ-DATA-004_change-detection/00_thread.md)
@@ -156,6 +355,24 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-005 — Asset storage
 
+### Проблематика / на что отвечал вопрос
+
+Где хранятся originals:
+
+- в том же Drive/file backend;
+- object storage;
+- hybrid.
+
+Нужно учитывать:
+
+- размер;
+- previews/thumbnails;
+- streaming;
+- portability;
+- backup;
+- cost.
+
+
 **Статус:** РЕШЕНО  
 **История обсуждения:** [AQ-DATA-005 thread](04-open-questions.threads/23_AQ-DATA-005_asset-storage/00_thread.md)
 
@@ -163,6 +380,18 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 
 ## AQ-DATA-006 — Format schema и migrations
+
+### Проблематика / на что отвечал вопрос
+
+Нужно определить:
+
+- format version granularity;
+- migration runner;
+- backward compatibility;
+- backup before migration;
+- validation;
+- возможность rebuild derived indexes после migration.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-DATA-006 thread](04-open-questions.threads/20_AQ-DATA-006_schema-migrations/00_thread.md)
@@ -186,6 +415,17 @@ File-first ценность подразумевает inspectability, но manu
 - officially supported manual editing.
 
 ## AQ-DATA-008 — Migration со старого Firebase/Room
+
+### Проблематика / на что отвечал вопрос
+
+Сначала нужно выяснить:
+
+- есть ли там реальные уникальные пользовательские данные;
+- это test/prototype data или ценный diary history;
+- что нельзя восстановить из Drive.
+
+Только после этого решать, нужен ли migration tooling.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-DATA-008 thread](04-open-questions.threads/21_AQ-DATA-008_legacy-firebase-migration/00_thread.md)
@@ -217,6 +457,13 @@ File-first ценность подразумевает inspectability, но manu
 
 
 ## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
+
+### Проблематика / на что отвечал вопрос
+
+Как технически хранить промежуточное autosave-состояние manual editing session до того, как оно станет полноценной revision?
+
+К этому моменту уже было принято, что editing session начинается с первой реальной ручной правки, autosave защищает работу от потери, сам autosave revision не создаёт, а manual revision появляется при явном Save или после 1 часа inactivity. Нужно было определить server/local working state, recovery, multi-device editing и взаимодействие с AI mutations.
+
 
 **Статус:** РЕШЕНО  
 **Решение:** один server-side current working draft хранится в operational state; локально клиент держит bounded recovery snapshots. Canonical revisions и operational draft семантически разделены, хотя физически могут жить в одном storage на MVP. Для manual editing используется soft lease с одним active editor и безопасным takeover между sessions. AI mutations используют mutation lease, могут ждать в очереди, уступают ручному редактированию и при устаревшем base state проходят compatibility/revalidation. MVP-defaults: до 5 local snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision, auto-revision после 1 часа inactivity. Server draft очищается после successful revision; при failed commit сохраняется. Draft sync: debounce + guaranteed flush, точные интервалы configurable.  
@@ -431,6 +678,17 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-001 — Identity model
 
+### Проблематика / на что отвечал вопрос
+
+Google account — естественный first path.
+
+Нужно решить, использовать ли:
+
+- Firebase Auth;
+- direct Google OIDC/OAuth;
+- другой auth middleware.
+
+
 **Статус:** решён  
 **Обсуждение:** [AQ-AUTH-001 thread](04-open-questions.threads/12_AQ-AUTH-001_identity-model/00_thread.md)
 
@@ -438,6 +696,19 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 
 ## AQ-AUTH-002 — Drive/Calendar OAuth
+
+### Проблематика / на что отвечал вопрос
+
+Нужно определить:
+
+- где хранится refresh token;
+- какие scopes запрашиваются;
+- incremental consent;
+- token revocation;
+- account switch;
+- expired permissions;
+- re-auth UX.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-AUTH-002 thread](04-open-questions.threads/14_AQ-AUTH-002_google-oauth/00_thread.md)
@@ -447,12 +718,30 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 
 ## AQ-AUTH-003 — Single-user vs multi-user readiness
 
+### Проблематика / на что отвечал вопрос
+
+Первый production может быть только для одного владельца.
+
+Вопрос: стоит ли с первого дня иметь explicit `userId/ownerId` в domain/API, чтобы не делать болезненную миграцию позже.
+
+
 **Статус:** решён  
 **Обсуждение:** [AQ-AUTH-003 thread](04-open-questions.threads/11_AQ-AUTH-003_multi-user-readiness/00_thread.md)
 
 **Решение:** AI Diary с самого начала считается multi-user application: один backend/application может обслуживать нескольких авторизованных пользователей, у каждого свой логический дневник и изолированные данные. Shared operational/server-side state должен быть user-scoped. При user-owned canonical storage explicit ownerId не обязан дублироваться внутри каждого diary file. Sharing/ACL между пользователями остаются отдельной future feature и не входят в MVP.
 
 ## AQ-AUTH-004 — Доступ backend к user-owned Drive
+
+### Проблематика / на что отвечал вопрос
+
+Нужно решить модель:
+
+- backend действует от имени пользователя по OAuth token;
+- service account + shared folder;
+- другой pattern.
+
+Это сильно влияет на security и deployment.
+
 
 **Статус:** решён  
 **Обсуждение:** [AQ-AUTH-004 thread](04-open-questions.threads/13_AQ-AUTH-004_drive-access/00_thread.md)
