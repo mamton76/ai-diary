@@ -42,6 +42,8 @@
 
 | 19 | AQ-DATA-004 | Change detection | решён | ✅ resolved | none | — | [📁](19_AQ-DATA-004_change-detection/) | [00_thread.md](19_AQ-DATA-004_change-detection/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
+| 20 | AQ-DATA-006 | Format schema и migrations | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](20_AQ-DATA-006_schema-migrations/) | [00_thread.md](20_AQ-DATA-006_schema-migrations/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+
 ## Быстрая легенда lifecycle
 
 - 🟢 `open` — свободен для продолжения;
