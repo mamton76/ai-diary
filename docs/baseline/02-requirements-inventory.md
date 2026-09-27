@@ -439,7 +439,7 @@ React/TypeScript обсуждался как естественный канди
 
 ### WEB-011 — EntryPanel имеет общую структуру для view/edit/merge
 **Статус:** ПОДТВЕРЖДЕНО  
-Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Add поддерживает выбор существующей сущности или создание новой (Asset Library/new asset; tag catalog/new tag). Base/Proposal в merge read-only, Result editable.
+Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Created/updated видны всегда, но визуально вторично: внизу secondary column на широкой panel и внизу panel на узкой; они не являются versioned content для revision diff. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Add поддерживает выбор существующей сущности или создание новой (Asset Library/new asset; tag catalog/new tag). Base/Proposal в merge read-only, Result editable.
 
 ### WEB-012 — EntryPanel адаптируется по собственной ширине
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -451,7 +451,7 @@ Sources/provenance/lineage считаются свойствами/trace metadat
 
 ### WEB-014 — EntryScreen даёт запуск AI workflow/custom prompt
 **Статус:** ПОДТВЕРЖДЕНО  
-На уровне EntryScreen пользователь может вручную запустить доступный workflow для текущей Entry либо разовый `Custom prompt / Ask AI`. Это screen-level action, а не часть reusable EntryPanel.
+На уровне EntryScreen пользователь может вручную запустить доступный workflow для текущей Entry либо разовый `Custom prompt / Ask AI`. Это screen-level action, а не часть reusable EntryPanel; UI использует заметную кнопку/menu `AI ▾` рядом с обычными действиями Entry (например Edit).
 
 ### WEB-015 — Dirty manual draft использует Save & Run перед Entry workflow
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -463,6 +463,10 @@ Sources/provenance/lineage считаются свойствами/trace metadat
 ### WEB-017 — Revision diff field-aware и не сравнивает provenance
 **Статус:** ПОДТВЕРЖДЕНО  
 В Previous-vs-Selected comparison provenance/lineage/source/AI run/workflow/restoredFrom и другая trace metadata показываются отдельным details block и не участвуют в content diff. Для Tags и Assets added/removed состояния маркируются `+ / −`; порядок Assets незначим и reorder не считается изменением. Для Text желательно подсвечивать изменённые фрагменты; точный diff algorithm и visual style выбираются при реализации по читаемости.
+
+### WEB-018 — Отдельный постоянный AI-note block не нужен
+**Статус:** ПОДТВЕРЖДЕНО  
+EntryScreen не содержит отдельный постоянный `AI note / annotation` block. Actionable AI mutation представлена Proposal, применённое изменение — committed Revision, историческая причина и trace — provenance/AI run details, а non-mutating AI analysis может оставаться workflow result без отдельной постоянной секции EntryScreen.
 
 
 ---
