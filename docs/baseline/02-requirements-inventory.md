@@ -277,9 +277,9 @@ Human-readable text, explicit metadata и exportability — устойчивое
 **Статус:** ПОДТВЕРЖДЕНО  
 Domain/client logic не должны быть напрямую завязаны на Drive-specific детали.
 
-### DATA-005 — Предпочтительна доменная storage abstraction
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Операции уровня `list/get/save entry`, revisions, changes выглядят предпочтительнее абстракции «универсальная файловая система».
+### DATA-005 — Основная storage abstraction — domain-level repository
+**Статус:** ПОДТВЕРЖДЕНО  
+Application/domain код работает в терминах `Entry`, `Revision`, history/listing и других diary concepts, например `listEntries/getEntry/saveRevision/loadHistory`. Drive/files operations скрыты в нижнем storage adapter. Прямой low-level file access допустим для migration/import/repair/admin tooling, но не должен протекать в основной domain logic.
 
 ### DATA-006 — Files как canonical source of truth
 **Статус:** ПОДТВЕРЖДЕНО  
