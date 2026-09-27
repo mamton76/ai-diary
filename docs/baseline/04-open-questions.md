@@ -269,6 +269,8 @@ File-first ценность подразумевает inspectability, но manu
 
 ## AQ-API-002 — Hosting/runtime
 
+**Обсуждение:** [AQ-API-002 thread](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md)
+
 Cloud Run выглядит сильным кандидатом благодаря container model и scale-to-zero.
 
 Но нужно сравнить реальную потребность с альтернативами по:
