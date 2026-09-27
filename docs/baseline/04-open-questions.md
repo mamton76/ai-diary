@@ -463,6 +463,8 @@ listChanges
 
 ## AQ-DATA-009 — Какая именно модель core data synchronization нужна?
 
+**Обсуждение:** [AQ-DATA-009 thread](04-open-questions.threads/25_AQ-DATA-009_core-sync-topology/00_thread.md)
+
 Требование к синхронизации теперь считаем явным: разные клиенты должны работать с одним логическим дневником без тихой потери изменений.
 
 Архитектуре нужно выбрать topology/authority model, например:
