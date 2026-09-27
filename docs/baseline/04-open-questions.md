@@ -161,10 +161,10 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-004 — Change detection
 
-**Статус:** решён  
+**Статус:** ОБСУЖДАЕМ  
 **Обсуждение:** [AQ-DATA-004 thread](04-open-questions.threads/19_AQ-DATA-004_change-detection/00_thread.md)
 
-**Решение:** новые entries могут приходить из любых официальных capture/input adapters, но запись и изменение canonical files проходят через общий backend/domain repository. Прямое внешнее редактирование canonical files вне backend не является штатно поддерживаемым MVP-сценарием, поэтому постоянный Drive change watcher можно отложить. Committed writes всё равно должны использовать version/concurrency checks, чтобы не допускать silent overwrite при неожиданном external change.
+**Рабочее направление:** capture может приходить из разных adapters, а новый backend/domain repository остаётся целевым common boundary. Текущие рабочие file-based Calendar/Telegram pipelines не обязаны мигрировать мгновенно. Для updates существующих canonical entries нужно определить cheap metadata/version check и поведение при обнаруженном external change; silent overwrite недопустим.
 
 
 ## AQ-DATA-005 — Asset storage
