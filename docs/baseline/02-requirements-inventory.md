@@ -424,6 +424,12 @@ Derived слой можно пересобрать; его рассинхрон�
 Canonical files должны оставаться readable/portable. Если валидное внешнее изменение content fields обнаружено, оно может быть импортировано как external manual edit и оформлено новой Entry revision. Изменения identity/system invariants или storage layout не должны silently приниматься и идут в validation/recovery. Отдельный UX/workflow для ручного редактирования canonical files не обязателен для MVP.
 
 
+
+### DATA-021 — Core diary mutations проходят через backend/domain API
+**Статус:** ПОДТВЕРЖДЕНО  
+Обычные clients и internal processes не пишут canonical diary data напрямую в provider-specific storage. Backend/domain layer является coordinator/mutation authority и применяет domain rules, leases, revisions, optimistic concurrency и reconciliation. Canonical durable state при этом остаётся в user-owned portable files; derived DB/index/cache не становятся authority.
+
+
 # H. Web client
 
 ### WEB-001 — Нужен полноценный web-интерфейс
