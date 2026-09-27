@@ -514,6 +514,8 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 ## AQ-API-003 — API style
 
+**Обсуждение:** [AQ-API-003 thread](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)
+
 REST выглядит простым default, но нужно определить:
 
 - endpoint/resource model;
