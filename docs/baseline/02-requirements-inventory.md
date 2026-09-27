@@ -297,8 +297,9 @@ User-owned portable files являются canonical source of truth. Operationa
 **Статус:** ПОДТВЕРЖДЕНО  
 Canonical content и revisions остаются в user-owned storage. Operational state может временно содержать приватный content только там, где это необходимо для работы продукта; серверные копии должны быть минимизированы и иметь понятный lifecycle.
 
-### DATA-009 — Нужны versioning формата и migrations
-**Статус:** ПОДТВЕРЖДЕНО.
+### DATA-009 — Нужны versioning формата и безопасные migrations
+**Статус:** ПОДТВЕРЖДЕНО  
+Storage имеет одну общую `formatVersion`. Migration запускается как явная операция с backup/snapshot и maintenance/read-only lock: на время migration запрещены user edits и любые mutating workflows, включая legacy Calendar/Telegram/file-based writers. Migration переписывает только реально изменившиеся типы данных, затем проходит schema/integrity/data-loss validation; новая format version активируется только после успешной полной проверки. Пользователь получает migration report и может точечно открыть before/after для изменённых или проблемных объектов.
 
 ### DATA-010 — Нужны backup/export/restore semantics
 **Статус:** ПОДТВЕРЖДЕНО.
