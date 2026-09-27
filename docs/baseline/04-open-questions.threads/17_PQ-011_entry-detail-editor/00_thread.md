@@ -214,9 +214,21 @@ Metadata/provenance изменения отделяется от самого co
 
 Для первой revision отдельный edge case (что именно показывать слева: raw/source/empty state) можно определить при реализации details UX.
 
+### Сводка 13 — diff presentation для revision comparison
+
+В revision details сравнивается versioned content, а provenance/lineage/source/AI run/workflow/restoredFrom и другая trace metadata **не сравниваются между панелями**. Они показываются отдельным metadata/provenance блоком под/рядом с выбранной revision.
+
+Для diff presentation согласованы простые правила:
+
+- **Tags:** добавленные и удалённые tags явно маркируются `+ / −`; неизменившиеся показываются обычно.
+- **Assets:** та же семантика `+ / −` для добавленных/удалённых assets. Порядок assets не является значимым и reorder не считается изменением.
+- **Text:** желательно подсвечивать изменённые фрагменты, чтобы не заставлять пользователя глазами сравнивать две длинные версии. Точный алгоритм/визуальный стиль diff пока не фиксируется — его нужно подобрать при реализации так, чтобы результат был читаемым и не шумным.
+
+Для остальных versioned полей (title, event date/start/end) конкретное визуальное представление изменения можно подобрать вместе с общим diff UI; отдельной сложной механики сейчас не требуется.
+
 ### Что ещё не решено
 
-- точный визуальный стиль/адаптация revision gallery и first-revision comparison — UI/detail decision;
+- точный визуальный стиль/адаптация revision gallery, first-revision comparison и text diff — UI/detail decision;
 
 - точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
 - какие именно secondary controls/metadata видны всегда, а какие раскрываются;
