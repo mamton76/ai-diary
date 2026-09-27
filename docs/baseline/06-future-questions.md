@@ -67,6 +67,28 @@
 
 ---
 
+
+## FQ-ASSET-001 — Asset/media versioning
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** [AQ-DATA-007 — manual canonical edits](04-open-questions.threads/24_AQ-DATA-007_manual-canonical-edits/00_thread.md)  
+**Триггер для возвращения:** когда появится реальный сценарий, где нужно сохранять несколько исторических версий одного media Asset — например original photo и enhanced/restored/re-encoded variant — и различать их в старых и новых diary/ZoomAlboom references.
+
+### Что сознательно не решаем сейчас
+
+В текущем MVP Asset имеет stable identity и authoritative original, но отдельная история версий самого media Asset не проектируется. AQ-DATA-007 не должен зависеть от Asset versioning.
+
+### Что потребуется решить позже
+
+- является ли улучшенное media новой Asset identity или новой version существующего Asset;
+- должны ли старые Entry revisions продолжать указывать на старую media version;
+- как хранить provenance преобразования original -> enhanced/restored/transcoded;
+- как versioning взаимодействует с shared media library и ZoomAlboom;
+- retention/cleanup старых media versions;
+- как не дублировать большие originals без необходимости.
+
+До появления такого use case не усложнять текущую Asset/storage модель.
+
 ## Как добавлять сюда новые вопросы
 
 Для каждого future-вопроса достаточно:
