@@ -41,7 +41,7 @@
 ## PQ-001 — Что именно считается canonical source of truth?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, что считать canonical source of truth: user-owned files, operational storage или hybrid, не потеряв web/multi-device/search возможности.</summary>
 
 Наиболее сильное новое направление — user-owned file-based diary, где canonical content хранится в переносимом формате, а индексы/БД — derived.
 
@@ -71,7 +71,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-002 — Насколько обязателен full offline-first?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить, обязателен ли full offline-first для нового web/backend MVP или достаточно online-first с защитой от потери capture при сбоях связи.</summary>
 
 Старый Android проект делал offline-first центральным принципом.
 
@@ -94,7 +94,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-003 — Какой minimum viable web?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить минимальный первый web slice: какие из browse/read/create/edit/search/tags/history обязательны сразу, а что можно перенести на следующий этап.</summary>
 
 Нужно утвердить точный минимум первой полезной web-версии.
 
@@ -120,7 +120,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, как показывать raw и revision history: всегда, через History/Details или только в специальных сценариях вроде conflict/AI proposal.</summary>
 
 Продукт требует их сохранять. UX может:
 
@@ -140,7 +140,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-005 — Насколько AI автоматичен?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было выбрать policy AI automation: suggestion-only, auto-apply, user confirmation или разные правила per workflow/type of change.</summary>
 
 Для разных workflows можно выбрать разные policies:
 
@@ -162,7 +162,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, насколько пользователь управляет LLM model/provider: global preference, per-workflow override, автоматический выбор или compare mode.</summary>
 
 Варианты UX:
 
@@ -184,7 +184,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-007 — Sharing входит в обозримый MVP?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было понять, входит ли sharing в обозримый MVP и должен ли он уже сейчас влиять на auth/data model.</summary>
 
 Ранее sharing рассматривался как полезный retention/family механизм.
 
@@ -206,7 +206,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-008 — Какова судьба старого Android-приложения?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить судьбу старого Android/Firebase приложения: развивать, мигрировать, переиспользовать части или оставить только как historical prototype.</summary>
 
 Варианты:
 
@@ -229,7 +229,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-009 — Нужен ли Calendar inbox как постоянная production feature?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было понять, является ли Calendar inbox постоянной production-интеграцией или лишь удобным переходным voice/capture adapter.</summary>
 
 Он удобен как прагматичный voice adapter, но long-term могут стать удобнее:
 
@@ -250,7 +250,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-011 — Как устроен Entry detail/edit и переиспользуемый EntryPanel?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить границу между reusable EntryPanel и surrounding EntryScreen, чтобы view/edit и proposal review использовали одну совместимую модель представления.</summary>
 
 Как должен выглядеть основной экран одной Entry и какое представление состояния записи нужно сделать переиспользуемым между обычным просмотром, ручным редактированием и proposal merge/review?
 
@@ -272,7 +272,7 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 ## AQ-DATA-001 — Files-only или files + derived DB/index?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, достаточно ли files-only для первого MVP или нужен persistent derived DB/index ради listing/filter/search, не меняя ownership canonical data.</summary>
 
 Web UI нужен быстрый listing/filter/search.
 
@@ -298,7 +298,7 @@ Web UI нужен быстрый listing/filter/search.
 ## AQ-DATA-002 — Гранулярность storage abstraction
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было выбрать уровень storage abstraction: low-level file operations или domain repository в терминах Entry/Revision, оставив низкий уровень только специальным tools.</summary>
 
 Два полюса:
 
@@ -333,7 +333,7 @@ listChanges
 ## AQ-DATA-003 — Concurrency / optimistic locking
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить, как предотвратить silent lost updates при одновременных изменениях из нескольких tabs/devices, AI jobs и внешнего storage.</summary>
 
 Что происходит, если:
 
@@ -361,7 +361,7 @@ listChanges
 ## AQ-DATA-004 — Change detection
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, как backend обнаруживает внешние изменения canonical Drive/files и как не перезаписать их молча.</summary>
 
 Если Drive/files canonical, как backend эффективно узнаёт про изменения?
 
@@ -384,7 +384,7 @@ listChanges
 ## AQ-DATA-005 — Asset storage
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, где хранить media originals и derivatives, сохранив portability и возможность позднее отделить object storage/CDN без переделки domain model.</summary>
 
 Где хранятся originals:
 
@@ -412,7 +412,7 @@ listChanges
 ## AQ-DATA-006 — Format schema и migrations
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить versioning canonical format и безопасную migration policy: backup, lock, validation, backward compatibility и rebuild derived state.</summary>
 
 Нужно определить:
 
@@ -449,7 +449,7 @@ File-first ценность подразумевает inspectability, но manu
 ## AQ-DATA-008 — Migration со старого Firebase/Room
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было понять, есть ли в старом Firebase/Room уникальные ценные данные, ради которых вообще нужен отдельный migration tooling.</summary>
 
 Сначала нужно выяснить:
 
@@ -493,7 +493,7 @@ File-first ценность подразумевает inspectability, но manu
 ## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить, где хранить autosave/working draft до revision, как восстанавливаться после сбоев и как сочетать это с multi-device editing и AI mutations.</summary>
 
 Как технически хранить промежуточное autosave-состояние manual editing session до того, как оно станет полноценной revision?
 
@@ -715,7 +715,7 @@ ChatGPT Sites можно рассмотреть как быстрый спосо
 ## AQ-AUTH-001 — Identity model
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было выбрать identity model: привязывать пользователя к Google/Firebase напрямую или иметь независимый internal account с внешними login identities.</summary>
 
 Google account — естественный first path.
 
@@ -736,7 +736,7 @@ Google account — естественный first path.
 ## AQ-AUTH-002 — Drive/Calendar OAuth
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было определить Google OAuth policy: scopes, incremental consent, refresh tokens, revocation, account switching и re-auth.</summary>
 
 Нужно определить:
 
@@ -759,7 +759,7 @@ Google account — естественный first path.
 ## AQ-AUTH-003 — Single-user vs multi-user readiness
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было решить, проектировать ли приложение сразу multi-user или оптимизировать первый production только под одного владельца.</summary>
 
 Первый production может быть только для одного владельца.
 
@@ -775,7 +775,7 @@ Google account — естественный first path.
 ## AQ-AUTH-004 — Доступ backend к user-owned Drive
 
 <details>
-<summary><strong>Проблематика / на что отвечал вопрос</strong></summary>
+<summary>Нужно было выбрать модель доступа backend к user-owned Drive: delegated OAuth пользователя, service account/shared folder или другой pattern.</summary>
 
 Нужно решить модель:
 
