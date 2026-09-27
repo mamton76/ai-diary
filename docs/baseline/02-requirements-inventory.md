@@ -173,9 +173,9 @@ File-first ветка использует отдельные revision files/fol
 Особенно при web/multi-device и параллельной AI-обработке.
 
 
-### REV-007 — Current Entry и History/Revisions разделены в UX
+### REV-007 — Current Entry и History/Revisions различаются, но History видна на EntryScreen
 **Статус:** ПОДТВЕРЖДЕНО  
-Основной экран Entry показывает актуальное состояние записи и действия над ним. Raw/original и история изменений доступны через отдельный History/Revisions view и не обязаны постоянно занимать место рядом с текущей записью.
+Current Entry остаётся главным состоянием EntryScreen. Под ней показывается компактная scrollable History/Revisions gallery/timeline revision snippets. Raw/original и полные revision details не обязаны постоянно занимать место рядом с текущим состоянием и доступны через history drill-down.
 
 ### REV-008 — Manual revision соответствует завершённой editing session
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -456,6 +456,10 @@ Sources/provenance/lineage считаются свойствами/trace metadat
 ### WEB-015 — Dirty manual draft использует Save & Run перед Entry workflow
 **Статус:** ПОДТВЕРЖДЕНО  
 Полноценные Entry workflows запускаются от committed revision. Если в manual editor есть unsaved changes, UI предлагает `Save & Run`: сначала working draft фиксируется как manual revision, затем эта revision становится base/input для AI run. AI workflow не работает скрытно по эфемерному draft.
+### WEB-016 — Revision gallery открывает Previous vs Selected comparison
+**Статус:** ПОДТВЕРЖДЕНО  
+На EntryScreen History/Revisions показывается как компактная scrollable gallery/timeline карточек/snippets revisions. Карточка должна позволять быстро понять тип/время и характер изменения. Выбор revision открывает read-only comparison: слева предыдущая revision, справа выбранная. Оба состояния переиспользуют EntryPanel/diff components; provenance/metadata изменения показывается отдельно. Это не proposal merge: в History обе стороны read-only.
+
 
 ---
 
