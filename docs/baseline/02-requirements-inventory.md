@@ -440,9 +440,9 @@ React/TypeScript обсуждался как естественный канди
 **Статус:** ПОДТВЕРЖДЕНО  
 Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Add поддерживает выбор существующей сущности или создание новой (Asset Library/new asset; tag catalog/new tag). Base/Proposal в merge read-only, Result editable.
 
-### WEB-012 — Layout EntryPanel пока не фиксируется
+### WEB-012 — EntryPanel адаптируется по собственной ширине
 **Статус:** ПОДТВЕРЖДЕНО  
-Порядок Assets/Tags и desktop/mobile placement можно менять без изменения продуктовой модели; главное — одинаковая структура состояния в обычном view, edit и proposal merge.
+При достаточной ширине Text занимает основную content column, а Assets, Tags и secondary created/updated metadata показываются справа. При узкой panel эти секции переходят под Text. Правило зависит от ширины самой EntryPanel, а не только viewport, чтобы тот же component автоматически работал в обычном Entry detail и в узких `Base | Result | Proposal` колонках. Точные breakpoint/column ratios — UI implementation detail.
 
 ---
 
