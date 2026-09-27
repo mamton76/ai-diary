@@ -460,6 +460,10 @@ Sources/provenance/lineage считаются свойствами/trace metadat
 **Статус:** ПОДТВЕРЖДЕНО  
 На EntryScreen History/Revisions показывается как компактная scrollable gallery/timeline карточек/snippets revisions. Карточка должна позволять быстро понять тип/время и характер изменения. Выбор revision открывает read-only comparison: слева предыдущая revision, справа выбранная. Оба состояния переиспользуют EntryPanel/diff components; provenance/metadata изменения показывается отдельно. Это не proposal merge: в History обе стороны read-only.
 
+### WEB-017 — Revision diff field-aware и не сравнивает provenance
+**Статус:** ПОДТВЕРЖДЕНО  
+В Previous-vs-Selected comparison provenance/lineage/source/AI run/workflow/restoredFrom и другая trace metadata показываются отдельным details block и не участвуют в content diff. Для Tags и Assets added/removed состояния маркируются `+ / −`; порядок Assets незначим и reorder не считается изменением. Для Text желательно подсвечивать изменённые фрагменты; точный diff algorithm и visual style выбираются при реализации по читаемости.
+
 
 ---
 
