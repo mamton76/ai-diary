@@ -1,7 +1,7 @@
 # AI Diary — продуктовый baseline
 
 **Версия:** draft 0.1  
-**Дата:** 2026-09-26  
+**Дата:** 2026-09-27  
 **Назначение:** описать, что такое AI Diary и что продукт должен уметь, до выбора новой технической архитектуры.
 
 ---
@@ -596,6 +596,17 @@ Revision item должен позволять:
 
 Actionable AI state на основном EntryScreen представлен только текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
 
+
+### 12.6 AI actions и inline editor assistance
+
+EntryScreen должен давать screen-level AI actions над текущей записью:
+
+- запуск готового workflow;
+- `Custom prompt / Ask AI` для разовой инструкции.
+
+Такие Entry workflows работают от committed revision. Если в manual editor есть dirty working draft, используется `Save & Run`: сначала создаётся manual revision, затем именно она становится input/base revision для AI run. Изменяющий workflow дальше создаёт Proposal и не переписывает Entry напрямую.
+
+Отдельно сохраняется кандидатная функция **inline AI editor assistance**: AI-команда над selection/current working draft (например rewrite, shorten, fix, continue). Это может оказаться полезным уже в MVP, но не является blocking requirement. Решение о включении принимается при реализации editor slice с учётом стоимости и необходимости отдельно определить undo/proposal/revision semantics для draft-level AI.
 
 ### 12.3 UI не владеет бизнес-логикой
 
