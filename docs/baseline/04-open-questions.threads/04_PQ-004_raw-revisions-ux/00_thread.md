@@ -128,3 +128,5 @@ Restore старой revision:
 6. Revision history линейная, без branches; committed revisions immutable/append-only и не удаляются пользователем по одной.
 7. Restore или Undo уже применённого изменения создаёт новую revision из нужного snapshot и сохраняет provenance, не удаляя старую историю.
 8. History compaction/retention через synthetic checkpoint откладывается в future backlog.
+
+**Решение:** [принято] (2026-09-27) Current Entry остаётся главным состоянием EntryScreen; под ней показывается scrollable History/Revisions gallery/timeline со snippet-карточками. Выбор revision открывает read-only comparison `Previous revision | Selected revision`, а provenance/metadata изменения показывается отдельно. Остальные ранее принятые semantics сохраняются: proposal становится revision только после Apply, manual session создаёт одну revision при Save/1h inactivity, autosave revision не создаёт, history линейная и append-only, Restore/Undo создают новую revision, compaction отложен.
