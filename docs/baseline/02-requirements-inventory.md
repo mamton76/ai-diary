@@ -541,6 +541,12 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 
 ---
 
+
+
+### API-007 — Основной backend stack — Kotlin/Ktor
+**Статус:** ПОДТВЕРЖДЕНО  
+Core backend AI Diary реализуется на Kotlin/Ktor и содержит domain/API logic, storage coordination, revisions, leases, concurrency/reconciliation и integrations. Python может добавляться позднее как специализированный worker/service/job для AI/ML/media/data задач, когда это оправдано конкретным use case; такие workers не обходят domain mutation rules и не становятся независимыми writers canonical diary state. Для MVP второй runtime не обязателен.
+
 # J. Authentication и Google integration
 
 ### AUTH-001 — Internal user identity независима от login provider
