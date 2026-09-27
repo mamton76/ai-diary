@@ -139,6 +139,38 @@
 
 ---
 
+## FQ-REVISION-002 — Revision history compaction / retention
+
+**Статус:** PARKED / FUTURE  
+**Происхождение:** [PQ-004 — raw/revisions UX](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)  
+**Триггер для возвращения:** когда объём revision history начнёт заметно влиять на storage, performance или удобство обслуживания.
+
+### Что уже решено сейчас
+
+Для MVP committed revisions остаются immutable / append-only. Пользователь не удаляет отдельные revisions; Restore и Undo создают новую revision поверх линейной истории.
+
+### Будущая идея
+
+Если история станет слишком большой, compaction можно выполнять отдельной maintenance-операцией:
+
+- создать synthetic checkpoint revision, содержащую полный актуальный state;
+- после успешного checkpoint по retention policy архивировать или удалять часть старых промежуточных revisions;
+- не превращать compaction в обычный пользовательский rollback/delete;
+- сохранить достаточный provenance и гарантии восстановления.
+
+### Что потребуется решить позже
+
+- какие revisions нельзя удалять никогда: raw/original, restore sources, migration checkpoints и т. п.;
+- retention policy: по возрасту, количеству, размеру или типу revision;
+- что происходит со ссылками `restoredFromRevisionId`, AI run/proposal provenance и другими references на compacted revisions;
+- нужно ли архивировать старые revisions отдельно вместо физического удаления;
+- как compaction влияет на assets, связанные с историческими revisions;
+- как валидировать checkpoint до удаления/архивации старой истории.
+
+Это future maintenance requirement и не должно усложнять текущий MVP.
+
+---
+
 ## FQ-ENTRY-001 — Merge / split entries
 
 **Статус:** PARKED / FUTURE  
