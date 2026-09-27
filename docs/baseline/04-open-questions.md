@@ -156,6 +156,8 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-005 — Asset storage
 
+**Обсуждение:** [AQ-DATA-005 thread](04-open-questions.threads/23_AQ-DATA-005_asset-storage/00_thread.md)
+
 Где хранятся originals:
 
 - в том же Drive/file backend;
