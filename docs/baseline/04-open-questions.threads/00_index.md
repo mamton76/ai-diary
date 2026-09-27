@@ -34,6 +34,8 @@
 
 | 15 | AQ-DATA-001 | Files-only или files + derived DB/index? | решён | ✅ resolved | none | — | [📁](15_AQ-DATA-001_files-vs-derived-index/) | [00_thread.md](15_AQ-DATA-001_files-vs-derived-index/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / architecture data design |
 
+| 16 | AQ-DATA-003 | Concurrency / optimistic locking | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](16_AQ-DATA-003_concurrency-locking/) | [00_thread.md](16_AQ-DATA-003_concurrency-locking/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+
 ## Быстрая легенда lifecycle
 
 - 🟢 `open` — свободен для продолжения;
