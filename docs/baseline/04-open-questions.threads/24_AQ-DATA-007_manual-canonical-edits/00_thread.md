@@ -1,10 +1,10 @@
 # AQ-DATA-007 — Нужно ли позволять пользователю вручную редактировать canonical files?
 
 **Источник:** [04-open-questions.md / AQ-DATA-007](../../04-open-questions.md#aq-data-007--нужно-ли-позволять-пользователю-вручную-редактировать-canonical-files)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -47,4 +47,4 @@
 
 При этом пользователь отдельно отметил, что **полноценную поддержку manual canonical editing не обязательно тянуть в MVP**. Возможный MVP-подход: canonical files остаются readable/portable, backend умеет безопасно заметить неожиданные изменения и не потерять данные, но официальный manual-edit workflow откладывается.
 
-**Решение:** —
+**Решение:** [принято] (2026-09-27) Canonical files остаются readable/portable и могут быть безопасно изменены вне приложения, но полноценный manual-edit workflow не является обязательной MVP feature. Если backend обнаруживает валидное внешнее изменение поддерживаемых content fields (например text/title/date/time/tags/links to existing Assets), оно может быть импортировано как external manual edit и зафиксировано новой Entry revision. Изменения identity/system invariants и storage layout не считаются обычным supported edit path и уходят в validation/recovery. Asset/media versioning сознательно не входит в этот вопрос и отложен в FQ-ASSET-001.
