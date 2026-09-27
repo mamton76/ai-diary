@@ -188,11 +188,38 @@ Sources/provenance/lineage семантически относятся преж�
 
 Фича не считается обязательной для базового MVP, но сохраняется как **MVP candidate**: если при реализации editor slice она оказывается недорогой и не ломает revision semantics, её можно включить сразу. Решение об этом сознательно откладывается до начала editor implementation.
 
+### Сводка 12 — History/Revisions как gallery/timeline под Entry
+
+History/Revisions не прячется по умолчанию в отдельный tab. На EntryScreen под текущей записью показывается компактная прокручиваемая **gallery/timeline revisions**.
+
+Каждая revision представлена небольшим snippet/card, чтобы можно было быстро листать историю и понимать характер изменения. Карточка может показывать:
+
+- короткий content snippet;
+- тип изменения (`manual`, AI-applied, restore/import и т. п.);
+- время/дату revision;
+- компактное summary/diff-сигналы вроде `text changed`, `+2 tags`, `date changed`, `asset +1`.
+
+Точный визуальный стиль карточек и mobile behaviour остаются UI tuning, но принцип быстрого пролистывания snippets является продуктовым решением.
+
+Клик по revision открывает подробный **read-only comparison**:
+
+- слева показывается **предыдущая revision**;
+- справа — выбранная revision;
+- обе стороны используют тот же EntryPanel/diff building blocks, но read-only;
+- по умолчанию это не сравнение с original/raw и не сравнение с первой revision.
+
+Revision comparison семантически отличается от proposal merge: proposal review использует `Base | Result | Proposal` с editable Result, а History details — `Previous | Selected revision`, обе стороны read-only.
+
+Metadata/provenance изменения отделяется от самого content comparison. Рядом/сверху/снизу может показываться отдельный details block: manual edit / AI workflow / Restore / Import, timestamp, previous/base revision, proposal/AI run/source links и другие provenance данные. Точное placement этого metadata block сейчас не фиксируется.
+
+Для первой revision отдельный edge case (что именно показывать слева: raw/source/empty state) можно определить при реализации details UX.
+
 ### Что ещё не решено
+
+- точный визуальный стиль/адаптация revision gallery и first-revision comparison — UI/detail decision;
 
 - точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
 - какие именно secondary controls/metadata видны всегда, а какие раскрываются;
-- конкретное представление History/Revisions на EntryScreen (список/timeline/accordion и placement относительно panel);
 - нужен ли отдельный AI-note/annotation после появления Proposals и revision details;
 - точный placement/menu для Entry-level AI actions;
 - inline AI editor assistance не блокирует PQ-011: её UX/semantics и включение в MVP обсуждаются при начале editor implementation.
