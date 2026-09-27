@@ -133,6 +133,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-002 — Гранулярность storage abstraction
 
+**Обсуждение:** [AQ-DATA-002 thread](04-open-questions.threads/18_AQ-DATA-002_storage-abstraction/00_thread.md)
+
 Два полюса:
 
 ### Низкоуровневый
