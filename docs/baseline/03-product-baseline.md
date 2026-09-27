@@ -283,11 +283,12 @@ Google Calendar может быть удобным промежуточным ca
 
 ### 7.4 UX текущей записи и истории
 
-Для MVP current state и history разделяются:
+Для MVP current state остаётся главным содержимым EntryScreen, а History/Revisions доступна прямо под ним как компактная scrollable gallery/timeline revision snippets.
 
-- основной экран **Entry** показывает актуальную запись и действия над ней;
-- **History / Revisions** открывается отдельно;
-- raw/original остаётся доступным через history, но не обязан постоянно отображаться рядом с текущей записью.
+- карточка revision помогает быстро понять, когда и какого типа изменение произошло и что примерно поменялось;
+- клик по revision открывает подробное read-only сравнение **предыдущей revision слева** и **выбранной revision справа**;
+- raw/original остаётся доступным через history/details, но не обязан постоянно отображаться рядом с текущей записью;
+- provenance/metadata изменения показываются отдельно от двух content panels.
 
 ### 7.5 Manual editing session и revision boundary
 
@@ -553,7 +554,7 @@ Editing добавляется на следующем этапе вместе �
 
 Экран одной записи разделяется на два уровня:
 
-- `EntryScreen` — page/screen shell: navigation, screen-level actions, reusable EntryPanel, текущие Proposals и History/Revisions;
+- `EntryScreen` — page/screen shell: navigation, screen-level actions, reusable EntryPanel, текущие Proposals и компактная History/Revisions gallery/timeline;
 - `EntryPanel` — переиспользуемое представление **самого состояния записи**.
 
 `EntryPanel` должен использоваться как минимум в обычном view, manual edit и proposal merge/review. Его смысловые области:
@@ -582,19 +583,22 @@ EntryPanel использует adaptive layout по **собственной д
 
 Такой container-responsive layout обязателен именно из-за reuse: одна EntryPanel на широком detail screen может иметь правую колонку, а три более узкие панели в `Base | Result | Proposal` автоматически складываются вертикально без отдельной merge-specific структуры.
 
-### 12.5 Revision details, provenance и lineage
+### 12.5 History gallery, revision comparison, provenance и lineage
 
-`Sources / Lineage` не являются отдельным постоянным блоком основного EntryScreen. Provenance относится к конкретным committed revisions и открывается из History/Revisions.
+`Sources / Lineage` не являются отдельным постоянным блоком основного EntryScreen. Provenance относится к конкретным committed revisions.
 
-Revision item должен позволять:
+Под текущей Entry показывается компактная scrollable History/Revisions gallery/timeline. Revision card/snippet позволяет быстро увидеть тип/время изменения, короткий content preview и компактное summary того, что поменялось.
 
-- быстро увидеть наличие/тип provenance;
-- получить краткую информацию через tooltip/popover/hover panel там, где это уместно;
-- открыть `Подробнее` для полной revision details.
+Выбор revision открывает revision details с read-only comparison:
 
-В details могут входить raw/source links, previous/base revision, restore/proposal/workflow provenance, AI run/result references и другие trace данные. Отдельный глубокий details screen допустим, но его точная компоновка сейчас не является частью MVP UX-решения.
+- слева — **предыдущая revision**;
+- справа — **выбранная revision**;
+- обе стороны переиспользуют EntryPanel/diff building blocks;
+- это отличается от proposal merge `Base | Result | Proposal`, где Result редактируется.
 
-Actionable AI state на основном EntryScreen представлен только текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
+Metadata/provenance отделено от content comparison. Оно может включать raw/source links, previous/base revision, manual/AI/restore/import origin, proposal/workflow/AI run references, timestamps и другие trace данные. Краткие provenance details могут показываться через indicator/tooltip/popover, а полные — через `Подробнее`.
+
+Actionable AI state на основном EntryScreen представлен текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
 
 
 ### 12.6 AI actions и inline editor assistance
