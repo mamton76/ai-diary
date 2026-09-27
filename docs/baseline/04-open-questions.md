@@ -114,20 +114,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-001 — Files-only или files + derived DB/index?
 
+**Статус:** решён  
 **Обсуждение:** [AQ-DATA-001 thread](04-open-questions.threads/15_AQ-DATA-001_files-vs-derived-index/00_thread.md)
 
-Web UI нужен быстрый listing/filter/search.
+**Решение:** первый MVP работает files-only через отдельный data layer/repository abstraction; database и полноценный search на старте не обязательны. Архитектура должна позволять позже добавить rebuildable derived index для listing/filter/search/performance. Canonical diary content и revisions остаются в user-owned storage; server-side DB не должна становиться их второй durable копией. Operational state может содержать приватные данные только там, где это необходимо. Privacy policy будущего search index определяется отдельно.
 
-Реалистичные варианты:
-
-- прямое чтение Drive при небольшом объёме;
-- in-memory/cache index;
-- rebuildable server index;
-- relational DB как derived projection;
-- search-specific store;
-- комбинация.
-
-Ключевое ограничение: добавление operational index не должно молча менять ownership canonical data.
 
 ## AQ-DATA-002 — Гранулярность storage abstraction
 
