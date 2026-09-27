@@ -463,27 +463,10 @@ listChanges
 
 ## AQ-DATA-009 — Какая именно модель core data synchronization нужна?
 
-**Обсуждение:** [AQ-DATA-009 thread](04-open-questions.threads/25_AQ-DATA-009_core-sync-topology/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-DATA-009 thread](04-open-questions.threads/25_AQ-DATA-009_core-sync-topology/00_thread.md)
 
-Требование к синхронизации теперь считаем явным: разные клиенты должны работать с одним логическим дневником без тихой потери изменений.
-
-Архитектуре нужно выбрать topology/authority model, например:
-
-- clients -> backend -> canonical files;
-- clients -> backend -> operational DB -> canonical file projection;
-- clients/backend напрямую синхронизируются с file storage через version tokens;
-- hybrid с локальным cache и reconciliation.
-
-Нужно отдельно определить:
-
-- кто авторитетен при конфликте;
-- какой version/revision token участвует в compare-and-swap;
-- как обнаруживаются external/manual Drive edits;
-- какую consistency ожидаем между canonical storage и derived indexes;
-- какие операции должны работать offline;
-- как выполняются retry/idempotency и duplicate prevention.
-
-Важно не смешивать core diary sync с Calendar projection, capture queue и backup/export — это разные sync contracts.
+**Решение:** ordinary clients и internal processes работают с diary через backend/domain API. Backend координирует mutations, leases, revisions, concurrency и reconciliation, но canonical durable state остаётся в user-owned files. Прямые изменения storage считаются external changes; derived DB/index/cache не являются authority. Offline sync, Calendar projection, capture queue и backup/export имеют отдельные contracts.
 
 
 ## AQ-DATA-010 — Как хранить autosave / working state незавершённой editing session?
