@@ -32,9 +32,7 @@
 | 18 | AQ-DATA-002 | Гранулярность storage abstraction | решён | ✅ resolved | none | — | [📁](18_AQ-DATA-002_storage-abstraction/) | [00_thread.md](18_AQ-DATA-002_storage-abstraction/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 | 19 | AQ-DATA-004 | Change detection | решён | ✅ resolved | none | — | [📁](19_AQ-DATA-004_change-detection/) | [00_thread.md](19_AQ-DATA-004_change-detection/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 | 20 | AQ-DATA-006 | Format schema и migrations | решён | ✅ resolved | none | — | [📁](20_AQ-DATA-006_schema-migrations/) | [00_thread.md](20_AQ-DATA-006_schema-migrations/00_thread.md) | 02-requirements-inventory.md / architecture data design |
-
 | 21 | AQ-DATA-008 | Migration со старого Firebase/Room | решён | ✅ resolved | none | — | [📁](21_AQ-DATA-008_legacy-firebase-migration/) | [00_thread.md](21_AQ-DATA-008_legacy-firebase-migration/00_thread.md) | 02-requirements-inventory.md |
-
 | 22 | AQ-API-002 | Hosting/runtime | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](22_AQ-API-002_hosting-runtime/) | [00_thread.md](22_AQ-API-002_hosting-runtime/00_thread.md) | 02-requirements-inventory.md / architecture deployment/runtime design |
 
 ## Быстрая легенда lifecycle
