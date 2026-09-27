@@ -146,6 +146,8 @@ listChanges
 
 ## AQ-DATA-003 — Concurrency / optimistic locking
 
+**Обсуждение:** [AQ-DATA-003 thread](04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md)
+
 Что происходит, если:
 
 - две browser tabs редактируют одну entry;
