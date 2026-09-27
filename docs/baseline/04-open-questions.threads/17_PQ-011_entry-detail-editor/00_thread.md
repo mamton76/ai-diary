@@ -1,10 +1,10 @@
 # PQ-011 — Как устроен Entry detail/edit и переиспользуемый EntryPanel?
 
 **Источник:** [04-open-questions.md / PQ-011](../../04-open-questions.md#pq-011--как-устроен-entry-detailedit-и-переиспользуемый-entrypanel)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -226,18 +226,21 @@ Metadata/provenance изменения отделяется от самого co
 
 Для остальных versioned полей (title, event date/start/end) конкретное визуальное представление изменения можно подобрать вместе с общим diff UI; отдельной сложной механики сейчас не требуется.
 
-### Что ещё не решено
+### Сводка 14 — финальные screen-level решения
 
-- точный визуальный стиль/адаптация revision gallery, first-revision comparison и text diff — UI/detail decision;
+Оставшиеся продуктовые хвосты закрыты:
 
-- точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
-- какие именно secondary controls/metadata видны всегда, а какие раскрываются;
-- нужен ли отдельный AI-note/annotation после появления Proposals и revision details;
-- точный placement/menu для Entry-level AI actions;
-- inline AI editor assistance не блокирует PQ-011: её UX/semantics и включение в MVP обсуждаются при начале editor implementation.
+- **AI actions placement:** AI actions живут на уровне EntryScreen рядом с обычными screen actions (например Edit) как заметная кнопка/menu `AI ▾`. Внутри доступны готовые workflows и `Custom prompt / Ask AI`. В edit mode action остаётся доступным; если working draft dirty, полноценный workflow идёт через уже принятое `Save & Run`. Inline AI assistance остаётся отдельной editor-level механикой и не смешивается с этим menu.
+- **Secondary metadata:** `created / updated` показываются всегда, но визуально вторично. На широкой EntryPanel — внизу secondary column под Tags/Assets; на узкой — внизу panel. Эти timestamps не являются versioned content для revision diff.
+- **AI note / annotation:** отдельный постоянный AI-note/annotation block на EntryScreen не нужен. Его прежние роли покрываются Proposal (actionable AI change), committed Revision (применённое изменение), provenance/AI run details (почему/откуда изменение) и workflow result для не-mutating analysis.
 
-**Нужно от пользователя:** добить оставшиеся детали PQ-011: placement/menu для Entry-level AI actions, видимость secondary metadata и судьбу старой AI-note/annotation.
+Точный text-diff style, first-revision left-side edge case, breakpoint values и visual polish gallery считаются implementation/UI details и не держат продуктовый вопрос открытым.
 
-пользователь —
+### Неблокирующие implementation details
 
-**Решение:** —
+- подобрать читаемый text diff;
+- определить first-revision comparison edge case;
+- настроить breakpoint/column ratios;
+- выбрать финальный visual styling revision gallery и AI menu.
+
+**Решение:** [принято] (2026-09-27) EntryScreen использует reusable container-responsive EntryPanel для current/view/edit и proposal review; screen-level Proposals, AI actions и History остаются вне EntryPanel. EntryPanel содержит title, event time, text, assets, tags и тихую secondary metadata; Tags/Assets находятся справа при достаточной ширине и ниже Text на узкой. AI actions доступны через screen-level `AI ▾` с workflows и Custom prompt; dirty draft использует Save & Run. History/Revisions показана под Entry как scrollable gallery/timeline; revision details сравнивают Previous vs Selected read-only, с отдельным provenance/details block и field-aware diff (`+/-` для tags/assets, assets unordered, text diff подбирается при реализации). Отдельный AI-note/annotation block не нужен. Остаточные visual details являются implementation-level и не блокируют решение.
