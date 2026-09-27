@@ -135,7 +135,7 @@ AI не может молча переписать то, что пользова
 
 ### ENTRY-010 — Lifecycle Entry: ACTIVE / ARCHIVED / DELETED
 **Статус:** ПОДТВЕРЖДЕНО  
-Для пользовательского lifecycle достаточно `ACTIVE`, `ARCHIVED`, `DELETED`. `DELETED` — soft delete / trash semantics, а не физическое уничтожение истории. Постоянный `DRAFT`-status для Entry не нужен: незавершённый manual edit — operational working draft, непринятый AI output — Proposal.
+Для пользовательского lifecycle достаточно `ACTIVE`, `ARCHIVED`, `DELETED`. `ACTIVE` участвует в обычных browse/search/timeline; `ARCHIVED` сохраняется, но скрывается из обычного потока по умолчанию; `DELETED` — soft delete / trash и исключается из обычных представлений, не уничтожая историю. Постоянный `DRAFT`-status для Entry не нужен: незавершённый manual edit — operational working draft, непринятый AI output — Proposal.
 
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -438,7 +438,7 @@ React/TypeScript обсуждался как естественный канди
 
 ### WEB-011 — EntryPanel имеет общую структуру для view/edit/merge
 **Статус:** ПОДТВЕРЖДЕНО  
-Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Base/Proposal в merge read-only, Result editable.
+Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Add поддерживает выбор существующей сущности или создание новой (Asset Library/new asset; tag catalog/new tag). Base/Proposal в merge read-only, Result editable.
 
 ### WEB-012 — Layout EntryPanel пока не фиксируется
 **Статус:** ПОДТВЕРЖДЕНО  
