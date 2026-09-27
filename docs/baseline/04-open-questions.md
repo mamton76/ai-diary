@@ -141,23 +141,10 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-003 — Concurrency / optimistic locking
 
-**Обсуждение:** [AQ-DATA-003 thread](04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-DATA-003 thread](04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md)
 
-Что происходит, если:
-
-- две browser tabs редактируют одну entry;
-- web и Android меняют её одновременно;
-- пользователь вручную меняет `entry.md` в Drive;
-- AI создаёт proposal, пока пользователь пишет;
-- background import обновляет related metadata.
-
-Возможные механизмы:
-
-- revision IDs;
-- ETag/version tokens;
-- append-only revisions;
-- compare-and-swap;
-- explicit conflict UI.
+**Решение:** mutation ownership scoped per Entry. Committed mutation разрешена только актуальному владельцу editing/mutation lease и должна указывать `baseRevisionId`/эквивалентный domain version. Потеря lease запрещает commit; устаревшая base revision не перезаписывает current state, а проходит compatibility/rebase/merge/conflict. На storage layer canonical write дополнительно защищается native conditional version token (`ETag`/generation/version или эквивалент), если storage его поддерживает; race приводит к reload/reconcile, не к last-write-wins. Разные Entries могут независимо редактироваться параллельно.
 
 ## AQ-DATA-004 — Change detection
 
