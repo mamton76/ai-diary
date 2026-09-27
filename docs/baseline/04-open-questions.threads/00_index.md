@@ -21,27 +21,16 @@
 | 7 | PQ-006 | Насколько пользователь выбирает LLM provider/model? | решён | ✅ resolved | none | — | [📁](07_PQ-006_llm-provider-model-choice/) | [00_thread.md](07_PQ-006_llm-provider-model-choice/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 8 | PQ-007 | Sharing входит в обозримый MVP? | решён | ✅ resolved | none | — | [📁](08_PQ-007_sharing-mvp/) | [00_thread.md](08_PQ-007_sharing-mvp/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / 06-future-questions.md |
 | 9 | PQ-009 | Нужен ли Calendar inbox как постоянная production feature? | решён | ✅ resolved | none | — | [📁](09_PQ-009_calendar-inbox-role/) | [00_thread.md](09_PQ-009_calendar-inbox-role/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 10 | PQ-008 | Какова судьба старого Android-приложения? | решён | ✅ resolved | none | — | [📁](10_PQ-008_android-legacy/) | [00_thread.md](10_PQ-008_android-legacy/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 11 | AQ-AUTH-003 | Single-user vs multi-user readiness | решён | ✅ resolved | none | — | [📁](11_AQ-AUTH-003_multi-user-readiness/) | [00_thread.md](11_AQ-AUTH-003_multi-user-readiness/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 12 | AQ-AUTH-001 | Identity model | решён | ✅ resolved | none | — | [📁](12_AQ-AUTH-001_identity-model/) | [00_thread.md](12_AQ-AUTH-001_identity-model/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 13 | AQ-AUTH-004 | Доступ backend к user-owned Drive | решён | ✅ resolved | none | — | [📁](13_AQ-AUTH-004_drive-access/) | [00_thread.md](13_AQ-AUTH-004_drive-access/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 14 | AQ-AUTH-002 | Drive/Calendar OAuth | решён | ✅ resolved | none | — | [📁](14_AQ-AUTH-002_google-oauth/) | [00_thread.md](14_AQ-AUTH-002_google-oauth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 15 | AQ-DATA-001 | Files-only или files + derived DB/index? | решён | ✅ resolved | none | — | [📁](15_AQ-DATA-001_files-vs-derived-index/) | [00_thread.md](15_AQ-DATA-001_files-vs-derived-index/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / architecture data design |
-
 | 16 | AQ-DATA-003 | Concurrency / optimistic locking | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](16_AQ-DATA-003_concurrency-locking/) | [00_thread.md](16_AQ-DATA-003_concurrency-locking/00_thread.md) | 02-requirements-inventory.md / architecture data design |
-
 | 17 | PQ-011 | Как устроен Entry detail/edit и переиспользуемый EntryPanel? | обсуждаем | 🔒 in_discussion | active | ChatGPT conversation | [📁](17_PQ-011_entry-detail-editor/) | [00_thread.md](17_PQ-011_entry-detail-editor/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
-
 | 18 | AQ-DATA-002 | Гранулярность storage abstraction | решён | ✅ resolved | none | — | [📁](18_AQ-DATA-002_storage-abstraction/) | [00_thread.md](18_AQ-DATA-002_storage-abstraction/00_thread.md) | 02-requirements-inventory.md / architecture data design |
-
 | 19 | AQ-DATA-004 | Change detection | решён | ✅ resolved | none | — | [📁](19_AQ-DATA-004_change-detection/) | [00_thread.md](19_AQ-DATA-004_change-detection/00_thread.md) | 02-requirements-inventory.md / architecture data design |
-
 | 20 | AQ-DATA-006 | Format schema и migrations | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](20_AQ-DATA-006_schema-migrations/) | [00_thread.md](20_AQ-DATA-006_schema-migrations/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
 ## Быстрая легенда lifecycle
