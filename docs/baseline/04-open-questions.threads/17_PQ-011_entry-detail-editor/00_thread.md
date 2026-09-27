@@ -92,6 +92,37 @@
 Для assets на продуктовом уровне принята связь `EntryRevision ↔ Asset`: текущая Entry получает текущий набор assets через current revision. Это позволяет Restore вернуть не только text, но и соответствующий исторический asset set.
 
 
+### Сводка 6 — Entry lifecycle и committed revision semantics
+
+В ходе разбора того, что именно отображает/редактирует EntryPanel, уточнены роли Entry, Revision и Proposal:
+
+- `Entry` — стабильный контейнер identity/lifecycle/currentRevision;
+- пользовательский lifecycle Entry: `ACTIVE`, `ARCHIVED`, `DELETED`; постоянный `DRAFT` не нужен;
+- `ACTIVE` участвует в обычном browse/search/timeline, `ARCHIVED` по умолчанию скрыт из основного потока, `DELETED` — soft-delete/trash;
+- versioned content (title, event time, text, tags, assets и source/composition state) относится к committed EntryRevision;
+- committed revision immutable/append-only и не имеет proposal-подобного lifecycle status;
+- pending/accepted/rejected/superseded принадлежат Proposal, а не Revision.
+
+
+### Сводка 7 — Add existing vs create new
+
+Для Tags и Assets в edit mode действие Add должно различать два сценария:
+
+- выбрать уже существующую сущность и привязать её;
+- создать новую сущность и сразу привязать.
+
+Для assets это означает выбор из Asset Library либо создание нового asset (например upload/local file или external link — конкретные варианты UI ещё можно уточнять). Для tags — выбор из существующего catalog либо создание нового tag.
+
+
+### Ранее обсуждавшиеся UX-идеи, которые сохраняем как контекст
+
+Эти идеи не считаются окончательно зафиксированным layout, но их не нужно терять при следующем проходе:
+
+- Sources/Lineage должны быть доступны с EntryScreen, но не входить в reusable EntryPanel;
+- manual content editing и редактирование source/composition — разные по смыслу операции; не стоит случайно смешивать их в один незаметный режим;
+- старая идея отдельной AI-note/annotation должна быть переоценена уже с учётом новой Proposal/AI activity модели, а не переноситься автоматически;
+- конкретное положение History, Lineage, Tags и Assets на desktop/mobile пока остаётся открытым.
+
 ### Что ещё не решено
 
 - окончательный порядок/placement секций EntryPanel на desktop;
