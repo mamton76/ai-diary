@@ -93,7 +93,17 @@ Restore старой revision:
 
 См. [FQ-REVISION-002 — Revision history compaction / retention](../../06-future-questions.md#fq-revision-002--revision-history-compaction--retention).
 
-## Решение
+### Сводка 9 — уточнение History UX из PQ-011
+
+27 сентября 2026 в PQ-011 пересмотрена только presentation-часть раннего решения о History. История больше не обязана открываться отдельным tab/view по умолчанию.
+
+На основном EntryScreen под текущей Entry показывается компактная scrollable gallery/timeline revision snippets. Выбор revision открывает подробное read-only сравнение `Previous revision | Selected revision`; provenance/metadata изменения показываются отдельно от content comparison.
+
+Это не меняет revision semantics: история остаётся линейной и append-only, proposals не являются revisions до Apply, Restore/Undo создают новые revisions.
+
+**Решение (снято частично, 2026-09-27):** прежняя формулировка пункта 1 требовала разделять Current Entry и History/Revisions как отдельные UX views; это ограничение заменено встроенной gallery/timeline под Entry с drill-down в revision details.
+
+### Предыдущее решение до уточнения presentation
 
 Для MVP:
 
@@ -102,6 +112,19 @@ Restore старой revision:
 3. Manual editing session начинается с первой правки и создаёт одну revision при Save или после 1 часа inactivity.
 4. Autosave не является revision.
 5. Подряд идущие manual revisions группируются в раскрываемый блок только на уровне UI.
+6. Revision history линейная, без branches; committed revisions immutable/append-only и не удаляются пользователем по одной.
+7. Restore или Undo уже применённого изменения создаёт новую revision из нужного snapshot и сохраняет provenance, не удаляя старую историю.
+8. History compaction/retention через synthetic checkpoint откладывается в future backlog.
+
+## Решение
+
+Для MVP:
+
+1. Current Entry остаётся главным состоянием экрана; непосредственно под ней доступна компактная scrollable History/Revisions gallery/timeline со snippet-карточками revisions. Клик по revision открывает read-only comparison предыдущей и выбранной revision; raw/original доступен через history/details, но не обязан постоянно занимать место рядом с current state.
+2. AI proposal до Apply не является revision; применённая AI mutation существующей записи создаёт отдельную revision.
+3. Manual editing session начинается с первой правки и создаёт одну revision при Save или после 1 часа inactivity.
+4. Autosave не является revision.
+5. Подряд идущие manual revisions могут группироваться только на уровне presentation; базовые revision records сохраняются.
 6. Revision history линейная, без branches; committed revisions immutable/append-only и не удаляются пользователем по одной.
 7. Restore или Undo уже применённого изменения создаёт новую revision из нужного snapshot и сохраняет provenance, не удаляя старую историю.
 8. History compaction/retention через synthetic checkpoint откладывается в future backlog.
