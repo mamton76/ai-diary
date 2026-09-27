@@ -303,9 +303,9 @@ Canonical content и revisions остаются в user-owned storage. Operation
 ### DATA-010 — Нужны backup/export/restore semantics
 **Статус:** ПОДТВЕРЖДЕНО.
 
-### DATA-011 — Manual file edits не должны приводить к тихой потере данных
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Особенно важно, если canonical data остаётся в Drive и пользователь теоретически может открыть файлы напрямую.
+### DATA-011 — Manual/external canonical file edits не являются штатным MVP write path
+**Статус:** ПОДТВЕРЖДЕНО ДЛЯ MVP  
+Новые entries могут приходить из любых официальных capture/input adapters, но canonical persistence и updates проходят через backend/domain repository. Прямое внешнее редактирование Drive/files не является поддерживаемым штатным сценарием первого MVP; постоянный Drive change watcher можно отложить. При committed write всё равно нужен version/concurrency check, чтобы unexpected external change не привёл к silent overwrite.
 
 
 ### DATA-012 — Незавершённое редактирование хранится как operational working draft
