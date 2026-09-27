@@ -169,8 +169,8 @@ AI cleanup, user edit и другие трансформации должны б
 File-first ветка использует отдельные revision files/folders. Сам принцип обязателен, on-disk форма — архитектурная.
 
 ### REV-006 — Revisions должны помогать разрешать конфликты
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Особенно при web/multi-device и параллельной AI-обработке.
+**Статус:** ПОДТВЕРЖДЕНО  
+Committed mutation должна знать base revision/domain version. Если current revision ушла вперёд, silent last-write-wins запрещён; изменение проходит compatibility/rebase/merge/conflict flow.
 
 
 ### REV-007 — Current Entry и History/Revisions различаются, но History видна на EntryScreen
@@ -328,6 +328,14 @@ AI result привязан к base revision. Если entry изменилась
 ### DATA-016 — Working draft синхронизируется debounce + guaranteed flush
 **Статус:** ПОДТВЕРЖДЕНО  
 Локальное working state синхронизируется на backend комбинированно: debounce после паузы во вводе плюс гарантированный flush при наличии unsynced changes. Обязательный flush выполняется перед Save, передачей lease и auto-revision. Конкретные интервалы настраиваемы.
+
+### DATA-018 — Commit требует актуального per-entry lease и base revision
+**Статус:** ПОДТВЕРЖДЕНО  
+Editing/mutation lease scoped на конкретную Entry: разные Entries могут редактироваться параллельно независимыми sessions. Потерявшая lease session не имеет права committed write, пока заново не получит lease и не синхронизируется со свежим server draft. Перед committed mutation backend проверяет и актуальное lease ownership, и `baseRevisionId`/эквивалентный domain version. Несовпадение base/current revision не приводит к overwrite; используется compatibility/rebase/merge/conflict path.
+
+### DATA-019 — Canonical write использует storage-level conditional version check
+**Статус:** ПОДТВЕРЖДЕНО  
+Storage adapter при физической canonical записи использует storage-native conditional token (`ETag`, generation/version token или эквивалент), если backend это поддерживает. Если token изменился между read/check и write, запись не перетирает новое состояние: backend перечитывает canonical state и запускает reconciliation/external-change flow. Точный provider-specific token является architecture/adapter detail.
 
 
 ---
