@@ -133,13 +133,17 @@ AI не может молча переписать то, что пользова
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Существующий Inbox-to-Entry это допускает при уверенной связи.
 
-### ENTRY-010 — Архивирование и удаление должны быть безопасными
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Нужны non-destructive archive/delete semantics; точный набор статусов пока не фиксируем.
+### ENTRY-010 — Lifecycle Entry: ACTIVE / ARCHIVED / DELETED
+**Статус:** ПОДТВЕРЖДЕНО  
+Для пользовательского lifecycle достаточно `ACTIVE`, `ARCHIVED`, `DELETED`. `DELETED` — soft delete / trash semantics, а не физическое уничтожение истории. Постоянный `DRAFT`-status для Entry не нужен: незавершённый manual edit — operational working draft, непринятый AI output — Proposal.
 
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
 Модель должна поддерживать day-level и timestamp/interval-level содержание.
+
+### ENTRY-012 — Entry — стабильный контейнер, content versioned через Revision
+**Статус:** ПОДТВЕРЖДЕНО  
+`Entry` хранит stable identity/lifecycle/current revision reference и технические timestamps. Состояние, которое должно восстанавливаться исторически — title, event date/start/end, text, tags, asset links и source/composition references — относится к `EntryRevision` или эквивалентному versioned snapshot. Конкретная физическая schema — архитектурная.
 
 ---
 
@@ -189,9 +193,21 @@ Manual editing session начинается с первой фактическо
 **Статус:** ПОДТВЕРЖДЕНО  
 Restore не удаляет и не переписывает последующую историю. Snapshot выбранной старой revision копируется в новую revision поверх текущей. Новая revision сохраняет provenance-ссылку на источник, например `restoredFromRevisionId`.
 
-### REV-012 — AI mutation существующей entry создаёт отдельную revision
+### REV-012 — Применённая AI mutation существующей entry создаёт отдельную revision
 **Статус:** ПОДТВЕРЖДЕНО  
-Любое применённое AI-действие, изменяющее существующую entry, создаёт отдельную revision и не перезаписывает предыдущую версию.
+AI proposal до Apply не является revision. Любое **применённое** AI-действие, изменяющее существующую entry, создаёт отдельную committed revision и не перезаписывает предыдущую версию.
+
+### REV-013 — Committed revisions immutable / append-only
+**Статус:** ПОДТВЕРЖДЕНО  
+Committed revision уже является историческим фактом и не требует lifecycle status `pending/accepted/rejected`. Пользователь не удаляет отдельные revisions вручную. Undo/Restore создаёт новую revision с нужным snapshot/provenance, не уничтожая старую историю.
+
+### REV-014 — Набор assets является частью revision state
+**Статус:** ПОДТВЕРЖДЕНО  
+Историческая revision должна восстанавливать тот набор asset links, который был у записи в этот момент. На продуктовом уровне связь рассматривается как `EntryRevision ↔ Asset`; текущие assets Entry получаются из current revision.
+
+### REV-015 — History compaction не входит в MVP
+**Статус:** ОТЛОЖЕНО  
+Если revision history станет слишком большой, future maintenance может создать synthetic full-state checkpoint и применять retention/archive policy к старым промежуточным revisions. Это не пользовательский delete/rollback. См. `FQ-REVISION-002`.
 
 ---
 
@@ -226,7 +242,7 @@ Restore не удаляет и не переписывает последующ�
 **Статус:** ПОДТВЕРЖДЕНО.
 
 ### ASSET-002 — Asset должен иметь отдельную идентичность
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ.
+**Статус:** ПОДТВЕРЖДЕНО.
 
 ### ASSET-003 — Оригиналы media нужно сохранять
 **Статус:** ПОДТВЕРЖДЕНО.
@@ -236,7 +252,11 @@ Restore не удаляет и не переписывает последующ�
 Старое решение — Firebase Storage; file-first направление допускает Drive/file storage. Архитектура должна решить это отдельно.
 
 ### ASSET-005 — Одна media сущность может быть связана с несколькими entries
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ.
+**Статус:** ПОДТВЕРЖДЕНО.
+
+### ASSET-006 — Remove asset из Entry различает unlink и delete
+**Статус:** ПОДТВЕРЖДЕНО  
+В edit UX действие удаления asset открывает явный выбор: отвязать от текущей Entry и оставить в Asset Library либо удалить asset из системы. Если asset используется несколькими entries, destructive delete предупреждает о затрагиваемых связях; если после unlink asset станет orphaned, это также явно показывается.
 
 ---
 
@@ -412,6 +432,18 @@ React/TypeScript обсуждался как естественный канди
 **Статус:** ПОДТВЕРЖДЕНО  
 Но базовый сценарий не должен ломаться.
 
+### WEB-010 — EntryScreen отделён от переиспользуемого EntryPanel
+**Статус:** ПОДТВЕРЖДЕНО  
+`EntryScreen` содержит surrounding UX: navigation/actions, Proposals, History/Revisions, Sources/Lineage, AI activity/details. `EntryPanel` показывает одно состояние самой записи и переиспользуется в view/edit/merge.
+
+### WEB-011 — EntryPanel имеет общую структуру для view/edit/merge
+**Статус:** ПОДТВЕРЖДЕНО  
+Минимальные области: Title; Event date + optional start/end; Text; Assets; Tags; вторичная read-only system metadata created/updated. Title и Text редактируются в edit/result mode; date/start/end получают date/time controls; Tags и Assets получают add/remove actions. Base/Proposal в merge read-only, Result editable.
+
+### WEB-012 — Layout EntryPanel пока не фиксируется
+**Статус:** ПОДТВЕРЖДЕНО  
+Порядок Assets/Tags и desktop/mobile placement можно менять без изменения продуктовой модели; главное — одинаковая структура состояния в обычном view, edit и proposal merge.
+
 ---
 
 # I. Backend / API
@@ -510,9 +542,9 @@ Workflow определяет задачу/контекст/валидацию; 
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Например «проанализировать прогресс верховой езды за месяц».
 
-### AI-010 — AI run должен сохранять достаточную трассировку
+### AI-010 — AI run должен сохранять достаточную трассировку и быть доступен для drill-down
 **Статус:** ПОДТВЕРЖДЕНО  
-Workflow, prompt, provider/model, входы, выходы, time, validation; позже usage/cost.
+Пользователь должен из Entry/AI activity открыть детали конкретного run/result: workflow/prompt versions, provider/model, input/base revision, output/AIResult, proposals, validation, timestamps, auto/user outcome и resulting committed revisions; позже usage/cost.
 
 ### AI-011 — AI output не должен автоматически становиться истиной
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -540,9 +572,11 @@ Workflow, prompt, provider/model, входы, выходы, time, validation; п
 Старые модели уже различали explicit preferences и learned context. Точная реализация позже.
 
 ### AI-014 — Provider не должен знать структуру Google Drive
+**Статус:** ПОДТВЕРЖДЕНО  
+Context building и storage access выполняются внутри приложения/backend; provider получает подготовленный контекст, а не knowledge of diary storage internals.
 
 ### AI-015 — Pending AI proposals должны быть first-class state
-
+**Статус:** ПОДТВЕРЖДЕНО  
 Для AI-изменений существующей entry результат до принятия пользователя является proposal, а не committed revision.
 
 Proposal должен:
@@ -551,16 +585,22 @@ Proposal должен:
 - иметь target/scope/base revision или эквивалентное base state;
 - поддерживать Accept/Reject и supersede;
 - становиться stale/conflicted при несовместимом изменении base state;
-- не попадать в обычную revision history до Accept/Apply.
+- не попадать в обычную revision history до Accept/Apply;
+- иметь собственный lifecycle и различать application mode (`USER` / `AUTO`) без переноса этого lifecycle на committed revision.
 
-Несколько proposals могут существовать параллельно, если их scopes не конфликтуют.
+Несколько proposals могут существовать параллельно; новый state может сделать ранее созданные proposals stale/conflicted.
 
 ### AI-016 — Auto-apply policy определяется per workflow/type of change
-
+**Статус:** ПОДТВЕРЖДЕНО  
 Первая normalized entry может создаваться автоматически при сохранённом raw и явной uncertainty. Existing tags могут auto-apply при высокой уверенности; новые tags по умолчанию предлагаются. Точные confidence thresholds и policy для будущих metadata не являются blocking requirement для MVP.
 
+### AI-020 — Proposal granularity определяется workflow
 **Статус:** ПОДТВЕРЖДЕНО  
-Context building и storage access выполняются внутри приложения/backend.
+Один AIResult может дать один или несколько proposals. Один proposal может быть простым или комплексным и затрагивать text, date, tags и другие поля одновременно. Core product model не заставляет разбивать каждое атомарное изменение в отдельный proposal.
+
+### AI-021 — Proposal review имеет быстрый и подробный путь
+**Статус:** ПОДТВЕРЖДЕНО  
+Бесконфликтный proposal на Entry card можно Apply/Reject или открыть подробно. Stale/conflicted proposal не имеет быстрого Apply. Detailed review использует `Base | Result | Proposal`: Base/Proposal read-only, Result editable; независимые изменения auto-merge, конфликты подсвечиваются локально, пользователь выбирает Current/Proposal/manual edit. Подтверждение Result создаёт одну committed revision; до этого merge result не входит в History.
 
 ---
 
