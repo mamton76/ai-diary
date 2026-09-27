@@ -161,6 +161,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-004 — Change detection
 
+**Обсуждение:** [AQ-DATA-004 thread](04-open-questions.threads/19_AQ-DATA-004_change-detection/00_thread.md)
+
 Если Drive/files canonical, как backend эффективно узнаёт про изменения?
 
 Варианты:
