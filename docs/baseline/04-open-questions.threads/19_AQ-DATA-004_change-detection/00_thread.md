@@ -1,10 +1,10 @@
 # AQ-DATA-004 — Change detection
 
 **Источник:** [04-open-questions.md / AQ-DATA-004](../../04-open-questions.md#aq-data-004--change-detection)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -57,4 +57,22 @@
 
 2. Даже если direct external editing canonical files не считается штатным MVP write path, перед **обновлением существующей entry** желательно дёшево проверять storage metadata/version token. Если storage state изменился с момента чтения, backend не должен просто перезаписывать файл. Нужно определить reconciliation policy: как зафиксировать external change в revision history, как поступить с pending update и что делать при invalid/unparseable external edit.
 
-**Решение:** снова открыто до фиксации metadata-check + external-change reconciliation semantics.
+### Сводка 4 — финальная policy
+
+При update существующей canonical entry backend делает дешёвую проверку storage metadata/version token (ETag/version/modified marker или эквивалент; конкретный механизм выбирается реализацией).
+
+Если storage marker не изменился — commit идёт обычным путём.
+
+Если marker изменился:
+- backend перечитывает текущее storage state;
+- если фактический content эквивалентен, revision не создаётся, storage token просто обновляется;
+- если обнаружено содержательное внешнее изменение и оно валидно, оно импортируется как **новая immutable revision** с provenance `external_file_change` / equivalent;
+- pending user/AI change, основанный на предыдущей revision, становится stale относительно нового current state и дальше проходит rebase/merge/conflict flow;
+- silent overwrite не допускается;
+- если внешний файл повреждён или не проходит schema validation, backend не перезаписывает его поверх, а переводит ситуацию в review/conflict/recovery path.
+
+Постоянный Drive watcher в первом MVP не обязателен; проверка выполняется opportunistically при read/update, а background reconciliation можно добавить позже.
+
+Текущие Calendar/Telegram/file-based workflows не обязаны мигрировать на новый backend одномоментно; целевое направление — постепенно свести их к общему capture/application boundary.
+
+**Решение:** [принято] cheap storage-version check on update + external content captured as a new immutable revision before reconciling pending changes; no silent overwrite, no mandatory continuous Drive watcher for MVP.
