@@ -37,4 +37,14 @@
 
 Если позднее появится реальная потребность сохранять исторические версии одного и того же media Asset (например original vs enhanced/restored photo), это возвращается как отдельный future-вопрос и не блокирует AQ-DATA-007.
 
+### Сводка 2 — граница manual edit и MVP scope
+
+Если manual editing canonical files когда-либо считается официально поддерживаемым, поддерживаемыми считаются прежде всего **содержательные поля** Entry: текст, title, date/time, tags и ссылки на уже существующие Assets. Изменение identity/system invariants (`entryId`, `revisionId`, current revision pointers, provenance/system metadata) и произвольное изменение storage layout не считаются обычным supported edit path.
+
+При обнаружении внешнего изменения backend должен различать:
+- валидное изменение поддерживаемых content fields → может быть принято как external manual edit и оформлено новой revision;
+- изменение system/invariant fields или нарушение integrity → validation/recovery path, без автоматического принятия.
+
+При этом пользователь отдельно отметил, что **полноценную поддержку manual canonical editing не обязательно тянуть в MVP**. Возможный MVP-подход: canonical files остаются readable/portable, backend умеет безопасно заметить неожиданные изменения и не потерять данные, но официальный manual-edit workflow откладывается.
+
 **Решение:** —
