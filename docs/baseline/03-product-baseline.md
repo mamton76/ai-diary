@@ -379,9 +379,9 @@ Google Drive рассматривается как первая практиче
 
 ### 11.2 Database
 
-Новая версия **не исходит из предположения, что DB обязательно нужна**.
+Первый MVP сознательно стартует **без database для diary content**: backend читает canonical Drive/files через отдельный data layer/repository abstraction.
 
-DB может быть оправдана как:
+Позже DB/index может быть оправдан как:
 
 - derived index;
 - cache;
@@ -389,7 +389,9 @@ DB может быть оправдана как:
 - concurrency aid;
 - operational projection.
 
-Но появление DB не должно автоматически означать, что переносимые пользовательские files перестали быть meaningful source data.
+Такой слой должен быть rebuildable и не становится source of truth. Canonical diary content и revisions остаются в user-owned storage. Operational state может временно содержать приватные данные только там, где это необходимо для работы продукта; лишние долговременные серверные копии нужно минимизировать.
+
+Отдельный data layer обязателен с самого начала, чтобы добавление index/DB позже не требовало переписывать UI/domain logic.
 
 
 ### 11.3 Версионирование как свойство продукта
@@ -464,19 +466,19 @@ AI Diary должен восприниматься как **один логич�
 
 Новый web — полноценный продуктовый интерфейс.
 
-### 12.1 Первый полезный web slice
+### 12.1 Первый web MVP и следующий slice
 
-Первый web slice ориентирован на уже существующие diary entries:
+Самый первый files-only MVP может быть ещё уже: browse/list существующих entries и открыть/прочитать entry через backend data layer, без database/index и без полноценного search.
 
-- browse/list или timeline;
-- открыть и прочитать entry;
+Следующий полезный web slice добавляет:
+
 - обычный текстовый поиск;
 - фильтр по дате/date range;
 - фильтр по tags.
 
-Создание новой записи через web **не является обязательным requirement первых этапов**. Если простая форма create почти не увеличивает сложность, её можно добавить opportunistically, но она не должна задерживать основной read/search flow.
+Создание новой записи через web **не является обязательным requirement первых этапов**. Если простая форма create почти не увеличивает сложность, её можно добавить opportunistically.
 
-Следующие продуктовые этапы:
+Далее:
 
 1. editing existing entries + versioning/history;
 2. просмотр и редактирование tags;
@@ -529,7 +531,7 @@ Backend должен быть местом, где концентрируютс�
 
 ## 14. Search и исследование истории
 
-Минимальный search первого web slice должен позволять находить entries по:
+Search не блокирует самый первый files-only MVP. На следующем web slice он должен позволять находить entries по:
 
 - тексту;
 - date/date range;
