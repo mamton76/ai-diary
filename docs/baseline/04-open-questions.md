@@ -491,25 +491,11 @@ listChanges
 
 ## AQ-API-001 — Язык/framework backend
 
-**Обсуждение:** [AQ-API-001 thread](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-API-001 thread](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md)
 
-Кандидаты, обсуждавшиеся сейчас:
+**Решение:** основной backend stack — Kotlin/Ktor. Это основной runtime для domain/API logic, storage coordination, revisions, leases, concurrency/reconciliation и integrations. Python допускается позднее для специализированных AI/ML/media/data workers/jobs, если появляется конкретная выгода; в MVP второй runtime не вводится без необходимости. Specialized workers не становятся независимыми writers canonical diary state.
 
-- Kotlin/Ktor;
-- Python/FastAPI;
-- TypeScript/Node.
-
-Критерии сравнения:
-
-- насколько удобно владельцу читать и исправлять код;
-- качество AI-generated implementation;
-- Google API ecosystem;
-- background/async jobs;
-- type safety;
-- testability;
-- library maturity;
-- deployment simplicity;
-- долгосрочное сопровождение.
 
 ## AQ-API-002 — Hosting/runtime
 
