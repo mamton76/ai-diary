@@ -2,8 +2,8 @@
 
 **Источник:** [04-open-questions.md / PQ-004](../../04-open-questions.md#pq-004--нужно-ли-сразу-показывать-rawrevisions-пользователю)  
 **Статус:** решён  
-**Состояние:** completed  
-**Claim:** released  
+**Состояние:** resolved  
+**Claim:** none  
 **Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
@@ -74,14 +74,34 @@ Restore старой revision:
 
 См. [PQ-005](../05_PQ-005_ai-automation-policy/00_thread.md).
 
+### Сводка 7 — committed revisions не имеют pending lifecycle
+
+После отделения Proposal от Revision уточнена семантика committed history:
+
+- revision появляется только когда состояние уже committed;
+- revisions считаются immutable / append-only snapshots и не требуют lifecycle-статуса вроде pending/accepted/rejected;
+- пользователь не удаляет отдельные committed revisions вручную;
+- Restore, Undo уже применённого AI proposal и другие возвраты состояния создают **новую revision поверх истории**, а не удаляют/откатывают предыдущую;
+- поэтому Apply proposal → затем Undo остаются двумя понятными историческими действиями с provenance.
+
+
+### Сводка 8 — compaction истории отложен
+
+Физическое уменьшение длинной revision history не является обычным пользовательским delete/rollback и не нужно для MVP.
+
+В future backlog вынесена отдельная maintenance-механика: создать synthetic checkpoint revision с полным состоянием и затем по retention policy архивировать/удалять старые промежуточные revisions, не меняя текущую пользовательскую историю и сохраняя необходимые provenance/raw guarantees.
+
+См. [FQ-REVISION-002 — Revision history compaction / retention](../../06-future-questions.md#fq-revision-002--revision-history-compaction--retention).
+
 ## Решение
 
 Для MVP:
 
 1. Current Entry и History/Revisions разделены в UX.
-2. AI mutation существующей записи всегда создаёт revision.
+2. AI proposal до Apply не является revision; применённая AI mutation существующей записи создаёт отдельную revision.
 3. Manual editing session начинается с первой правки и создаёт одну revision при Save или после 1 часа inactivity.
 4. Autosave не является revision.
 5. Подряд идущие manual revisions группируются в раскрываемый блок только на уровне UI.
-6. Revision history линейная, без branches.
-7. Restore создаёт новую revision из snapshot старой и сохраняет ссылку на source revision.
+6. Revision history линейная, без branches; committed revisions immutable/append-only и не удаляются пользователем по одной.
+7. Restore или Undo уже применённого изменения создаёт новую revision из нужного snapshot и сохраняет provenance, не удаляя старую историю.
+8. History compaction/retention через synthetic checkpoint откладывается в future backlog.
