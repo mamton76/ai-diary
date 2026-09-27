@@ -1,10 +1,10 @@
 # AQ-DATA-009 — Какая именно модель core data synchronization нужна?
 
 **Источник:** [04-open-questions.md / AQ-DATA-009](../../04-open-questions.md#aq-data-009--какая-именно-модель-core-data-synchronization-нужна)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -43,4 +43,4 @@ Core diary sync — отдельно от:
 
 ## Обсуждение
 
-**Решение:** —
+**Решение:** [принято] (2026-09-27) Обычные clients и internal processes работают с core diary data через backend/domain API. Backend является coordinator/mutation authority: применяет domain rules, leases, revisions, optimistic concurrency и reconciliation, но не является canonical data store. Durable canonical state остаётся в user-owned portable files. Прямые изменения canonical storage считаются external changes и проходят validation/reconciliation path; derived DB/index/cache остаются rebuildable и не становятся authority. Full offline sync, Calendar projection, capture queue и backup/export имеют отдельные contracts и не смешиваются с core diary synchronization.
