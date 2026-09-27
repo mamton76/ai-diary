@@ -38,7 +38,7 @@
 
 | 17 | PQ-011 | Как устроен Entry detail/edit и переиспользуемый EntryPanel? | обсуждаем | 🔒 in_discussion | active | ChatGPT conversation | [📁](17_PQ-011_entry-detail-editor/) | [00_thread.md](17_PQ-011_entry-detail-editor/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 18 | AQ-DATA-002 | Гранулярность storage abstraction | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](18_AQ-DATA-002_storage-abstraction/) | [00_thread.md](18_AQ-DATA-002_storage-abstraction/00_thread.md) | 02-requirements-inventory.md / architecture data design |
+| 18 | AQ-DATA-002 | Гранулярность storage abstraction | решён | ✅ resolved | none | — | [📁](18_AQ-DATA-002_storage-abstraction/) | [00_thread.md](18_AQ-DATA-002_storage-abstraction/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
 ## Быстрая легенда lifecycle
 
