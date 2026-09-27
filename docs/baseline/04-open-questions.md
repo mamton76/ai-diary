@@ -186,16 +186,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-006 — Format schema и migrations
 
+**Статус:** решён  
 **Обсуждение:** [AQ-DATA-006 thread](04-open-questions.threads/20_AQ-DATA-006_schema-migrations/00_thread.md)
 
-Нужно определить:
+**Решение:** storage имеет одну общую `formatVersion`. Migrations выполняются как явная операция с backup/snapshot и maintenance/read-only lock, последовательно по соседним версиям (`v1 -> v2 -> ... -> current`). Migration меняет только реально изменившиеся типы данных, затем проходит schema/integrity/data-loss validation; новая format version активируется только после успешной проверки. После migration пользователь получает report и возможность точечно проверить `before / after`; конкретный UX этого comparison откладывается до реализации первой реальной migration и должен быть тогда рассмотрен отдельно. Core runtime не обязан поддерживать все исторические formats; old readers/transformers остаются в migration tooling.
 
-- format version granularity;
-- migration runner;
-- backward compatibility;
-- backup before migration;
-- validation;
-- возможность rebuild derived indexes после migration.
 
 ## AQ-DATA-007 — Нужно ли позволять пользователю вручную редактировать canonical files?
 
