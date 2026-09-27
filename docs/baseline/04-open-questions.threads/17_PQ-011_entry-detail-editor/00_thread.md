@@ -224,7 +224,7 @@ Metadata/provenance изменения отделяется от самого co
 - точный placement/menu для Entry-level AI actions;
 - inline AI editor assistance не блокирует PQ-011: её UX/semantics и включение в MVP обсуждаются при начале editor implementation.
 
-**Нужно от пользователя:** продолжить с layout/placement EntryPanel и затем surrounding EntryScreen.
+**Нужно от пользователя:** добить оставшиеся детали PQ-011: placement/menu для Entry-level AI actions, видимость secondary metadata и судьбу старой AI-note/annotation.
 
 пользователь —
 
