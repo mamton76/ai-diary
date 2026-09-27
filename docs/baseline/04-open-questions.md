@@ -112,12 +112,12 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## PQ-011 — Как устроен Entry detail/edit и переиспользуемый EntryPanel?
 
-**Статус:** ОБСУЖДАЕМ  
-**Обсуждение:** [PQ-011 thread](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [PQ-011 thread](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md)
 
-Нужно зафиксировать состав переиспользуемого представления одного Entry state и границу между ним и surrounding EntryScreen, чтобы один и тот же content component работал в обычном view, manual edit и proposal merge.
+**Решение:** EntryScreen разделён на reusable EntryPanel и screen-level chrome. EntryPanel единообразно используется для view/edit и proposal review, содержит title, event date/start/end, text, assets, tags и тихую created/updated metadata; на широкой panel Assets/Tags/metadata находятся справа, на узкой — под Text. AI actions живут на EntryScreen как `AI ▾` рядом с обычными actions и содержат workflows + Custom prompt; dirty draft использует Save & Run, inline AI assistance остаётся отдельным MVP-candidate для editor. History/Revisions показывается под Entry как scrollable gallery/timeline; клик открывает read-only `Previous revision | Selected revision`, provenance показывается отдельно, Tags/Assets diff используют `+/-`, порядок Assets незначим, text diff определяется при реализации. Отдельный постоянный AI-note/annotation block не нужен.
 
-Уже согласовано: EntryPanel показывает Title, Event date + optional start/end, Text, Assets, Tags и вторичные created/updated timestamps; в edit mode соответствующие поля становятся редактируемыми, а у Tags/Assets появляются add/remove actions. EntryPanel адаптируется по собственной ширине: Assets/Tags/secondary metadata справа на широкой panel и под Text на узкой. EntryScreen содержит текущие Proposals, AI actions и History/Revisions; Sources/Lineage и полная AI activity не являются отдельными постоянными блоками, а доступны через revision details. History показывается под Entry как scrollable gallery/timeline revision snippets; клик открывает read-only comparison предыдущей и выбранной revision с отдельным provenance/details block. Точный визуальный polish и часть secondary controls ещё обсуждаются.
+Visual polish, точный text-diff, first-revision edge case и breakpoint values считаются implementation details и не блокируют продуктовый baseline.
 
 ---
 
