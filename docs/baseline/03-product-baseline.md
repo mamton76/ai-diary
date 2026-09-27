@@ -553,7 +553,7 @@ Editing добавляется на следующем этапе вместе �
 
 Экран одной записи разделяется на два уровня:
 
-- `EntryScreen` — page/screen shell: navigation, screen-level actions, Proposals, History/Revisions, Sources/Lineage, AI activity/details и другие окружающие блоки;
+- `EntryScreen` — page/screen shell: navigation, screen-level actions, reusable EntryPanel, текущие Proposals и History/Revisions;
 - `EntryPanel` — переиспользуемое представление **самого состояния записи**.
 
 `EntryPanel` должен использоваться как минимум в обычном view, manual edit и proposal merge/review. Его смысловые области:
@@ -581,6 +581,21 @@ EntryPanel использует adaptive layout по **собственной д
 - точные breakpoint и пропорции колонок определяются на UI/implementation уровне.
 
 Такой container-responsive layout обязателен именно из-за reuse: одна EntryPanel на широком detail screen может иметь правую колонку, а три более узкие панели в `Base | Result | Proposal` автоматически складываются вертикально без отдельной merge-specific структуры.
+
+### 12.5 Revision details, provenance и lineage
+
+`Sources / Lineage` не являются отдельным постоянным блоком основного EntryScreen. Provenance относится к конкретным committed revisions и открывается из History/Revisions.
+
+Revision item должен позволять:
+
+- быстро увидеть наличие/тип provenance;
+- получить краткую информацию через tooltip/popover/hover panel там, где это уместно;
+- открыть `Подробнее` для полной revision details.
+
+В details могут входить raw/source links, previous/base revision, restore/proposal/workflow provenance, AI run/result references и другие trace данные. Отдельный глубокий details screen допустим, но его точная компоновка сейчас не является частью MVP UX-решения.
+
+Actionable AI state на основном EntryScreen представлен только текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
+
 
 ### 12.3 UI не владеет бизнес-логикой
 
