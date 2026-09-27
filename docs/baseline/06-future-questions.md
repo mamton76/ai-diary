@@ -109,33 +109,34 @@
 
 ---
 
-## FQ-REVISION-001 — Rich History / Revisions UX
+## FQ-REVISION-001 — Advanced History / Revisions UX
 
 **Статус:** PARKED / FUTURE  
-**Происхождение:** PQ-004 — raw/revisions UX  
-**Триггер для возвращения:** когда базовый History/Revisions экран уже работает и становится важна более удобная навигация по длинной истории изменений.
+**Происхождение:** PQ-004 / PQ-011 — revision history UX  
+**Триггер для возвращения:** когда базовой revision gallery и Previous-vs-Selected details станет недостаточно для длинной или сложной истории.
 
 ### Что уже решено сейчас
 
 Для MVP:
 
-- Current Entry отделён от History/Revisions;
-- manual revisions сохраняются отдельно;
-- подряд идущие manual revisions можно группировать визуально;
+- Current Entry остаётся главным состоянием EntryScreen;
+- под ней показывается компактная scrollable History/Revisions gallery/timeline со snippet-карточками revisions;
+- карточки помогают увидеть тип/время и характер изменения;
+- клик открывает read-only comparison предыдущей и выбранной revision;
+- provenance/metadata показывается отдельно от content comparison;
 - restore создаёт новую revision поверх текущей истории;
 - revision history остаётся линейной.
 
 ### Что сознательно оставлено на потом
 
-- более богатая timeline/points-визуализация истории;
-- более удобное сравнение revisions/diff;
-- более подробный desktop History UX;
-- отдельная mobile presentation, если компактного списка станет недостаточно.
+- сравнение произвольных двух revisions (`Compare with…`), а не только previous vs selected;
+- более богатая diff-навигация и visual timeline для очень длинной истории;
+- фильтры/grouping по типам revision beyond базового presentation grouping;
+- специализированный desktop history workspace;
+- отдельная mobile presentation, если обычной adaptive gallery/details станет недостаточно;
+- дополнительные способы навигации по raw/source/provenance graph.
 
-Это именно presentation layer: данные revisions должны позволять улучшать UI позже без миграции истории.
-
----
-
+Это presentation layer: данные revisions должны позволять улучшать UI позже без миграции истории.
 
 ---
 
