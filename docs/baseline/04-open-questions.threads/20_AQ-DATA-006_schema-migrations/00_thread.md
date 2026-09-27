@@ -27,15 +27,13 @@
 - validation;
 - как rebuild derived indexes после migration.
 
-## Рабочее направление
+## Первоначальное рабочее направление
 
-Минимально разумно:
-- каждый canonical structured file имеет явный schema/format version;
-- reader умеет читать текущую и ограниченное число старых версий;
+На старте обсуждения рассматривался вариант, где reader основного приложения умеет читать текущую и ограниченное число старых версий. В ходе обсуждения этот вариант был уточнён и заменён финальным решением ниже: historical readers/transformers относятся к migration tooling, а core runtime не обязан постоянно поддерживать старые formats.
+
+Неизменившаяся часть направления:
 - migration создаёт новый canonical state безопасно и не уничтожает recoverability;
 - derived indexes после migration пересобираются, а не мигрируются как источник истины.
-
-**Решение:** —
 
 
 ### Сводка 2 — общая версия формата
@@ -69,7 +67,7 @@
 
 Автоматическая validation является основной гарантией. Human review — дополнительный spot-check и обязательный путь для случаев, которые validator отметил как uncertain/problematic.
 
-### Открытый под-вопрос — нужен ли runtime-reader всех старых форматов?
+### Уточнение — runtime-reader старых форматов
 
 Для `before / after` не обязательно заставлять основное приложение навсегда поддерживать все исторические storage formats.
 
@@ -79,7 +77,7 @@
 - migration report сохраняет достаточно данных для comparison (например, ссылки на before snapshot и after entity плюс normalized/rendered comparison snapshot);
 - обычный application repository после успешной migration может работать только с current format (или небольшим окном совместимости), а исторические readers остаются частью migration tooling, а не core runtime.
 
-Нужно подтвердить этот вариант перед закрытием AQ-DATA-006.
+Этот вариант подтверждён итоговым решением ниже.
 
 
 ### Сводка 4 — последовательные migration steps и отложенный UX comparison
