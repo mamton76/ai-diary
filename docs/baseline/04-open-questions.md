@@ -491,6 +491,8 @@ listChanges
 
 ## AQ-API-001 — Язык/framework backend
 
+**Обсуждение:** [AQ-API-001 thread](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md)
+
 Кандидаты, обсуждавшиеся сейчас:
 
 - Kotlin/Ktor;
