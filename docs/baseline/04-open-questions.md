@@ -161,17 +161,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-004 — Change detection
 
+**Статус:** решён  
 **Обсуждение:** [AQ-DATA-004 thread](04-open-questions.threads/19_AQ-DATA-004_change-detection/00_thread.md)
 
-Если Drive/files canonical, как backend эффективно узнаёт про изменения?
+**Решение:** новые entries могут приходить из любых официальных capture/input adapters, но запись и изменение canonical files проходят через общий backend/domain repository. Прямое внешнее редактирование canonical files вне backend не является штатно поддерживаемым MVP-сценарием, поэтому постоянный Drive change watcher можно отложить. Committed writes всё равно должны использовать version/concurrency checks, чтобы не допускать silent overwrite при неожиданном external change.
 
-Варианты:
-
-- Drive Changes API;
-- ETags/modified timestamps;
-- derived sync/index state;
-- MVP-ограничение: canonical writes только через backend;
-- периодический reconciliation.
 
 ## AQ-DATA-005 — Asset storage
 
