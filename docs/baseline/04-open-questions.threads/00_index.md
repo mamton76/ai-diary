@@ -36,6 +36,8 @@
 
 | 16 | AQ-DATA-003 | Concurrency / optimistic locking | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](16_AQ-DATA-003_concurrency-locking/) | [00_thread.md](16_AQ-DATA-003_concurrency-locking/00_thread.md) | 02-requirements-inventory.md / architecture data design |
 
+| 17 | PQ-011 | Как устроен Entry detail/edit и переиспользуемый EntryPanel? | обсуждаем | 🔒 in_discussion | active | ChatGPT conversation | [📁](17_PQ-011_entry-detail-editor/) | [00_thread.md](17_PQ-011_entry-detail-editor/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+
 ## Быстрая легенда lifecycle
 
 - 🟢 `open` — свободен для продолжения;
