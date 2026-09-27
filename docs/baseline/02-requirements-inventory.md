@@ -265,12 +265,17 @@ Domain/client logic не должны быть напрямую завязаны
 **Статус:** ПОДТВЕРЖДЕНО  
 User-owned portable files являются canonical source of truth. Operational DB/index/cache допустимы как rebuildable derived layers и не должны содержать единственную копию существенных diary data. Concurrency, indexing, search, manual edits и multi-device behavior остаются архитектурными вопросами реализации этого принципа.
 
-### DATA-007 — Наличие БД не считается обязательным заранее
+### DATA-007 — Первый MVP работает без database
 **Статус:** ПОДТВЕРЖДЕНО  
-Сначала требования, потом решение, нужна ли DB и в какой роли.
+Первый MVP читает canonical Drive/files через отдельный data layer/repository abstraction. Persistent DB для diary content на старте не требуется.
 
-### DATA-008 — Index/cache могут быть derived и rebuildable
-**Статус:** ПОДТВЕРЖДЕНО.
+### DATA-008 — Будущий index/cache — derived и rebuildable
+**Статус:** ПОДТВЕРЖДЕНО  
+Архитектура должна позволять позже добавить derived index/cache для listing/filter/search/performance без изменения canonical ownership. Index не является source of truth и должен быть rebuildable из canonical files.
+
+### DATA-017 — Canonical diary content не дублируется долговременно в server DB
+**Статус:** ПОДТВЕРЖДЕНО  
+Canonical content и revisions остаются в user-owned storage. Operational state может временно содержать приватный content только там, где это необходимо для работы продукта; серверные копии должны быть минимизированы и иметь понятный lifecycle.
 
 ### DATA-009 — Нужны versioning формата и migrations
 **Статус:** ПОДТВЕРЖДЕНО.
@@ -588,12 +593,13 @@ Context building и storage access выполняются внутри прил�
 
 # M. Search / navigation
 
-### SEARCH-001 — Нужен обычный текстовый поиск
-**Статус:** ПОДТВЕРЖДЕНО.
+### SEARCH-001 — Обычный текстовый поиск нужен, но не в самом первом MVP
+**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+Search остаётся продуктовым требованием следующего этапа, но первый files-only MVP может стартовать без него.
 
-### SEARCH-002 — Нужны date/tag filters
-**Статус:** ПОДТВЕРЖДЕНО В БАЗОВОМ ВИДЕ.  
-Для первого slice обязательны date/date range и tags. Status/source не являются обязательными на старте.
+### SEARCH-002 — Date/tag filters нужны после базового files-only MVP
+**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+Date/date range и tags входят в ближайший следующий web slice вместе с index/search layer, а не блокируют самый первый MVP.
 
 ### SEARCH-003 — Semantic search / embeddings
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
