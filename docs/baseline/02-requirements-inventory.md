@@ -516,20 +516,28 @@ EntryScreen не содержит отдельный постоянный `AI no
 Kotlin/Ktor удобен владельцу проекта; Python/FastAPI и TypeScript/Node остаются кандидатами.
 
 ### API-004 — Production runtime/hosting
-**Статус:** ОТКРЫТО  
-Cloud Run сейчас выглядит сильным кандидатом, но это ещё не архитектурный факт.
+**Статус:** ПОДТВЕРЖДЕНО  
+Для первого web/backend MVP выбирается Google Cloud Run ecosystem: Cloud Run Service для request-driven backend API и SSE, Cloud Run Jobs для run-to-completion background workloads, Cloud Scheduler для scheduled triggers. Выбор конкретного durable queue/task mechanism остаётся отдельным architecture decision.
 
 ### API-005 — Низкая стоимость и низкая операционная нагрузка
 **Статус:** ПОДТВЕРЖДЕНО  
-Для личного проекта предпочтительны free/very-low-cost tiers и минимум DevOps.
+Для личного проекта предпочтительны free/very-low-cost tiers, scale-to-zero там, где это уместно, и минимум постоянной DevOps-нагрузки. Редкие initial setup/admin действия допустимы вручную, если они понятны и документированы; routine deploy/update желательно воспроизводить из repo/scripts/CI без обязательного полного Infrastructure-as-Code на старте.
 
-### API-006 — Нужны background jobs
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-AI, indexing, import, Calendar sync и migrations не всегда стоит выполнять синхронно в HTTP-request.
+### API-006 — Нужны durable background jobs
+**Статус:** ПОДТВЕРЖДЕНО  
+AI workflows, indexing, import, Calendar sync, migrations/backfills и другие долгие/ненадёжные операции не должны зависеть от lifetime пользовательского HTTP request или открытой browser session. Event-triggered, user-triggered и schedule-triggered workflows должны сходиться в durable job model; точные queue/retry/idempotency semantics определяются отдельно.
 
 ### API-007 — Один repo может содержать web/backend/android
 **Статус:** ПОДТВЕРЖДЕНО КАК ДОПУСТИМОЕ  
 Нет требования немедленно разделять продукт по разным репозиториям. Точная структура — архитектурный вопрос.
+
+### API-008 — Backend остаётся modular monolith с несколькими runtime roles
+**Статус:** ПОДТВЕРЖДЕНО  
+Первый backend проектируется как одна codebase с общими domain/repository/workflow layers и отдельными runtime roles/entry points для API, worker/job execution и scheduled jobs. Бизнес-микросервисы вроде Entry/Tag/Calendar/AI services не вводятся без реальной нагрузки, security boundary или технологической причины.
+
+### API-009 — Для открытого web UI достаточно SSE
+**Статус:** ПОДТВЕРЖДЕНО  
+Для lightweight server-to-browser уведомлений о завершении/изменении background state используется SSE. WebSocket не нужен без отдельного bidirectional realtime use case. При закрытой странице push/Web Push не требуется; при следующем открытии клиент перечитывает актуальное authoritative state. Потеря SSE notification не должна означать потерю результата.
 
 ---
 
