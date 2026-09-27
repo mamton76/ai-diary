@@ -133,29 +133,11 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-002 — Гранулярность storage abstraction
 
+**Статус:** решён  
 **Обсуждение:** [AQ-DATA-002 thread](04-open-questions.threads/18_AQ-DATA-002_storage-abstraction/00_thread.md)
 
-Два полюса:
+**Решение:** основной application/domain слой использует высокоуровневый domain repository в терминах `Entry`, `Revision`, history/listing и других diary concepts (`listEntries/getEntry/saveRevision/loadHistory` и т. п.). Drive/files operations скрыты в нижнем storage adapter и не должны протекать в основной domain logic. Прямой low-level file access допустим для migration/import/repair/admin tooling.
 
-### Низкоуровневый
-
-```text
-listFiles
-readFile
-writeFile
-moveFile
-```
-
-### Доменный
-
-```text
-listEntries
-getEntry
-saveRevision
-listChanges
-```
-
-Текущее направление предпочитает domain-level API, но migration/import tools могут потребовать lower-level access.
 
 ## AQ-DATA-003 — Concurrency / optimistic locking
 
