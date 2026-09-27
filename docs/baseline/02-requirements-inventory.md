@@ -1,6 +1,6 @@
 # AI Diary — инвентаризация требований
 
-**Дата среза:** 2026-09-26  
+**Дата среза:** 2026-09-27  
 **Цель:** перечислить требования и решения, найденные в repo-документах, project-файлах и наших обсуждениях, не скрывая противоречий и не превращая старые технические решения в новые требования.
 
 ## Легенда статусов
@@ -448,6 +448,14 @@ React/TypeScript обсуждался как естественный канди
 **Статус:** ПОДТВЕРЖДЕНО  
 Sources/provenance/lineage считаются свойствами/trace metadata конкретной committed revision и показываются через History/Revisions: компактный indicator/details affordance, краткий tooltip/popover/hover view и optional `Подробнее`. Отдельный постоянный Sources/Lineage block на EntryScreen не нужен. Полную историческую AI activity также не нужно дублировать на основном экране; actionable AI state там представлен Proposals.
 
+### WEB-014 — EntryScreen даёт запуск AI workflow/custom prompt
+**Статус:** ПОДТВЕРЖДЕНО  
+На уровне EntryScreen пользователь может вручную запустить доступный workflow для текущей Entry либо разовый `Custom prompt / Ask AI`. Это screen-level action, а не часть reusable EntryPanel.
+
+### WEB-015 — Dirty manual draft использует Save & Run перед Entry workflow
+**Статус:** ПОДТВЕРЖДЕНО  
+Полноценные Entry workflows запускаются от committed revision. Если в manual editor есть unsaved changes, UI предлагает `Save & Run`: сначала working draft фиксируется как manual revision, затем эта revision становится base/input для AI run. AI workflow не работает скрытно по эфемерному draft.
+
 ---
 
 # I. Backend / API
@@ -605,6 +613,10 @@ Proposal должен:
 ### AI-021 — Proposal review имеет быстрый и подробный путь
 **Статус:** ПОДТВЕРЖДЕНО  
 Бесконфликтный proposal на Entry card можно Apply/Reject или открыть подробно. Stale/conflicted proposal не имеет быстрого Apply. Detailed review использует `Base | Result | Proposal`: Base/Proposal read-only, Result editable; независимые изменения auto-merge, конфликты подсвечиваются локально, пользователь выбирает Current/Proposal/manual edit. Подтверждение Result создаёт одну committed revision; до этого merge result не входит в History.
+
+### AI-022 — Inline AI editor assistance
+**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ / MVP CANDIDATE  
+Желательна AI-помощь непосредственно внутри manual editor: команда над selection/current working draft, например rewrite, shorten, fix или continue. Это отдельная семантика от Entry workflow над committed revision. Перед реализацией нужно определить draft-level undo, связь с autosave и нужно ли создавать Proposal/Revision для таких операций. Фича не блокирует базовый MVP, но может войти в него opportunistically, если editor implementation делает её дешёвой и понятной.
 
 ---
 
