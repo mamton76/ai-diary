@@ -513,19 +513,18 @@ listChanges
 
 ## AQ-API-002 — Hosting/runtime
 
-**Обсуждение:** [AQ-API-002 thread](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md)
+<details>
+<summary>Нужно было выбрать production runtime для request-driven API, SSE и долгих/scheduled background jobs, сохранив низкую стоимость и умеренную operational complexity.</summary>
 
-Cloud Run выглядит сильным кандидатом благодаря container model и scale-to-zero.
+Cloud Run рассматривался вместе с Render и Railway. Критерии: стоимость и scale-to-zero, cold starts, SSE/long-lived HTTP, long-running background execution, scheduler/queue integration, Google OAuth/Drive convenience, logs и deployment complexity.
 
-Но нужно сравнить реальную потребность с альтернативами по:
+В ходе обсуждения уточнился целевой runtime profile: один modular-monolith backend codebase, но несколько runtime roles — API service, worker/job runtime и scheduled jobs. Background workflows должны быть durable и не зависеть от открытой browser session; открытая страница получает lightweight updates через SSE, без Web Push для закрытой страницы.
 
-- стоимости;
-- cold starts;
-- background execution;
-- scheduler/queue integration;
-- Google OAuth/Drive convenience;
-- logs;
-- deployment complexity.
+</details>
+
+**Статус:** РЕШЕНО  
+**Решение:** для первого web/backend MVP выбираем Google Cloud Run ecosystem: Cloud Run Service для backend API + SSE, Cloud Run Jobs для run-to-completion background workloads, Cloud Scheduler для scheduled triggers. Backend остаётся modular monolith в одной кодовой базе с несколькими runtime roles; отдельные бизнес-микросервисы на старте не вводятся. Durable queue/task mechanism и точные retry/idempotency/job-state semantics выбираются отдельно в AQ-API-004/AQ-OPS-002. Редкие initial setup/admin действия можно делать вручную, но они должны быть понятны и документированы; routine deploy/update желательно воспроизводить из repo/scripts/CI без обязательного полного IaC на старте.  
+**История обсуждения:** [AQ-API-002 thread](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md)
 
 ## AQ-API-003 — API style
 
