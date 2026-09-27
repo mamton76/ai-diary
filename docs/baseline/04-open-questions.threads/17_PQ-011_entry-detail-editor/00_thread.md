@@ -161,12 +161,41 @@ Sources/provenance/lineage семантически относятся преж�
 
 Итого основной EntryScreen сейчас состоит из reusable EntryPanel, текущих Proposals (если они есть) и History/Revisions плюс обычного navigation/actions chrome.
 
+### Сводка 10 — AI actions на EntryScreen
+
+На EntryScreen нужен screen-level запуск AI над текущей записью. Это не часть reusable EntryPanel.
+
+Предусматриваются два сценария:
+
+- запуск готового workflow для текущей Entry (cleanup, tags, title, date/time и другие доступные workflows);
+- `Custom prompt / Ask AI` — разовый пользовательский prompt относительно этой Entry.
+
+Полноценный workflow запускается от **committed revision**. Если пользователь находится в manual edit и есть unsaved/dirty working draft, AI workflow не запускается прямо по эфемерному draft. UI предлагает `Save & Run`: сначала завершается manual editing session и создаётся manual revision, затем эта новая committed revision становится base/input для AI run.
+
+Если workflow предлагает изменить существующую Entry, дальше действует уже согласованный flow `AIResult → Proposal → Apply/Reject → committed revision`.
+
+
+### Сводка 11 — inline AI editor assistance как кандидат в MVP
+
+Отдельно от полноценных Entry workflows зафиксирована желаемая возможность AI-помощи **непосредственно внутри редактора working draft**: например выделить фрагмент и попросить переписать, сократить, исправить или продолжить текст.
+
+Это другой interaction, чем workflow над committed Entry:
+
+- он может работать с selection/current working draft;
+- он потенциально должен поддерживать обычный editor undo;
+- не решено, должен ли каждый такой шаг проходить через Proposal/Revision semantics;
+- точный UX и data semantics нужно обсудить непосредственно перед реализацией.
+
+Фича не считается обязательной для базового MVP, но сохраняется как **MVP candidate**: если при реализации editor slice она оказывается недорогой и не ломает revision semantics, её можно включить сразу. Решение об этом сознательно откладывается до начала editor implementation.
+
 ### Что ещё не решено
 
 - точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
 - какие именно secondary controls/metadata видны всегда, а какие раскрываются;
 - конкретное представление History/Revisions на EntryScreen (список/timeline/accordion и placement относительно panel);
-- нужен ли отдельный AI-note/annotation после появления Proposals и revision details.
+- нужен ли отдельный AI-note/annotation после появления Proposals и revision details;
+- точный placement/menu для Entry-level AI actions;
+- inline AI editor assistance не блокирует PQ-011: её UX/semantics и включение в MVP обсуждаются при начале editor implementation.
 
 **Нужно от пользователя:** продолжить с layout/placement EntryPanel и затем surrounding EntryScreen.
 
