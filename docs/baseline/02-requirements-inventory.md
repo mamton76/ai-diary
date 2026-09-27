@@ -434,7 +434,7 @@ React/TypeScript обсуждался как естественный канди
 
 ### WEB-010 — EntryScreen отделён от переиспользуемого EntryPanel
 **Статус:** ПОДТВЕРЖДЕНО  
-`EntryScreen` содержит surrounding UX: navigation/actions, Proposals, History/Revisions, Sources/Lineage, AI activity/details. `EntryPanel` показывает одно состояние самой записи и переиспользуется в view/edit/merge.
+`EntryScreen` содержит navigation/actions, reusable EntryPanel, текущие Proposals и History/Revisions. Sources/Lineage и полная AI activity не занимают отдельные постоянные блоки основного экрана; историческая трассировка открывается через details конкретных revisions.
 
 ### WEB-011 — EntryPanel имеет общую структуру для view/edit/merge
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -443,6 +443,10 @@ React/TypeScript обсуждался как естественный канди
 ### WEB-012 — EntryPanel адаптируется по собственной ширине
 **Статус:** ПОДТВЕРЖДЕНО  
 При достаточной ширине Text занимает основную content column, а Assets, Tags и secondary created/updated metadata показываются справа. При узкой panel эти секции переходят под Text. Правило зависит от ширины самой EntryPanel, а не только viewport, чтобы тот же component автоматически работал в обычном Entry detail и в узких `Base | Result | Proposal` колонках. Точные breakpoint/column ratios — UI implementation detail.
+
+### WEB-013 — Provenance/Lineage открываются из revision details
+**Статус:** ПОДТВЕРЖДЕНО  
+Sources/provenance/lineage считаются свойствами/trace metadata конкретной committed revision и показываются через History/Revisions: компактный indicator/details affordance, краткий tooltip/popover/hover view и optional `Подробнее`. Отдельный постоянный Sources/Lineage block на EntryScreen не нужен. Полную историческую AI activity также не нужно дублировать на основном экране; actionable AI state там представлен Proposals.
 
 ---
 
