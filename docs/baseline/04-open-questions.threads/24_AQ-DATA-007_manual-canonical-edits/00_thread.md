@@ -27,4 +27,14 @@
 
 ## Обсуждение
 
+### Сводка 1 — manual edits не должны тащить Asset versioning в текущую архитектуру
+
+Пользователь подтвердил: отдельное versioning media Assets сейчас не планируется и не должно становиться условием поддержки ручных canonical edits.
+
+Для AQ-DATA-007 поэтому различаем:
+- ручное изменение canonical text/metadata files, которое при валидном и консистентном состоянии может быть принято как external content change и зафиксировано новой Entry revision;
+- destructive replacement/историческое versioning media originals — отдельная более сложная тема, которую не решаем в текущем MVP.
+
+Если позднее появится реальная потребность сохранять исторические версии одного и того же media Asset (например original vs enhanced/restored photo), это возвращается как отдельный future-вопрос и не блокирует AQ-DATA-007.
+
 **Решение:** —
