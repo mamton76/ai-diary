@@ -419,6 +419,11 @@ Derived слой можно пересобрать; его рассинхрон�
 **Статус:** ОТКРЫТО  
 Обязательны защита от потери capture при плохой сети, safe retry и устойчивость к временной недоступности. Нужна ли полноценная offline editing + later merge model для всего web-клиента — отдельное решение.
 
+### DATA-020 — Manual canonical file edits не являются обязательной MVP feature
+**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+Canonical files должны оставаться readable/portable. Если валидное внешнее изменение content fields обнаружено, оно может быть импортировано как external manual edit и оформлено новой Entry revision. Изменения identity/system invariants или storage layout не должны silently приниматься и идут в validation/recovery. Отдельный UX/workflow для ручного редактирования canonical files не обязателен для MVP.
+
+
 # H. Web client
 
 ### WEB-001 — Нужен полноценный web-интерфейс
