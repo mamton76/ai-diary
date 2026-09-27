@@ -63,8 +63,9 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 ## PQ-004 — Нужно ли сразу показывать raw/revisions пользователю?
 
 **Статус:** РЕШЕНО  
-**Решение:** current Entry и History/Revisions разделены; AI mutation создаёт revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; история линейная без branches; Restore создаёт новую revision из старого snapshot и сохраняет provenance-ссылку на source revision.  
-**История обсуждения:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)
+**Решение:** current Entry и History/Revisions разделены; AI proposal до Apply не является revision; применённая AI mutation создаёт отдельную revision; manual editing session начинается с первой правки и фиксирует одну revision при Save или после 1 часа inactivity; autosave сам revision не создаёт; подряд идущие manual revisions группируются только в UI; committed revisions immutable/append-only, история линейная без branches; Restore/Undo создаёт новую revision с provenance и не удаляет прежнюю историю.  
+**История обсуждения:** [PQ-004 thread](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md)  
+**Будущее:** [FQ-REVISION-002 — revision history compaction / retention](06-future-questions.md#fq-revision-002--revision-history-compaction--retention)
 
 Техническое хранение autosave/working draft вынесено в AQ-DATA-010.
 
@@ -73,7 +74,7 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 **Статус:** решён  
 **Обсуждение:** [PQ-005 thread](04-open-questions.threads/05_PQ-005_ai-automation-policy/00_thread.md)
 
-**Решение:** policy задаётся per workflow/type of change. Безопасные reversible изменения могут auto-apply, а изменения существующего содержимого через AI сначала оформляются как persistent proposal и становятся revision только после Accept/Apply. Первая normalized entry может создаваться автоматически при сохранённом raw; existing tags могут auto-apply при высокой уверенности; новые теги по умолчанию предлагаются. Точные thresholds и future metadata policies не блокируют MVP.
+**Решение:** policy задаётся per workflow/type of change. Безопасные reversible изменения могут auto-apply, а изменения существующего содержимого через AI сначала оформляются как persistent proposal и становятся revision только после Accept/Apply. Первая normalized entry может создаваться автоматически при сохранённом raw; existing tags могут auto-apply при высокой уверенности; новые теги по умолчанию предлагаются. Один AIResult может дать один или несколько proposals, а proposal может быть простым или комплексным — гранулярность задаёт workflow. Бесконфликтный proposal имеет быстрый Apply/Reject; stale/conflicted proposal требует detailed review. Detailed review использует `Base | editable Result | Proposal`, auto-merges независимые изменения и позволяет локально разрешать conflicts; подтверждение создаёт одну новую revision. Entry должен позволять drill-down в полную AI activity/run provenance. Точные thresholds и future metadata policies не блокируют MVP.
 
 
 ## PQ-006 — Насколько пользователь выбирает LLM provider/model?
@@ -107,6 +108,16 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 **Обсуждение:** [PQ-009 thread](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md)
 
 **Решение:** Calendar inbox остаётся optional production transport/adapter и не является core dependency. Calendar timeline — отдельная derived one-way projection: одна diary entry соответствует одному Calendar event; при новой committed revision/current-state change существующий event обновляется, а отдельные events для каждой revision не создаются.
+
+
+## PQ-011 — Как устроен Entry detail/edit и переиспользуемый EntryPanel?
+
+**Статус:** ОБСУЖДАЕМ  
+**Обсуждение:** [PQ-011 thread](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md)
+
+Нужно зафиксировать состав переиспользуемого представления одного Entry state и границу между ним и surrounding EntryScreen, чтобы один и тот же content component работал в обычном view, manual edit и proposal merge.
+
+Уже согласовано: EntryPanel показывает Title, Event date + optional start/end, Text, Assets, Tags и вторичные created/updated timestamps; в edit mode соответствующие поля становятся редактируемыми, а у Tags/Assets появляются add/remove actions. EntryScreen отдельно содержит Proposals, History/Revisions, Sources/Lineage, AI activity/details и screen-level actions. Layout/order секций ещё обсуждается.
 
 ---
 
