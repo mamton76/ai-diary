@@ -172,6 +172,8 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 ## AQ-DATA-007 — Нужно ли позволять пользователю вручную редактировать canonical files?
 
+**Обсуждение:** [AQ-DATA-007 thread](04-open-questions.threads/24_AQ-DATA-007_manual-canonical-edits/00_thread.md)
+
 File-first ценность подразумевает inspectability, но manual editing резко усложняет:
 
 - schema validation;
