@@ -596,7 +596,13 @@ EntryPanel использует adaptive layout по **собственной д
 - обе стороны переиспользуют EntryPanel/diff building blocks;
 - это отличается от proposal merge `Base | Result | Proposal`, где Result редактируется.
 
-Metadata/provenance отделено от content comparison. Оно может включать raw/source links, previous/base revision, manual/AI/restore/import origin, proposal/workflow/AI run references, timestamps и другие trace данные. Краткие provenance details могут показываться через indicator/tooltip/popover, а полные — через `Подробнее`.
+Metadata/provenance отделено от content comparison и не сравнивается как часть diff. Оно может включать raw/source links, previous/base revision, manual/AI/restore/import origin, proposal/workflow/AI run references, timestamps и другие trace данные. Краткие provenance details могут показываться через indicator/tooltip/popover, а полные — через `Подробнее`.
+
+Diff versioned content остаётся лёгким и field-aware:
+
+- Tags и Assets показывают добавления/удаления через `+ / −`; порядок Assets не считается значимым и reorder не является change;
+- Text желательно подсвечивать на уровне изменённых фрагментов; точный diff algorithm/visual style выбирается при реализации по читаемости;
+- для title и event date/time достаточно явно показать факт/значение изменения без отдельной сложной history model.
 
 Actionable AI state на основном EntryScreen представлен текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
 
