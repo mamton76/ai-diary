@@ -123,10 +123,30 @@
 - старая идея отдельной AI-note/annotation должна быть переоценена уже с учётом новой Proposal/AI activity модели, а не переноситься автоматически;
 - конкретное положение History, Lineage, Tags и Assets на desktop/mobile пока остаётся открытым.
 
+### Сводка 8 — adaptive layout по ширине самой EntryPanel
+
+Зафиксировано, что EntryPanel должна адаптироваться **по собственной доступной ширине**, а не только по ширине viewport/устройства.
+
+При достаточной ширине:
+
+- Title и Event time остаются верхней частью panel;
+- Text занимает основную левую/content column;
+- Assets и Tags переезжают в правую secondary column;
+- created/updated metadata также естественно располагаются внизу secondary column;
+- точные пропорции колонок и breakpoint не являются продуктовым решением.
+
+При недостаточной ширине:
+
+- panel складывается в одну колонку;
+- Assets, Tags и secondary metadata идут под Text.
+
+Это правило особенно важно для reuse в proposal merge: на обычном широком Entry screen одна panel может показывать правую колонку, а в `Base | Result | Proposal` каждая panel становится уже и автоматически переходит в stacked layout без отдельной специальной версии компонента.
+
+Предпочтение продукта: **справа на широком, снизу на узком**.
+
 ### Что ещё не решено
 
-- окончательный порядок/placement секций EntryPanel на desktop;
-- адаптация того же layout на narrow/mobile;
+- точные breakpoint/пропорции adaptive EntryPanel — implementation/UI tuning, а не отдельное продуктовое решение;
 - какие именно secondary controls/metadata видны всегда, а какие раскрываются;
 - финальная компоновка surrounding EntryScreen вокруг panel.
 
