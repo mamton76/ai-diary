@@ -121,7 +121,7 @@
 - Sources/Lineage не являются отдельным постоянным блоком EntryScreen; они доступны как provenance/details конкретных revisions через History;
 - manual content editing и редактирование source/composition — разные по смыслу операции; не стоит случайно смешивать их в один незаметный режим;
 - старая идея отдельной AI-note/annotation должна быть переоценена уже с учётом новой Proposal/revision-details модели, а не переноситься автоматически;
-- конкретное положение History, Lineage, Tags и Assets на desktop/mobile пока остаётся открытым.
+- старые варианты placement History/Lineage/Tags/Assets считать историческим контекстом: позже в этом треде уже принято, что History идёт gallery/timeline под Entry, Sources/Lineage живут в revision details, а Tags/Assets переходят вправо только при достаточной ширине EntryPanel.
 
 ### Сводка 8 — adaptive layout по ширине самой EntryPanel
 
