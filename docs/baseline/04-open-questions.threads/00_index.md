@@ -32,7 +32,7 @@
 
 | 14 | AQ-AUTH-002 | Drive/Calendar OAuth | решён | ✅ resolved | none | — | [📁](14_AQ-AUTH-002_google-oauth/) | [00_thread.md](14_AQ-AUTH-002_google-oauth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 
-| 15 | AQ-DATA-001 | Files-only или files + derived DB/index? | обсуждаем | 🔒 in discussion | active | ChatGPT conversation | [📁](15_AQ-DATA-001_files-vs-derived-index/) | [00_thread.md](15_AQ-DATA-001_files-vs-derived-index/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / architecture data design |
+| 15 | AQ-DATA-001 | Files-only или files + derived DB/index? | решён | ✅ resolved | none | — | [📁](15_AQ-DATA-001_files-vs-derived-index/) | [00_thread.md](15_AQ-DATA-001_files-vs-derived-index/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / architecture data design |
 
 ## Быстрая легенда lifecycle
 
