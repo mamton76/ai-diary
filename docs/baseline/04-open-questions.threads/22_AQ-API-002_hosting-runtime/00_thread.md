@@ -1,10 +1,10 @@
 # AQ-API-002 — Hosting/runtime
 
 **Источник:** [04-open-questions.md / AQ-API-002](../../04-open-questions.md#aq-api-002--hostingruntime)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -29,7 +29,7 @@
 
 Нужно сначала решить не конкретный vendor feature-list, а какой operational profile нам реально нужен: always-on server или request-driven container/runtime с отдельными jobs/background tasks.
 
-**Решение:** —
+**Решение:** [принято] (2026-09-28) Для первого web/backend MVP выбираем Google Cloud Run ecosystem. Cloud Run Service используется для request-driven backend API и SSE; Cloud Run Jobs — для run-to-completion background workloads; Cloud Scheduler — для scheduled triggers. Durable queue/task mechanism, retry/idempotency и детальная job state model выбираются отдельно в AQ-API-004/AQ-OPS-002. Backend остаётся modular monolith в одной кодовой базе с несколькими runtime roles, без бизнес-микросервисов на старте.
 
 
 ### Сводка 1 — runtime profile, durable AI jobs и live updates
@@ -73,3 +73,31 @@ AI/background workflows могут запускаться тремя основ�
 - позже отдельный runtime можно выделить в самостоятельный service, если появится реальная нагрузка, security boundary или технологическая причина.
 
 Не планируем отдельные бизнес-сервисы вроде Entry Service / Tag Service / Calendar Service / AI Service без необходимости.
+
+
+### Сводка 3 — выбор hosting/runtime
+
+После сравнения Cloud Run, Render и Railway выбран **Google Cloud Run ecosystem** для первого web/backend MVP.
+
+Почему он лучше совпадает с текущим профилем проекта:
+- request-driven API может работать как Cloud Run Service и scale-to-zero;
+- SSE поддерживается как обычный long-lived HTTP response; reconnect допустим, потому что SSE несёт только change notification, а authoritative job/result state хранится отдельно;
+- долгие run-to-completion операции естественно ложатся на Cloud Run Jobs;
+- периодические workflows запускаются через Cloud Scheduler;
+- Google Drive/OAuth не требует Cloud Run, но общий Google Cloud environment уменьшает количество разных operational surfaces;
+- container model сохраняет portability и оставляет возможность позже переехать на другой container hosting.
+
+Render и Railway остаются возможными alternatives, если operational complexity GCP окажется непропорциональной пользе, но не являются выбранным MVP runtime.
+
+Operational principle для deployment:
+- редкие initial setup/admin действия допустимо делать вручную;
+- должно быть документировано, что и зачем настраивается;
+- routine deploy/update не должен зависеть от ручного "кликания" в cloud console;
+- deployment по возможности воспроизводится из repo/scripts/CI, без требования полного Infrastructure-as-Code с первого дня.
+
+Не закрывается этим решением:
+- Cloud Tasks vs Pub/Sub vs прямой запуск Cloud Run Job;
+- job lifecycle/status;
+- retry/backoff/idempotency/deduplication;
+- точный CI/CD и environment layout.
+Эти вопросы относятся к AQ-API-004, AQ-OPS-002, AQ-OPS-005 и AQ-API-005.
