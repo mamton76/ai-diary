@@ -186,6 +186,8 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 ## AQ-DATA-006 — Format schema и migrations
 
+**Обсуждение:** [AQ-DATA-006 thread](04-open-questions.threads/20_AQ-DATA-006_schema-migrations/00_thread.md)
+
 Нужно определить:
 
 - format version granularity;
