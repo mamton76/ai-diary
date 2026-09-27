@@ -1,10 +1,10 @@
 # AQ-DATA-002 — Гранулярность storage abstraction
 
 **Источник:** [04-open-questions.md / AQ-DATA-002](../../04-open-questions.md#aq-data-002--гранулярность-storage-abstraction)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -48,4 +48,19 @@ Domain-level repository API:
 
 Вопрос в том, где проходит abstraction boundary и не протекают ли Drive/files детали в domain logic.
 
-**Решение:** —
+### Сводка 2 — решение
+
+Пользователь подтвердил ранее обсуждавшееся направление: основной application/domain код работает через **высокоуровневый domain repository**, а не через file operations.
+
+Основной контракт должен быть в терминах diary domain, например:
+- `listEntries`
+- `getEntry`
+- `saveRevision`
+- `loadHistory`
+- при необходимости domain-level changes/listing methods.
+
+Drive/files API остаётся внутренней implementation detail нижнего storage adapter.
+
+Low-level file access допускается для migration/import/repair/admin tooling, но не должен протекать в основной domain/application слой.
+
+**Решение:** [принято] основной storage abstraction — domain-level repository; low-level file adapter скрыт ниже и используется напрямую только специальными техническими инструментами.
