@@ -564,7 +564,7 @@ Editing добавляется на следующем этапе вместе �
 - `Text` — основной текст записи;
 - `Assets`;
 - `Tags`;
-- вторичная read-only system metadata: created/updated timestamps.
+- вторичная read-only system metadata: created/updated timestamps; она видна всегда, но визуально тихо — внизу secondary column на широкой panel и внизу panel на узкой.
 
 Режимы поведения:
 
@@ -609,7 +609,7 @@ Actionable AI state на основном EntryScreen представлен т�
 
 ### 12.6 AI actions и inline editor assistance
 
-EntryScreen должен давать screen-level AI actions над текущей записью:
+EntryScreen должен давать screen-level AI actions над текущей записью через заметную кнопку/menu `AI ▾`, расположенную рядом с обычными screen actions (например Edit):
 
 - запуск готового workflow;
 - `Custom prompt / Ask AI` для разовой инструкции.
@@ -617,6 +617,8 @@ EntryScreen должен давать screen-level AI actions над текущ�
 Такие Entry workflows работают от committed revision. Если в manual editor есть dirty working draft, используется `Save & Run`: сначала создаётся manual revision, затем именно она становится input/base revision для AI run. Изменяющий workflow дальше создаёт Proposal и не переписывает Entry напрямую.
 
 Отдельно сохраняется кандидатная функция **inline AI editor assistance**: AI-команда над selection/current working draft (например rewrite, shorten, fix, continue). Это может оказаться полезным уже в MVP, но не является blocking requirement. Решение о включении принимается при реализации editor slice с учётом стоимости и необходимости отдельно определить undo/proposal/revision semantics для draft-level AI.
+
+Отдельный постоянный `AI note / annotation` block на EntryScreen не нужен: actionable AI mutation представлена Proposal, применённое изменение — Revision, историческая причина/trace — provenance/AI run details, а non-mutating analysis остаётся workflow result.
 
 ### 12.3 UI не владеет бизнес-логикой
 
