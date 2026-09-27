@@ -151,6 +151,28 @@ Entry — это пользовательски понятная дневник�
 
 Точная JSON/DB/file schema относится к архитектуре.
 
+### 5.0 Stable Entry и versioned state
+
+На продуктовом уровне нужно различать стабильную identity записи и её versioned content.
+
+`Entry` — стабильный контейнер/identity. Для него нужны как минимум:
+
+- stable `id`;
+- lifecycle status;
+- ссылка на current committed revision;
+- технические timestamps создания/обновления.
+
+Versioned состояние, которое должно восстанавливаться вместе с выбранной revision, включает содержимое записи: title, содержательную дату/интервал, text, tags, связанные assets и source/composition references. Точная физическая schema остаётся архитектурным решением.
+
+Для пользовательского lifecycle Entry достаточно трёх состояний:
+
+- `ACTIVE` — обычная запись;
+- `ARCHIVED` — сохранена, но скрыта из обычного потока;
+- `DELETED` — soft-deleted / trash, с возможностью recovery policy.
+
+Постоянный `DRAFT`-status для Entry сейчас не нужен: незавершённое ручное редактирование хранится как operational working draft, а непринятый AI output — как Proposal.
+
+
 ### 5.1 Дата записи
 
 Нужно различать:
@@ -287,6 +309,19 @@ Restore старой revision не откатывает историю наза�
 
 Применённая AI mutation существующей entry также всегда создаёт отдельную revision.
 
+### 7.7 Immutable committed revisions
+
+Committed revision — уже зафиксированная часть истории. Для MVP:
+
+- revisions immutable / append-only;
+- у committed revision нет lifecycle статусов `pending/accepted/rejected`: эти состояния принадлежат Proposal;
+- пользователь не удаляет отдельные revisions вручную;
+- Undo/Restore уже применённого изменения создаёт новую revision с нужным snapshot/provenance, а не уничтожает прежнюю;
+- Apply proposal, а затем Undo — это два исторических действия и две committed revisions.
+
+Если history со временем станет слишком большой, отдельная future maintenance-механика может делать compaction через synthetic full-state checkpoint и retention policy. Это не часть обычного editing UX и не блокирует MVP. См. [FQ-REVISION-002](06-future-questions.md#fq-revision-002--revision-history-compaction--retention).
+
+
 ---
 
 ## 8. Неопределённость и доверие
@@ -346,6 +381,24 @@ AI должен:
 Желательно отделять asset identity от конкретной entry, чтобы один asset можно было использовать в нескольких связанных memories/entries.
 
 Точный storage backend для media пока не является продуктовым решением.
+
+### 10.1 Assets и revisions
+
+Asset имеет identity независимо от Entry и может использоваться более чем в одной записи. При этом набор assets является частью versioned состояния Entry: открытие/restore исторической revision должно восстанавливать тот набор asset links, который относился к этой revision.
+
+Поэтому на продуктовом уровне связь нужно мыслить как `EntryRevision ↔ Asset`; `Entry` получает текущий набор assets через current revision. Конкретная join/schema — архитектурная деталь.
+
+### 10.2 Удаление asset из Entry
+
+В edit mode удаление asset из записи не должно молча означать только unlink или только физическое удаление.
+
+Действие Remove/Delete открывает явный выбор:
+
+- отвязать asset от этой Entry и оставить его в Asset Library;
+- удалить asset из системы целиком.
+
+Если asset используется несколькими entries, destructive delete должен явно предупреждать, что затронет все связи. Если asset связан только с текущей Entry, вариант «оставить в библиотеке» должен предупреждать, что asset станет unlinked/orphaned. Это снижает риск незаметно накопить большое количество забытых assets.
+
 
 ---
 
@@ -496,6 +549,32 @@ Editing добавляется на следующем этапе вместе �
 
 Сложные debug/admin/bulk/revision comparison функции могут сначала остаться desktop-oriented.
 
+### 12.4 EntryScreen и переиспользуемый EntryPanel
+
+Экран одной записи разделяется на два уровня:
+
+- `EntryScreen` — page/screen shell: navigation, screen-level actions, Proposals, History/Revisions, Sources/Lineage, AI activity/details и другие окружающие блоки;
+- `EntryPanel` — переиспользуемое представление **самого состояния записи**.
+
+`EntryPanel` должен использоваться как минимум в обычном view, manual edit и proposal merge/review. Его смысловые области:
+
+- `Title` — отдельно от основного текста;
+- `Event time` — содержательная date и опциональные start/end time;
+- `Text` — основной текст записи;
+- `Assets`;
+- `Tags`;
+- вторичная read-only system metadata: created/updated timestamps.
+
+Режимы поведения:
+
+- в view mode title/text/event time read-only;
+- в edit mode title и text становятся редактируемыми;
+- date/start/end получают date/time controls;
+- для Tags и Assets в edit mode появляются действия add и remove;
+- Base/Proposal в merge view используют тот же panel read-only, Result — editable.
+
+Расположение секций внутри panel и desktop/mobile layout пока не фиксируются окончательно; важно сохранить одинаковую структуру данных/визуального представления между view/edit/merge.
+
 ### 12.3 UI не владеет бизнес-логикой
 
 Web должен обращаться к backend API, а не становиться единственным местом, где живут правила хранения, revisions, capture и AI.
@@ -590,17 +669,21 @@ Workflow не должен знать Drive paths, а provider не должен
 
 ### 15.3 Traceability
 
-Каждый существенный AI run желательно уметь связать с:
+Каждый существенный AI run должен быть доступен для drill-down из пользовательского Entry/AI activity и связываться с:
 
 - workflow/version;
 - prompt/version;
 - provider/model;
-- input references/snapshot;
-- output;
+- input references/snapshot и base/input revision;
+- output / AIResult;
+- созданными proposals;
 - validation;
 - timestamps;
-- user acceptance/rejection;
+- auto-apply / user acceptance / rejection / supersede outcome;
+- committed revisions, появившимися в результате применения;
 - token/cost metadata при необходимости.
+
+Обычный Entry screen может показывать только актуальные actionable proposals, но пользователь должен иметь возможность открыть полную AI activity и детали конкретного run/result, чтобы понять, что именно происходило с записью.
 
 ### 15.4 Prompts
 
@@ -630,6 +713,32 @@ AI automation policy определяется per workflow/type of change, а н
 - точные confidence thresholds и policy для будущих metadata определяются при появлении соответствующего workflow.
 
 Merge/split entries отложены на future stage; bulk AI mutation/delete не являются текущими MVP workflows.
+
+### 15.5.1 Proposal granularity и review UX
+
+Жёсткое правило «один AI run = один proposal» или «одно изменение = один proposal» не вводится.
+
+- один AIResult может содержать один или несколько proposals;
+- один proposal может быть простым или комплексным и затрагивать несколько полей/типов данных;
+- гранулярность определяется конкретным workflow;
+- proposal должен различать способ применения (`USER` / `AUTO`) и собственный lifecycle; эти состояния не переносятся на committed revision.
+
+На Entry screen proposals показываются компактными карточками/snippets:
+
+- бесконфликтный proposal: быстрые `Apply`, `Reject`, `Подробнее`;
+- stale/conflicted proposal: `Reject`, `Подробнее`, без быстрого Apply.
+
+`Подробнее` открывает трёхсторонний review:
+
+```text
+Base              Result              Proposal
+read-only         editable            read-only
+```
+
+`Result` всегда показывает реальное будущее состояние после применения. Независимые изменения Current и Proposal могут auto-merge. Конфликт подсвечивается локально на конкретном field/fragment; пользователь может оставить Current, взять Proposal или отредактировать Result вручную. Для complex proposal detailed mode может фактически принять только часть предложенных изменений.
+
+Подтверждение Result создаёт одну новую committed revision. До подтверждения Result остаётся merge draft и в History не попадает.
+
 
 
 ### 15.6 Выбор LLM model
