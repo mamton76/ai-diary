@@ -847,6 +847,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-SEARCH-001 — MVP search semantics
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-SEARCH-001 thread](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md)
+
 Минимум определить поддержку:
 
 - title/body substring/full-text;
