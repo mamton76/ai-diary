@@ -809,6 +809,10 @@ Semantic retrieval для cross-entry AI возможно в будущем; emb
 **Статус:** УСТАРЕЛО/НЕ ТРЕБУЕТСЯ СЕЙЧАС  
 Нужен достаточный debug/trace, но не overengineering.
 
+### OPS-CI-CD — Полуавтоматические проверки и развёртывание
+**Статус:** ПОДТВЕРЖДЕНО  
+На PR автоматически выполнять релевантные проверки web/backend (сборка, тесты, lint по мере наличия). Deploy в единственное рабочее окружение только по ручному запуску, без автоматической выкладки при merge. Secrets хранить вне Git (GitHub/Google Cloud mechanisms с ограниченными правами); предусмотреть документированный rollback. Конкретные workflows и проверки — при реализации. Решение: [AQ-OPS-005](04-open-questions.threads/40_AQ-OPS-005_ci-cd/00_thread.md).
+
 ### OPS-006 — Нужны structured application logs
 **Статус:** ПОДТВЕРЖДЕНО  
 Backend, background jobs и integrations должны писать структурированные логи, достаточные для диагностики ошибок и восстановления хода операции. Минимально полезный контекст включает request/job/workflow identity, timestamps, operation/result/status, retries и error details. Логи не должны без необходимости содержать полный diary content, OAuth tokens, prompts/responses или другие sensitive data.
