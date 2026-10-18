@@ -7,7 +7,7 @@
 **Ведёт:** Codex — текущий диалог требований AI Diary  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [SQ-01 — Save при незавершённом upload](01_SQ-01_upload-before-save/00_thread.md)  
+**Дочерние треды:** [SQ-01 — вложения в Draft и готовность Save, решён](01_SQ-01_upload-before-save/00_thread.md); [SQ-02 — Save без изменения content](02_SQ-02_no-change-save/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, inventory/product baseline и последующий technical storage design
 
 ## Вопрос
@@ -82,5 +82,11 @@ Codex — **Обновление (2026-10-18):** Подготовлены [пр�
 Codex — Первая пользовательская развилка выделена в [SQ-01](01_SQ-01_upload-before-save/00_thread.md): Save при незавершённой загрузке прикреплённого файла. Рекомендую дождаться managed original либо явно убрать ожидающее вложение и сохранить без него. Альтернатива — сохранить готовую часть и добавить вложение позже отдельным Save. Следующим, после SQ-01, остаётся manual Save без фактических изменений; в source это пока предложение. Остальные технические решения не требуют повторного согласования уже принятых правил.
 
 **Нужно от пользователя:** выбрать поведение Save при незавершённом managed upload в SQ-01; отвечать по одному вопросу. Имена файлов/JSON, hashes и publication mechanism сейчас не предлагаются как пользовательская анкета.
+
+Codex — **Обновление (2026-10-18):** В [SQ-01](01_SQ-01_upload-before-save/00_thread.md) пользователь выбрал disabled Save до ясности со всеми вложениями и потребовал сохранять attachments в Draft. Решение перенесено в Functional/Screens Specs, file-format/Save design и inventory/product baseline. Schema расширена статусами VERIFYING/NEEDS_FILE и uploadRef; физический publication primitive остаётся проектом. SQ-01 resolved, claim none.
+
+Codex — Следующий один пользовательский выбор — [SQ-02](02_SQ-02_no-change-save/00_thread.md): manual Save, когда итоговое content совпадает с текущей Revision. Рекомендую не создавать пустую Revision, вернуть существующую и завершить эквивалентный Draft без изменения committed timestamps. Apply/Restore этим предложением не меняются. В source это ещё [П], пользователю не приписываем согласие заранее.
+
+**Нужно от пользователя:** ответить в SQ-02: manual Save без изменения content завершает Draft без новой Revision?
 
 **Решение:** —

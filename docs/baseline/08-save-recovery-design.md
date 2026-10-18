@@ -118,7 +118,7 @@ Durable operation input включает command kind, entryId, baseRevisionId, 
 
 | Шаг | Durable действие | Что видно пользователю |
 |---|---|---|
-| 0. Preflight | Проверить валидность полей/lease; финальный flush полного Draft | Draft ещё не committed |
+| 0. Preflight | Проверить валидность полей/lease и готовность всех оставленных attachments; финальный flush полного Draft со связями/intent | Draft ещё не committed; незавершённые вложения держат Save disabled |
 | 1. Register | Подготовить operation input; опубликовать pendingOperationId + durable operation PREPARING при совпавших draft/version/base/epoch | Saving; поля и повтор Save read-only |
 | 2. Prepare | Нормализовать hashtags; подготовить immutable Revision JSON/text, новый catalog snapshot при pendingTags, новый Entry state и result receipt | Старый committed Current + Draft, без половины новой версии |
 | 3. Revalidate | Прочитать актуальный head, проверить owner/base/draft/catalog/assets, все hashes | Saving / conflict при нарушении условий |
@@ -185,21 +185,19 @@ Draft autosave generation хранится только пока актуаль�
 
 ## 10. Вопросы пользователю, по очереди
 
-### SQ-01 — Save при незавершённом attachment upload
+### SQ-01 — решён: вложения в Draft и Save до готовности
 
-[Canonical подтред](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).
+[FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).
 
-**Сценарий:** пользователь написал текст, прикрепил фото; фото ещё грузится либо upload упал.
+**[Д, 18.10.2026]** Save недоступен, пока хотя бы одно оставленное вложение имеет неразрешённый статус: выбрано, загружается, проверяется, ошибка или требуется повторный выбор файла. Для продолжения нужно завершить загрузку/проверку, повторить её либо явно убрать вложение. Все оставленные attachments должны быть готовы к включению в Revision; для managed файла это подтверждённый original, для external — сохранённый валидный reference без обязательного скачивания original. Генерация thumbnail/preview не блокирует Save. До начала commit текст продолжает autosave в Draft.
 
-**Рекомендация:** Save требует готовности всех оставленных в записи managed attachments. Можно дождаться upload/retry либо явно убрать ожидающее фото и сохранить без него. Draft продолжает autosave. Preview generation не блокирует Save.
+Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
-**Альтернатива:** разрешить сохранить готовую часть сейчас, ожидающее вложение добавить позднее с явным отдельным Save. Это потребует заметного pending состояния и сохранения attachment intent после первой Revision; автоматическое незаметное добавление к уже сохранённой Revision не предлагается.
-
-Нужен выбор пользователя. До него runtime validation этой ветки не считается утверждённой.
+Альтернатива сохранить готовую часть сейчас не выбрана. Условие готовности вложений проверяется и в UI, и backend preflight, затем перед публикацией. Успешный upload не создаёт Revision и не должен незаметно менять уже committed content. Lost Save response/read-only editor остаются отдельным уже принятым flow.
 
 ### Следом — Save без изменения content
 
-В source пока [П]. Рекомендация: если после нормализации и разрешения relations сохраняемый content эквивалентен Current, manual Save возвращает NO_CHANGE без новой Revision. Apply/Restore остаются уже принятыми самостоятельными commit-действиями. Сначала обсуждаем SQ-01; здесь новая политика не утверждается и отдельный незапрошенный тред заранее не создаётся.
+В source пока [П]. Рекомендация: если после нормализации и разрешения relations сохраняемый content эквивалентен Current, manual Save возвращает NO_CHANGE без новой Revision. Apply/Restore остаются уже принятыми самостоятельными commit-действиями. После закрытия SQ-01 начат [SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md); до ответа новая политика не утверждена.
 
 ### Что не нужно выбирать пользователю сейчас
 
@@ -224,5 +222,5 @@ JSON layout, FileRef/hashes, operation ID, fencing, слот публикаци�
 7. Внешняя правка JSON/Markdown, revoked OAuth, неполный backup/rebind.
 8. Отдельная проверка retention/permanent delete: никогда не возвращать удалённые media bytes из staged copies или audit snapshots.
 
-Открытые gate: SQ-01, следующая no-change policy, adapter spike, parser/time validators и destructive retention design по применимости. До их закрытия документ пригоден для review и декомпозиции, но не обещает готовый production commit protocol.
+Открытые gate: no-change policy в SQ-02, adapter spike, parser/time validators и destructive retention design по применимости. SQ-01 по вложениям закрыт. До их закрытия документ пригоден для review и декомпозиции, но не обещает готовый production commit protocol.
 

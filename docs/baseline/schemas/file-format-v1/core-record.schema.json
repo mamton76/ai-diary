@@ -553,8 +553,21 @@
                 "enum": [
                   "SELECTED",
                   "UPLOADING",
-                  "FAILED"
+                  "VERIFYING",
+                  "FAILED",
+                  "NEEDS_FILE"
                 ]
+              },
+              "uploadRef": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/fileRef"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Reference to durable upload/staging state; no credentials in plain JSON."
               }
             },
             "required": [
@@ -562,7 +575,8 @@
               "filename",
               "status"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Pending attachment intent survives reopen; READY assets move to content.assetIds after coherent Draft update."
           }
         }
       },

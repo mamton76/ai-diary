@@ -171,7 +171,7 @@ Draft — полный snapshot с тем же content shape; максималь
 - updatedAt самого Draft, sessionId и mutationEpoch;
 - pendingTags: новые определения с уже выделенными stable tagId, name, aliases, optional typeId, color;
 - tagEditIntents: какие tagIds явно сняты через chip и какие обозначения были известны при снятии; re-add до Save отменяет intent;
-- pendingUploads: upload IDs/ожидаемые attachments отдельно от готовых assetIds;
+- pendingUploads: durable upload IDs, filename, status и uploadRef на состояние upload/staging отдельно от готовых assetIds;
 - storageStatus здесь не заменяет факт успешной публикации Draft.
 
 tagIds Draft могут ссылаться на pendingTags того же Draft. Таких тегов ещё нет в активном каталоге. При Save сохраняются те же выделенные IDs, но только после проверки namespace и успешного совместного commit. Конфликт не приводит к silent rebind на чужой tagId.
@@ -234,7 +234,11 @@ Preview/thumbnail — derived. Нет ожидания их генерации �
 
 Entry Revision хранит assetIds. Asset metadata меняется отдельно; media versioning не вводится. Permanent delete сохраняет tombstone и удаляет managed bytes/preview по принятой policy. История Entry не обещает восстановить удалённые bytes.
 
-**[П, вопрос FQ-03/SQ-01]** Не публиковать Revision с новым managed attachment, пока upload original не READY. Пользователь может дождаться загрузки либо явно убрать ожидающее вложение. До выбора это только рекомендованный precondition Save. Готовые external references и thumbnails не приравниваются к незавершённому managed upload.
+**[Д, 18.10.2026, [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md)]** Save недоступен, пока хотя бы одно оставленное вложение имеет неразрешённый статус: выбрано, загружается, проверяется, ошибка или требуется повторный выбор файла. Для продолжения нужно завершить загрузку/проверку, повторить её либо явно убрать вложение. Все оставленные attachments должны быть готовы к включению в Revision; для managed файла это подтверждённый original, для external — сохранённый валидный reference без обязательного скачивания original. Генерация thumbnail/preview не блокирует Save. До начала commit текст продолжает autosave в Draft.
+
+Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
+
+**[П, физическое представление]** pendingUploads содержит uploadId, filename, status (SELECTED / UPLOADING / VERIFYING / FAILED / NEEDS_FILE) и uploadRef на durable upload record. upload record связывает uploadId, Entry/Draft, original staging locator, доступные metadata и подтверждённый progress. Resume credentials не включаются в переносимый JSON как открытые секреты. После готовности original и публикации Asset reference очередной согласованный snapshot Draft переносит intent в content.assetIds; это не content Revision. Callback upload не перезаписывает более новый текст/Draft и проверяет актуальную связь с Draft/ownership. Точная видимость отдельно загруженного Asset в Library после Discard остаётся FQ-08.
 
 Уже созданный Asset библиотеки не удаляется при Discard Entry. Для незавершённых/неиспользованных upload staging предлагается отдельный безопасный cleanup, но срок хранения, превращение uploaded-but-discarded файла в Unlinked и destructive policy остаются FQ-08. Текущий проект не разрешает удалять originals по одному только отсутствию active Entry links.
 

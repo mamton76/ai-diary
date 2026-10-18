@@ -552,7 +552,7 @@ Rename сохраняет поиск по старому имени; alias ра�
 
 Все активные Asset, включая не привязанные к записям. Показывается число связанных **Active Entries**. Фильтр **Unlinked** выбирает ноль таких связей; название не означает физическое отсутствие ссылок в архиве или history. Список/grid с preview или fallback, именем, типом; available metadata — размер/длительность, managed/external. Поиск по имени файла и Asset name; для первой версии достаточно этого, Unlinked и Trash. Доступны upload/external link и выбор существующего; один Asset может быть связан с несколькими Entry.
 
-Состояния upload/link: выбран → загружается/проверяется → готов; отдельно failed/retry. Ошибка не изображается как доступный original. Managed original отличается от external reference; external original не обязан копироваться.
+Состояния upload/link: выбран → загружается/проверяется → готов; отдельно failed/retry и «Выберите файл повторно». Ошибка не изображается как доступный original. Managed original отличается от external reference; external original не обязан копироваться. **[Д, 18.10]** Save disabled до разрешения статусов всех оставленных вложений; текст продолжает autosave. Draft восстанавливает готовые Asset links и pending uploads с именами/статусами; загруженные originals сохраняются. Если недогруженный файл нельзя возобновить, pending attachment остаётся с действием повторного выбора. Thumbnail/preview не блокирует Save. [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).
 
 ### Asset Detail [Д]
 
@@ -1137,4 +1137,12 @@ Canonical names и aliases сравниваются без учёта регис
 
 ### 26.14. Проект хранения и Save от 18.10.2026
 
-Подготовлены [file-format v1](07-file-format-v1-draft.md) и [Save/recovery](08-save-recovery-design.md). Это технические review-проекты; согласованное поведение editor/unknown Save/retry сохраняется. **[О]** Когда пользователь прикрепил новый managed файл, но upload original ещё не READY, precondition Save требует выбора в [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Ожидание upload против сохранения готовой части не считается выбранным этим дополнением.
+Подготовлены [file-format v1](07-file-format-v1-draft.md) и [Save/recovery](08-save-recovery-design.md). Это технические review-проекты; согласованное поведение editor/unknown Save/retry сохраняется. **[Д, 18.10]** В [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) принято: Save disabled до готовности всех оставленных вложений; attachments входят в durable Draft. Точные release/recovery детали storage adapter остаются технической проработкой.
+
+### 26.15. Уточнение 18.10.2026 — вложения в Draft и доступность Save
+
+Save недоступен, пока хотя бы одно оставленное вложение имеет неразрешённый статус: выбрано, загружается, проверяется, ошибка или требуется повторный выбор файла. Для продолжения нужно завершить загрузку/проверку, повторить её либо явно убрать вложение. Все оставленные attachments должны быть готовы к включению в Revision; для managed файла это подтверждённый original, для external — сохранённый валидный reference без обязательного скачивания original. Генерация thumbnail/preview не блокирует Save. До начала commit текст продолжает autosave в Draft.
+
+Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
+
+Перед началом Save pending attachments остаются доступны для retry/повторного выбора/явного снятия, сам editor не блокируется одним фактом загрузки. После фактического запуска commit действует уже согласованный read-only editor. Причина disabled Save показывается рядом с вложением/кнопкой. **История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).

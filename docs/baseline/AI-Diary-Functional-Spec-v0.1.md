@@ -99,7 +99,7 @@
 
 **[Д]** После Save нормализуются tag mentions (§6) и создаются pending new tags из Draft; самопроизвольный `#word` не создаёт catalog tag. **[О]** Точный порядок и восстановление частично выполненного многофайлового Save — FQ-03.
 
-**[П]** Save без фактических изменений не создаёт пустую Revision. Это предложение из UI-0.5, а не отдельно подтверждённое новое правило.
+**[П]** Save без фактических изменений не создаёт пустую Revision. Это предложение из UI-0.5, а не отдельно подтверждённое новое правило; текущий выбор обсуждается в [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
 
 **[Д, 18.10.2026] Явные commit-действия:** Save, Apply и Restore исторической версии сразу создают по одной новой committed Revision после успешного выполнения. Apply/Restore не требуют дополнительного Save. Preview, ручное редактирование Result до Apply и обычный autosave ещё не commit. Эта формулировка не распространяется на восстановление Entry из Trash.
@@ -149,7 +149,7 @@
 
 **STO-06 [О].** Multi-file commit в Drive, журнал восстановления, блокировки/lease после сбоя, согласованность индекса и миграции задаются техническим проектом. **[П]** Проект должен предусмотреть crash recovery и идемпотентный retry для промежуточных состояний; конкретный алгоритм сейчас не утверждается.
 
-**[П, техническая проработка 18.10.2026]** Подготовлены [файловый формат v1](07-file-format-v1-draft.md) и [Save/recovery design](08-save-recovery-design.md): immutable snapshots, общая publication record, operation outcome и логическое consume Draft. Это проект, а не принятое физическое решение; Drive adapter spike и validation gates указаны в документе. [SQ-01 — незавершённый managed upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) требует выбора пользователя. Ни выбор публикации, ни новые preconditions Save этим текстом не утверждаются.
+**[П, техническая проработка 18.10.2026]** Подготовлены [файловый формат v1](07-file-format-v1-draft.md) и [Save/recovery design](08-save-recovery-design.md): immutable snapshots, общая publication record, operation outcome и логическое consume Draft. Это проект, а не принятое физическое решение; Drive adapter spike и validation gates указаны в документе. [SQ-01 — незавершённый managed upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) решён: Save ждёт готовности всех оставленных attachments; состав вложений и upload state сохраняются в Draft (§7). Сам физический publication protocol остаётся техническим предложением.
 
 **STO-07 [Д, 18.10.2026].** Если подтверждение Save потеряно, приложение показывает «Проверяем сохранение» и после восстановления связи автоматически выясняет исход операции. При уже состоявшемся commit возвращается та же Revision; если commit не состоялся, безопасно повторяется та же операция с тем же operationId и зафиксированным snapshot. Повтор не создаёт дубликат и разрешён только при актуальных base/ownership checks, без отмены/замены операции. При conflict или потере права записи автоматический commit прекращается с понятным сообщением; введённые данные сохраняются. Неизвестный исход не выдаётся ни за успешное, ни за достоверно неуспешное сохранение. [FQ-03](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Механизм durable operation journal и multi-file commit/recovery остаётся техническим вопросом STO-06.
 
@@ -193,7 +193,11 @@
 
 **AST-05 [Д].** Display mode Grid/Gallery — UI preference, не content Entry. Captions и manual ordering в первой версии отсутствуют. **[F]** Inline placement между абзацами использует тот же assetId без копии файла, позиция versioned; удаление placement не обязано unlink/delete; embedded Asset нельзя silently unlink.
 
-**[О]** Upload до Save, orphan cleanup при Discard, исторические warnings, очистка preview/cache при permanent delete и удаление external original у провайдера — FQ-08. Удаление ссылки само по себе не означает права физически удалить внешний файл.
+**AST-06 [Д, 18.10.2026].** Save недоступен, пока хотя бы одно оставленное вложение имеет неразрешённый статус: выбрано, загружается, проверяется, ошибка или требуется повторный выбор файла. Для продолжения нужно завершить загрузку/проверку, повторить её либо явно убрать вложение. Все оставленные attachments должны быть готовы к включению в Revision; для managed файла это подтверждённый original, для external — сохранённый валидный reference без обязательного скачивания original. Генерация thumbnail/preview не блокирует Save. До начала commit текст продолжает autosave в Draft. [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).
+
+**AST-07 [Д, 18.10.2026].** Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
+
+**[О]** Orphan cleanup после Discard, исторические warnings, очистка preview/cache при permanent delete и удаление external original у провайдера — FQ-08. Защита файлов актуального Draft уже принята; дальнейший retention после явного Discard ещё не выбран. Удаление ссылки само по себе не означает права физически удалить внешний файл.
 
 ## 8. Выборки, поиск и производные данные
 
@@ -305,6 +309,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-21 | Снять chip при наличии #name / #alias и Save дважды | В тексте #_name / #_alias без потери слова и удвоения underscore; текстовый поиск находит маркер, Tag filter не создаёт связь; добавление chip обратно до первого Save отменяет пометку снятия |
 | SYS-AC-22 | Есть тег Спорт / alias Вело; Create или Rename другого тега в спорт / ВЕЛО; lookup СПОРТ / вело | Дубликат отклоняется с указанием владельца обозначения; lookup находит существующий canonical tag, отображение сохраняет выбранное написание |
 | SYS-AC-23 | Удалить тег Спорт с alias Вело; попробовать Create / Rename / добавить alias спорт или ВЕЛО другому тегу | Дубликат отклонён; показан удалённый владелец и предложен явный Restore того же tagId; сам ввод не восстанавливает тег и не создаёт новые links |
+| SYS-AC-24 | Прикрепить файл, получить uploading/failed, уйти и открыть Draft | Save недоступен до готовности/явного снятия вложения; текст, готовые связи и pending upload IDs/имена/статусы восстановлены; загруженный original сохранён. При невозможности возобновить неполученные bytes показан повторный выбор файла; pending intent не исчезает |
 
 ## 13. Этапы реализации
 
@@ -327,7 +332,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 
 **FQ-02 решён (18.10.2026):** [merge тегов](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md) — redirect в каталоге, без новых content Revision и переписывания Draft/snapshots.
 
-**FQ-03 обсуждается:** [надёжное сохранение](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Автоматическая проверка исхода и безопасный retry одной операции согласованы 18.10. Для первой версии выбрана блокировка редактирования и повторного Save до определения исхода (STO-08). Подготовлен [конкретный технический проект](08-save-recovery-design.md), но protocol не объявлен утверждённым: Drive adapter spike и пользовательский [SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) ещё открыты.
+**FQ-03 обсуждается:** [надёжное сохранение](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Автоматическая проверка исхода и безопасный retry одной операции согласованы 18.10. Для первой версии выбрана блокировка редактирования и повторного Save до определения исхода (STO-08). Подготовлен [конкретный технический проект](08-save-recovery-design.md), но protocol не объявлен утверждённым: Drive adapter spike ещё не выполнен. [SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) решён: ожидание всех вложений и их сохранение в Draft; следующий пользовательский выбор — [manual Save без изменения content](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
 | ID | Что нужно решить | Почему это влияет на реализацию |
 |---|---|---|
