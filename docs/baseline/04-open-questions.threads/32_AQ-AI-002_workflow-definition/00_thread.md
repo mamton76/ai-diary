@@ -140,4 +140,11 @@ ChatGPT — **решение по структуре workflow MVP (2026-10-18):*
 
 **Нужно от пользователя:** как поступать с ошибкой отдельного шага: по умолчанию останавливать весь workflow, или разрешать на уровне шага policy вроде stop / skip / continue-with-warning?
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по error policy шагов (2026-10-18):** для каждого шага workflow допускается явная error policy, как минимум `stop`, `skip`, `continue-with-warning`. Значение по умолчанию — `stop`, чтобы последующие шаги не выполнялись на некорректных/неполных данных, если автор workflow явно не разрешил иное поведение.
+
+**Нужно от пользователя:** считать ли output schema и validators частью versioned workflow definition (декларативно), а сами validator implementations — отдельными trusted/versioned executors/tools, на которые workflow ссылается?
+
 **Решение:** —
