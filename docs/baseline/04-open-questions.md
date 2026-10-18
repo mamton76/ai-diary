@@ -891,13 +891,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-005 — CI/CD
 
-Нужно решить:
-
-- что тестируется на PR;
-- как deploy backend/web;
-- нужен ли manual approval;
-- как хранить secrets;
-- как rollback.
+**Статус:** РЕШЕНО  
+**Решение:** полуавтоматический CI/CD — проверки PR автоматически (build/tests/lint по мере готовности), deployment web/backend в единственное рабочее окружение только вручную, без auto-deploy после merge. Secrets не хранить в Git; предусмотреть возможность документированного rollback. Детали workflow/набор checks — при реализации.  
+**История обсуждения:** [AQ-OPS-005 thread](04-open-questions.threads/40_AQ-OPS-005_ci-cd/00_thread.md)
 
 ---
 
