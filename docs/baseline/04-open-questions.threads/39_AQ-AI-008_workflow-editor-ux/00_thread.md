@@ -107,4 +107,11 @@ ChatGPT — **решение по AI step model override (2026-10-18):** AI step
 
 **Нужно от пользователя:** решить UX prompt/instructions внутри AI step: обычное большое поле с возможностью раскрыть в полноэкранный editor, или сразу отдельный dedicated prompt editor surface.
 
+
+пользователь — «ну давай так»
+
+ChatGPT — **решение по prompt/instructions editor (2026-10-18):** в раскрытой карточке AI step есть встроенное большое поле `Instructions / Prompt` для обычного редактирования. Для длинного или сложного prompt доступно действие `Open full editor`, открывающее более просторную dedicated editor surface. Отдельный экран не является обязательным для каждого изменения prompt.
+
+**Нужно от пользователя:** определить, что именно показывает full prompt editor помимо текста: только большой editor, или ещё справа/снизу live preview доступных inputs/variables и output schema.
+
 **Решение:** —
