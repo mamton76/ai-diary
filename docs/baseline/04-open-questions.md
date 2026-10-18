@@ -822,14 +822,12 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-003 — Telegram scope
 
-Какие inputs поддержать сначала:
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-INT-003 thread](04-open-questions.threads/42_AQ-INT-003_telegram-scope/00_thread.md)
 
-- text;
-- voice;
-- photo;
-- links;
-- forwarded files;
-- multi-message session.
+**Согласовано по scope:** Telegram capture должен поддерживать text, voice, а также media/assets (фото, аудио, видео, документы и другие вложения), links и forwarded content, когда поддерживает Telegram. Оригиналы/ссылки на originals, подписи и provenance сохраняются согласно unified CaptureItem и Asset contract. Несколько сообщений обрабатываются как независимые CaptureItems с дальнейшей возможностью объединить в Entry.
+
+**Поэтапная реализация:** первый slice — text и voice; работа с остальными assets/attachments включена в ТЗ, но не обязательна для первой реализации. Конкретная очередность вложений и формат пользовательского Telegram взаимодействия уточняются.
 
 ## AQ-INT-004 — Unified CaptureItem contract
 
