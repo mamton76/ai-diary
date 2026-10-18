@@ -114,4 +114,11 @@ ChatGPT — **решение по prompt/instructions editor (2026-10-18):** в 
 
 **Нужно от пользователя:** определить, что именно показывает full prompt editor помимо текста: только большой editor, или ещё справа/снизу live preview доступных inputs/variables и output schema.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по full prompt editor (2026-10-18):** full prompt editor показывает не только большое поле prompt/instructions, но и контекст шага: доступные `inputs / variables` и ожидаемый `output schema`. Это помогает редактировать длинный prompt без потери связи с contract шага.
+
+**Нужно от пользователя:** определить UX Executor / Tool step на примере trusted script/module: показывать выбранный module/version + trust status + parameters + capabilities в одной карточке или уводить trust/details в отдельный экран.
+
 **Решение:** —
