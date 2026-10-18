@@ -161,4 +161,11 @@ ChatGPT — **решение по versioning user workflows (2026-10-18):** по
 
 **Нужно от пользователя:** разрешать ли запуск Draft workflow для тестирования до Publish, если такой запуск явно помечен как Test run и сохраняет snapshot Draft definition внутри Run?
 
+
+пользователь — «оки - но надо из тстового рана мочь о кнопке перейти в ревизию - принять его»
+
+ChatGPT — **решение по promotion Test run в workflow version (2026-10-18):** Draft workflow можно запускать до Publish как явно помеченный Test run; Run сохраняет snapshot Draft definition, который реально был выполнен. Из успешного Test run должна быть доступна явная action (например, `Accept / Publish this tested version`), которая публикует именно протестированный snapshot как новую immutable workflow version, без необходимости вручную повторять изменения в редакторе.
+
+**Нужно от пользователя:** если после Test run текущий Draft уже успели изменить, action Publish from Test run должна публиковать именно старый протестированный snapshot отдельной новой version, не затирая текущий Draft?
+
 **Решение:** —
