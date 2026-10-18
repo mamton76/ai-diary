@@ -128,4 +128,11 @@ ChatGPT — **решение по Executor / Tool step card (2026-10-18):** ка
 
 **Нужно от пользователя:** определить, что делать в editor, если выбранный executor/module ещё untrusted: разрешать сохранить Draft, но блокировать Test run/Publish/обычный Run до trust, или требовать trust уже при выборе модуля.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по untrusted executor в editor (2026-10-18):** untrusted executor/module можно выбрать и сохранить внутри Draft workflow без немедленного trust-review. Publish также допустим: опубликованная routine может существовать с явным статусом `requires trust before run`. Test run и обычный Run блокируются до explicit trust конкретной module version. Trust не навязывается пользователю в момент выбора модуля.
+
+**Нужно от пользователя:** определить UX Validator step: показывать простые declarative rules прямо в карточке, а сложный code validator оформлять как ссылку на trusted executor/tool.
+
 **Решение:** —
