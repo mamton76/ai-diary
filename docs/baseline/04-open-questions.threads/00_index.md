@@ -7,6 +7,7 @@
 Эта папка содержит только те вопросы из `04-open-questions.md`, для которых уже создан canonical thread.
 
 Треды создаются лениво. Отсутствие папки для вопроса означает только «детальное обсуждение ещё не заведено», а не «вопрос решён».
+| 43 | AQ-WEB-003 | Возможности первого редактора Entry | ждём пользователя | 🔒 in_discussion | active | Codex — текущий диалог требований AI Diary | [📁](43_AQ-WEB-003_editor-semantics/) | [00_thread.md](43_AQ-WEB-003_editor-semantics/00_thread.md) | Screens/Functional Specs, inventory/product baseline |
 
 ## Все созданные треды
 

@@ -509,6 +509,8 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 ### 12.2 Подробный путь [Б]
 
+На широком desktop три панели располагаются рядом; mobile-компоновка уточнена ниже.
+
 | Левая панель | Центральная панель | Правая панель |
 |---|---|---|
 | **Исходник (Base)**: состояние, от которого работал AI | **Результат (Result)**: реальное будущее состояние записи | **Предложение AI (Proposal)**: исходный AI результат |
@@ -530,7 +532,7 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 **[Д, 18.10.2026]** Закрытие review без применения сохраняет исходный pending proposal; [незавершённый Result/merge draft автоматически сохраняется и восстанавливается](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md).
 
-**[П, layout mobile]** На телефоне допустим последовательный выбор Base/Result/Proposal, если смысл ролей и возможность проверить результат не теряются; точная mobile parity трёхстороннего proposal review [обсуждается в UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md); обычный Compare C15 уже имеет Before/After switch либо inline diff на mobile.
+**[Д, 19.10.2026] Настраиваемый mobile AI review.** Три смысловые роли Base / Result / Proposal сохраняются при любой компоновке; широкий desktop использует три панели. Для телефона в S11 «Настройки → Отображение → Проверка AI» доступны два режима: **«Переключение»** — одна роль за раз через «Исходник / Результат / Предложение AI», при входе показан Result; **«Две панели»** — редактируемый Result и read-only область с переключателем «Исходник / Предложение AI». В двухпанельном режиме landscape располагает области рядом при достаточной ширине, portrait — одну над другой; при недостатке ширины используется вертикальная компоновка. Начальный режим — «Две панели» по предыдущему уточнению; пользователь может попробовать оба, выбор сохраняется между открытиями. Это предпочтение отображения, не content Entry/Revision. Result и Proposal показывают diff относительно Base; Current доступен при конфликте. Переключение режима, роли сравнения или ориентации продолжает тот же review draft без потери правок и без Apply/новой Revision; прежние autosave/resume, dirty и freshness guards действуют. Конкретные breakpoint/пропорции — реализация. [История UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md).
 
 ### 12.4 Приёмка
 
@@ -694,6 +696,10 @@ User instructions/overrides поддерживаются отдельно от �
 
 **[П]** Настройка интеграции показывает enabled/disabled, последний результат/ошибку и безопасный retry. Конкретные selectors календарей и набор sync controls определяются интеграционным этапом.
 
+### Отображение
+
+**[Д, 19.10.2026] Настройки экранов — «Проверка AI».** Для телефона выбирается «Переключение» или «Две панели»; начально две панели. Выбор сохраняется, оба режима можно пробовать с тем же review draft. Двухпанельный режим адаптируется к landscape/portrait, как определено в S07. Предпочтение не создаёт content Revision. [История UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md).
+
 ### Данные и обслуживание
 
 **[Б]** Нужны переносимость, export/backup/restore semantics; при migration — явная операция, backup/snapshot, read-only maintenance, validation и report с возможностью выборочного before/after.
@@ -845,6 +851,7 @@ User instructions/overrides поддерживаются отдельно от �
 | AC-64 | «Удалить навсегда» Entry из Trash | После отдельного подтверждения нет Current/raw/revisions/Draft/review draft/текстовой AI history этой Entry и нет Restore. Минимальный технический след без текста. Для исключительно связанных Asset показан отдельный выбор soft delete/оставить; общие Asset/чужое содержимое и внешние originals не удалены |
 | AC-65 | Новая Entry с готовым фото/аудио/документом, пустыми Title/Text и валидной датой | Save разрешён при готовности всех оставленных attachments и прочих guards; первая Revision содержит Asset links и пустые Title/Text. Показан fallback title, он не записан как пользовательский title; AI-текст не требуется |
 | AC-66 | Draft без Title/Text/Asset links либо только с пробелами/датой/тегами | Save disabled с объяснением, Draft/введённые metadata не теряются. Непустой Title или Text либо готовый Asset удовлетворяет проверке содержимого; остальные guards сохраняются, пробелы в сохраняемом тексте не переписываются |
+| AC-67 | Поменять mobile AI review в настройках, роли и ориентацию | Оба режима доступны и выбор сохраняется: одна роль с переключением либо Result + read-only Base/Proposal. Две области в portrait одна над другой; в landscape рядом при достаточной ширине. Правки общего review draft/подсветка сохранены; смена представления не выполняет Apply |
 
 ## 21. Расхождения источников и принятая интерпретация
 
@@ -876,11 +883,11 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q01 | Когда включаем Обзор, web-create, lifecycle UI и полную Asset Library? | Сохранить E0 маленьким; dashboard как отдельный UX slice |
 | UI-Q02 | Как считаем многодневные/приблизительные события в календаре и статистике? | Утвердить единые правила до реализации dashboard/date filtering |
 | UI-Q03 — решён | Первоначальный лимит облака: [история](AI-Diary-Screens-Spec-v0.1.threads/01_UI-Q03_tag-cloud-limit/00_thread.md) | До 30 самых частых тегов; «Показать все» раскрывает остальные. Частота по всей области главной. Конкретное размещение/равные частоты — детали реализации |
-| UI-Q04 | Editor type и форматирование? | AQ-WEB-003: выбрать при editor slice, не менять переносимый content contract |
-| UI-Q05 | Discard recovery points, partial uploads/late completion и merge draft? | Готовые Asset после Discard: предложение soft delete только при единственной связи; остаются частичные загрузки и самостоятельный merge draft |
-| UI-Q06 | Mobile layout трёхстороннего proposal review? | [Обсуждение](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md): переключение Base/Result/Proposal либо три панели вертикально. Обычный C15 Compare уже определён; S07 ещё не выбран |
+| UI-Q04 | Editor type и форматирование? | [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md): базовое форматирование кнопками либо обычный текст; пользовательский выбор ещё открыт, сериализация/библиотека отдельно |
+| UI-Q05 — технический остаток | Partial uploads/late completion и recovery protocol | Готовые Asset после Discard согласованы; review draft имеет autosave/resume по FQ-07/SQ-01. Остаётся технический протокол частичных загрузок/recovery, а не повторный продуктовый выбор merge draft |
+| UI-Q06 — решён | Настраиваемый mobile AI proposal review | S11 «Отображение → Проверка AI»: «Переключение» / «Две панели», выбор сохраняется. Две панели рядом в landscape, друг над другом в portrait. Desktop — три панели. [История](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md) |
 | UI-Q07 — решён (продуктовая семантика) | Окончательное удаление Entry и зависимые материалы: [FQ-08/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/03_SQ-03_entry-permanent-delete-content/00_thread.md) | Всё содержимое Entry удаляется без восстановления; исключительно связанные Asset — отдельное предложение soft delete; остальные остаются. Внешние originals не удаляем. Протокол очистки/backup retention — техническая проработка |
-| UI-Q08 | Lifecycle оставшихся частей complex proposal после partial apply? | Решить при detailed AI review |
+| UI-Q08 — решён | Исход после partial apply | «Принято частично» закрывает весь proposal; непринятые части остаются в исходном Proposal/history без pending-остатка. [История FQ-07](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md) |
 | UI-Q09 — решён | Timezone rolling days: [FQ-05/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md) | Настройка пользователя; при отличии устройства предложить смену, применить после подтверждения. Lifecycle counters и периоды +6/+29 приняты; прочие аспекты FQ-05 отдельны |
 | UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
 | UI-Q11 | Standalone Inbox, детали routine editor, export/maintenance screens? | Экран Routines и создание пользовательских routines приняты; детали формы и этап поставки уточняются |
@@ -1399,3 +1406,7 @@ Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED
 ### 26.47. Уточнение 18.10.2026 — пустая Entry остаётся Draft
 
 **[Д, 18.10.2026] Пустая Entry и manual Save.** Для manual Save требуется хотя бы одно содержательное поле Title/Text либо хотя бы одна связь с готовым Asset. Полностью пустой итоговый snapshot (без Title, Text и Asset links) не сохраняется как committed Revision: Save disabled с пояснением «Добавьте заголовок, текст или материал». Одних даты/тегов/служебных metadata недостаточно. Title/Text только из пробельных символов не считаются содержимым; проверка не обрезает и не переписывает пользовательский текст и не меняет точное content equality для NO_CHANGE. Создание/автосохранение Draft разрешено; уже введённые данные сохраняются по общим правилам, пустота сама по себе не вызывает автоматический Discard. Заголовок без body допустим; материалы без Title/Text допустимы по UI-Q14. Все остальные Event date, готовность всех оставленных attachments и ownership/base guards продолжают действовать. [История UI-Q15](AI-Diary-Screens-Spec-v0.1.threads/03_UI-Q15_empty-entry-save/00_thread.md).
+
+### 26.48. Уточнение 19.10.2026 — настройки компоновки review на телефоне
+
+**[Д, 19.10.2026] Настраиваемый mobile AI review.** Три смысловые роли Base / Result / Proposal сохраняются при любой компоновке; широкий desktop использует три панели. Для телефона в S11 «Настройки → Отображение → Проверка AI» доступны два режима: **«Переключение»** — одна роль за раз через «Исходник / Результат / Предложение AI», при входе показан Result; **«Две панели»** — редактируемый Result и read-only область с переключателем «Исходник / Предложение AI». В двухпанельном режиме landscape располагает области рядом при достаточной ширине, portrait — одну над другой; при недостатке ширины используется вертикальная компоновка. Начальный режим — «Две панели» по предыдущему уточнению; пользователь может попробовать оба, выбор сохраняется между открытиями. Это предпочтение отображения, не content Entry/Revision. Result и Proposal показывают diff относительно Base; Current доступен при конфликте. Переключение режима, роли сравнения или ориентации продолжает тот же review draft без потери правок и без Apply/новой Revision; прежние autosave/resume, dirty и freshness guards действуют. Конкретные breakpoint/пропорции — реализация. [История UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md).
