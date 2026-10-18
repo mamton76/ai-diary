@@ -833,10 +833,10 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-004 — Unified CaptureItem contract
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-INT-004 thread](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md)
-
-Нужно формализовать один normalized input, чтобы каждый adapter не знал final persistence schema.
+**Статус:** РЕШЕНО  
+**Решение:** один CaptureItem соответствует одному исходному сообщению/событию и хранит immutable original payload, source identity/timestamps, content/asset refs и metadata; результаты транскрибации и AI отдельно связаны с оригиналом. Повторная доставка того же source ID идемпотентна. Несколько CaptureItems можно вручную (без AI) или с AI-помощью объединить в одну Entry, после ручного объединения открывается Draft; только successful Save отмечает source items обработанными. Event date выбирает пользователь, source timestamps не подменяются. Разделение Entry и одного CaptureItem на несколько Entries отложено; в MVP CaptureItem связывается максимум с одной Entry.  
+**История обсуждения:** [AQ-INT-004 thread](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md)  
+**Будущее:** [FQ-ENTRY-001 — Merge / split entries](06-future-questions.md#fq-entry-001--merge--split-entries)
 
 ## AQ-INT-005 — Assistant-specific integrations
 
