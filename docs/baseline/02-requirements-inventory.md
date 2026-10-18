@@ -531,6 +531,10 @@ Kotlin/Ktor удобен владельцу проекта; Python/FastAPI и Ty
 **Статус:** ПОДТВЕРЖДЕНО  
 AI workflows, indexing, import, Calendar sync, migrations/backfills и другие долгие/ненадёжные операции не должны зависеть от lifetime пользовательского HTTP request или открытой browser session. Event-triggered, user-triggered и schedule-triggered workflows должны сходиться в durable job model; точные queue/retry/idempotency semantics определяются отдельно.
 
+### API-006A — Queue-first mutations и вычисления
+**Статус:** ПОДТВЕРЖДЕНО  
+Все изменения canonical diary state, включая Save, Apply/Restore, изменение тегов, выполняются через durable async command queue; фоновые вычисления, ingestion, AI workflows и indexing также исполняются асинхронно. Read/search queries не ставятся в очередь. Принятая команда и committed результат различаются: UI сообщает «Сохраняется» до подтверждения successful commit и отображает failures/conflicts явно. Autosave draft допускает coalescing/debounce вместо задачи на каждую клавишу. Конкретная queue provider, retry/idempotency и ordering semantics уточняются в AQ-OPS-002 и architecture design. Решение: [AQ-API-004](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md).
+
 ### API-007 — Один repo может содержать web/backend/android
 **Статус:** ПОДТВЕРЖДЕНО КАК ДОПУСТИМОЕ  
 Нет требования немедленно разделять продукт по разным репозиториям. Точная структура — архитектурный вопрос.
