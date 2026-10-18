@@ -534,24 +534,9 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 ## AQ-API-006 — Monorepo структура
 
-Репозиторий может содержать:
-
-```text
-android/
-web/
-backend/
-docs/
-```
-
-Но нужно решить:
-
-- один Gradle root или независимые builds;
-- где frontend package manager;
-- shared schemas/types;
-- CI boundaries;
-- release versioning.
-
-Это не повод делить продукт на несколько repo заранее.
+**Статус:** РЕШЕНО  
+**Решение:** единый monorepo для web, Kotlin/Ktor backend и docs, с независимыми builds/toolchains и общим версионируемым OpenAPI contract. Сложную общую систему сборки и релизов не вводить заранее; Android — по потребности.  
+**История обсуждения:** [AQ-API-006 thread](04-open-questions.threads/30_AQ-API-006_monorepo/00_thread.md)
 
 ---
 
