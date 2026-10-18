@@ -8,7 +8,7 @@
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
-**Куда переносим решение:** ../../02-requirements-inventory.md и architecture AI workflow design
+**Куда переносим решение:** ../../02-requirements-inventory.md и ../../07-ai-workflow-architecture.md
 
 ## Вопрос
 
