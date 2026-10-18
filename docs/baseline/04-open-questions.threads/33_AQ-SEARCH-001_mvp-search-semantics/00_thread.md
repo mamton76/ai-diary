@@ -1,10 +1,10 @@
 # AQ-SEARCH-001 — MVP search semantics
 
 **Источник:** [04-open-questions.md / AQ-SEARCH-001](../../04-open-questions.md#aq-search-001--mvp-search-semantics)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation (2026-10-18)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -26,6 +26,8 @@ ChatGPT — Поддерживаю MVP без semantic search. Для title/body
 
 **Нужно от пользователя:** достаточно ли для MVP сочетания простого полнотекстового поиска title/body и фильтров по tags, date, source, status, оставив смысловой поиск на потом?
 
-пользователь —
+пользователь — «норм»
 
-**Решение:** —
+ChatGPT — Подтверждено: в поисковом web slice достаточно простого текстового поиска без semantic/vector features и фильтров по тегам, датам, источнику и статусу. Использовать существующий DB search/index mechanism (например, встроенный FTS в выбранной БД), не отдельный сервер. Индекс rebuildable из canonical files. Из прежнего roadmap сохраняется граница: search не обязателен в самом первом files-only MVP, относится к следующему web slice.
+
+**Решение:** [принято] (2026-10-18) Simple title/body full-text search с регистронезависимостью плюс filters tags, date range, source, status; semantic/vector search, fuzzy/synonyms и гарантии морфологии откладываются. Использовать стандартные средства FTS в выбранной операционной БД, не писать собственный engine и не разворачивать отдельный поисковый сервис. Search index — derived/rebuildable; не блокирует самый первый files-only MVP.
