@@ -539,9 +539,9 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 **Статус:** ПОДТВЕРЖДЕНО
 Для раннего прототипа используется одно deployed окружение без отдельного staging/test deployment. Локальный запуск допустим при разработке; потенциально разрушительные тесты выполняются на тестовых данных или при наличии backup. Дополнительные окружения создаются по конкретной необходимости. См. [AQ-API-005](04-open-questions.threads/29_AQ-API-005_environments/00_thread.md).
 
-### API-007 — Один repo может содержать web/backend/android
-**Статус:** ПОДТВЕРЖДЕНО КАК ДОПУСТИМОЕ  
-Нет требования немедленно разделять продукт по разным репозиториям. Точная структура — архитектурный вопрос.
+### API-007 — Monorepo с независимыми builds
+**Статус:** ПОДТВЕРЖДЕНО  
+Один репозиторий содержит web, Kotlin/Ktor backend и docs; frontend/backend используют независимые builds/toolchains, а OpenAPI specification остаётся общим версионируемым контрактом. Не требуется сейчас общий Gradle root, обязательный Android build или единый release pipeline; CI/deploy components можно разделять по мере необходимости. Решение: [AQ-API-006](04-open-questions.threads/30_AQ-API-006_monorepo/00_thread.md).
 
 ### API-008 — Backend остаётся modular monolith с несколькими runtime roles
 **Статус:** ПОДТВЕРЖДЕНО  
