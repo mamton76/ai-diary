@@ -156,4 +156,11 @@ ChatGPT — **решение по Eligibility / Scope default placement (2026-10
 
 **Нужно от пользователя:** определить окончательный состав верхнего блока Workflow settings без Input/Trigger-полей.
 
+
+пользователь — «ну давай»
+
+ChatGPT — **решение по placement Application policy (2026-10-18):** `Application policy` выносится из верхнего `Workflow settings` в отдельную секцию после processing pipeline, рядом с `Output / Side effects`. Верхний блок остаётся компактным и содержит общие defaults/identity workflow, а policy описывает, как допустимые результаты workflow применяются, отправляются в Proposal/Review или auto-apply.
+
+**Нужно от пользователя:** определить, какие поля остаются в компактном Workflow settings и нужен ли отдельный блок Version/Draft status в header.
+
 **Решение:** —
