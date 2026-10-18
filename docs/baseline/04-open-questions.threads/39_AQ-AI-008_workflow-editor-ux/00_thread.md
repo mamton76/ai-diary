@@ -100,4 +100,11 @@ ChatGPT — **решение по минимальному набору типо
 
 **Нужно от пользователя:** определить поля AI step на примере Tag Enrichment: prompt/instructions, model override, input mapping, output schema, validator и error policy.
 
+
+пользователь — «да»
+
+ChatGPT — **решение по AI step model override (2026-10-18):** AI step по умолчанию использует `Inherit workflow default`, но может иметь собственный step-specific model override. Это позволяет простым routines использовать одну модель, а многошаговым workflows при необходимости назначать разные модели разным AI steps без изменения общей архитектуры provider/model hierarchy.
+
+**Нужно от пользователя:** решить UX prompt/instructions внутри AI step: обычное большое поле с возможностью раскрыть в полноэкранный editor, или сразу отдельный dedicated prompt editor surface.
+
 **Решение:** —
