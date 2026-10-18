@@ -191,4 +191,11 @@ ChatGPT — **решение по adaptive/mobile workflow editor (2026-10-18):*
 
 **Нужно от пользователя:** определить publish validation UX: что именно должно блокировать Publish и что допускается опубликовать с warning.
 
+
+пользователь — «ок»
+
+ChatGPT — **решение по publish validation UX (2026-10-18):** Publish блокируется только structural/configuration errors, из-за которых workflow definition некорректен или внутренне несовместим: broken input/output mapping, обязательный input без source, invalid Condition, несовместимый output contract, отсутствующий обязательный executor/tool или capability requirement, который невозможно удовлетворить конфигурацией. Runtime-readiness проблемы вроде untrusted executor, временно недоступной model или отсутствующего default capability profile оформляются как warnings: Publish разрешён, но routine получает явный статус `requires setup / not ready to run`.
+
+**Нужно от пользователя:** определить UX создания новой user routine: стартовать с пустого workflow, из шаблона/system routine через Duplicate, либо из успешного Custom prompt / Run через Save as routine; какие entry points считаются основными.
+
 **Решение:** —
