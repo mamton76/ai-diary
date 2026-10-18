@@ -58,4 +58,11 @@ ChatGPT — **решение по Input / Trigger section (2026-10-18):** `Input
 
 **Нужно от пользователя:** разобрать Google Calendar Timeline Projection и решить, нужен ли симметричный отдельный Output / Side effects block после pipeline.
 
+
+пользователь — «да норм вроде»
+
+ChatGPT — **решение по Output / Side effects section (2026-10-18):** после processing pipeline в workflow editor есть отдельная декларативная секция `Output / Side effects`. Она не является reorderable step и показывает, что workflow производит наружу: analysis result, Proposal, committed mutation при разрешённой policy, создание/обновление внешней projection, обновление derived state и т.п. Секция также явно показывает запрещённые/отсутствующие мутации canonical data, когда это важно. Application policy остаётся отдельной настройкой и определяет, как допустимые изменения применяются/reviewed.
+
+**Нужно от пользователя:** решить форму карточки processing step: универсальная карточка с Type + Inputs + Config + Outputs + Error policy, или разные визуальные формы для AI step / executor step / condition / validator?
+
 **Решение:** —
