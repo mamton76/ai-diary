@@ -84,4 +84,11 @@ ChatGPT — **решение по Custom prompt / библиотеке routines 
 
 **Нужно от пользователя:** при Save as routine сохранять только prompt/instructions текущего ad hoc запуска или весь фактический execution setup (scope defaults, model override, tools/capabilities, script-steps и прочие настройки)?
 
+
+пользователь — «мне кажется весь»
+
+ChatGPT — **решение по Save as routine (2026-10-18):** при сохранении ad hoc запуска как постоянной routine переносится весь фактический execution setup, а не только prompt/instructions: prompt, model override при наличии, tools/capabilities, script-steps, eligibility/scope defaults и другие настройки, влияющие на поведение. Это создаёт первую версию user-owned workflow, максимально соответствующую запуску, который пользователь решил сохранить.
+
+**Нужно от пользователя:** различать ли в user routine два класса настроек — постоянные defaults в definition и launch-time overrides, которые можно менять для конкретного запуска без создания новой workflow version?
+
 **Решение:** —
