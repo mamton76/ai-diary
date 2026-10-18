@@ -693,6 +693,41 @@ Proposal должен:
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ / MVP CANDIDATE  
 Желательна AI-помощь непосредственно внутри manual editor: команда над selection/current working draft, например rewrite, shorten, fix или continue. Это отдельная семантика от Entry workflow над committed revision. Перед реализацией нужно определить draft-level undo, связь с autosave и нужно ли создавать Proposal/Revision для таких операций. Фича не блокирует базовый MVP, но может войти в него opportunistically, если editor implementation делает её дешёвой и понятной.
 
+
+### AI-023 — Workflow definitions являются user-owned versioned data
+**Статус:** ПОДТВЕРЖДЕНО  
+User workflow/routine definitions хранятся рядом с diary data как canonical user-owned data. Backend предоставляет workflow engine/runtime и durable execution, но пользовательские definitions не должны существовать только в deployment/repo config. Решение: [AQ-AI-002](04-open-questions.threads/32_AQ-AI-002_workflow-definition/00_thread.md).
+
+### AI-024 — Workflow versioning разделяет Draft и immutable published versions
+**Статус:** ПОДТВЕРЖДЕНО  
+User workflow редактируется как Draft definition; новая immutable version создаётся только при явном Publish/Save version. Published history сохраняется, Restore создаёт новую version. Draft можно выполнить как Test run со snapshot и затем опубликовать именно протестированный snapshot; более новый current Draft при этом не теряется и rebases на новую published version. User workflow удаляется только soft-delete; permanent delete пока отсутствует.
+
+System workflows имеют read-only immutable history, новые Runs автоматически используют latest, а UI может показывать changelog/diff. Любую historical system version можно Duplicate в самостоятельный user-owned workflow.
+
+### AI-025 — Ad hoc Custom prompt не обязан становиться routine
+**Статус:** ПОДТВЕРЖДЕНО  
+Одноразовый Custom prompt сохраняется как ephemeral execution snapshot внутри Run. Save as routine явно создаёт user-owned workflow из полного фактического execution setup, а не только текста prompt.
+
+### AI-026 — Executable code отделён от workflow definition
+**Статус:** ПОДТВЕРЖДЕНО  
+Reusable executors/scripts/tools являются отдельными versioned исполняемыми модулями. Workflow может ссылаться на совместимый executor contract, хранить default executor и при запуске заменять его на другой совместимый trusted вариант без новой workflow version. Trust выдаётся явно конкретной code version/hash один раз; изменение кода требует нового trust. Script может быть написан пользователем или предложен/создан AI, но AI не может молча активировать или доверить новую code version.
+
+### AI-027 — Permissions оформляются через reusable capability profiles
+**Статус:** ПОДТВЕРЖДЕНО  
+Доступ строится по least privilege. Workflow объявляет required/optional capability contract, а reusable capability profiles являются отдельными user-owned versioned сущностями и могут использоваться разными workflows. Workflow может иметь default profile; Run фиксирует фактически выбранную profile version и выданные permissions. Более широкий profile не даёт workflow неограниченного доступа вне объявленного contract.
+
+### AI-028 — Run фиксирует фактические bindings и overrides
+**Статус:** ПОДТВЕРЖДЕНО  
+Обычный Run не копирует полный immutable workflow definition: он ссылается на точные workflow/executor/capability-profile versions/hashes и сохраняет фактические model/runtime/launch overrides. Полный snapshot нужен для ephemeral/ad hoc runs и Test runs Draft definitions. Workflow defaults и launch-time overrides — разные уровни.
+
+### AI-029 — MVP workflow — linear pipeline + simple conditions
+**Статус:** ПОДТВЕРЖДЕНО  
+В MVP workflow представляет linear pipeline с простыми if/condition ветвлениями. Полноценные loops/iteration constructs не требуются до появления конкретного сценария. У шага есть error policy stop | skip | continue-with-warning; default — stop.
+
+### AI-030 — Output contracts versioned, code validators reusable
+**Статус:** ПОДТВЕРЖДЕНО  
+Output schema и declarative validation rules являются частью versioned workflow definition. Простые structural checks задаются декларативно; сложные validators с executable code реализуются отдельными trusted/versioned executors/tools. Архитектурная база: [07-ai-workflow-architecture.md](07-ai-workflow-architecture.md). Конкретный workflow editor UX вынесен в [AQ-AI-008](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md).
+
 ---
 
 # L. Calendar / integrations
