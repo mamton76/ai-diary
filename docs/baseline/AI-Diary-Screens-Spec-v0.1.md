@@ -501,8 +501,8 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 | Левая панель | Центральная панель | Правая панель |
 |---|---|---|
-| **Base**: состояние, от которого работал AI | **Result**: реальное будущее состояние записи | **Proposal**: предлагаемый AI результат |
-| Read-only | Editable | Read-only |
+| **Исходник (Base)**: состояние, от которого работал AI | **Результат (Result)**: реальное будущее состояние записи | **Предложение AI (Proposal)**: исходный AI результат |
+| Read-only | Editable; изменения относительно Base подсвечены | Read-only; изменения относительно Base подсвечены |
 
 Если Current совпадает с Base, начальный Result соответствует Proposal. Если Current уже менялся, Result учитывает совместимые текущие изменения; конфликт показывается в конкретном поле/фрагменте.
 
@@ -516,9 +516,9 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 Перед apply повторно проверяются ownership и base/current compatibility. Если запись изменилась, пока пользователь рассматривал proposal, устаревший Result нельзя записать поверх нового Current.
 
-**[О]** Нужно определить lifecycle/outcome непринятых частей complex proposal после частичного применения. ТЗ не назначает им автоматически accepted/rejected и не создаёт новые proposals без согласованной policy. **Обсуждение:** [FQ-07 — частичный Apply](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
+**[Д, 18.10.2026]** При частичном принятии и подтверждении Result proposal получает статус «Принято частично» и закрывается целиком. Непринятые части сохраняются в исходном Proposal/AI history, без pending-остатка или автоматически созданных новых proposals. Сам этот proposal перестаёт быть причиной внимания; другие причины Entry сохраняются. **История:** [FQ-07 — частичный Apply](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
 
-**[П]** Закрытие review без применения сохраняет исходный pending proposal; судьба незавершённого merge draft определяется отдельно. На телефоне допустим последовательный выбор Base/Result/Proposal, если смысл ролей и возможность проверить результат не теряются; точная mobile parity трёхстороннего proposal review остаётся открытой; обычный Compare C15 уже имеет Before/After switch либо inline diff на mobile.
+**[П]** Закрытие review без применения сохраняет исходный pending proposal; [сохранение незавершённого Result/merge draft](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md) обсуждается отдельно. На телефоне допустим последовательный выбор Base/Result/Proposal, если смысл ролей и возможность проверить результат не теряются; точная mobile parity трёхстороннего proposal review остаётся открытой; обычный Compare C15 уже имеет Before/After switch либо inline diff на mobile.
 
 ### 12.4 Приёмка
 
@@ -1290,3 +1290,11 @@ Home очередь сохраняет ранее принятый ACTIVE + ARCH
 UI предоставляет явное действие у конкретной ошибки; рабочее название — «Убрать из внимания». Это не общий сброс всех review items Entry. Точное место кнопки и physical resolution/audit schema остаются деталями реализации. **История:** [FQ-06/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/05_SQ-05_dismiss-ai-error/00_thread.md).
 
 **[О]** Следующий отдельный выбор — [исход комплексного proposal после частичного принятия](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md); возможность частичного review уже есть, но судьба оставшихся частей не выбрана.
+
+### 26.34. Уточнение 18.10.2026 — трёхпанельный review и «Принято частично»
+
+Подробный review использует три панели: исходник Base — сохранённое состояние, на котором работал AI, только чтение; Result — редактируемый будущий итог; Proposal — исходное предложение AI, только чтение. В Result и Proposal подсвечиваются изменения относительно Base. Если пользователь принимает только часть предложения и подтверждает итоговый Result, proposal получает понятный статус «Принято частично» и закрывается целиком как разобранный. Создаётся одна committed Revision с подтверждённым Result, без дополнительного Save. Исходный Proposal и итоговый Result/Revision сохраняются в AI history; непринятые части не остаются pending и автоматически не превращаются в новые proposals. Причина внимания этого proposal снимается, остальные причины Entry сохраняются.
+
+Base не подменяется текущей пользовательской настройкой или новой Current Revision: это исходное состояние run/proposal. При изменившемся Current подробный review учитывает совместимые изменения и даёт разрешить conflicts; перед Apply обязательны повторные ownership/base checks. Подсветка не отменяет возможность ручного редактирования Result. Точный diff algorithm, цвета, storage outcome enum и способ трассировки принятых/непринятых фрагментов — техническая конкретизация. **История:** [FQ-07](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
+
+**[О]** Следующий выбор — [сохранение прогресса незавершённого review](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md); сохранение pending proposal само по себе не гарантирует восстановление ручных правок Result.
