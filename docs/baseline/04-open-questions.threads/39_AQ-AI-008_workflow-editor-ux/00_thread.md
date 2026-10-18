@@ -44,4 +44,11 @@ ChatGPT — **решение о способе проработки editor UX (2
 
 **Нужно от пользователя:** начать разбор с Tag Enrichment как наиболее показательным user-facing AI workflow.
 
+
+пользователь — «оки»
+
+ChatGPT — **решение по Application policy (2026-10-18):** для Tag Enrichment и аналогичных workflows выбор `auto-apply / proposal / review` относится к Application policy routine, а не моделируется отдельными визуальными ветками pipeline. Ветки `Condition` в editor используются для реального изменения control flow, например «если есть Assets → выполнить image analysis, иначе пропустить шаг».
+
+**Нужно от пользователя:** разобрать следующий реальный workflow — Inbox → Entry — и определить, какие из его стадий должны быть самостоятельными шагами в editor.
+
 **Решение:** —
