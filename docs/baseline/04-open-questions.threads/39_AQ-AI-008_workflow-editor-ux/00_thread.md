@@ -1,10 +1,10 @@
 # AQ-AI-008 — Workflow editor UX
 
 **Источник:** выделено из resolved AQ-AI-002 (2026-10-18)  
-**Статус:** открыто  
-**Состояние:** open  
-**Claim:** none  
-**Ведёт:** —  
+**Статус:** обсуждаем  
+**Состояние:** in_discussion  
+**Claim:** active  
+**Ведёт:** ChatGPT  
 **Режим фиксации:** written-turns  
 **Родитель:** AQ-AI-002  
 **Дочерние треды:** —  
@@ -33,8 +33,8 @@
 
 ## Обсуждение
 
-Пока не начато.
+ChatGPT — **старт обсуждения (2026-10-18):** AQ-AI-008 продолжается поверх закрытой архитектуры AQ-AI-002. Существующий S13 уже задаёт Routines / Runs, system/user routines, запуск из Entry/Browser/Routines, scope/eligibility и Run Detail. Здесь обсуждаем только сам editor user routine: визуальную структуру шагов, поля, trust/permissions, Draft/Test/Publish/history и adaptive UX.
 
-**Нужно от пользователя:** вернуться к UX workflow editor отдельной сессией/этапом.
+**Нужно от пользователя:** выбрать базовое представление workflow editor.
 
 **Решение:** —
