@@ -147,4 +147,11 @@ ChatGPT — **решение по error policy шагов (2026-10-18):** для
 
 **Нужно от пользователя:** считать ли output schema и validators частью versioned workflow definition (декларативно), а сами validator implementations — отдельными trusted/versioned executors/tools, на которые workflow ссылается?
 
+
+пользователь — «да норм»
+
+ChatGPT — **решение по output schema и validators (2026-10-18):** ожидаемый output schema и декларативные правила валидации являются частью versioned workflow definition. Простые структурные проверки могут быть описаны непосредственно декларативно. Если validator требует исполняемого кода, его implementation оформляется как отдельный trusted/versioned executor/tool, на который workflow ссылается.
+
+**Нужно от пользователя:** как versioning пользовательского workflow должно работать в редакторе: каждое сохранение создаёт новую immutable version, или пока пользователь редактирует — существует draft definition, а новая immutable version появляется только при Publish/Save version?
+
 **Решение:** —
