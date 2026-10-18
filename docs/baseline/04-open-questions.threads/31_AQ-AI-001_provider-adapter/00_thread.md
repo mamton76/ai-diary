@@ -1,10 +1,10 @@
 # AQ-AI-001 — Provider adapter contract
 
 **Источник:** [04-open-questions.md / AQ-AI-001](../../04-open-questions.md#aq-ai-001--provider-adapter-contract)  
-**Статус:** ждём пользователя  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation (2026-10-18)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -38,6 +38,8 @@ ChatGPT — У провайдеров есть отдельные HTTPS API и A
 
 **Нужно от пользователя:** принять минимальный общий adapter с явными capabilities и расширениями или сначала подробно сравнить operational отличия API и цену.
 
-пользователь —
+пользователь — «да все звучит норм»
 
-**Решение:** —
+ChatGPT — Принят минимальный общий контракт, с явными model capabilities и расширениями конкретных providers. Backend Kotlin/Ktor владеет API credentials, вызывает providers, возвращает нормализованный результат workflows и usage/diagnostics. Конкретные SDK, schema details, error taxonomy и support matrix реализуются постепенно. Достаточно начать с одного adapter, сохраняя multi-provider architecture; автоматический fallback без согласия запрещён ранее принятым PQ-006.
+
+**Решение:** [принято] (2026-10-18) Использовать минимальный provider-neutral LLM adapter для генерации текста/structured output и нормализации результата, usage и ошибок. Выбор модели определяет provider. Provider/model capabilities объявляются явно; специальные features доступны через optional extensions/options без искусственной унификации всех API. Workflow engine не зависит от конкретных HTTP форматов OpenAI/Anthropic/Gemini. Реализацию adapter-ов можно вводить поэтапно, начав с одного провайдера. API keys хранятся server-side. Не менять модель/provider автоматически без явного разрешения.
