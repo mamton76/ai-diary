@@ -996,3 +996,9 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 Фильтр по периоду включает интервальную Entry, если хотя бы часть её EventTimeRange пересекается с выбранным периодом; не требуется попадание начала или всего интервала внутрь фильтра. Например, поездка 1–10 июля видна при фильтре 5–7 июля. Одна Entry показывается один раз, независимо от количества пересекающихся дней. Это общее правило date filter; выбор календаря и связанные выборки используют ту же semantics при неизменном lifecycle scope.
 
 **История:** [FQ-05 — пересечение периодов](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md). Остальные FQ-05 (границы/timezone/precision/uncertainty/отсутствующий To) остаются открытыми.
+
+## Уточнение 18.10.2026 — сортировка Updated учитывает Draft
+
+Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
+
+**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Lifecycle-охват Home counters и модель review items ещё не выбраны; принятое правило относится именно к Updated sort.

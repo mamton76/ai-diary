@@ -16,4 +16,5 @@
 | 4 | FQ-08 (подпункт) | Готовые Asset после Discard / unlink | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/00_thread.md) | Functional/Screens Specs, file-format / Save design |
 | 4.1 | FQ-08/SQ-01 | Restore Entry из Trash → ACTIVE | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md) | Functional/Screens Specs, file-format / Save design |
 | 5 | FQ-05 (подпункт) | Overlap интервальной записи с периодом фильтра | решён | resolved | none | — | [Тред](05_FQ-05_period-overlap/00_thread.md) | Functional/Screens Specs, file-format, inventory/product baseline |
-| 6 | FQ-06 | Updated sort при Draft | ждём пользователя | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](06_FQ-06_updated-sort/00_thread.md) | Functional/Screens Specs, file-format, inventory/product baseline |
+| 6 | FQ-06 (подпункт) | Updated sort учитывает Draft | решён | resolved | none | — | [Тред](06_FQ-06_updated-sort/00_thread.md) | Functional/Screens Specs, file-format, inventory/product baseline |
+| 6.1 | FQ-06/SQ-01 | Lifecycle-охват Drafts / Needs attention на Home | ждём пользователя | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md) | Functional/Screens Specs, inventory/product baseline |

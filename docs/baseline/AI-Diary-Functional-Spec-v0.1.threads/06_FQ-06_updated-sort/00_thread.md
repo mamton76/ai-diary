@@ -1,13 +1,13 @@
 # FQ-06 — Сортировка Updated при наличии Draft
 
 **Источник:** [Функциональное ТЗ, QRY-03/FQ-06](../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
-**Статус:** ждём пользователя  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** Codex — текущий диалог требований AI Diary  
+**Статус:** решён (подпункт Updated sort; остальные FQ-06 открыты)  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** —  
+**Дочерние треды:** [FQ-06/SQ-01 — lifecycle-охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format, inventory/product baseline
 
 ## Вопрос
@@ -33,8 +33,8 @@
 
 Codex — (2026-10-18) Предлагаю вариант 1: сортировка Updated отражает последние правки, включая Draft. Иначе пользователь изменяет старую запись, но не видит её среди недавно изменённых. committedUpdatedAt остаётся прежним до content commit; текущий выбор не создаёт Revision по autosave. Это предложение, не принятое правило.
 
-**Нужно от пользователя:** сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save?
+пользователь — (2026-10-18) «в этой сортирвоке да конечно»
 
-пользователь —
+Codex — (2026-10-18) Принят вариант 1 именно для Updated sort; это не разрешение менять committedUpdatedAt при autosave. Решение перенесено в Functional/Screens Specs, file-format и inventory/product baseline. Обсуждавшийся подпункт завершён; сразу переходим к отдельному [SQ-01 — охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md), не переоткрывая default Event date sort.
 
-**Решение:** —
+**Решение:** [принято] (2026-10-18) Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.

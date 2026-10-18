@@ -209,7 +209,7 @@
 
 **QRY-02 [Д].** Event date/time range: optional From и To, каждая граница содержит date, optional time, timezone. Только From — односторонняя нижняя граница, только To — верхняя. Это не EventTimeRange самой записи: optional From фильтра не отменяет обязательность From date в записи.
 
-**QRY-03 [Д].** Sorting: Event date/Updated/Created asc/desc, Title A–Z/Z–A; default Event date newest first. При Draft используется текущее Draft-state, включая Event date. Отдельного приоритета Drafts нет. **[О]** Что означает Updated sort при разных Draft.updatedAt и committed Entry.updatedAt — [FQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md); autosave committed timestamp не меняет. Предложение учитывать последние content-правки Draft ещё не принято.
+**QRY-03 [Д].** Sorting: Event date/Updated/Created asc/desc, Title A–Z/Z–A; default Event date newest first. При Draft используется текущее Draft-state, включая Event date. Отдельного приоритета Drafts нет. **[Д, 18.10]** Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt. [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Для новой Entry без committed Revision используется Draft.updatedAt (createdAt — fallback до первой content-правки); ни новая Entry, ни её Draft не исключаются из сортировки.
 
 **QRY-04 [Д].** Current filters — ephemeral state. System preset задаёт initial expression; любая ручная правка отделяет фильтр от preset. Минимальный предварительный каталог: Drafts, Archived, Trash, Needs attention, Open AI proposals, Entries with assets, Last 7 days, Last 30 days и динамические Calendar/TagCloud/Statistics selections. Custom Saved Filters — future.
 
@@ -224,7 +224,8 @@
 | EntryList | 7 Active Entries, без периода, Event date desc; current Draft-state при наличии |
 | TagCloud | Active за всё время; число уникальных связанных Entry определяет размер, Tag.color определяет цвет; deleted tags исключены |
 | Calendar | Наличие записей по дням; выбранный день/range преобразуется в универсальные From/To. Без counts/state clutter в UI |
-| Total entries, Drafts, Needs attention | За всё время; конкретный lifecycle-охват counters остаётся открытым, его нельзя вывести только из слов «всё время» |
+| Total entries | За всё время; точный lifecycle-охват ещё открыт |
+| Drafts, Needs attention | За всё время; lifecycle-охват обсуждается в [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md), ещё не выбран |
 | Entries last 7 days | Сегодня + предыдущие 6 дней |
 | Entries last 30 days | Сегодня + предыдущие 29 дней |
 | Entries with assets | Has assets AND Event date в последних 30 днях |
@@ -318,6 +319,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-26 | Снять связь / Discard добавлений Draft: единственный потребитель либо несколько | При единственной связи предложен soft delete с явным выбором; при отказе Asset остаётся в Library. При других потребителях только unlink; история одной Entry не умножает число потребителей. Asset, остающийся в восстановленной Current, не предлагается удалить из-за Discard |
 | SYS-AC-27 | Active / Archived Entry с Draft → Trash → Restore | В обоих случаях ACTIVE; тот же entryId, Current, history и Draft. Новая content Revision не создаётся; прежний Archived lifecycle не восстанавливается |
 | SYS-AC-28 | Entry 1–10 июля; фильтр 5–7 июля | Entry включена один раз по overlap; список/связанный count используют одинаковый predicate и lifecycle scope |
+| SYS-AC-29 | Править Draft старой Entry при Updated desc; затем autosave тех же bytes и Discard/NO_CHANGE | Содержательная правка меняет позицию по Draft.updatedAt; служебная синхронизация — нет. Без Draft сортировка использует прежний committedUpdatedAt; committed metadata/History от autosave не меняются |
 
 ## 13. Этапы реализации
 
@@ -349,7 +351,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-03 — ЧАСТИЧНО | Multi-file commit/recovery и canonical location operational state | Автопроверка/retry и временный read-only editor приняты (STO-07/08); нужна техническая проработка физического протокола |
 | FQ-04 — ЧАСТИЧНО | Технические правила Unicode/пробелов и грамматики hashtag mentions | Уникальность без учёта регистра, резервирование deleted labels, #_name после unlink и формат suffix приняты; transfer workflow сейчас не включён; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
 | FQ-05 — ЧАСТИЧНО | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/date timezone | [Overlap при фильтрации](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md) принят; точные границы, timezone, отсутствующий To и uncertainty ещё требуют проработки |
-| FQ-06 — ОБСУЖДАЕТСЯ | Lifecycle counters, Updated sort при Draft, модель review items | Первый выбор — [Updated sort при Draft](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md); counters/review semantics ещё открыты |
+| FQ-06 — ЧАСТИЧНО | Lifecycle counters, модель review items | [Updated sort учитывает Draft](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md) — принято; следующий выбор — [охват очередей Home](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md) |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
 | FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, partial uploads, external originals, retention/cache cleanup | [Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): условное предложение soft delete; [Restore Entry из Trash](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md): всегда ACTIVE. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
