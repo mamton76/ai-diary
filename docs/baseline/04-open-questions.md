@@ -885,6 +885,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-004 — Cost guardrails
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-OPS-004 thread](04-open-questions.threads/39_AQ-OPS-004_cost-guardrails/00_thread.md)
+
 Нужны разумные лимиты/наблюдение для:
 
 - hosting;
