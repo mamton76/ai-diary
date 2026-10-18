@@ -149,6 +149,8 @@
 
 **STO-06 [О].** Multi-file commit в Drive, журнал восстановления, блокировки/lease после сбоя, согласованность индекса и миграции задаются техническим проектом. **[П]** Проект должен предусмотреть crash recovery и идемпотентный retry для промежуточных состояний; конкретный алгоритм сейчас не утверждается.
 
+**STO-07 [Д, 18.10.2026].** Если подтверждение Save потеряно, приложение показывает «Проверяем сохранение» и после восстановления связи автоматически выясняет исход операции. При уже состоявшемся commit возвращается та же Revision; если commit не состоялся, безопасно повторяется та же операция с тем же operationId и зафиксированным snapshot. Повтор не создаёт дубликат и разрешён только при актуальных base/ownership checks, без отмены/замены операции. При conflict или потере права записи автоматический commit прекращается с понятным сообщением; введённые данные сохраняются. Неизвестный исход не выдаётся ни за успешное, ни за достоверно неуспешное сохранение. [FQ-03](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Механизм durable operation journal и multi-file commit/recovery остаётся техническим вопросом STO-06.
+
 ## 6. Tags и отношения
 
 | ID | Требование [Д] |
@@ -287,6 +289,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-16 | Date-only, optional end, timezone | Не появляется фиктивное midnight; точность/timezone сохраняются после Save/reload |
 | SYS-AC-17 | Отключён AI или Calendar | Базовые доступные чтение/редактирование продолжают работать |
 | SYS-AC-18 | Разрешённый auto-apply existing tags / первая normalization raw | Сохранены raw/trace; создана новая/первая committed Revision; existing Entry с Draft пропущена; произвольные text mutations не auto-apply |
+| SYS-AC-19 | Commit произошёл, ответ потерян; связь восстановлена | Автопроверка возвращает ту же Revision; при незавершённой операции retry с тем же ID/snapshot, без дубликата и обхода conflict/ownership checks |
 
 ## 13. Этапы реализации
 
@@ -309,13 +312,13 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 
 **FQ-02 решён (18.10.2026):** [merge тегов](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md) — redirect в каталоге, без новых content Revision и переписывания Draft/snapshots.
 
-**FQ-03 обсуждается:** [надёжное сохранение](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Предложение по восстановлению Save и повтору одной операции ещё не принято.
+**FQ-03 обсуждается:** [надёжное сохранение](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Автоматическая проверка исхода и безопасный retry одной операции согласованы 18.10. Остались поведение ввода во время Save и физический multi-file commit/recovery protocol.
 
 | ID | Что нужно решить | Почему это влияет на реализацию |
 |---|---|---|
 | FQ-01 — РЕШЕНО | Источники committed Revision | Save/Apply/Restore и два узких AI auto-apply случая согласованы 18.10; история в FQ-01 thread |
 | FQ-02 — РЕШЕНО | Merge current relations при immutable snapshot | Canonical redirect в каталоге, без массовых Revision и переписывания snapshots/Draft; audit операции |
-| FQ-03 | Multi-file commit, recovery после частичного Save, idempotency и canonical location operational state | Иначе durable Draft, new tags и currentRevisionId могут расходиться после сбоя |
+| FQ-03 — ЧАСТИЧНО | Ввод во время Save; multi-file commit/recovery и canonical location operational state | Автопроверка исхода и retry той же операции приняты (STO-07); физический протокол ещё открыт |
 | FQ-04 | Коллизии aliases, удаление chip при сохранённом hashtag, формат suffix normalizer | Нужно предсказуемое tag lookup/normalization без потери текста |
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
