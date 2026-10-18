@@ -875,6 +875,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-002 — Retry/idempotency contract
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-OPS-002 thread](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md)
+
 Каждый external/background workflow должен определять:
 
 - deterministic source identity;
