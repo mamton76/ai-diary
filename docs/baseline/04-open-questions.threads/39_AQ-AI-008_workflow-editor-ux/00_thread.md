@@ -135,4 +135,11 @@ ChatGPT — **решение по untrusted executor в editor (2026-10-18):** u
 
 **Нужно от пользователя:** определить UX Validator step: показывать простые declarative rules прямо в карточке, а сложный code validator оформлять как ссылку на trusted executor/tool.
 
+
+пользователь — «да»
+
+ChatGPT — **решение по Validator step (2026-10-18):** простые declarative validation rules редактируются прямо в карточке Validator step: required fields, types, enum/range/pattern/non-empty и аналогичные structural checks. Если проверка требует исполняемого кода, Validator step ссылается на отдельный trusted/versioned executor/tool; код не прячется внутрь declarative validator.
+
+**Нужно от пользователя:** определить UX capability profile на уровне workflow: показывать выбранный default profile в верхних Workflow settings и только локальные capability requirements внутри конкретных steps.
+
 **Решение:** —
