@@ -522,6 +522,9 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 ## AQ-API-004 — Background processing
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-API-004 thread](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md)
+
 Нужно выполнять:
 
 - capture normalization;
