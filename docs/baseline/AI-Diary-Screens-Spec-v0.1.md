@@ -154,6 +154,8 @@ EntryPanel не владеет навигацией страницы, списк
 
 ### C06. Calendar — календарь записей [Д]
 
+**[О]** Lifecycle-охват Calendar на Home обсуждается в [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md): ACTIVE-only либо ACTIVE + ARCHIVED, без TRASH. Принятая семантика местных дат и совпадения индикатора/списка не выбирает этот scope автоматически.
+
 **[Д, 18.10.2026]** Calendar относит Entry к местной дате события в сохранённой timezone самой записи. Событие «19 октября, 00:30, Токио» показывается на 19 октября, даже если в пользовательской timezone в этот момент ещё 18-е. Выбор дня/диапазона в Calendar открывает список с той же семантикой местных дат и принятым period overlap; индикатор и список используют одинаковый lifecycle scope. Смена пользовательской timezone не переносит сохранённые события между днями Calendar. Date-only сохраняется как дата без выдуманного времени. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md).
 
 Общий виджет, используемый на Home: один месяц, стрелки переключения месяцев, сетка дней. Дни хотя бы с одной Entry просто выделены. **Counts и дополнительные state badges на календарь не добавляются.** Используется содержательное время события, не createdAt.
@@ -1341,4 +1343,12 @@ Base не подменяется текущей пользовательской
 
 Например, если были выбраны 20 Entries, а позже ещё две попали под filter, действия над прежним batch продолжают относиться к исходным 20. Новые две входят при отдельном новом запуске по актуальному Browser filter.
 
-**[О]** Следующий выбор — [какую версию content брать при новом продолжении/повторе](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md). **[П]** Предлагается актуальная committed Revision на момент фиксации input нового Run, без использования несохранённого WorkingDraft. После запуска input фиксируется; обычный technical retry того же Run не подменяет его на новый content.
+**[Д, 18.10.2026]** При новом явном пользовательском продолжении или полном повторе обработки существующих Entry берётся актуальная committed Revision каждой допущенной к обработке записи при фиксации input нового Run. Состав Entry IDs остаётся исходным. Несохранённый WorkingDraft не используется: действуют прежние Draft skip/Save guards. После фиксации input конкретного Run он не переключается на следующую Revision; технический retry той же операции сохраняет исходный input. Изменения Current после фиксации input обрабатываются прежними freshness/base/conflict checks. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
+
+### 26.40. Уточнение 18.10.2026 — актуальная версия Entry при новом повторе
+
+При новом явном пользовательском продолжении или полном повторе обработки существующих Entry берётся актуальная committed Revision каждой допущенной к обработке записи при фиксации input нового Run. Состав Entry IDs остаётся исходным. Несохранённый WorkingDraft не используется: действуют прежние Draft skip/Save guards. После фиксации input конкретного Run он не переключается на следующую Revision; технический retry той же операции сохраняет исходный input. Изменения Current после фиксации input обрабатываются прежними freshness/base/conflict checks.
+
+Новая committed Revision — новая input version для existing already-processed checks; успешность старой пары routineVersion/input Revision не означает успешность новой. Для записи без изменений сохраняется прежний skip готовой части обычного продолжения. Это не разрешение на параллельные запуски или применение stale результата. Точная очередь/input-capture граница и version selection самой routine остаются технической/продуктовой конкретизацией. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
+
+**[О]** Следующий самостоятельный выбор — [какие lifecycle состояния учитывает Calendar Home](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md); пока предлагается ACTIVE + ARCHIVED, без TRASH.
