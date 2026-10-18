@@ -728,6 +728,9 @@ Google account — естественный first path.
 
 ## AQ-AI-001 — Provider adapter contract
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-AI-001 thread](04-open-questions.threads/31_AQ-AI-001_provider-adapter/00_thread.md)
+
 Нужен общий интерфейс, но нельзя потерять полезные provider-specific capabilities.
 
 Нужно определить common denominator и extension mechanism.
