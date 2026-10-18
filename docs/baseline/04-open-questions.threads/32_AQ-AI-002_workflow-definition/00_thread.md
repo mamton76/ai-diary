@@ -112,4 +112,11 @@ ChatGPT — **уточнение capabilities/permissions (2026-10-18):** да, 
 
 **Нужно от пользователя:** хотим ли мы отдельную библиотеку reusable permission/capability profiles (например «read-only diary», «read + proposals», «read assets + external web»), которые можно выбирать при запуске и переиспользовать между workflows?
 
+
+пользователь — «ну да выглядит так»
+
+ChatGPT — **решение о capability profiles (2026-10-18):** вводится отдельная user-owned библиотека reusable capability/permission profiles. Профиль является самостоятельной versioned сущностью и может переиспользоваться разными workflows. Workflow объявляет требуемые/опциональные capabilities и совместимый контракт доступа; конкретный Run фиксирует выбранный profile и фактически выданные permissions.
+
+**Нужно от пользователя:** хранить ли в workflow default executor и default capability profile, которые подставляются при запуске автоматически, но могут быть заменены совместимыми trusted вариантами в launch sheet без создания новой workflow version?
+
 **Решение:** —
