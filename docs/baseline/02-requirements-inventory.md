@@ -535,6 +535,10 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 **Статус:** ПОДТВЕРЖДЕНО  
 Все изменения canonical diary state, включая Save, Apply/Restore, изменение тегов, выполняются через durable async command queue; фоновые вычисления, ingestion, AI workflows и indexing также исполняются асинхронно. Read/search queries не ставятся в очередь. Принятая команда и committed результат различаются: UI сообщает «Сохраняется» до подтверждения successful commit и отображает failures/conflicts явно. Autosave draft допускает coalescing/debounce вместо задачи на каждую клавишу. Конкретная queue provider, retry/idempotency и ordering semantics уточняются в AQ-OPS-002 и architecture design. Решение: [AQ-API-004](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md).
 
+### API-006B — Одно рабочее окружение для прототипа
+**Статус:** ПОДТВЕРЖДЕНО
+Для раннего прототипа используется одно deployed окружение без отдельного staging/test deployment. Локальный запуск допустим при разработке; потенциально разрушительные тесты выполняются на тестовых данных или при наличии backup. Дополнительные окружения создаются по конкретной необходимости. См. [AQ-API-005](04-open-questions.threads/29_AQ-API-005_environments/00_thread.md).
+
 ### API-007 — Один repo может содержать web/backend/android
 **Статус:** ПОДТВЕРЖДЕНО КАК ДОПУСТИМОЕ  
 Нет требования немедленно разделять продукт по разным репозиториям. Точная структура — архитектурный вопрос.
