@@ -121,4 +121,11 @@ ChatGPT — **решение по full prompt editor (2026-10-18):** full prompt
 
 **Нужно от пользователя:** определить UX Executor / Tool step на примере trusted script/module: показывать выбранный module/version + trust status + parameters + capabilities в одной карточке или уводить trust/details в отдельный экран.
 
+
+пользователь — «да норм»
+
+ChatGPT — **решение по Executor / Tool step card (2026-10-18):** карточка Executor / Tool step показывает выбранный module/executor, version, trust status, parameters, capabilities, inputs/outputs и error policy. Полный код и подробный trust review не занимают место в pipeline и открываются отдельным действием вроде `View code / Review trust`. Trust status при этом всегда виден в карточке.
+
+**Нужно от пользователя:** определить, что делать в editor, если выбранный executor/module ещё untrusted: разрешать сохранить Draft, но блокировать Test run/Publish/обычный Run до trust, или требовать trust уже при выборе модуля.
+
 **Решение:** —
