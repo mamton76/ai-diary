@@ -853,9 +853,14 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-SEARCH-002 — Semantic search timing
 
-Cross-entry AI почти наверняка со временем потребует semantic retrieval, но можно оставить extension point и не тащить vector DB в MVP.
+**Статус:** РЕШЕНО  
+**Решение:** semantic retrieval, embeddings и vector DB отложены за пределы MVP; оставить возможность подключить их позднее.  
+**История обсуждения:** [AQ-SEARCH-002 thread](04-open-questions.threads/34_AQ-SEARCH-002_semantic-search-timing/00_thread.md)
 
 ## AQ-SEARCH-003 — Rebuild semantics
+
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-SEARCH-003 thread](04-open-questions.threads/35_AQ-SEARCH-003_rebuild-semantics/00_thread.md)
 
 Если index derived, должен существовать способ:
 
