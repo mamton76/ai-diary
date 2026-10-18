@@ -202,7 +202,9 @@
 
 ### Почему отложено
 
-Для текущего MVP merge/split не нужен и только усложняет semantics identity, revisions, provenance и links.
+Для текущего MVP merge/split существующих Entries не нужен и только усложняет semantics identity, revisions, provenance и links.
+
+**Уточнение по CaptureItem (18.10.2026):** [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md) — несколько независимых CaptureItems можно объединить в одну Entry уже в MVP; это не merge двух существующих Entries. Один CaptureItem в MVP не разделяется на несколько Entries и используется максимум для создания одной Entry. В будущем возможны split существующей Entry или разделение одного long-form CaptureItem на несколько Entries с сохранением оригиналов и provenance. Для MVP эти функции не реализуем.
 
 ### Что потребуется решить позже
 
