@@ -198,4 +198,11 @@ ChatGPT — **решение по publish validation UX (2026-10-18):** Publish 
 
 **Нужно от пользователя:** определить UX создания новой user routine: стартовать с пустого workflow, из шаблона/system routine через Duplicate, либо из успешного Custom prompt / Run через Save as routine; какие entry points считаются основными.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по entry points создания user routine (2026-10-18):** поддерживаются три основных пути создания user routine: `+ New routine` создаёт новый workflow Draft; `Duplicate` копирует существующую system/user routine в независимый user-owned workflow; `Save as routine` создаёт routine из успешного Custom prompt / ad hoc Run с полным фактическим execution setup. На Routines screen основной явный CTA — `+ New routine`; рядом допустимы варианты `Start from template / Duplicate existing`.
+
+**Нужно от пользователя:** определить стартовое состояние пустой routine Draft: полностью пустой canvas/list или готовый каркас секций Workflow settings → Input/Trigger → Add step → Output/Side effects → Application policy.
+
 **Решение:** —
