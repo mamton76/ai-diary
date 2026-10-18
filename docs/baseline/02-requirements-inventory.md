@@ -503,6 +503,10 @@ EntryScreen не содержит отдельный постоянный `AI no
 
 ---
 
+### AI-PROVIDER-ADAPTER — Общий интерфейс LLM providers
+**Статус:** ПОДТВЕРЖДЕНО  
+Kotlin/Ktor backend предоставляет минимальный provider-neutral adapter для text/structured outputs с нормализацией результата, usage/error metadata. Capabilities явно определяются per model/provider; уникальные функции доступны через optional extensions без чрезмерного унифицирования. API credentials остаются server-side; workflow layer не зависит от HTTP форматов OpenAI/Anthropic/Gemini. Можно начинать с одного provider adapter, сохраняя возможность добавления остальных. Выбор model/provider и запрет silent fallback определяются PQ-006. Решение: [AQ-AI-001](04-open-questions.threads/31_AQ-AI-001_provider-adapter/00_thread.md).
+
 # I. Backend / API
 
 ### API-001 — Нужен отдельный backend API
