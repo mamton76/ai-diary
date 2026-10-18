@@ -728,12 +728,9 @@ Google account — естественный first path.
 
 ## AQ-AI-001 — Provider adapter contract
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-AI-001 thread](04-open-questions.threads/31_AQ-AI-001_provider-adapter/00_thread.md)
-
-Нужен общий интерфейс, но нельзя потерять полезные provider-specific capabilities.
-
-Нужно определить common denominator и extension mechanism.
+**Статус:** РЕШЕНО  
+**Решение:** минимальный общий LLM provider interface для text/structured outputs и нормализованного usage/errors; capabilities конкретных моделей объявляются явно, provider-specific features реализуются дополнительными опциями/расширениями. Backend хранит API credentials и скрывает provider HTTP детали от workflows. Подключение провайдеров можно делать поэтапно.  
+**История обсуждения:** [AQ-AI-001 thread](04-open-questions.threads/31_AQ-AI-001_provider-adapter/00_thread.md)
 
 ## AQ-AI-002 — Где живёт workflow definition
 
