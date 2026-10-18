@@ -98,4 +98,11 @@ ChatGPT — **решение о definition defaults и launch-time overrides (20
 
 **Нужно от пользователя:** какие параметры нельзя менять как launch-time override и следует менять только через новую версию routine? В частности, считать ли script-step/code и набор permissions/capabilities частью versioned definition, а не временным override?
 
+
+пользователь — «я думаю могут быть какие-то общие абстрактные воркфлоу к которым можно подцеплять код - из доверенных. ща считаем одно потом другое - не?»
+
+ChatGPT — **уточнение модели executable steps (2026-10-18):** да, workflow definition и executable code лучше не склеивать. Возможна отдельная библиотека versioned trusted executors/scripts/tools, а workflow лишь ссылается на них и передаёт параметры/inputs. Один и тот же generic workflow может использовать разные совместимые trusted implementations. Trust относится к конкретной версии исполняемого модуля, а не обязательно ко всей workflow. Нужно отдельно решить, является ли выбор конкретного trusted executor частью versioned workflow definition или допустимым launch-time binding/override.
+
+**Нужно от пользователя:** разрешать ли generic workflow выбирать/подключать совместимый trusted executor при запуске, не создавая новую версию самого workflow, если interface/capabilities executor подходят?
+
 **Решение:** —
