@@ -91,4 +91,11 @@ ChatGPT — **решение по Save as routine (2026-10-18):** при сох�
 
 **Нужно от пользователя:** различать ли в user routine два класса настроек — постоянные defaults в definition и launch-time overrides, которые можно менять для конкретного запуска без создания новой workflow version?
 
+
+пользователь — «да это норм»
+
+ChatGPT — **решение о definition defaults и launch-time overrides (2026-10-18):** user/system routine хранит постоянные default-настройки в своём versioned definition. Перед конкретным Run допустимы временные launch-time overrides для разрешённых параметров; такие overrides не создают новую workflow version и сохраняются в Run trace как фактически использованная конфигурация.
+
+**Нужно от пользователя:** какие параметры нельзя менять как launch-time override и следует менять только через новую версию routine? В частности, считать ли script-step/code и набор permissions/capabilities частью versioned definition, а не временным override?
+
 **Решение:** —
