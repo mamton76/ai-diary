@@ -859,14 +859,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-SEARCH-003 — Rebuild semantics
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-SEARCH-003 thread](04-open-questions.threads/35_AQ-SEARCH-003_rebuild-semantics/00_thread.md)
-
-Если index derived, должен существовать способ:
-
-- удалить его;
-- пересобрать из canonical data;
-- проверить consistency.
+**Статус:** РЕШЕНО  
+**Решение:** после successful canonical Save/commit запускается фоновая индексация (основной контур). Примерно раз в полдня — reconciliation из canonical files/ревизий с incremental reindex только при обнаружении изменений и удалением устаревших индексных документов. Полная перестройка из canonical data доступна для восстановления; точные настройки уточняются при реализации.  
+**История обсуждения:** [AQ-SEARCH-003 thread](04-open-questions.threads/35_AQ-SEARCH-003_rebuild-semantics/00_thread.md)
 
 ---
 
