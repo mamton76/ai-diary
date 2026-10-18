@@ -430,7 +430,7 @@ Autosave **не меняет** `ENTRY.json.currentRevisionId` и не отраж
 
 MVP policy defaults: до 5 local snapshots; не более 30 секунд между recovery points при изменении содержимого; retention 24 часа после успешной revision. Это configurable constants, не обязательные пользовательские настройки.
 
-**[Д, 04.10]** При сворачивании/смене Entry действуют Сохранить / Отменить изменения / Вернуться позже (§8). Local snapshots предназначены только для recovery и не запускают автоматический commit. **[О]** Незавершённый merge draft в S07 — отдельная policy, не тождественен manual WorkingDraft.
+**[Д, 04.10]** При сворачивании/смене Entry действуют Сохранить / Отменить изменения / Вернуться позже (§8). Local snapshots предназначены только для recovery и не запускают автоматический commit. **[Д, 18.10]** Незавершённый merge draft в S07 автосохраняется и восстанавливается (§26.35); он не подменяет manual WorkingDraft.
 
 ### 9.6 Параллельное редактирование [Б]
 
@@ -645,7 +645,7 @@ System routines immutable; доступна Duplicate / Copy в пользова
 
 Selection scope при запуске (single Entry / current filtered set / all Entries) отличается от постоянных eligibility conditions внутри routine. Фильтры Browser дополнительно сужают набор; `filtered batch` — результат текущего filter expression. Entry с Draft пропускаются и учитываются в skipped. Для отдельной Entry сначала успешный Save; без него routine не запускается. AI input — committed Revision.
 
-Для повторов используется существующая run/proposal/revision history: run связан минимум с **routineId, routineVersion, entryId, baseRevisionId/input Revision, result/status**. Обычный batch может skip уже запущенную пару routineVersion + input Revision как already processed, независимо от Accept/Reject proposal. **Force rerun доступен явно.** Новая Revision или routineVersion допускает обычный запуск.
+Для повторов используется существующая run/proposal/revision history: run связан минимум с **routineId, routineVersion, entryId, baseRevisionId/input Revision, result/status**. Обычный batch может skip уже успешно обработанную пару routineVersion + input Revision как already processed, независимо от Accept/Reject proposal. **[Д, 18.10]** Достоверно failed Run без успешного результата сам по себе не вызывает already-processed skip и допускает обычный повтор; платные автоматические повторы по-прежнему подчиняются пользовательской policy. **Force rerun доступен явно.** Новая Revision или routineVersion допускает обычный запуск.
 
 Accepted и rejected proposals не исчезают из history. Accepted перестаёт быть open, сохраняет provenance и может ссылаться на созданную Revision.
 
@@ -827,7 +827,7 @@ User instructions/overrides поддерживаются отдельно от �
 | AC-57 | Merge тега, затем открыть старую Revision | Current relations переведены; old tagId разрешён через mergedInto; snapshot не переписан |
 | AC-58 | Soft delete тега | Старые relations сохранены, новые запрещены; тег скрыт из autocomplete/cloud, доступен Deleted/Restore |
 | AC-59 | Archive / Delete Entry с Draft | Lifecycle/audit изменён без content Revision; Draft остаётся вместе с Entry; в Trash доступны Restore/permanent delete |
-| AC-60 | Повторный batch той же routineVersion/input Revision | Возможен already processed skip независимо от Accept/Reject; Force rerun доступен |
+| AC-60 | Повторный batch той же routineVersion/input Revision | Успешная обработка может skip независимо от Accept/Reject; failed без результата допускает обычный повтор. Force rerun успешной обработки доступен |
 | AC-61 | Main Navigation → Entries | Browser без фильтров; нет скрытого State=Active; All entries не отдельный экран |
 | AC-62 | Поиск Tags/Assets и фильтры Source/From/To | Canonical match выше alias-only; Assets ищутся по filename/name; Source и односторонние range filters работают |
 
@@ -1307,4 +1307,12 @@ Base не подменяется текущей пользовательской
 
 Для ухода с неприменёнными изменениями действует тот же принцип явного выбора, что и у Entry: применить Result, отбросить правки разбора либо вернуться позже с сохранённым прогрессом. Apply создаёт Revision по общему контракту; autosave черновика разбора этого не делает. Отбрасывание только правок Result не равно Reject исходного proposal. Состояние «черновик сохранён» показывается после подтверждения сохранности; несинхронизированные локальные правки не выдаются за durable. Ошибки сохранения и conflict не должны очищать введённый Result.
 
-Точные пути/schema и recovery/concurrency контракт черновика разбора требуют технической конкретизации; общие lease/base/mutation guards сохраняются. **История:** [FQ-07/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md). Следующий выбор — [обычный повтор AI после ошибки без успешного результата](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md).
+Точные пути/schema и recovery/concurrency контракт черновика разбора требуют технической конкретизации; общие lease/base/mutation guards сохраняются. **История:** [FQ-07/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md). Обычный повтор AI после ошибки без успешного результата согласован отдельно в [SQ-02](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md) (§26.36).
+
+### 26.36. Уточнение 18.10.2026 — обычный повтор после ошибки AI
+
+Достоверно failed AI Run без успешного результата не считается успешно already processed. Обычный повтор той же routineVersion/input Revision разрешён даже без изменения записи; обычный batch не пропускает запись только из-за такого failure. Неуспешный Run остаётся в истории. Для успешно выполненной обработки прежние already-processed правила сохраняются независимо от принятия/отклонения proposal; сознательный повтор успешной обработки использует Force rerun. Это правило не разрешает слепой повтор при неизвестном исходе и не меняет пользовательскую политику платных автоматических AI retries.
+
+Ручное «Повторить» не требует менять Entry или обходить already-processed через Force rerun только из-за достоверного failure. Queued/running работа не дублируется; uncertain outcome сначала проверяется по прежним recovery правилам. Платная retry-policy и её default экономии взяты из [AQ-OPS-002](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md); отсутствие already-processed block не означает автоматического согласия на новый платный вызов. Точные operation/attempt IDs и limits/backoff — техническая конкретизация. **История:** [FQ-07/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md).
+
+**[О]** Следующий выбор — [сохранение уже готовых результатов при отмене batch](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/03_SQ-03_batch-cancel-results/00_thread.md).
