@@ -1,10 +1,10 @@
 # AQ-AI-002 — Где живёт workflow definition
 
 **Источник:** [04-open-questions.md / AQ-AI-002](../../04-open-questions.md#aq-ai-002--где-живёт-workflow-definition)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -210,4 +210,8 @@ ChatGPT — **решение по Duplicate исторических system work
 
 **Нужно от пользователя:** нужно ли теперь закрывать AQ-AI-002 как resolved, или ещё отдельно обсудить структуру workflow definition на уровне шагов/полей редактора?
 
-**Решение:** —
+пользователь — «да именно так»
+
+ChatGPT — **закрытие AQ-AI-002 (2026-10-18):** архитектурный вопрос workflow definition считаем resolved. Конкретную структуру полей/шагов и UX редактора выносим в отдельный вопрос, чтобы не смешивать архитектурную модель с интерфейсом.
+
+**Решение:** workflow definitions являются versioned user-owned data рядом с diary data, а backend предоставляет engine/runtime. System workflows имеют immutable историю, автоматически переходят на latest для новых запусков и доступны read-only; любую историческую system version можно Duplicate в независимый user workflow. User workflows редактируются через Draft definition и публикуются как immutable versions; история хранится, Restore создаёт новую version, удаление только soft delete. Draft можно запускать как Test run со snapshot и публиковать именно протестированный snapshot; более новый Draft сохраняется и rebases на опубликованную version. Custom prompt остаётся ephemeral snapshot Run, но может быть Save as routine с полным execution setup. Workflow хранит defaults, а Run — фактические overrides/bindings. Executable code отделён в reusable versioned trusted executors/tools; конкретная code version требует однократного explicit trust, изменение кода требует нового trust. Permissions отделены в reusable versioned capability profiles; workflow объявляет required/optional capability contract, а Run фиксирует фактически выданный profile/permissions. Workflow может иметь default executor/profile, заменяемые при запуске совместимыми trusted вариантами. MVP workflow — linear pipeline с простыми conditions, без полноценных loops; step error policy поддерживает stop/skip/continue-with-warning с default stop. Output schema и declarative validation входят в workflow definition, сложные code validators — отдельные trusted/versioned executors/tools.
