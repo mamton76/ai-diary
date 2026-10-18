@@ -346,7 +346,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
-| FQ-08 | Entry permanent delete dependencies, Restore lifecycle, orphan uploads, external originals, retention/cache cleanup | Сохранность ссылок и корректность destructive operations |
+| FQ-08 — ОБСУЖДАЕТСЯ | Entry permanent delete dependencies, Restore lifecycle, orphan uploads, external originals, retention/cache cleanup | Первый подпункт — [готовые uploads после Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md); policy ещё не выбрана. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
 | FQ-10 | Объёмы данных, latency/availability targets, upload limits | Без них нельзя объективно оценить производительность |
 
