@@ -538,7 +538,7 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 - Удаление alias не меняет relations по tagId, влияет только на дальнейшие autocomplete/распознавание.
 - Types — **пользовательский справочник**, не system enum; optional typeId, без color inheritance/override hierarchy.
 
-**[О]** Коллизии aliases между разными canonical tags и точный historical rendering цвета/имени остаются деталями policy; запрет переписывать immutable snapshots уже принят.
+**[Д, 18.10]** Дубли aliases между самостоятельными активными canonical tags запрещены; при конфликте показать существующий тег и не сохранять дубликат. **[О]** Пересечения canonical name↔alias, правила сравнения строк/deleted labels и точный historical rendering цвета/имени остаются деталями policy; запрет переписывать immutable snapshots уже принят.
 
 ### Приёмка
 
@@ -857,7 +857,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q09 | Timezone границы дня, lifecycle очередей Home, inclusion intervals? | Last 7/30 = сегодня + 6/29 дней; AND/OR/NOT и timezone EventTimeRange решены |
 | UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
 | UI-Q11 | Standalone Inbox, детали routine editor, export/maintenance screens? | Экран Routines и создание пользовательских routines приняты; детали формы и этап поставки уточняются |
-| UI-Q12 | Коллизии aliases и точный historic rendering name/color? | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
+| UI-Q12 | Пересечения canonical name/alias и точный historic rendering name/color? Дубли aliases уже запрещены | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
 | UI-Q13 | Точные visual layouts компонентов? | Одна раскрытая карточка; Title/Text/EventTimeRange/Tags/Asset links в обоих editors уже приняты |
 
 Точные breakpoint, ratios, styling gallery, diff algorithm и first-revision empty-state уже отнесены в PQ-011 к implementation/UI details; они не переоткрывают продуктовую модель EntryPanel.
@@ -1095,3 +1095,10 @@ Merge — операция каталога: oldTagId разрешается в 
 В первой версии после начала Save редактируемые поля этой Entry и повторный Save временно блокируются до определения результата операции. Просмотр, прокрутка и копирование текста доступны. При потерянном подтверждении действует автоматическая проверка/безопасный retry той же операции, статус «Проверяем сохранение»; редактор остаётся read-only. После подтверждённого успеха редактор доступен с сохранённым состоянием. После достоверного отказа без commit и без конфликта блокировка снимается, исходный Draft сохраняется для исправления/повтора. Conflict или утрата lease разрешаются соответствующим flow; сохранённый текст не очищается и право записи самовольно не восстанавливается. Продолжение ввода параллельно неподтверждённому Save в первую версию не включается.
 
 Это заменяет предложение разрешить дальнейший ввод до подтверждения Save; то предложение осталось только в истории обсуждения и не является требованием. Переходы/dirty guard по-прежнему должны сохранять Draft и актуальный статус выполняющейся операции. **История:** [FQ-03](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md).
+
+
+### 26.8. Уточнение 18.10.2026 — уникальные aliases
+
+Один и тот же alias не может принадлежать двум самостоятельным активным canonical tags. Если alias уже занят, добавление его второму тегу отклоняется с указанием существующего тега; существующие теги автоматически не объединяются. Повторы aliases внутри одного canonical tag дедуплицируются. Merge redirect разрешается в survivor и не считается вторым самостоятельным владельцем alias.
+
+Повтор одного alias у разных самостоятельных тегов не предлагается как пользовательский сценарий выбора между омонимами. Pending Create и editor каталога должны учитывать уникальность. Пересечения alias с canonical name другого тега, регистр/Unicode и deleted labels ещё обсуждаются. **История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md).

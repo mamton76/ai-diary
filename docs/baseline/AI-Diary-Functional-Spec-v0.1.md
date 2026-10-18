@@ -169,6 +169,9 @@
 | TAG-10 | Deleted filter и Restore доступны; permanent delete Tags пока отсутствует |
 | TAG-11 | Types — пользовательский справочник; typeId optional; color непосредственно у Tag, без inheritance |
 | TAG-12 | Entries count у Tag: уникальные Active Entries с текущими Draft, без Archived/Trash |
+| TAG-13 [18.10] | Alias уникален между самостоятельными активными canonical tags; занятый alias нельзя добавить второму тегу; автоматического merge нет |
+
+**[Д, 18.10.2026] Политика aliases:** Один и тот же alias не может принадлежать двум самостоятельным активным canonical tags. Если alias уже занят, добавление его второму тегу отклоняется с указанием существующего тега; существующие теги автоматически не объединяются. Повторы aliases внутри одного canonical tag дедуплицируются. Merge redirect разрешается в survivor и не считается вторым самостоятельным владельцем alias. [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). **[О]** Пересечения canonical name↔alias, уникальность canonical names, нормализация сравнения и deleted labels ещё уточняются. Эти правила должны проверяться всеми путями изменения каталога, включая pending tag Create при Save; точная политика пересечений при Rename/Merge/Restore ещё не выбрана.
 
 **[Д, 18.10.2026]** Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила. [Решение FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). **[О]** Цепочки/циклы redirect, конкурентные операции каталога и их надёжная запись проектируются в протоколе хранения; коллизии aliases и текст после удаления chip остаются FQ-04. Это не переоткрывает принятое отсутствие массовых Revision при merge.
 
@@ -322,7 +325,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-01 — РЕШЕНО | Источники committed Revision | Save/Apply/Restore и два узких AI auto-apply случая согласованы 18.10; история в FQ-01 thread |
 | FQ-02 — РЕШЕНО | Merge current relations при immutable snapshot | Canonical redirect в каталоге, без массовых Revision и переписывания snapshots/Draft; audit операции |
 | FQ-03 — ЧАСТИЧНО | Multi-file commit/recovery и canonical location operational state | Автопроверка/retry и временный read-only editor приняты (STO-07/08); нужна техническая проработка физического протокола |
-| FQ-04 — ОБСУЖДАЕТСЯ | Коллизии aliases, удаление chip при сохранённом hashtag, формат suffix normalizer | Сначала выбор политики совпадающих aliases; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
+| FQ-04 — ЧАСТИЧНО | Пересечения имён/aliases, unlink text, suffix normalizer | Дубли aliases между разными активными тегами запрещены; остальные случаи уточняются; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
