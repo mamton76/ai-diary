@@ -205,4 +205,11 @@ ChatGPT — **решение по entry points создания user routine (20
 
 **Нужно от пользователя:** определить стартовое состояние пустой routine Draft: полностью пустой canvas/list или готовый каркас секций Workflow settings → Input/Trigger → Add step → Output/Side effects → Application policy.
 
+
+пользователь — «да»
+
+ChatGPT — **решение по стартовому состоянию новой routine (2026-10-18):** `+ New routine` открывает не пустой экран, а готовый структурный каркас Draft: `Workflow settings → Input / Trigger → + Add step → Output / Side effects → Application policy`. Секции существуют сразу, но их содержимое пользователь заполняет постепенно.
+
+**Нужно от пользователя:** определить draft/autosave UX workflow editor: сохранять изменения Draft автоматически и позволять закрыть editor/вернуться позже без Publish, аналогично WorkingDraft у Entry.
+
 **Решение:** —
