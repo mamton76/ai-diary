@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [FQ-06/SQ-04 — ошибки AI в Needs attention](04_SQ-04_failed-ai-attention/00_thread.md); [FQ-06/SQ-03 — lifecycle периодных counters](03_SQ-03_period-counter-scope/00_thread.md); [FQ-06/SQ-01 — lifecycle-охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md); [FQ-06/SQ-02 — scope Total entries](02_SQ-02_total-entries-scope/00_thread.md)  
+**Дочерние треды:** [FQ-06/SQ-05 — ручное снятие причины ошибки AI](05_SQ-05_dismiss-ai-error/00_thread.md); [FQ-06/SQ-04 — ошибки AI в Needs attention](04_SQ-04_failed-ai-attention/00_thread.md); [FQ-06/SQ-03 — lifecycle периодных counters](03_SQ-03_period-counter-scope/00_thread.md); [FQ-06/SQ-01 — lifecycle-охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md); [FQ-06/SQ-02 — scope Total entries](02_SQ-02_total-entries-scope/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format, inventory/product baseline
 
 ## Вопрос
@@ -46,5 +46,7 @@ Codex — (2026-10-18) SQ-03 завершён: три периодных ста�
 Codex — (2026-10-18) После продуктовых уточнений FQ-05 открывается отдельный SQ-04: включать ли актуальную ошибку AI Run, требующую действия пользователя, в Needs attention. Предложение не выбирает техническую retry-policy FQ-07 и не переоткрывает Updated sort.
 
 Codex — (2026-10-18) В SQ-04 пользователь уточнил визуальную важность: работающий/планирующий продолжение AI должен отображаться менее ярко, чем прочие причины внимания. Направление UX перенесено в source; включение AI-статусов в Needs attention и число остаётся предметом выбора в том же canonical SQ-04.
+
+Codex — (2026-10-18) SQ-04 завершён: Needs attention требует действия пользователя; queued/running/назначенный automatic retry сами по себе не входят в очередь и число. Сразу открыт SQ-05 — можно ли явно снять причину конкретной ошибки без повторного запуска. Остальная модель review items и техническая retry-policy остаются открытыми.
 
 **Решение:** [принято] (2026-10-18) Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
