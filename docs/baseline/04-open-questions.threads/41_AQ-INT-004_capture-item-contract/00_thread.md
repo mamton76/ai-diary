@@ -1,10 +1,10 @@
 # AQ-INT-004 — Unified CaptureItem contract
 
 **Источник:** [04-open-questions.md / AQ-INT-004](../../04-open-questions.md#aq-int-004--unified-captureitem-contract)
-**Статус:** обсуждаем
-**Состояние:** in_discussion
-**Claim:** active
-**Ведёт:** ChatGPT conversation
+**Статус:** решён
+**Состояние:** resolved
+**Claim:** none
+**Ведёт:** —
 **Режим фиксации:** written-turns
 **Родитель:** —
 **Дочерние треды:** —
@@ -82,6 +82,14 @@ ChatGPT — Подтверждён вариант B для ручного объ
 
 **Следующий вопрос:** один CaptureItem может служить источником нескольких Entries? Например, одно длинное голосовое сообщение описывает два разных дня: нужны ли две Entries с ссылкой на один и тот же исходник, или строго одна Entry на CaptureItem?
 
-пользователь —
+пользователь — «ну сложно - непонятно как - я думаю мы потом распиливание ентри добавим - а сейчас нам это не надо»
 
-**Решение:** —
+ChatGPT — Принято для MVP: не поддерживать разбиение одной Entry на несколько или создание нескольких Entries из одного CaptureItem. В обычном capture → Entry flow один CaptureItem связывается максимум с одной Entry, но одна Entry может объединять несколько CaptureItems. Не усложнять интерфейс split/re-link и версионирование сейчас; оригинальный payload и provenance сохраняются, чтобы вернуться к split позже. Future work уже заведён как FQ-ENTRY-001, отдельно фиксируется новый контекст capture split.
+
+**Решение:** [принято] (2026-10-18)
+1. Каждый исходный source message/event становится отдельным CaptureItem; повторная доставка с тем же source-specific ID идемпотентна. Разные сообщения с одинаковым содержимым не схлопываются.
+2. Минимальная форма: internal id, source, optional sourceId, receivedAt, optional sourceTimestamp, original content (text and/or media asset refs), source-specific metadata. Event date — отдельное поле будущей Entry; не вычислять её из capture timestamp автоматически при ручном объединении.
+3. Raw text/media оригиналы сохраняются; transcription, normalization и AI outputs хранятся отдельно с provenance.
+4. Несколько CaptureItems могут стать одной Entry: ручное grouping без обязательного AI либо optional AI-assisted grouping. Ручное grouping с доступным текстом открывает editable Entry Draft; успешный Save создаёт committed Revision и отмечает исходники обработанными. Отмена Draft/неудачный Save оставляют их в необработанном Inbox; оригиналы не удаляются.
+5. Для MVP один CaptureItem может быть связан максимум с одной созданной Entry; split Entry и reuse исходника в нескольких Entries отложены в [FQ-ENTRY-001](../../06-future-questions.md#fq-entry-001--merge--split-entries). Не считать это запретом для будущего расширения модели.
+6. Адаптеры capture должны работать через этот нормализованный input и не знать финальную schema Entry. Технические детали serialization/storage API уточняются при реализации.
