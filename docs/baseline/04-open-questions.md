@@ -516,18 +516,9 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 ## AQ-API-003 — API style
 
-**Обсуждение:** [AQ-API-003 thread](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)
-
-REST выглядит простым default, но нужно определить:
-
-- endpoint/resource model;
-- versioning;
-- pagination;
-- errors;
-- optimistic concurrency fields;
-- long-running job semantics;
-- download/upload semantics;
-- auth scheme.
+**Статус:** РЕШЕНО  
+**Решение:** REST + JSON, contract-first с версионируемой OpenAPI-спецификацией как общим frontend/backend контрактом. Спецификация развивается итерационно от согласованных user flows, а не требует полного дизайна всех endpoints до реализации. Domain semantics concurrency/revisions/drafts, async jobs, assets и auth должны отражаться в контракте при реализации соответствующих use cases.  
+**История обсуждения:** [AQ-API-003 thread](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)
 
 ## AQ-API-004 — Background processing
 
