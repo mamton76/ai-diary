@@ -105,4 +105,11 @@ ChatGPT — **уточнение модели executable steps (2026-10-18):** �
 
 **Нужно от пользователя:** разрешать ли generic workflow выбирать/подключать совместимый trusted executor при запуске, не создавая новую версию самого workflow, если interface/capabilities executor подходят?
 
+
+пользователь — «и аналогично про пермишены же?»
+
+ChatGPT — **уточнение capabilities/permissions (2026-10-18):** да, permissions/capabilities также не обязаны быть жёстко зашиты в конкретную workflow version. Workflow может объявлять контракт: какие capabilities обязательны, какие опциональны и какие типы доступа допустимы. Конкретный Run связывает workflow с выбранным permission/capability profile и сохраняет фактически выданный набор. Такой profile может быть отдельной user-owned versioned/trusted сущностью и переиспользоваться разными workflows. При этом workflow не должна получать capability, которое не совместимо с её объявленным контрактом; выдача более широкого профиля не означает автоматического доступа ко всему профилю, если шаги workflow его не запрашивают.
+
+**Нужно от пользователя:** хотим ли мы отдельную библиотеку reusable permission/capability profiles (например «read-only diary», «read + proposals», «read assets + external web»), которые можно выбирать при запуске и переиспользовать между workflows?
+
 **Решение:** —
