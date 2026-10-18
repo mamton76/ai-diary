@@ -881,6 +881,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-003 — Backup и restore test
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-OPS-003 thread](04-open-questions.threads/38_AQ-OPS-003_backup-restore-test/00_thread.md)
+
 Недостаточно иметь кнопку «backup».
 
 Нужно в будущем проверить сценарий:
