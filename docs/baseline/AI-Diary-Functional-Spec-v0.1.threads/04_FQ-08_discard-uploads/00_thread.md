@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [FQ-08/SQ-01 — lifecycle после Restore из Trash](01_SQ-01_restore-lifecycle/00_thread.md); [FQ-08/SQ-02 — external original](02_SQ-02_external-original-delete/00_thread.md)  
+**Дочерние треды:** [FQ-08/SQ-01 — lifecycle после Restore из Trash](01_SQ-01_restore-lifecycle/00_thread.md); [FQ-08/SQ-02 — external original](02_SQ-02_external-original-delete/00_thread.md); [FQ-08/SQ-03 — содержимое при permanent delete Entry](03_SQ-03_entry-permanent-delete-content/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format / Save design, inventory/product baseline
 
 ## Вопрос
@@ -49,5 +49,7 @@ Codex — Первоначальное упоминание history среди �
 Codex — (2026-10-18) Следующий самостоятельный подпункт общего FQ-08 обсуждается в [SQ-01 — lifecycle после Restore](01_SQ-01_restore-lifecycle/00_thread.md). Этот узел остаётся resolved по вопросу готовых Asset после Discard/unlink; принятое решение не меняется.
 
 Codex — (2026-10-18) Открыт отдельный [SQ-02 — удаление external original](02_SQ-02_external-original-delete/00_thread.md). Этот root остаётся resolved по готовым вложениям после Discard/unlink; новая рекомендация ещё не принята.
+
+Codex — (2026-10-18) SQ-02 завершён: внешние originals не удаляем, физическое удаление только собственного managed storage. Следующий самостоятельный выбор — [SQ-03: объём удаления содержимого Entry](03_SQ-03_entry-permanent-delete-content/00_thread.md); рекомендация ещё не принята. Этот root остаётся resolved по готовым Asset после Discard/unlink.
 
 **Решение:** [принято] (2026-10-18) При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked.

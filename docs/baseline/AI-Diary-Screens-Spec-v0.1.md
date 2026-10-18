@@ -362,7 +362,7 @@ Hybrid UI: активные фильтры всегда видны как chips;
 
 **[Д]** Archive / Restore / Delete меняют lifecycle metadata и audit history, **не создают content Revision**. Archive Entry с Draft применяется ко всей Entry вместе с Draft, после короткого confirmation; при открытии archived Entry draft доступен для продолжения редактирования. Delete Entry с committed Revision перемещает всю Entry и Draft в Trash. Для новой Entry без committed Revision Delete может полностью удалить Draft/Entry.
 
-В Entry Trash доступны **Restore** и **Delete permanently**. Автоматический permanent deletion timer пока не нужен. **[П]** Необратимое удаление требует явного подтверждения; его последствия для зависимых ссылок должны быть видны до выполнения.
+В Entry Trash доступны **Restore** и **Delete permanently**. Автоматический permanent deletion timer пока не нужен. **[П]** Необратимое удаление требует явного подтверждения; его последствия для зависимых ссылок должны быть видны до выполнения. [Объём удаления содержимого — FQ-08/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/03_SQ-03_entry-permanent-delete-content/00_thread.md).
 
 Lifecycle не смешивается с обработкой AI, наличием draft или uncertainty. Постоянной категории Entry.DRAFT нет.
 
@@ -581,7 +581,8 @@ Rename сохраняет поиск по старому имени; alias ра�
 - **[Д] Delete = soft delete в Trash:** связи сохраняются; если Asset используется, предупреждение показывает последствия; доступен Restore.
 - **[Д] В Trash: Delete permanently и Empty Trash** для освобождения места. После физического удаления Restore невозможен и preview не сохраняется; минимальная запись Asset и нейтральный placeholder «Файл удалён» остаются в Entries/старых revisions. История не обещает восстановления bytes.
 - **[П]** Необратимое удаление требует отдельного явного подтверждения с областью действия; Empty Trash относится к корзине материалов.
-- **[О]** Удаление внешнего original у стороннего провайдера не определено и не подразумевается удалением external reference. [Обсуждение FQ-08/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/02_SQ-02_external-original-delete/00_thread.md). Срок хранения Trash и автоматически осиротевших загрузок не установлен.
+- **[Д, 18.10.2026]** AI Diary не удаляет originals внешних Asset у сторонних провайдеров (например, Google Photos или внешний Drive-файл). Unlink, soft delete, permanent delete и Empty Trash действуют на связь/Asset внутри дневника и собственные управляемые копии. Физическое удаление допустимо только для managed originals и производных файлов в хранилище, которым управляет дневник, по уже принятой политике Trash/permanent delete. Само наличие ссылки, доступа к внешнему файлу или прав API не делает его managed. Если внешний файл отдельно импортирован, удаляется только импортированная managed-копия, внешний original сохраняется. Для external Asset после permanent delete сохраняется принятый минимальный tombstone/placeholder без preview; его внешнее существование не обещает Restore Asset внутри дневника. Команд удаления original у внешнего провайдера нет. [История FQ-08/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/02_SQ-02_external-original-delete/00_thread.md).
+- **[О]** Срок хранения Asset Trash и автоматически осиротевших загрузок не установлен.
 
 ### Приёмка
 
@@ -821,7 +822,7 @@ User instructions/overrides поддерживаются отдельно от �
 | AC-45 | Home с более чем 7 Entries в выбранной области | Ровно первые 7 по Event date; при Draft используется дата из него; ARCHIVED учитываются только при ON; TRASH исключён |
 | AC-46 | Сменить месяц Calendar | All-time TagCloud и явно заданные периоды Statistics не меняются на месяц |
 | AC-47 | Rename / merge / delete тега | Старое имя становится alias; merge сохраняет canonical type/color; soft delete допускает Restore |
-| AC-48 | Asset Trash → permanent delete | Bytes/preview удалены; Entry/history показывают нейтральный placeholder |
+| AC-48 | Asset Trash → permanent delete / Empty Trash | Собственные managed bytes/preview удалены; Entry/history показывают нейтральный placeholder. Для external original у провайдера не вызывается удаление; импортированная копия и внешний original различаются |
 | AC-49 | Общий запуск routine при наличии Draft | Эти Entry пропущены; не ждут автокоммита или завершения session |
 | AC-50 | Needs attention и несколько review items у Entry | Одна Entry в счётчике; признак не меняет lifecycle |
 | AC-51 | Открыть вторую карточку | Первая сворачивается; одновременно раскрыта одна, при изменениях работает Save/Discard/Later |
@@ -871,7 +872,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q04 | Editor type и форматирование? | AQ-WEB-003: выбрать при editor slice, не менять переносимый content contract |
 | UI-Q05 | Discard recovery points, partial uploads/late completion и merge draft? | Готовые Asset после Discard: предложение soft delete только при единственной связи; остаются частичные загрузки и самостоятельный merge draft |
 | UI-Q06 | Mobile layout трёхстороннего proposal review? | Обычный C15 Compare уже определён: Before/After или inline diff; детали S07 остаются открыты |
-| UI-Q07 | Последствия permanent delete Entry для зависимых ссылок; external originals? | Entry Trash имеет Restore/permanent delete, без автоматического таймера; Asset delete принят; внешние originals отдельно |
+| UI-Q07 | Последствия permanent delete Entry для зависимых ссылок? | Entry Trash имеет Restore/permanent delete, без автоматического таймера; Asset delete принят; внешние originals не удаляем — [FQ-08/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/02_SQ-02_external-original-delete/00_thread.md) |
 | UI-Q08 | Lifecycle оставшихся частей complex proposal после partial apply? | Решить при detailed AI review |
 | UI-Q09 — решён | Timezone rolling days: [FQ-05/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md) | Настройка пользователя; при отличии устройства предложить смену, применить после подтверждения. Lifecycle counters и периоды +6/+29 приняты; прочие аспекты FQ-05 отдельны |
 | UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
@@ -1371,3 +1372,7 @@ Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED
 ### 26.43. Уточнение 18.10.2026 — 30 самых частых тегов и раскрытие всех
 
 **[Д, 18.10.2026]** Облако главной первоначально показывает до 30 самых частых тегов. Частота — число уникальных связанных Entry за всё время в текущей области главной, с учётом настройки архива и текущих Draft; deleted tags исключены. Если подходящих тегов больше 30, «Показать все» раскрывает остальные в том же облаке; при 30 или менее показаны все без лишнего действия. Лимит ограничивает только отображаемые теги, не набор записей для подсчёта и не результат перехода по тегу. Размер по частоте и настраиваемый цвет сохраняются. [История UI-Q03](AI-Diary-Screens-Spec-v0.1.threads/01_UI-Q03_tag-cloud-limit/00_thread.md).
+
+### 26.44. Уточнение 18.10.2026 — удаление только в собственном управляемом хранилище
+
+**[Д, 18.10.2026]** AI Diary не удаляет originals внешних Asset у сторонних провайдеров (например, Google Photos или внешний Drive-файл). Unlink, soft delete, permanent delete и Empty Trash действуют на связь/Asset внутри дневника и собственные управляемые копии. Физическое удаление допустимо только для managed originals и производных файлов в хранилище, которым управляет дневник, по уже принятой политике Trash/permanent delete. Само наличие ссылки, доступа к внешнему файлу или прав API не делает его managed. Если внешний файл отдельно импортирован, удаляется только импортированная managed-копия, внешний original сохраняется. Для external Asset после permanent delete сохраняется принятый минимальный tombstone/placeholder без preview; его внешнее существование не обещает Restore Asset внутри дневника. Команд удаления original у внешнего провайдера нет. [История FQ-08/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/02_SQ-02_external-original-delete/00_thread.md).
