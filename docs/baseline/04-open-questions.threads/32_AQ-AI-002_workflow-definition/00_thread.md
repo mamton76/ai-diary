@@ -77,4 +77,11 @@ ChatGPT — **уточнение versioning/run trace (2026-10-18):** если w
 
 **Нужно от пользователя:** считать ли Custom prompt и другие одноразовые ручные overrides отдельным ephemeral workflow snapshot, который целиком сохраняется внутри Run, без создания постоянного user workflow?
 
+
+пользователь — «ну такой кастом коненчо, но я так понимаю он заведет себе библиотеку рутин если ему это надо»
+
+ChatGPT — **решение по Custom prompt / библиотеке routines (2026-10-18):** одноразовый Custom prompt не создаёт постоянный workflow и сохраняется как ephemeral execution snapshot внутри Run. Если пользователь хочет переиспользовать такой сценарий, он явно сохраняет его в свою библиотеку routines (например, Save as routine); тогда создаётся самостоятельный user-owned workflow с первой version и дальше он живёт по обычным правилам versioning.
+
+**Нужно от пользователя:** при Save as routine сохранять только prompt/instructions текущего ad hoc запуска или весь фактический execution setup (scope defaults, model override, tools/capabilities, script-steps и прочие настройки)?
+
 **Решение:** —
