@@ -879,18 +879,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-003 — Backup и restore test
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-OPS-003 thread](04-open-questions.threads/38_AQ-OPS-003_backup-restore-test/00_thread.md)
-
-Недостаточно иметь кнопку «backup».
-
-Нужно в будущем проверить сценарий:
-
-1. потерять derived state;
-2. взять canonical storage/backup;
-3. восстановить indexes;
-4. открыть entries в UI;
-5. убедиться, что provenance/revisions сохранились.
+**Статус:** РЕШЕНО  
+**Решение:** воспроизводимый документированный тест восстановления по команде, с изоляцией от рабочего хранилища, проверкой canonical entries, revisions/provenance, вложений, пересозданием derived indexes и доступностью данных через UI/API. Регулярный тест восстановления по расписанию не нужен на старте. Незавершённые безопасные technical jobs после рестарта возобновляются автоматически по durable state; неопределённые платные AI calls не повторяются при default экономии.  
+**История обсуждения:** [AQ-OPS-003 thread](04-open-questions.threads/38_AQ-OPS-003_backup-restore-test/00_thread.md)
 
 ## AQ-OPS-004 — Cost guardrails
 
