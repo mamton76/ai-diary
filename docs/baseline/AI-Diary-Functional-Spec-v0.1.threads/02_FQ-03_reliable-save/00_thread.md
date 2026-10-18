@@ -2,7 +2,7 @@
 
 **Источник:** [Функциональное ТЗ / FQ-03](../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
 **Статус:** ждём исследования  
-**Состояние:** in_discussion  
+**Состояние:** paused  
 **Claim:** active  
 **Ведёт:** Codex — текущий диалог требований AI Diary  
 **Режим фиксации:** written-turns  
@@ -60,6 +60,8 @@ Codex — (2026-10-18) Выбран более простой для перво�
 Физический multi-file commit/recovery protocol ещё не утверждён. Остаются durable journal/operation record, commit publication, новые catalog tags, crash recovery и cleanup; ранее принятые automatic reconciliation, idempotency и отсутствие silent overwrite обязательны. Этот технический остаток нельзя объявлять закрытым из-за выбора UI-блокировки.
 
 **Нужно от пользователя:** ничего по текущему выбору; далее требуется техническая проработка commit/recovery. Пользовательские требования к unknown Save и блокировке приняты, claim FQ-03 сохраняется.
+
+Codex — (2026-10-18) По команде пользователя «дальше» продолжаем продуктовые вопросы в FQ-04. FQ-03 поставлен на паузу со статусом waiting research и active claim текущего диалога: UI/retry решения выше согласованы, физический multi-file protocol не выбран. История и незакрытый технический остаток сохранены; возвращаемся на этапе technical storage design.
 
 **Решение:** —
 

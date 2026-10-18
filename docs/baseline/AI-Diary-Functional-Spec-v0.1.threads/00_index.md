@@ -9,4 +9,5 @@
 |---|---|---|---|---|---|---|---|---|
 | — | FQ-01 | Revision/Save/Apply/Restore и AI auto-apply | решён | resolved | none | — | [PQ-004/FQ-01](../04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 1 | FQ-02 | Merge tags / immutable revisions | решён | resolved | none | — | [Тред](01_FQ-02_tag-merge/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
-| 2 | FQ-03 | Надёжный Save / partial failure / retry | ждём исследования | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](02_FQ-03_reliable-save/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
+| 2 | FQ-03 | Надёжный Save / partial failure / retry | ждём исследования | paused | active | Codex — текущий диалог требований AI Diary | [Тред](02_FQ-03_reliable-save/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
+| 3 | FQ-04 | Tag aliases / unlink text / normalizer | ждём пользователя | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](03_FQ-04_tag-aliases/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
