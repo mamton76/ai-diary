@@ -740,6 +740,10 @@ Date/date range и tags входят в ближайший следующий we
 **Статус:** ПОДТВЕРЖДЕНО (следующий web slice после самого первого files-only MVP)  
 Текстовый поиск по title/body без учёта регистра и фильтрация по tags, date range, source, status. Использовать штатный full-text index выбранной operational БД (SQLite FTS5, PostgreSQL FTS либо подходящий эквивалент), индекс rebuildable из canonical files. Без отдельного поискового сервиса; семантический/vector, нечёткий/синонимический поиск и гарантированная русская морфология не входят в этот этап. Решение: [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md).
 
+### SEARCH-INDEX-UPDATE — Асинхронная индексация и восстановление
+**Статус:** ПОДТВЕРЖДЕНО
+После successful canonical commit в очередь направляется обновление derived search index. Поиск eventual consistent: небольшая задержка появления изменений допустима. Индекс можно полностью перестроить из canonical files; реализация должна уметь восстановиться после пропущенных обновлений. Уточнение к [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md).
+
 ### SEARCH-004 — Search index не обязан быть canonical
 **Статус:** ПОДТВЕРЖДЕНО.
 
