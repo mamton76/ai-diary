@@ -1,10 +1,10 @@
 # AQ-API-004 — Background processing
 
 **Источник:** [04-open-questions.md / AQ-API-004](../../04-open-questions.md#aq-api-004--background-processing)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation (2026-10-18)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -43,6 +43,8 @@ ChatGPT — Принято: Save регистрирует durable queued command
 
 **Нужно от пользователя:** распространяем ли тот же queue-first принцип на остальные пользовательские mutations (Apply, Restore, изменение тегов), или есть исключения?
 
-пользователь —
+пользователь — «думаю да»
 
-**Решение:** —
+ChatGPT — Фиксируем единый queue-first путь для всех изменений canonical diary state (Save/Apply/Restore/tag mutations, capture processing, AI and indexing), без очереди для обычных read/search queries. Принятие команды и успешный commit — разные состояния; возможность закрыть браузер не отменяет принятую задачу. Autosave draft разрешено coalesce/debounce; технический механизм доставки, гарантии idempotency, fairness и retry конкретизируются в AQ-OPS-002 и implementation design. Для scheduled/batch сохраняются уже принятые Cloud Scheduler/Cloud Run Jobs.
+
+**Решение:** [принято] (2026-10-18) Queue-first architecture для canonical writes и вычислительных/background workflows. Синхронные read/search запросы остаются обычными API calls. Mutating commands асинхронно ставятся в durable очередь; UI различает accepted/queued, processing, committed и failed/conflicted. Статус «Сохранено» возможен только после committed revision. Draft autosave coalescing допускается. Долгие и scheduled tasks исполняются независимо от browser session; детальные queue provider, retry/idempotency/ordering/atomicity правила вынесены в AQ-OPS-002 и architecture design.
