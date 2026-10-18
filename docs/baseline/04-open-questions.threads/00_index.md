@@ -39,6 +39,7 @@
 | 14 | AQ-AUTH-002 | Drive/Calendar OAuth | решён | ✅ resolved | none | — | [📁](14_AQ-AUTH-002_google-oauth/) | [00_thread.md](14_AQ-AUTH-002_google-oauth/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 11 | AQ-AUTH-003 | Single-user vs multi-user readiness | решён | ✅ resolved | none | — | [📁](11_AQ-AUTH-003_multi-user-readiness/) | [00_thread.md](11_AQ-AUTH-003_multi-user-readiness/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
 | 13 | AQ-AUTH-004 | Доступ backend к user-owned Drive | решён | ✅ resolved | none | — | [📁](13_AQ-AUTH-004_drive-access/) | [00_thread.md](13_AQ-AUTH-004_drive-access/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md |
+| 4.2 | FQ-01 | Revision / Save / Apply / Restore | ждём пользователя | 🔒 in_discussion | active | Codex — диалог требований AI Diary | [📁](04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/) | [00_thread.md](04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 
 ## Быстрая легенда lifecycle
 

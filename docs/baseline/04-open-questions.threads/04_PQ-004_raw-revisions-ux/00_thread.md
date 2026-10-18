@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
-**Дочерние треды:** —  
+**Дочерние треды:** [FQ-01 — источники committed Revision](01_FQ-01_revision-commit-actions/00_thread.md)  
 **Куда переносим решение:** ../../03-product-baseline.md и ../../02-requirements-inventory.md
 
 ## Вопрос
