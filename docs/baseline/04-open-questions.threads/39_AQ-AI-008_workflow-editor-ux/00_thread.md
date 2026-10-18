@@ -142,4 +142,11 @@ ChatGPT — **решение по Validator step (2026-10-18):** простые 
 
 **Нужно от пользователя:** определить UX capability profile на уровне workflow: показывать выбранный default profile в верхних Workflow settings и только локальные capability requirements внутри конкретных steps.
 
+
+пользователь — «да»
+
+ChatGPT — **решение по capability profile в workflow editor (2026-10-18):** default capability profile показывается на уровне верхних Workflow settings. Конкретные processing steps не дублируют полный profile, а объявляют только свои локальные required capabilities. Editor проверяет совместимость: если выбранный/default profile не покрывает requirement шага, это явно подсвечивается как conflict до запуска.
+
+**Нужно от пользователя:** определить состав верхнего блока Workflow settings и решить, какие поля всегда видны, а какие можно свернуть.
+
 **Решение:** —
