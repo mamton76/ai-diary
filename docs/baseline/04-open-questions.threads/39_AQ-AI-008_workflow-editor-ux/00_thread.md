@@ -65,4 +65,11 @@ ChatGPT — **решение по Output / Side effects section (2026-10-18):** 
 
 **Нужно от пользователя:** решить форму карточки processing step: универсальная карточка с Type + Inputs + Config + Outputs + Error policy, или разные визуальные формы для AI step / executor step / condition / validator?
 
+
+пользователь — «да так вроде лучше»
+
+ChatGPT — **решение по карточке processing step (2026-10-18):** все processing steps используют общий каркас карточки `Type / Inputs / Config / Outputs / Error policy`, но содержимое `Config` и часть presentation зависят от типа шага. AI step, executor/script, condition и validator не превращаются в четыре полностью независимых editor-а, но и не маскируются под одну безликую универсальную форму.
+
+**Нужно от пользователя:** определить collapsed/expanded UX карточки шага: что видно в свёрнутом состоянии и открыта ли одновременно одна карточка или несколько.
+
 **Решение:** —
