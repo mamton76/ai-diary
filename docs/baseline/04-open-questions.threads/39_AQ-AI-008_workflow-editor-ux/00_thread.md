@@ -51,4 +51,11 @@ ChatGPT — **решение по Application policy (2026-10-18):** для Tag 
 
 **Нужно от пользователя:** разобрать следующий реальный workflow — Inbox → Entry — и определить, какие из его стадий должны быть самостоятельными шагами в editor.
 
+
+пользователь — «да похоже на правду»
+
+ChatGPT — **решение по Input / Trigger section (2026-10-18):** `Input / Trigger` является отдельной верхней секцией workflow editor и не моделируется как первый reorderable processing step. В этой секции задаются источник/trigger запуска и eligibility/selection contract. Ниже расположен собственно pipeline. Примеры: Tag Enrichment — Entries matching eligibility / manual launch; Inbox → Entry — new Inbox item из допустимого capture source.
+
+**Нужно от пользователя:** разобрать Google Calendar Timeline Projection и решить, нужен ли симметричный отдельный Output / Side effects block после pipeline.
+
 **Решение:** —
