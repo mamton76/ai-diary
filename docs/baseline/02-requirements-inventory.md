@@ -733,8 +733,8 @@ Search остаётся продуктовым требованием следу
 Date/date range и tags входят в ближайший следующий web slice вместе с index/search layer, а не блокируют самый первый MVP.
 
 ### SEARCH-003 — Semantic search / embeddings
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Вероятно понадобится для cross-entry AI, но не обязательно для первого MVP.
+**Статус:** ОТЛОЖЕНО НА БУДУЩЕЕ  
+Semantic retrieval для cross-entry AI возможно в будущем; embeddings, vector DB и semantic query pipeline не входят в MVP. Оставить архитектурную точку расширения. Решение: [AQ-SEARCH-002](04-open-questions.threads/34_AQ-SEARCH-002_semantic-search-timing/00_thread.md).
 
 ### SEARCH-MVP-SEMANTICS — Простой поиск и фильтры
 **Статус:** ПОДТВЕРЖДЕНО (следующий web slice после самого первого files-only MVP)  
