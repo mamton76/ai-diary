@@ -734,19 +734,17 @@ Google account — естественный first path.
 
 ## AQ-AI-002 — Где живёт workflow definition
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-AI-002 thread](04-open-questions.threads/32_AQ-AI-002_workflow-definition/00_thread.md)
+**Статус:** РЕШЕНО  
+**Решение:** workflow definitions — versioned user-owned data рядом с diary data; backend предоставляет engine/runtime. Executable code вынесен в reusable trusted/versioned executors/tools, permissions — в reusable versioned capability profiles. User workflows используют Draft → Publish immutable version semantics, system workflows имеют read-only version history и автоматически используют latest для новых запусков. Runs фиксируют точные workflow/executor/profile versions и overrides; ephemeral/Test runs сохраняют snapshots. MVP workflow — linear pipeline + simple conditions, step error policy и declarative output validation. Конкретный editor UX вынесен отдельно в AQ-AI-008.  
+**Обсуждение:** [AQ-AI-002 thread](04-open-questions.threads/32_AQ-AI-002_workflow-definition/00_thread.md)  
+**Architecture baseline:** [07-ai-workflow-architecture.md](07-ai-workflow-architecture.md)
 
-Возможный split:
+## AQ-AI-008 — Workflow editor UX
 
-- code-defined orchestration;
-- versioned prompts/config;
-- user instructions;
-- output schema;
-- validators;
-- tools.
+**Статус:** открыто  
+**Обсуждение:** [AQ-AI-008 thread](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md)
 
-Нужно решить, что принадлежит repo/code, а что user diary data/config.
+Архитектурная модель workflow закрыта в AQ-AI-002. Здесь отдельно нужно определить UX/editor surface: представление pipeline/conditions, поля шагов, prompt/schema editing, executor/capability selection, trust UX, Draft/Test/Publish, history/diff и адаптацию desktop/mobile.
 
 ## AQ-AI-003 — Где хранить run records
 
