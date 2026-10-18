@@ -734,6 +734,9 @@ Google account — естественный first path.
 
 ## AQ-AI-002 — Где живёт workflow definition
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-AI-002 thread](04-open-questions.threads/32_AQ-AI-002_workflow-definition/00_thread.md)
+
 Возможный split:
 
 - code-defined orchestration;
