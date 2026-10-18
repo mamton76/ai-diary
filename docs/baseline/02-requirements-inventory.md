@@ -736,6 +736,10 @@ Date/date range и tags входят в ближайший следующий we
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
 Вероятно понадобится для cross-entry AI, но не обязательно для первого MVP.
 
+### SEARCH-MVP-SEMANTICS — Простой поиск и фильтры
+**Статус:** ПОДТВЕРЖДЕНО (следующий web slice после самого первого files-only MVP)  
+Текстовый поиск по title/body без учёта регистра и фильтрация по tags, date range, source, status. Использовать штатный full-text index выбранной operational БД (SQLite FTS5, PostgreSQL FTS либо подходящий эквивалент), индекс rebuildable из canonical files. Без отдельного поискового сервиса; семантический/vector, нечёткий/синонимический поиск и гарантированная русская морфология не входят в этот этап. Решение: [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md).
+
 ### SEARCH-004 — Search index не обязан быть canonical
 **Статус:** ПОДТВЕРЖДЕНО.
 
