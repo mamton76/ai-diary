@@ -184,4 +184,11 @@ ChatGPT — **решение по workflow History UX (2026-10-18):** `History` 
 
 **Нужно от пользователя:** определить adaptive/mobile UX workflow editor: сохранять тот же вертикальный pipeline, а secondary settings открывать в sheet/full-screen editor на узких экранах.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по adaptive/mobile workflow editor (2026-10-18):** на mobile сохраняется та же вертикальная модель pipeline, без отдельной мобильной семантики. Step cards занимают доступную ширину; сложные secondary editors (Config, Inputs mapping, Output schema) могут открываться в bottom sheet или full-screen surface. Condition branches остаются вложенными группами, а History, full prompt editor и trust/code review на узком экране открываются как отдельные full-screen режимы.
+
+**Нужно от пользователя:** определить publish validation UX: что именно должно блокировать Publish и что допускается опубликовать с warning.
+
 **Решение:** —
