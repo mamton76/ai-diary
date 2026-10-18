@@ -119,4 +119,11 @@ ChatGPT — **решение о capability profiles (2026-10-18):** вводит
 
 **Нужно от пользователя:** хранить ли в workflow default executor и default capability profile, которые подставляются при запуске автоматически, но могут быть заменены совместимыми trusted вариантами в launch sheet без создания новой workflow version?
 
+
+пользователь — «да»
+
+ChatGPT — **решение о defaults для запуска (2026-10-18):** workflow может хранить default executor и default capability profile. Они автоматически подставляются при обычном запуске, чтобы не требовать ручной настройки каждый раз. В launch sheet пользователь может заменить их на другие совместимые trusted варианты без создания новой workflow version. Run сохраняет фактически выбранные executor/version и capability profile/version.
+
+**Нужно от пользователя:** нужно ли показывать executor/profile в обычном launch sheet всегда, или скрывать под Advanced и показывать по умолчанию только scope/eligibility/итоговые counts?
+
 **Решение:** —
