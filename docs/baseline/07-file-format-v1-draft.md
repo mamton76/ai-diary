@@ -126,7 +126,7 @@ Entry state описывает identity и lifecycle, а содержимое б
 
 Title, eventTime, tagIds и assetIds не дублируются как самостоятельная истина в Entry state. API может собирать denormalized view для списка. Это устраняет случай, когда metadata Entry от одной версии, а текст — от другой.
 
-У новой Entry после Create уже есть identity/state и durable Draft, currentRevisionId=null. Нулевая фиктивная Revision не создаётся. Lifecycle/audit mutation создаёт новый Entry state, но не content Revision. Restore из Trash не равен Restore Revision. Целевой lifecycle после Trash Restore и permanent-delete policy остаются FQ-08.
+У новой Entry после Create уже есть identity/state и durable Draft, currentRevisionId=null. Нулевая фиктивная Revision не создаётся. Lifecycle/audit mutation создаёт новый Entry state, но не content Revision. Restore из Trash не равен Restore Revision. **[Д, 18.10]** Restore из Trash всегда устанавливает lifecycle=ACTIVE, включая ранее Archived; currentRevisionId/ref, history и draftRef сохраняются. Предыдущее состояние может оставаться в audit, но не определяет target Restore. [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Permanent-delete policy остаётся FQ-08.
 
 ## 4. Полный content snapshot и Revision
 

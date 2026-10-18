@@ -14,4 +14,4 @@
 | 2.2 | FQ-03/SQ-02 | Manual Save без изменения content | решён | resolved | none | — | [Тред](02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md) | Functional/Screens Specs, file-format / Save design |
 | 3 | FQ-04 | Tag aliases / unlink text / normalizer | ждём исследования | paused | active | Codex — текущий диалог требований AI Diary | [Тред](03_FQ-04_tag-aliases/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 4 | FQ-08 (подпункт) | Готовые Asset после Discard / unlink | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/00_thread.md) | Functional/Screens Specs, file-format / Save design |
-| 4.1 | FQ-08/SQ-01 | Lifecycle Entry после Restore из Trash | ждём пользователя | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md) | Functional/Screens Specs, file-format / Save design |
+| 4.1 | FQ-08/SQ-01 | Restore Entry из Trash → ACTIVE | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md) | Functional/Screens Specs, file-format / Save design |

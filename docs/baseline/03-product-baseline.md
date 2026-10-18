@@ -1116,4 +1116,10 @@ Manual Save, при котором итоговое сохраняемое conte
 
 Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
 
-**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; прочие FQ-08 — partial staging/late completion, permanent delete, Restore lifecycle и retention — остаются открытыми. Ранее предложенные безусловные keep/Trash не приняты.
+**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; прочие FQ-08 — partial staging/late completion, permanent delete и retention — остаются открытыми; lifecycle после Restore согласован отдельно в SQ-01. Ранее предложенные безусловные keep/Trash не приняты.
+
+## Уточнение 18.10.2026 — Restore Entry из Trash всегда в ACTIVE
+
+Restore Entry из Trash всегда возвращает запись в ACTIVE, независимо от того, была она Active или Archived перед удалением. Сохраняются тот же entryId, Current/content history и существующий durable Draft. Операция меняет lifecycle/audit и не создаёт content Revision; это не Restore исторической Revision.
+
+**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные FQ-08 остаются открытыми.

@@ -114,10 +114,10 @@
 |---|---|---|
 | ENT-09 | Archive | Меняет lifecycle/audit без content Revision; Entry переносится вместе с Draft; короткое confirmation; draft доступен при открытии архива |
 | ENT-10 | Delete | Entry с Revision переходит в Trash вместе с Draft; новая Entry без Revision может быть удалена целиком |
-| ENT-11 | Restore from Trash | Восстанавливает Entry; не является Restore исторической Revision и не создаёт content Revision |
+| ENT-11 [18.10] | Restore from Trash | Всегда возвращает Entry в ACTIVE, включая ранее Archived; сохраняет identity, history и Draft. Не является Restore исторической Revision и не создаёт content Revision |
 | ENT-12 | Delete permanently | Доступно из Entry Trash; автоматический таймер permanent delete пока не нужен |
 
-**[О]** В какой lifecycle возвращается восстановленная Entry — [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Предложение: вернуть прежний lifecycle, включая Archived → Trash → Archived; это ещё не принято. Последствия permanent delete для связанных объектов и audit retention остаются FQ-08. Само наличие Restore/permanent delete уже принято.
+**[Д, 18.10.2026]** Restore Entry из Trash всегда возвращает запись в ACTIVE, независимо от того, была она Active или Archived перед удалением. Сохраняются тот же entryId, Current/content history и существующий durable Draft. Операция меняет lifecycle/audit и не создаёт content Revision; это не Restore исторической Revision. [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Предложение вернуть Archived Entry в архив не принято. **[О]** Последствия permanent delete для связанных объектов и audit retention остаются FQ-08; само наличие Restore/permanent delete уже принято.
 
 ### 4.3. EventTimeRange
 
@@ -316,6 +316,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-24 | Прикрепить файл, получить uploading/failed, уйти и открыть Draft | Save недоступен до готовности/явного снятия вложения; текст, готовые связи и pending upload IDs/имена/статусы восстановлены; загруженный original сохранён. При невозможности возобновить неполученные bytes показан повторный выбор файла; pending intent не исчезает |
 | SYS-AC-25 | Изменить текст, вернуть исходный вариант, manual Save и retry | При совпадении всего content возвращается прежняя Revision, Draft завершён, History/committedUpdatedAt не меняются. Изменение текста на один пробел или timezone требует новой Revision; stale base не обходится веткой NO_CHANGE |
 | SYS-AC-26 | Снять связь / Discard добавлений Draft: единственный потребитель либо несколько | При единственной связи предложен soft delete с явным выбором; при отказе Asset остаётся в Library. При других потребителях только unlink; история одной Entry не умножает число потребителей. Asset, остающийся в восстановленной Current, не предлагается удалить из-за Discard |
+| SYS-AC-27 | Active / Archived Entry с Draft → Trash → Restore | В обоих случаях ACTIVE; тот же entryId, Current, history и Draft. Новая content Revision не создаётся; прежний Archived lifecycle не восстанавливается |
 
 ## 13. Этапы реализации
 
@@ -349,7 +350,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
-| FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, Restore lifecycle, partial uploads, external originals, retention/cache cleanup | [Готовые Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): при единственной связи предложить soft delete, при нескольких только unlink. Остальные части FQ-08 открыты |
+| FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, partial uploads, external originals, retention/cache cleanup | [Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): условное предложение soft delete; [Restore Entry из Trash](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md): всегда ACTIVE. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
 | FQ-10 | Объёмы данных, latency/availability targets, upload limits | Без них нельзя объективно оценить производительность |
 

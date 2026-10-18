@@ -178,7 +178,7 @@ Draft autosave generation хранится только пока актуаль�
 - Restore historical создаёт новый snapshot с previousRevisionId=Current и restoredFromRevisionId=selected. Более поздняя история сохраняется.
 - AI_INITIAL_NORMALIZATION и AI_EXISTING_TAGS используют тот же commit path с policy/trace; existing Entry с Draft пропускается. Внешний LLM ответ не обходит lease/base.
 - Merge каталога — catalog/audit publication без content Revision Entries.
-- Lifecycle operation — новый Entry state/audit, без content Revision.
+- Lifecycle operation — новый Entry state/audit, без content Revision. **[Д, 18.10]** Restore Entry из Trash всегда устанавливает ACTIVE, включая прежние Archived; сохраняет identity, Current/history и Draft. Прежний lifecycle не используется как target Restore. [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md).
 - External file change — сохранить bytes/evidence, schema validate, затем новая Revision или recovery. Не принимать ручные identity/system pointer правки автоматически.
 
 Пока старые Calendar/Telegram pipelines пишут напрямую, общий протокол не обеспечивает атомарность их конкурентных записей. Targeted storage v1 подключается под maintenance после остановки/перевода writers либо сохраняется для read-only пилота. Это deployment/migration constraint; текущие рабочие pipelines не переписываются автоматически данным документационным коммитом.
