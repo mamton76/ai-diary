@@ -170,4 +170,11 @@ ChatGPT — **решение по editor header/version status (2026-10-18):** v
 
 **Нужно от пользователя:** определить поведение Test run: запускать его из header и открывать сразу Run Detail, сохраняя текущий Draft snapshot.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по Test run flow (2026-10-18):** кнопка `Test run` находится в header workflow editor и запускает текущий Draft snapshot. После старта открывается Run Detail с пошаговыми статусами и outputs. Успешный Test run предоставляет действие `Publish tested version`, публикующее именно протестированный snapshot по правилам AQ-AI-002.
+
+**Нужно от пользователя:** определить UX History для workflow: отдельная panel/page со списком published versions, diff и Restore as new version, доступная из header.
+
 **Решение:** —
