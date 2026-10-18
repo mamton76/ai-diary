@@ -538,7 +538,7 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 - Удаление alias не меняет relations по tagId, влияет только на дальнейшие autocomplete/распознавание.
 - Types — **пользовательский справочник**, не system enum; optional typeId, без color inheritance/override hierarchy.
 
-**[Д, 18.10]** Дубли aliases между самостоятельными активными canonical tags запрещены; при конфликте показать существующий тег и не сохранять дубликат. **[О]** Пересечения canonical name↔alias, правила сравнения строк/deleted labels и точный historical rendering цвета/имени остаются деталями policy; запрет переписывать immutable snapshots уже принят.
+**[Д, 18.10]** Дубли aliases между самостоятельными активными canonical tags запрещены; при конфликте показать существующий тег и не сохранять дубликат. **[Д, 18.10]** Canonical name и aliases также не пересекаются между разными самостоятельными активными тегами. Transfer обозначения сейчас не включён. **[О]** Правила сравнения строк/deleted labels и точный historical rendering цвета/имени остаются деталями policy; запрет переписывать immutable snapshots уже принят.
 
 ### Приёмка
 
@@ -857,7 +857,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q09 | Timezone границы дня, lifecycle очередей Home, inclusion intervals? | Last 7/30 = сегодня + 6/29 дней; AND/OR/NOT и timezone EventTimeRange решены |
 | UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
 | UI-Q11 | Standalone Inbox, детали routine editor, export/maintenance screens? | Экран Routines и создание пользовательских routines приняты; детали формы и этап поставки уточняются |
-| UI-Q12 | Пересечения canonical name/alias и точный historic rendering name/color? Дубли aliases уже запрещены | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
+| UI-Q12 | Правила сравнения обозначений/deleted labels и точный historic rendering name/color? Единая уникальность names/aliases уже принята | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
 | UI-Q13 | Точные visual layouts компонентов? | Одна раскрытая карточка; Title/Text/EventTimeRange/Tags/Asset links в обоих editors уже приняты |
 
 Точные breakpoint, ratios, styling gallery, diff algorithm и first-revision empty-state уже отнесены в PQ-011 к implementation/UI details; они не переоткрывают продуктовую модель EntryPanel.
@@ -1101,4 +1101,11 @@ Merge — операция каталога: oldTagId разрешается в 
 
 Один и тот же alias не может принадлежать двум самостоятельным активным canonical tags. Если alias уже занят, добавление его второму тегу отклоняется с указанием существующего тега; существующие теги автоматически не объединяются. Повторы aliases внутри одного canonical tag дедуплицируются. Merge redirect разрешается в survivor и не считается вторым самостоятельным владельцем alias.
 
-Повтор одного alias у разных самостоятельных тегов не предлагается как пользовательский сценарий выбора между омонимами. Pending Create и editor каталога должны учитывать уникальность. Пересечения alias с canonical name другого тега, регистр/Unicode и deleted labels ещё обсуждаются. **История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md).
+Повтор одного alias у разных самостоятельных тегов не предлагается как пользовательский сценарий выбора между омонимами. Pending Create и editor каталога должны учитывать уникальность. Пересечения alias с canonical name другого активного тега также запрещены (§26.9); регистр/Unicode и deleted labels ещё обсуждаются. **История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md).
+
+
+### 26.9. Уточнение 18.10.2026 — единое пространство names/aliases
+
+Canonical names и aliases образуют единое пространство уникальных обозначений между самостоятельными активными canonical tags. Нельзя создать отдельный тег с именем, уже занятым как name или alias другого тега, либо назначить ему такое имя/alias. При конфликте показывается существующий тег; запись дубликата отклоняется без автоматического merge, переноса обозначения или перепривязки Entry relations. Идея отдельного переноса имени/alias между тегами сохранена на будущее; в текущий scope такой сценарий не включён.
+
+В текущем интерфейсе конфликта достаточно показать владельца обозначения; кнопки «Забрать имя»/«Перепривязать» не включаются. Существующие rename/alias editor и явный merge остаются со своими согласованными правилами; новый transfer workflow не добавляется. **История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md).
