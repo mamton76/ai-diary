@@ -518,7 +518,9 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 **[Д, 18.10.2026]** При частичном принятии и подтверждении Result proposal получает статус «Принято частично» и закрывается целиком. Непринятые части сохраняются в исходном Proposal/AI history, без pending-остатка или автоматически созданных новых proposals. Сам этот proposal перестаёт быть причиной внимания; другие причины Entry сохраняются. **История:** [FQ-07 — частичный Apply](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
 
-**[П]** Закрытие review без применения сохраняет исходный pending proposal; [сохранение незавершённого Result/merge draft](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md) обсуждается отдельно. На телефоне допустим последовательный выбор Base/Result/Proposal, если смысл ролей и возможность проверить результат не теряются; точная mobile parity трёхстороннего proposal review остаётся открытой; обычный Compare C15 уже имеет Before/After switch либо inline diff на mobile.
+**[Д, 18.10.2026]** Закрытие review без применения сохраняет исходный pending proposal; [незавершённый Result/merge draft автоматически сохраняется и восстанавливается](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md).
+
+**[П, layout mobile]** На телефоне допустим последовательный выбор Base/Result/Proposal, если смысл ролей и возможность проверить результат не теряются; точная mobile parity трёхстороннего proposal review остаётся открытой; обычный Compare C15 уже имеет Before/After switch либо inline diff на mobile.
 
 ### 12.4 Приёмка
 
@@ -1297,4 +1299,12 @@ UI предоставляет явное действие у конкретно�
 
 Base не подменяется текущей пользовательской настройкой или новой Current Revision: это исходное состояние run/proposal. При изменившемся Current подробный review учитывает совместимые изменения и даёт разрешить conflicts; перед Apply обязательны повторные ownership/base checks. Подсветка не отменяет возможность ручного редактирования Result. Точный diff algorithm, цвета, storage outcome enum и способ трассировки принятых/непринятых фрагментов — техническая конкретизация. **История:** [FQ-07](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
 
-**[О]** Следующий выбор — [сохранение прогресса незавершённого review](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md); сохранение pending proposal само по себе не гарантирует восстановление ручных правок Result.
+**[Д, уточнение 18.10.2026]** [Автосохранение и восстановление прогресса review](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md) согласованы; подробности — §26.35.
+
+### 26.35. Уточнение 18.10.2026 — черновик разбора AI review
+
+Незавершённый Result подробного AI review автоматически сохраняется как черновик разбора и восстанавливается после выхода, reload и следующего сеанса — по тому же принципу, что Draft записи. Пока Apply не подтверждён, исходный proposal остаётся pending, Current Entry и committed History не меняются. При возвращении ручные правки Result сохраняются; если Current изменился, выполняется обычная проверка base/current и разрешение conflicts без silent overwrite. Черновик разбора не подменяет существующий WorkingDraft ручного редактирования.
+
+Для ухода с неприменёнными изменениями действует тот же принцип явного выбора, что и у Entry: применить Result, отбросить правки разбора либо вернуться позже с сохранённым прогрессом. Apply создаёт Revision по общему контракту; autosave черновика разбора этого не делает. Отбрасывание только правок Result не равно Reject исходного proposal. Состояние «черновик сохранён» показывается после подтверждения сохранности; несинхронизированные локальные правки не выдаются за durable. Ошибки сохранения и conflict не должны очищать введённый Result.
+
+Точные пути/schema и recovery/concurrency контракт черновика разбора требуют технической конкретизации; общие lease/base/mutation guards сохраняются. **История:** [FQ-07/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md). Следующий выбор — [обычный повтор AI после ошибки без успешного результата](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md).
