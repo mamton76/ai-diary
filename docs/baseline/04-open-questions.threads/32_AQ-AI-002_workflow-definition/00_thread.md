@@ -154,4 +154,11 @@ ChatGPT — **решение по output schema и validators (2026-10-18):** о
 
 **Нужно от пользователя:** как versioning пользовательского workflow должно работать в редакторе: каждое сохранение создаёт новую immutable version, или пока пользователь редактирует — существует draft definition, а новая immutable version появляется только при Publish/Save version?
 
+
+пользователь — «согласна что **Draft definition → Publish/Save version** аналогично сущностям»
+
+ChatGPT — **решение по versioning user workflows (2026-10-18):** пользовательский workflow редактируется через отдельный Draft definition, аналогично другим versioned сущностям проекта. Промежуточные изменения не создают immutable versions. Новая immutable workflow version появляется только при явном Publish/Save version. Runs используют только опубликованные immutable versions; Draft сам по себе не является исполняемой опубликованной версией.
+
+**Нужно от пользователя:** разрешать ли запуск Draft workflow для тестирования до Publish, если такой запуск явно помечен как Test run и сохраняет snapshot Draft definition внутри Run?
+
 **Решение:** —
