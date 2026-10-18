@@ -62,6 +62,10 @@ Capture/read/edit не должны зависеть от доступности
 **Статус:** ПОДТВЕРЖДЕНО  
 Calendar, Telegram, web, Android/native, import scripts и raw files не должны каждый писать финальные записи по собственной схеме.
 
+### CAP-013 — Единый контракт CaptureItem
+**Статус:** ПОДТВЕРЖДЕНО  
+Каждый source message/event нормализуется адаптером в отдельный CaptureItem (internal id, source, optional sourceId, receivedAt, optional sourceTimestamp, original text и/или media asset refs, source metadata) независимо от конечной Entry schema. Оригинал сохраняется; transcripts и AI outputs — отдельные derived artifacts с provenance. Повторная доставка того же source identity не порождает дубль; идентичные тексты разных сообщений считаются разными CaptureItems. Разрешено grouping нескольких CaptureItems в одну Entry вручную (без обязательного AI) или с optional AI-помощью. Ручной merge с доступными текстами открывает editable Draft; только successful Save отмечает исходные CaptureItems обработанными, отмена Draft оставляет их в Inbox. При ручном объединении показываем timestamps источников, а event date выбирает пользователь. В MVP один CaptureItem создаёт максимум одну Entry; split Entry и одного CaptureItem в несколько Entries отложен. Решение: [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md).
+
 ### CAP-005 — Google Calendar может быть внешним voice-friendly inbox
 **Статус:** ПОДТВЕРЖДЕНО  
 Calendar полезен как очередь/адаптер для голосового ввода через ассистентов.
