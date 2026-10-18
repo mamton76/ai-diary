@@ -196,4 +196,11 @@ ChatGPT — **уточнение истории system workflows (2026-10-18):**
 
 **Нужно от пользователя:** разрешать ли Duplicate не только latest system workflow, но и любую историческую system version, чтобы пользователь мог сохранить себе старое поведение?
 
+
+пользователь — «Permanent delete пока вообще не вводить. да согласна»
+
+ChatGPT — **решение по удалению user workflows (2026-10-18):** удаление пользовательской routine из библиотеки — только soft delete. Все published versions, Draft (если применимо) и связанные Runs сохраняются; routine можно восстановить. Permanent delete для workflows на этом этапе не вводится.
+
+**Нужно от пользователя:** отдельно подтвердить, разрешаем ли Duplicate любой исторической system workflow version, а не только latest.
+
 **Решение:** —
