@@ -154,7 +154,7 @@ EntryPanel не владеет навигацией страницы, списк
 
 ### C06. Calendar — календарь записей [Д]
 
-**[О]** Lifecycle-охват Calendar на Home обсуждается в [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md): ACTIVE-only либо ACTIVE + ARCHIVED, без TRASH. Принятая семантика местных дат и совпадения индикатора/списка не выбирает этот scope автоматически.
+**[Д, 18.10.2026]** Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются. **История:** [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md). **[П]** Пользователь предложил возможность отключить показ и учёт архива; [область этой настройки](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md) ещё уточняется.
 
 **[Д, 18.10.2026]** Calendar относит Entry к местной дате события в сохранённой timezone самой записи. Событие «19 октября, 00:30, Токио» показывается на 19 октября, даже если в пользовательской timezone в этот момент ещё 18-е. Выбор дня/диапазона в Calendar открывает список с той же семантикой местных дат и принятым period overlap; индикатор и список используют одинаковый lifecycle scope. Смена пользовательской timezone не переносит сохранённые события между днями Calendar. Date-only сохраняется как дата без выдуманного времени. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md).
 
@@ -1351,4 +1351,10 @@ Base не подменяется текущей пользовательской
 
 Новая committed Revision — новая input version для existing already-processed checks; успешность старой пары routineVersion/input Revision не означает успешность новой. Для записи без изменений сохраняется прежний skip готовой части обычного продолжения. Это не разрешение на параллельные запуски или применение stale результата. Точная очередь/input-capture граница и version selection самой routine остаются технической/продуктовой конкретизацией. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
 
-**[О]** Следующий самостоятельный выбор — [какие lifecycle состояния учитывает Calendar Home](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md); пока предлагается ACTIVE + ARCHIVED, без TRASH.
+**[Д, уточнение 18.10.2026]** [Calendar Home по умолчанию включает ACTIVE + ARCHIVED, без TRASH](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md); настройка исключения архива обсуждается отдельно в [SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+
+### 26.41. Уточнение 18.10.2026 — Calendar включает архив по умолчанию
+
+Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются.
+
+**[П, предложение пользователя]** В настройках можно предусмотреть исключение архивных записей. Для Calendar это должно одновременно менять выделение дней и scope списка по выбранному дню/диапазону. Рабочее название — «Учитывать архивные», default включён. Точный label/layout и распространение настройки только на Calendar либо также на остальные показатели Home ещё не выбраны; текущая правка не меняет ранее принятые scopes других widgets автоматически. **Обсуждение:** [FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).

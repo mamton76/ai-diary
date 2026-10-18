@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [FQ-06/SQ-06 — lifecycle Home Calendar](06_SQ-06_home-calendar-scope/00_thread.md); [FQ-06/SQ-05 — ручное снятие причины ошибки AI](05_SQ-05_dismiss-ai-error/00_thread.md); [FQ-06/SQ-04 — ошибки AI в Needs attention](04_SQ-04_failed-ai-attention/00_thread.md); [FQ-06/SQ-03 — lifecycle периодных counters](03_SQ-03_period-counter-scope/00_thread.md); [FQ-06/SQ-01 — lifecycle-охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md); [FQ-06/SQ-02 — scope Total entries](02_SQ-02_total-entries-scope/00_thread.md)  
+**Дочерние треды:** [FQ-06/SQ-07 — настройка исключения архива](07_SQ-07_archive-visibility-setting/00_thread.md); [FQ-06/SQ-06 — lifecycle Home Calendar](06_SQ-06_home-calendar-scope/00_thread.md); [FQ-06/SQ-05 — ручное снятие причины ошибки AI](05_SQ-05_dismiss-ai-error/00_thread.md); [FQ-06/SQ-04 — ошибки AI в Needs attention](04_SQ-04_failed-ai-attention/00_thread.md); [FQ-06/SQ-03 — lifecycle периодных counters](03_SQ-03_period-counter-scope/00_thread.md); [FQ-06/SQ-01 — lifecycle-охват очередей Home](01_SQ-01_home-queue-scope/00_thread.md); [FQ-06/SQ-02 — scope Total entries](02_SQ-02_total-entries-scope/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format, inventory/product baseline
 
 ## Вопрос
@@ -52,5 +52,7 @@ Codex — (2026-10-18) SQ-04 завершён: Needs attention требует д
 Codex — (2026-10-18) SQ-05 завершён: конкретную ошибку можно явно убрать из внимания без потери истории и без скрытия остальных причин. Сразу открывается самостоятельный подпункт FQ-07 — исход complex proposal после частичного Apply. Остальная модель review items/агрегатов и технические contracts остаются открытыми.
 
 Codex — (2026-10-18) Открыт отдельный SQ-06 — lifecycle Calendar на Home. Ранее выбраны local event dates и совпадение календаря/дневной выборки, но не ACTIVE-only vs включение ARCHIVED. Принятые scopes других widgets не выбирают Calendar автоматически.
+
+Codex — (2026-10-18) SQ-06 завершён для default Home Calendar: ACTIVE + ARCHIVED без TRASH. Пользователь предложил настройку исключения архива; SQ-07 уточняет, к каким виджетам/показателям она относится. Эта дополнительная настройка ещё не изменяет scopes прочих Home components.
 
 **Решение:** [принято] (2026-10-18) Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.

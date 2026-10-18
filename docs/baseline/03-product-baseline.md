@@ -1280,3 +1280,9 @@ Queued/running работа не дублируется; неизвестный 
 При новом явном пользовательском продолжении или полном повторе обработки существующих Entry берётся актуальная committed Revision каждой допущенной к обработке записи при фиксации input нового Run. Состав Entry IDs остаётся исходным. Несохранённый WorkingDraft не используется: действуют прежние Draft skip/Save guards. После фиксации input конкретного Run он не переключается на следующую Revision; технический retry той же операции сохраняет исходный input. Изменения Current после фиксации input обрабатываются прежними freshness/base/conflict checks.
 
 Точное место input capture в очереди и версия самой routine при повторе требуют отдельной конкретизации; эти вопросы не решаются выбором актуальной версии Entry. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
+
+## Уточнение 18.10.2026 — default scope Calendar Home
+
+Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются.
+
+Пользователь дополнительно предложил настройку отключения показа/учёта архива. Её область (только Calendar либо другие показатели Home), label и layout ещё уточняются; ранее принятые scopes других widgets этой репликой автоматически не пересматриваются. **История default:** [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md). **Настройка:** [FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
