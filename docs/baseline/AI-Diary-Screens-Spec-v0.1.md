@@ -392,7 +392,7 @@ Manual content editing не должен незаметно превращать
 ### 9.4 Editing session, WorkingDraft и явный Save [Б/Д]
 
 - Session начинается с первой фактической правки. Autosave синхронизирует WorkingDraft, **не создаёт committed revision**.
-- **[Д, 04.10] Автокоммита по таймеру нет.** Правило «manual revision после часа inactivity» отменено. Manual revision создаётся только явным Save; Apply/Restore остаются отдельными явными операциями.
+- **[Д, 04.10] Автокоммита по таймеру нет.** Правило «manual revision после часа inactivity» отменено. Manual revision создаётся только явным Save. **[Д, 18.10]** Подтверждённые Apply AI proposal и Restore исторической версии сразу создают по одной новой committed Revision; второй Save не нужен. Preview/редактирование Result до Apply commit не создаёт.
 - WorkingDraft editable content включает Title, EventTimeRange (From/To/date/time/timezone), Text, Tags и **связи** Assets. Raw/provenance/history, AI proposals/results, ID/currentRevisionID/createdAt и bytes Asset не являются редактируемым content. Draft имеет собственные служебные baseRevisionId/updatedAt/session поля; это не изменение committed timestamps. Archive/delete — отдельные действия.
 - Перед Save и передачей lease обязателен flush; ошибка не очищает draft. Успешный Save создаёт revision и удаляет durable Draft из пользовательского хранилища; recovery points живут по своей policy.
 - **[Д]** Discard / «Отменить изменения» удаляет draft и возвращает последнее committed состояние. «Вернуться позже» оставляет draft без commit. Эти действия работают и в full editor.
@@ -1056,3 +1056,10 @@ User instructions/overrides поддерживаются отдельно от �
 | 49 | Итоговый поток | C08, §2.1, §7–10, §13–15 |
 
 Остаточная неопределённость: источник задаёт Needs attention через примеры review items, но не полную модель; не задаёт lifecycle-охват каждого Home counter и timezone границы rolling days. Эти детали сохранены открытыми. `Entries` без фильтров взято буквально из D04 §44: это заменяет прежнее неявное State=Active в Browser, не меняя явно Active-ограниченные виджеты Home.
+
+
+### 26.3. Уточнение 18.10.2026 — явные commit-действия
+
+Принят первый вариант FQ-01: Save фиксирует ручной Draft; Apply подтверждённого AI proposal и Restore исторической версии самостоятельно создают новые Revision, без отдельного Save после них. Autosave/Return later/Discard/Reject Revision не создают. Restore из Trash относится к lifecycle и content Revision не создаёт. Автоматические AI commits ещё обсуждаются.
+
+История: [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).

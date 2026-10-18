@@ -24,7 +24,7 @@
 - **UI-0.5:** текущая спецификация экранов; включает проверенный при первоначальной сборке GitHub baseline и уточнения D04. Репозиторий в рамках этой сборки повторно не проверялся.
 - **[Д]** — принято в D04; **[Б]** — унаследовано из baseline, отражённого в UI-0.5; **[П]** — предложенная конкретизация, ещё не утверждена; **[О]** — открытый вопрос; **[F]** — future.
 
-Приоритет имеют новые прямые решения пользователя. Неоднозначность между документами выносится в §14, а не разрешается молчаливым выбором разработчика. Правило «Revision только по Save» относится безусловно к ручному Draft; сочетание с Apply/Restore и прежними автоматическими AI-изменениями требует уточнения FQ-01.
+Приоритет имеют новые прямые решения пользователя. Неоднозначность между документами выносится в §14, а не разрешается молчаливым выбором разработчика. Правило «Revision только по Save» относится безусловно к ручному Draft; 18.10.2026 подтверждено: Apply и Restore исторической версии сразу создают по одной новой Revision без дополнительного Save. В FQ-01 остался только охват автоматических AI-изменений.
 
 Старые Android/Firebase документы — исторический контекст. Из них не переносятся требования к стеку текущего web-приложения или устаревшие lifecycle-статусы.
 
@@ -93,13 +93,16 @@
 | ENT-05 [Д] Discard | Есть Draft | Draft удалён, показана последняя committed Revision; новая несохранённая Entry отменяется | Новая content Revision; случайно созданный canonical tag остаётся в каталоге |
 | ENT-06 [Д] Return later | Пользователь покидает изменённую запись | Draft сохранён, уход разрешён, badge остаётся | Неявный commit/discard |
 | ENT-07 [Д] Compare | Выбраны Revision/Revision либо base Revision/Draft | Полный Entry diff; Draft editable, Revision read-only | Редактирование immutable исторической версии |
-| ENT-08 [Б] Restore revision | Выбрана история; разрешены текущий Draft/conflict/lease | Новая Revision с restored-from reference; прежняя история сохранена | Перемотка указателя с удалением более новых revisions |
+| ENT-08 [Б/Д, 18.10] Restore revision | Выбрана история; разрешены текущий Draft/conflict/lease | Новая Revision с restored-from reference; прежняя история сохранена | Перемотка указателя с удалением более новых revisions |
 
 **[Б]** Ручная editing session начинается с первой правки, не от открытия записи для чтения. Операции одинаковы независимо от места входа. При сворачивании/смене карточки и уходе с нового unsaved Entry необходим явный Save / Discard / Return later; без изменений диалог не нужен.
 
 **[Д]** После Save нормализуются tag mentions (§6) и создаются pending new tags из Draft; самопроизвольный `#word` не создаёт catalog tag. **[О]** Точный порядок и восстановление частично выполненного многофайлового Save — FQ-03.
 
 **[П]** Save без фактических изменений не создаёт пустую Revision. Это предложение из UI-0.5, а не отдельно подтверждённое новое правило.
+
+
+**[Д, 18.10.2026] Явные commit-действия:** Save, Apply и Restore исторической версии сразу создают по одной новой committed Revision после успешного выполнения. Apply/Restore не требуют дополнительного Save. Preview, ручное редактирование Result до Apply и обычный autosave ещё не commit. Эта формулировка не распространяется на восстановление Entry из Trash.
 
 ### 4.2. Lifecycle
 
@@ -233,7 +236,7 @@
 
 **AI-10 [Б].** Информационный результат остаётся AIResult и не превращается сам в body Entry. AI не удаляет user-added tags автоматически. Uncertainty не заменяется выдуманным фактом.
 
-**[О]** Прежний baseline допускает автоматическую первую normalization и некоторые привязки существующих tags. D04 формулирует Revision только через Save; автоматические mutating policies нельзя окончательно реализовать без разрешения FQ-01. Batch launch уже принят, массовое бесконтрольное применение не принято. Partial apply и судьба непринятых частей proposal — FQ-07.
+**[О]** Прежний baseline допускает автоматическую первую normalization и некоторые привязки существующих tags. Формулировка D04 «Revision только через Save» уточнена 18.10: она ограничивает ручной Draft, а Apply/Restore — самостоятельные commit-действия. Допустимые случаи автоматического AI commit ещё обсуждаются в FQ-01. Batch launch уже принят, массовое бесконтрольное применение не принято. Partial apply и судьба непринятых частей proposal — FQ-07.
 
 ## 10. Capture и интеграции
 
@@ -292,7 +295,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 |---|---|---|
 | E0 | Account/storage access, files-only чтение существующих Entries | Минимальные canonical read contracts |
 | E1 | Поиск, filters, sorting, presets | Date semantics, области выборок, query contract; стратегия index при необходимости |
-| E2 | Редактирование, durable Draft, Save, history/Compare/Restore | Commit protocol, concurrency, schemas/migrations, FQ-01 и FQ-03 |
+| E2 | Редактирование, durable Draft, Save, history/Compare/Restore | Commit protocol, concurrency, schemas/migrations, FQ-03; ручные Save/Restore уже определены |
 | E3 | Каталоги Tags/Types, merge/delete, работа с Assets | FQ-02, collision policy, deletion/references |
 | E4 | Routines/runs, proposals/review, model settings | Eligibility/run identity, application policy, cancellation/retry, FQ-07 |
 | Дополнительные UX и интеграции | Home, web-create, полный Assets UI, Calendar adapters | Очерёдность поставки и adapter-specific contracts |
@@ -301,11 +304,11 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 
 ## 14. Открытые системные вопросы
 
-**FQ-01 обсуждается:** [канонический подтред PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). 18.10.2026 начат разбор; решение ещё не принято. Согласованный порядок: Revision/Save/Apply/Restore → merge тегов → протокол надёжного сохранения.
+**FQ-01 обсуждается:** [канонический подтред PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). 18.10.2026 принято по явным действиям: Save ручных правок, Apply и Restore исторической версии самостоятельно создают Revision; второго Save не требуется. Остался AI auto-apply. Согласованный порядок: Revision/Save/Apply/Restore → merge тегов → протокол надёжного сохранения.
 
 | ID | Что нужно решить | Почему это влияет на реализацию |
 |---|---|---|
-| FQ-01 | Точная граница «Revision только по Save»: manual Draft против явных Apply/Restore и прежнего AI auto-apply | Необходимо единое правило источников committed изменений. Save-таймер уже отменён; этот вопрос его не переоткрывает |
+| FQ-01 | Остались допустимые автоматические AI commits (raw normalization, existing tags) | Явные Save / Apply / Restore уже согласованы 18.10: по одной новой Revision без второго Save; autosave не коммитит |
 | FQ-02 | Как tag merge меняет current relations при immutable committed snapshot | Нужна семантика redirect/projection/versioned operation и взаимодействия с Draft/lease |
 | FQ-03 | Multi-file commit, recovery после частичного Save, idempotency и canonical location operational state | Иначе durable Draft, new tags и currentRevisionId могут расходиться после сбоя |
 | FQ-04 | Коллизии aliases, удаление chip при сохранённом hashtag, формат suffix normalizer | Нужно предсказуемое tag lookup/normalization без потери текста |

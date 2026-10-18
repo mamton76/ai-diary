@@ -179,7 +179,7 @@ Current Entry остаётся главным состоянием EntryScreen. 
 
 ### REV-008 — Manual revision соответствует завершённой editing session
 **Статус:** ПОДТВЕРЖДЕНО  
-Manual editing session начинается с первой фактической правки. Autosave внутри session не создаёт revisions. Одна завершённая session создаёт одну manual revision: при явном Save или после 1 часа inactivity. Не вводится эвристика «мелкое/крупное изменение».
+Manual editing session начинается с первой фактической правки. Autosave внутри session не создаёт revisions. Ручной Draft создаёт manual revision только при явном Save; autosave/inactivity её не создают (уточнение 04.10, подтверждено 18.10). Apply подтверждённого AI proposal и Restore исторической версии самостоятельно создают новую Revision, без дополнительного Save. Не вводится эвристика «мелкое/крупное изменение».
 
 ### REV-009 — Последовательные manual revisions могут группироваться только визуально
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -870,3 +870,8 @@ Selective sharing не входит в обозримый MVP и не долже
 ### LEGACY-002 — Миграция старых Firebase/Room данных не требуется
 **Статус:** ПОДТВЕРЖДЕНО  
 В старом Android/Firebase/Room нет уникальных ценных данных, требующих отдельного migration tooling. Native Android может быть спроектирован позже как новый клиент общего backend/API, когда появится реальная потребность, включая offline-first.
+
+
+## Уточнение revision commit actions — 18.10.2026
+
+Save фиксирует ручной Draft; Apply и Restore исторической версии сразу создают по одной новой committed Revision, без второго Save. Preview и Reject Revision не создают. AI auto-apply остаётся отдельным незакрытым хвостом [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Это уточняет прежнюю границу ручной editing session; история решений сохранена в PQ-004/FQ-01.

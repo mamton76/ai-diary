@@ -296,7 +296,7 @@ Manual revision создаётся по границе editing session, а не 
 
 - session начинается с первой фактической ручной правки;
 - autosave внутри session не создаёт revision;
-- session завершается явным Save или после 1 часа inactivity;
+- ручной Draft фиксируется только явным Save; таймер inactivity не создаёт Revision (уточнения 04.10/18.10);
 - одна завершённая session создаёт одну manual revision;
 - исправление одной запятой и большая правка подчиняются одному правилу.
 
@@ -1023,3 +1023,9 @@ AI Diary — это не просто приложение для написан
 ```
 
 При этом пользователь должен сохранять контроль над собственными данными и не зависеть критически ни от одной конкретной модели, UI или storage vendor.
+
+## Уточнение 18.10.2026 — Save / Apply / Restore
+
+Save ручных правок, Apply подтверждённого AI proposal и Restore исторической версии — самостоятельные commit-действия. Каждое успешное действие создаёт одну новую Revision; второй Save после Apply/Restore не нужен. Restore сохраняет более позднюю историю, добавляя новую Revision с provenance. Autosave, Return later, Discard и Reject Revision не создают. Восстановление из Trash — lifecycle-операция без content Revision. Правила автоматического AI commit ещё обсуждаются; текущим выбором они не утверждаются и не отменяются.
+
+**История:** [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).
