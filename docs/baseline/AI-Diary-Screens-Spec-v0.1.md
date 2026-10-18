@@ -1315,4 +1315,12 @@ Base не подменяется текущей пользовательской
 
 Ручное «Повторить» не требует менять Entry или обходить already-processed через Force rerun только из-за достоверного failure. Queued/running работа не дублируется; uncertain outcome сначала проверяется по прежним recovery правилам. Платная retry-policy и её default экономии взяты из [AQ-OPS-002](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md); отсутствие already-processed block не означает автоматического согласия на новый платный вызов. Точные operation/attempt IDs и limits/backoff — техническая конкретизация. **История:** [FQ-07/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md).
 
-**[О]** Следующий выбор — [сохранение уже готовых результатов при отмене batch](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/03_SQ-03_batch-cancel-results/00_thread.md).
+**[Д, 18.10.2026]** [Отмена batch сохраняет уже готовые результаты](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/03_SQ-03_batch-cancel-results/00_thread.md) и останавливает оставшуюся работу, без массового Undo/Reject.
+
+### 26.37. Уточнение 18.10.2026 — отмена batch сохраняет готовую часть
+
+При отмене пакетной AI-обработки сохраняются уже успешно опубликованные результаты: pending proposals и разрешённые routine policy committed изменения. Оставшаяся работа останавливается по общему cancellation contract; отмена не выполняет массовый Undo/Reject уже готовых результатов. Pending proposal не становится применённым от сохранения после отмены. Отменённый job не получает право позднего commit; история batch различает завершённую и отменённую/неисполненную части.
+
+Пример: из 20 Entries для 7 уже готовы результаты; после отмены эти 7 результатов доступны, оставшаяся работа останавливается. Уже опубликованные auto-apply изменения не откатываются; готовые proposals остаются доступными для review. Работа, не завершённая до cancellation guard, не получает право позднего применения ответа AI. Точное разрешение гонки commit/cancel, provider cancellation и schema batch outcomes — техническая конкретизация. **История:** [FQ-07/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/03_SQ-03_batch-cancel-results/00_thread.md).
+
+**[О]** Следующий выбор — [обычный повтор отменённой/необработанной части](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/04_SQ-04_interrupted-batch-retry/00_thread.md); текущая отмена сама по себе не возобновляет batch.
