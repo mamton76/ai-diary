@@ -160,7 +160,7 @@
 | TAG-01 | Связь Entry–Tag хранится через canonical tagId; chips показывают этот набор; raw hashtag relationship не определяет |
 | TAG-02 | Lookup ищет canonical name и aliases; прямой name match выше alias-only. При выборе alias вставляется именно он, chip показывает canonical name |
 | TAG-03 | `Create #new` — явное действие; новый тег до Save существует только в Draft. Save создаёт canonical tag, Discard не оставляет мусор в каталоге |
-| TAG-04 | При Save linked tag без canonical/alias hashtag дописывается обычным текстом в конец. Отдельного обязательного Tags: block нет |
+| TAG-04 [18.10] | При Save недостающие linked hashtags дописываются в конец одной строкой через пробел, отделённой от непустого body пустой строкой. Имеющиеся canonical/alias упоминания не перемещаются и не дублируются; повторный Save не повторяет suffix. Заголовка Tags: нет |
 | TAG-05 | Unlink меняет tagIds через Draft; при Save упоминания снятого тега переходят в #_name для поиска. Удаление hashtag из body без удаления chip связь не снимает |
 | TAG-06 | Rename сохраняет tagId, добавляет старое имя в aliases; ручное удаление alias не меняет relations |
 | TAG-07 | Merge выбирает survivor, переносит имя/aliases с дедупликацией; oldTagId становится mergedInto redirect. Current Entry/Draft relations разрешаются в survivor через каталог, без переписывания snapshots или новых content Revision |
@@ -170,6 +170,8 @@
 | TAG-11 | Types — пользовательский справочник; typeId optional; color непосредственно у Tag, без inheritance |
 | TAG-12 | Entries count у Tag: уникальные Active Entries с текущими Draft, без Archived/Trash |
 | TAG-13 [18.10] | Names/aliases — единое уникальное пространство между самостоятельными активными tags, сравнение и lookup без учёта регистра, отображение сохраняет выбранное написание. Конфликтующее обозначение не сохраняется, показывается существующий тег; автоматических merge/transfer/rebinding нет |
+
+**[Д, 18.10.2026] Формат suffix:** При Save недостающие упоминания связанных тегов дописываются в конец body одной строкой, hashtags разделяются одним пробелом. От непустого текста эта строка отделяется пустой строкой; отдельного заголовка Tags: нет. Уже имеющиеся canonical/alias упоминания остаются на своих местах и не дублируются. Если все связанные теги уже упомянуты, новая строка не добавляется; повторный Save не создаёт повторный suffix. В пустом body добавляется только строка hashtags, без ведущей пустой строки. Маркер #_name не считается активным упоминанием. [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md).
 
 **[Д, 18.10.2026] Снятые упоминания:** При Save упоминания явно снятого через chip тега преобразуются из #name в #_name, включая употреблённые aliases, с сохранением написанного обозначения. Маркер #_name остаётся в тексте, чтобы такие места можно было найти Text search; он не является активным hashtag, не создаёт связь и не восстанавливает chip. Не считать #_name присутствующим активным упоминанием при нормализации linked tags; обычный Tag filter по-прежнему работает по tagId/relations. Преобразование затрагивает упоминания снятого тега, а не все символы # в документе; повторный Save не добавляет второй underscore. Если тег добавлен обратно до Save, его упоминания не помечаются как снятые. Дополнительный вопрос на каждом Save для этого преобразования не требуется. [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Редактор/парсер не выделяет #_name как активный тег и не запускает для него обычный tag autocomplete/Create.
 
@@ -285,7 +287,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-05 | Delete backend DB/cache и rebuild | Entry/Draft/relations/runs/proposals и выборки восстановлены из user-owned data |
 | SYS-AC-06 | Takeover редактирования | Старая session не может commit, её unsynced input доступен для recovery |
 | SYS-AC-07 | New tag в Draft → Discard / Save | В первом случае нет мусора в каталоге, во втором tagId создан и связан |
-| SYS-AC-08 | Удалить hashtag, оставив chip → Save | Связь остаётся, недостающее упоминание добавлено в конец |
+| SYS-AC-08 | Оставить chips при отсутствующих hashtags → Save дважды | Связи остаются; недостающие hashtags добавлены в конце одной строкой через пробел после пустой строки. Имеющиеся mentions на прежних местах, повторов нет; пустой body получает только строку hashtags |
 | SYS-AC-09 | Merge / Delete Tag → открыть старую Revision | Snapshot не переписан; merge разрешает redirect и не создаёт новых content Revision, не меняет физически Draft, дедуплицирует счётчики; delete сохраняет historical tag/relations |
 | SYS-AC-10 | Asset permanent delete → читать history | Bytes и preview отсутствуют, tombstone/placeholder доступны, Restore не обещается |
 | SYS-AC-11 | Archive Entry с Draft | Lifecycle/audit изменены без content Revision, Draft доступен в архиве |
@@ -330,7 +332,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-01 — РЕШЕНО | Источники committed Revision | Save/Apply/Restore и два узких AI auto-apply случая согласованы 18.10; история в FQ-01 thread |
 | FQ-02 — РЕШЕНО | Merge current relations при immutable snapshot | Canonical redirect в каталоге, без массовых Revision и переписывания snapshots/Draft; audit операции |
 | FQ-03 — ЧАСТИЧНО | Multi-file commit/recovery и canonical location operational state | Автопроверка/retry и временный read-only editor приняты (STO-07/08); нужна техническая проработка физического протокола |
-| FQ-04 — ЧАСТИЧНО | Unicode/пробелы и детали normalizer | Единая уникальность names/aliases без учёта регистра, резервирование обозначений удалённых тегов и #_name после unlink приняты; transfer workflow сейчас не включён; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
+| FQ-04 — ЧАСТИЧНО | Технические правила Unicode/пробелов и грамматики hashtag mentions | Уникальность без учёта регистра, резервирование deleted labels, #_name после unlink и формат suffix приняты; transfer workflow сейчас не включён; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
