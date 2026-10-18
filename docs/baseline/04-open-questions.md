@@ -833,6 +833,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-004 — Unified CaptureItem contract
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-INT-004 thread](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md)
+
 Нужно формализовать один normalized input, чтобы каждый adapter не знал final persistence schema.
 
 ## AQ-INT-005 — Assistant-specific integrations
