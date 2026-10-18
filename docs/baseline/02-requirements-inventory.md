@@ -741,8 +741,8 @@ Semantic retrieval для cross-entry AI возможно в будущем; emb
 Текстовый поиск по title/body без учёта регистра и фильтрация по tags, date range, source, status. Использовать штатный full-text index выбранной operational БД (SQLite FTS5, PostgreSQL FTS либо подходящий эквивалент), индекс rebuildable из canonical files. Без отдельного поискового сервиса; семантический/vector, нечёткий/синонимический поиск и гарантированная русская морфология не входят в этот этап. Решение: [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md).
 
 ### SEARCH-INDEX-UPDATE — Асинхронная индексация и восстановление
-**Статус:** ПОДТВЕРЖДЕНО
-После successful canonical commit в очередь направляется обновление derived search index. Поиск eventual consistent: небольшая задержка появления изменений допустима. Индекс можно полностью перестроить из canonical files; реализация должна уметь восстановиться после пропущенных обновлений. Уточнение к [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md).
+**Статус:** ПОДТВЕРЖДЕНО  
+После каждого successful canonical Save/commit в очередь направляется обновление derived search index. Поиск eventual consistent: небольшая задержка появления изменений допустима. Примерно раз в 12 часов автоматическая сверка canonical files/ревизий с indexed state выявляет пропущенные изменения, удалённые записи и запускает incremental reindex только по необходимости. Полный rebuild из canonical files поддерживается как recovery operation. Точная реализация и интервал настраиваются позже. Решения: [AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md), [AQ-SEARCH-003](04-open-questions.threads/35_AQ-SEARCH-003_rebuild-semantics/00_thread.md).
 
 ### SEARCH-004 — Search index не обязан быть canonical
 **Статус:** ПОДТВЕРЖДЕНО.
