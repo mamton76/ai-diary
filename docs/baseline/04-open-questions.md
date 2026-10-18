@@ -847,16 +847,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-SEARCH-001 — MVP search semantics
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-SEARCH-001 thread](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md)
-
-Минимум определить поддержку:
-
-- title/body substring/full-text;
-- tags;
-- date range;
-- source;
-- status.
+**Статус:** РЕШЕНО  
+**Решение:** после самого первого files-only MVP — обычный text full-text search по title/body (без учёта регистра) и filters по tags, date range, source, status. Используем native FTS выбранной operational БД и rebuildable index из canonical files; не добавляем отдельный search server. Semantic/vector search и специальные морфологические возможности — позднее.  
+**История обсуждения:** [AQ-SEARCH-001 thread](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md)
 
 ## AQ-SEARCH-002 — Semantic search timing
 
