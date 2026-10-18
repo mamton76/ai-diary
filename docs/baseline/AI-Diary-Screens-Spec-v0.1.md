@@ -289,9 +289,9 @@ Hybrid UI: активные фильтры всегда видны как chips;
 | Entries · last 7 days | Скользящие последние 7 дней | Соответствующий диапазон Event date |
 | Entries · last 30 days | Скользящие последние 30 дней | Соответствующий диапазон Event date |
 | Entries with assets · last 30 days | Скользящие последние 30 дней | Диапазон Event date AND Has assets = Yes |
-| Total entries | Всё время | Все записи в обозначенной области lifecycle |
+| Total entries | Всё время | Lifecycle-охват ещё открыт: [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md) |
 
-Считаются Entry, не версии и не число предложений. Needs attention — производный признак, а не lifecycle state. **[П]** Для обычных счётчиков Home применяется Active; для Drafts/Needs attention точный охват Archived/Trash должен быть явно обозначен и одинаков у числа и результата перехода. **[Д]** Last 7 days = сегодня + предыдущие 6 дней; Last 30 days = сегодня + предыдущие 29 дней. Это скользящие календарные дни, не week/month и не произвольные последние 168/720 часов. **[О]** Timezone границы дня и точный охват lifecycle этих двух очередей требуют уточнения; «за всё время» не означает автоматически «включая Trash».
+Считаются Entry, не версии и не число предложений. Needs attention — производный признак, а не lifecycle state. **[П]** Для обычных счётчиков Home применяется Active; точный scope Total entries обсуждается отдельно. **[Д, 18.10]** Drafts / Needs attention включают ACTIVE + ARCHIVED, исключают TRASH; у числа и результата перехода одинаковые условия фильтра. **[Д]** Last 7 days = сегодня + предыдущие 6 дней; Last 30 days = сегодня + предыдущие 29 дней. Это скользящие календарные дни, не week/month и не произвольные последние 168/720 часов. **[О]** Timezone границы дня и lifecycle-охват остальных счётчиков требуют уточнения; «за всё время» не означает автоматически «включая Trash».
 
 ### Облако тегов — C07
 
@@ -854,7 +854,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q06 | Mobile layout трёхстороннего proposal review? | Обычный C15 Compare уже определён: Before/After или inline diff; детали S07 остаются открыты |
 | UI-Q07 | Последствия permanent delete Entry для зависимых ссылок; external originals? | Entry Trash имеет Restore/permanent delete, без автоматического таймера; Asset delete принят; внешние originals отдельно |
 | UI-Q08 | Lifecycle оставшихся частей complex proposal после partial apply? | Решить при detailed AI review |
-| UI-Q09 | Timezone границы дня, lifecycle очередей Home, inclusion intervals? | Last 7/30 = сегодня + 6/29 дней; AND/OR/NOT и timezone EventTimeRange решены |
+| UI-Q09 | Timezone границы дня и lifecycle остальных Home counters | Drafts / Needs attention = ACTIVE + ARCHIVED, без TRASH; period overlap и Last 7/30 = сегодня + 6/29 дней приняты; Total entries обсуждается отдельно |
 | UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
 | UI-Q11 | Standalone Inbox, детали routine editor, export/maintenance screens? | Экран Routines и создание пользовательских routines приняты; детали формы и этап поставки уточняются |
 | UI-Q12 | Правила Unicode/пробелов и точный historic rendering name/color? Уникальность без учёта регистра и резервирование names/aliases удалённых тегов уже приняты | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
@@ -1059,7 +1059,7 @@ User instructions/overrides поддерживаются отдельно от �
 | 48 | Открытое/отложенное | C10/C11/C13, §2.1, §15.6–15.7, §22; детали review items/navigation/layout остаются открыты |
 | 49 | Итоговый поток | C08, §2.1, §7–10, §13–15 |
 
-Остаточная неопределённость: источник задаёт Needs attention через примеры review items, но не полную модель; не задаёт lifecycle-охват каждого Home counter и timezone границы rolling days. Эти детали сохранены открытыми. `Entries` без фильтров взято буквально из D04 §44: это заменяет прежнее неявное State=Active в Browser, не меняя явно Active-ограниченные виджеты Home.
+Остаточная неопределённость: источник задаёт Needs attention через примеры review items, но не полную модель; не задаёт lifecycle-охват каждого Home counter и timezone границы rolling days. Полная модель review items, scope остальных counters и timezone rolling days остаются открытыми; scope Drafts / Needs attention уточнён в §26.21. `Entries` без фильтров взято буквально из D04 §44: это заменяет прежнее неявное State=Active в Browser, не меняя явно Active-ограниченные виджеты Home.
 
 
 ### 26.3. Уточнение 18.10.2026 — явные commit-действия
@@ -1178,3 +1178,9 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
 
 Правка старой записи может поднять её при Updated desc до Save; при Updated asc используется тот же timestamp с обратным направлением. Новая Entry сортируется по timestamp Draft. Это не добавляет Draft отдельный приоритет, не меняет default Event date sort и не создаёт Revision. **История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md).
+
+### 26.21. Уточнение 18.10.2026 — архивные записи в рабочих очередях Home
+
+Очереди «Черновики» / «Требует внимания» на Home включают ACTIVE и ARCHIVED Entries за всё время и исключают TRASH. Счётчик и список по клику используют одинаковые условия lifecycle и соответствующего признака; одна Entry считается один раз, независимо от числа review items.
+
+Архивирование — отдельное явное действие «Архивировать» в меню записи. Автоматический перенос по возрасту не задан. Архив сохраняет запись, историю и имеющийся Draft; наличие Draft само по себе не запрещает архивацию. Home EntryList и TagCloud сохраняют свой ACTIVE scope. Scope Total entries и остальных статистических counters этим решением не определяется. **История:** [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md).

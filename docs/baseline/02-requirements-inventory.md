@@ -1001,4 +1001,10 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
 
-**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Lifecycle-охват Home counters и модель review items ещё не выбраны; принятое правило относится именно к Updated sort.
+**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Принятое правило относится именно к Updated sort. Scope двух рабочих очередей Home согласован ниже; scope остальных counters и полная модель review items остаются открытыми.
+
+## Уточнение 18.10.2026 — lifecycle рабочих очередей Home
+
+Очереди «Черновики» / «Требует внимания» на Home включают ACTIVE и ARCHIVED Entries за всё время и исключают TRASH. Счётчик и список по клику используют одинаковые условия lifecycle и соответствующего признака; одна Entry считается один раз, независимо от числа review items.
+
+Это решение не меняет ACTIVE scope Home EntryList/TagCloud и не выбирает lifecycle-охват Total entries/остальных counters. Архивирование в текущем ТЗ выполняется явным действием пользователя; автоматический перенос по возрасту не задан. Запись, история и имеющийся Draft сохраняются. **История:** [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md).

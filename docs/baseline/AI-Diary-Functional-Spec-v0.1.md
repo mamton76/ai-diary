@@ -112,7 +112,7 @@
 
 | ID | Операция | Семантика |
 |---|---|---|
-| ENT-09 | Archive | Меняет lifecycle/audit без content Revision; Entry переносится вместе с Draft; короткое confirmation; draft доступен при открытии архива |
+| ENT-09 | Archive | Явное действие пользователя «Архивировать»; автоматический перенос по возрасту не задан. Меняет lifecycle/audit без content Revision; Entry переносится вместе с Draft; короткое confirmation; draft доступен при открытии архива |
 | ENT-10 | Delete | Entry с Revision переходит в Trash вместе с Draft; новая Entry без Revision может быть удалена целиком |
 | ENT-11 [18.10] | Restore from Trash | Всегда возвращает Entry в ACTIVE, включая ранее Archived; сохраняет identity, history и Draft. Не является Restore исторической Revision и не создаёт content Revision |
 | ENT-12 | Delete permanently | Доступно из Entry Trash; автоматический таймер permanent delete пока не нужен |
@@ -224,8 +224,8 @@
 | EntryList | 7 Active Entries, без периода, Event date desc; current Draft-state при наличии |
 | TagCloud | Active за всё время; число уникальных связанных Entry определяет размер, Tag.color определяет цвет; deleted tags исключены |
 | Calendar | Наличие записей по дням; выбранный день/range преобразуется в универсальные From/To. Без counts/state clutter в UI |
-| Total entries | За всё время; точный lifecycle-охват ещё открыт |
-| Drafts, Needs attention | За всё время; lifecycle-охват обсуждается в [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md), ещё не выбран |
+| Total entries | За всё время; lifecycle-охват обсуждается в [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md), ещё не выбран |
+| Drafts, Needs attention | За всё время; ACTIVE + ARCHIVED, без TRASH; одинаковый scope счётчика и списка по клику. [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md) |
 | Entries last 7 days | Сегодня + предыдущие 6 дней |
 | Entries last 30 days | Сегодня + предыдущие 29 дней |
 | Entries with assets | Has assets AND Event date в последних 30 днях |
@@ -351,7 +351,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-03 — ЧАСТИЧНО | Multi-file commit/recovery и canonical location operational state | Автопроверка/retry и временный read-only editor приняты (STO-07/08); нужна техническая проработка физического протокола |
 | FQ-04 — ЧАСТИЧНО | Технические правила Unicode/пробелов и грамматики hashtag mentions | Уникальность без учёта регистра, резервирование deleted labels, #_name после unlink и формат suffix приняты; transfer workflow сейчас не включён; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
 | FQ-05 — ЧАСТИЧНО | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/date timezone | [Overlap при фильтрации](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md) принят; точные границы, timezone, отсутствующий To и uncertainty ещё требуют проработки |
-| FQ-06 — ЧАСТИЧНО | Lifecycle counters, модель review items | [Updated sort учитывает Draft](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md) — принято; следующий выбор — [охват очередей Home](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md) |
+| FQ-06 — ЧАСТИЧНО | Lifecycle counters, модель review items | [Updated sort учитывает Draft](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md) и [охват очередей Home](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md) — приняты; следующий выбор — [Total entries](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md) |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
 | FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, partial uploads, external originals, retention/cache cleanup | [Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): условное предложение soft delete; [Restore Entry из Trash](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md): всегда ACTIVE. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
