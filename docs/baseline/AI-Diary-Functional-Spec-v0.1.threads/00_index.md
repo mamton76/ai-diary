@@ -15,3 +15,4 @@
 | 3 | FQ-04 | Tag aliases / unlink text / normalizer | ждём исследования | paused | active | Codex — текущий диалог требований AI Diary | [Тред](03_FQ-04_tag-aliases/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 4 | FQ-08 (подпункт) | Готовые Asset после Discard / unlink | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/00_thread.md) | Functional/Screens Specs, file-format / Save design |
 | 4.1 | FQ-08/SQ-01 | Restore Entry из Trash → ACTIVE | решён | resolved | none | — | [Тред](04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md) | Functional/Screens Specs, file-format / Save design |
+| 5 | FQ-05 | Попадание интервальной записи в период фильтра | ждём пользователя | in_discussion | active | Codex — текущий диалог требований AI Diary | [Тред](05_FQ-05_period-overlap/00_thread.md) | Functional/Screens Specs, file-format, inventory/product baseline |
