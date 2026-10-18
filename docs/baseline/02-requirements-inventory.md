@@ -133,9 +133,9 @@ AI не может молча переписать то, что пользова
 **Статус:** ПОДТВЕРЖДЕНО  
 Если дата, grouping, person/place identity и т. п. неясны, система должна хранить неопределённость/review state вместо выдуманного факта.
 
-### ENTRY-009 — Один input может дать несколько entries, и наоборот
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Существующий Inbox-to-Entry это допускает при уверенной связи.
+### ENTRY-009 — Связь CaptureItems и Entries
+**Статус:** ПОДТВЕРЖДЕНО для MVP, split отложен  
+Несколько CaptureItems могут быть собраны в одну Entry, но один CaptureItem в MVP используется максимум для одной созданной Entry. Split одной Entry на несколько и разбор одного CaptureItem на несколько Entries не требуются сейчас и отложены до реального пользовательского сценария. Исходники и provenance сохраняются для будущего расширения. [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md), [FQ-ENTRY-001](06-future-questions.md#fq-entry-001--merge--split-entries).
 
 ### ENTRY-010 — Lifecycle Entry: ACTIVE / ARCHIVED / DELETED
 **Статус:** ПОДТВЕРЖДЕНО  
