@@ -45,4 +45,12 @@ REST выглядит простым default, но нужно определит
 
 ## Обсуждение
 
+### Сводка восстановления обсуждения — 2026-10-18
+
+пользователь — «а можешь поискать в какой соседней сессии мы его уже обсуждали AQ-API-003 - и давай продожим тут ?»
+
+ChatGPT — Восстановлена соседняя беседа от 2026-09-27: API следует выводить из экранов и сценариев (Browse/Search, EntryScreen/EntryPanel, Draft/edit/commit, leases, History/Revisions, proposal review, AI workflows). Рабочее направление: REST + JSON; ресурсы Entries/Drafts/Revisions/Proposals/Jobs; optimistic concurrency через baseRevisionId и явные conflicts; долгие jobs через 202 + jobId; SSE для lightweight notifications. Эти позиции были рекомендациями обсуждения, не окончательно принятым AQ-API-003. Отдельные сессии в настоящее время разбирают экраны, поэтому здесь разумно согласовать минимальные API principles без параллельного проектирования screen-specific endpoints.
+
+**Нужно от пользователя:** согласовать REST + JSON и минимальные API principles сейчас или сначала разобрать один конкретный спорный аспект контракта.
+
 **Решение:** —
