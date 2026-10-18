@@ -1,0 +1,1041 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-diary.invalid/schemas/1.0.0-draft.1/core-record.schema.json",
+  "title": "AI Diary core storage records — proposal, not production validation",
+  "$defs": {
+    "fileRef": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "endpoint": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "time": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "time"
+      ],
+      "additionalProperties": false
+    },
+    "eventTime": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/endpoint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/endpoint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeZone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uncertainties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "timeZone",
+        "uncertainties"
+      ],
+      "additionalProperties": false
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "eventTime": {
+          "$ref": "#/$defs/eventTime"
+        },
+        "textRef": {
+          "$ref": "#/$defs/fileRef"
+        },
+        "tagIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "assetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "title",
+        "eventTime",
+        "textRef",
+        "tagIds",
+        "assetIds"
+      ],
+      "additionalProperties": false
+    },
+    "pendingTag": {
+      "type": "object",
+      "properties": {
+        "tagId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "typeId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+      },
+      "required": [
+        "tagId",
+        "name",
+        "aliases",
+        "typeId",
+        "color"
+      ],
+      "additionalProperties": false
+    },
+    "tag": {
+      "type": "object",
+      "properties": {
+        "tagId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "typeId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "state": {
+          "enum": [
+            "ACTIVE",
+            "DELETED",
+            "MERGED"
+          ]
+        },
+        "mergedInto": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "updatedAt": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "tagId",
+        "name",
+        "aliases",
+        "typeId",
+        "color",
+        "state",
+        "mergedInto",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "MERGED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "mergedInto": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "mergedInto": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "entryState": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "entry-state"
+        },
+        "entryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lifecycle": {
+          "enum": [
+            "ACTIVE",
+            "ARCHIVED",
+            "TRASH"
+          ]
+        },
+        "currentRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentRevisionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "committedUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "draftRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pendingOperationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenanceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileRef"
+          }
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "entryId",
+        "stateId",
+        "createdAt",
+        "lifecycle",
+        "currentRevisionId",
+        "currentRevisionRef",
+        "committedUpdatedAt",
+        "draftRef",
+        "pendingOperationId",
+        "provenanceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "revision": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "revision"
+        },
+        "entryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previousRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "enum": [
+            "USER_SAVE",
+            "AI_APPLY",
+            "HISTORY_RESTORE",
+            "AI_INITIAL_NORMALIZATION",
+            "AI_EXISTING_TAGS",
+            "EXTERNAL_FILE_CHANGE"
+          ]
+        },
+        "restoredFromRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content": {
+          "$ref": "#/$defs/content"
+        },
+        "provenanceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileRef"
+          }
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "entryId",
+        "revisionId",
+        "sequence",
+        "previousRevisionId",
+        "operationId",
+        "createdAt",
+        "origin",
+        "restoredFromRevisionId",
+        "content",
+        "provenanceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "draft": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "draft"
+        },
+        "entryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "draftId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "draftVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "baseRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutationEpoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "content": {
+          "$ref": "#/$defs/content"
+        },
+        "pendingTags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pendingTag"
+          }
+        },
+        "tagEditIntents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tagId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "removedSpellings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "tagId",
+              "removedSpellings"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "pendingUploads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "filename": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "SELECTED",
+                  "UPLOADING",
+                  "FAILED"
+                ]
+              }
+            },
+            "required": [
+              "uploadId",
+              "filename",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "entryId",
+        "draftId",
+        "draftVersion",
+        "baseRevisionId",
+        "updatedAt",
+        "sessionId",
+        "mutationEpoch",
+        "content",
+        "pendingTags",
+        "tagEditIntents",
+        "pendingUploads"
+      ],
+      "additionalProperties": false
+    },
+    "catalog": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "tag-catalog"
+        },
+        "catalogVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tag"
+          }
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "catalogVersion",
+        "tags"
+      ],
+      "additionalProperties": false
+    },
+    "lease": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "mutation-lease"
+        },
+        "entryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutationEpoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "enum": [
+            "ACTIVE",
+            "REVOKED"
+          ]
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "entryId",
+        "ownerId",
+        "mutationEpoch",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "operationInput": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "operation-input"
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "SAVE",
+            "APPLY",
+            "RESTORE",
+            "AI_INITIAL_NORMALIZATION",
+            "AI_EXISTING_TAGS"
+          ]
+        },
+        "entryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "draftId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "draftVersion": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "frozenDraftRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mutationEpoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parserVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "operationId",
+        "kind",
+        "entryId",
+        "baseRevisionId",
+        "draftId",
+        "draftVersion",
+        "frozenDraftRef",
+        "mutationEpoch",
+        "parserVersion"
+      ],
+      "additionalProperties": false
+    },
+    "operation": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "operation"
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requestFingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "inputRef": {
+          "$ref": "#/$defs/fileRef"
+        },
+        "status": {
+          "enum": [
+            "PREPARING",
+            "COMMITTED",
+            "FAILED",
+            "CONFLICT",
+            "CANCELLED",
+            "NO_CHANGE"
+          ]
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "revisionId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "revisionRef": {
+                  "$ref": "#/$defs/fileRef"
+                },
+                "consumedDraftRef": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/fileRef"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "revisionId",
+                "revisionRef",
+                "consumedDraftRef"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "operationId",
+        "requestFingerprint",
+        "inputRef",
+        "status",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "resourceKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "resourceKey",
+        "expected"
+      ],
+      "additionalProperties": false
+    },
+    "change": {
+      "type": "object",
+      "properties": {
+        "resourceKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "resourceKey",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "slot": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider": {
+          "const": "google_drive"
+        },
+        "objectId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path",
+        "provider",
+        "objectId"
+      ],
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "publication"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "publicationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "BOOTSTRAP",
+            "REGISTER",
+            "SAVE",
+            "CONTROL"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fileRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextSlot": {
+          "$ref": "#/$defs/slot"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/change"
+          }
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "sequence",
+        "publicationId",
+        "operationId",
+        "kind",
+        "createdAt",
+        "previous",
+        "nextSlot",
+        "conditions",
+        "changes"
+      ],
+      "additionalProperties": false
+    },
+    "storageManifest": {
+      "type": "object",
+      "properties": {
+        "formatVersion": {
+          "const": "1.0.0-draft.1"
+        },
+        "schema": {
+          "const": "storage-manifest"
+        },
+        "storageId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "storageIncarnation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publicationProtocol": {
+          "const": "append-slot-v1"
+        },
+        "genesisRef": {
+          "$ref": "#/$defs/fileRef"
+        }
+      },
+      "required": [
+        "formatVersion",
+        "schema",
+        "storageId",
+        "storageIncarnation",
+        "publicationProtocol",
+        "genesisRef"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/entryState"
+    },
+    {
+      "$ref": "#/$defs/revision"
+    },
+    {
+      "$ref": "#/$defs/draft"
+    },
+    {
+      "$ref": "#/$defs/catalog"
+    },
+    {
+      "$ref": "#/$defs/lease"
+    },
+    {
+      "$ref": "#/$defs/operationInput"
+    },
+    {
+      "$ref": "#/$defs/operation"
+    },
+    {
+      "$ref": "#/$defs/publication"
+    },
+    {
+      "$ref": "#/$defs/storageManifest"
+    }
+  ]
+}

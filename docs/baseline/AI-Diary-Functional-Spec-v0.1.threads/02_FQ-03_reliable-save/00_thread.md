@@ -1,13 +1,13 @@
 # FQ-03 — Протокол надёжного сохранения
 
 **Источник:** [Функциональное ТЗ / FQ-03](../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
-**Статус:** ждём исследования  
-**Состояние:** paused  
+**Статус:** ждём пользователя  
+**Состояние:** in_discussion  
 **Claim:** active  
 **Ведёт:** Codex — текущий диалог требований AI Diary  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** —  
+**Дочерние треды:** [SQ-01 — Save при незавершённом upload](01_SQ-01_upload-before-save/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, inventory/product baseline и последующий technical storage design
 
 ## Вопрос
@@ -25,8 +25,8 @@ Multi-file commit, recovery после частичного Save, idempotency и
 
 ## Контекст и связанные решения
 
-- Domain-level repository принят в [AQ-DATA-002](../04-open-questions.threads/18_AQ-DATA-002_storage-abstraction/00_thread.md); Drive/file детали скрыты от domain/UI.
-- Lease + baseRevisionId/domain optimistic locking + storage conditional write при поддержке приняты в [AQ-DATA-003](../04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md). Эти узлы resolved, claim none; их решения не переоткрываются.
+- Domain-level repository принят в [AQ-DATA-002](../../04-open-questions.threads/18_AQ-DATA-002_storage-abstraction/00_thread.md); Drive/file детали скрыты от domain/UI.
+- Lease + baseRevisionId/domain optimistic locking + storage conditional write при поддержке приняты в [AQ-DATA-003](../../04-open-questions.threads/16_AQ-DATA-003_concurrency-locking/00_thread.md). Эти узлы resolved, claim none; их решения не переоткрываются.
 - Durable Draft и canonical file storage обязательны. Backend DB не может быть единственной копией пользовательских фактов.
 - FQ-01 подтвердил Save/Apply/Restore и узкие AI auto-apply cases как commit paths.
 - FQ-02 подтвердил catalog redirect merge без массовых Entry revisions; надёжная запись каталога также требует согласованности.
@@ -63,6 +63,24 @@ Codex — (2026-10-18) Выбран более простой для перво�
 
 Codex — (2026-10-18) По команде пользователя «дальше» продолжаем продуктовые вопросы в FQ-04. FQ-03 поставлен на паузу со статусом waiting research и active claim текущего диалога: UI/retry решения выше согласованы, физический multi-file protocol не выбран. История и незакрытый технический остаток сохранены; возвращаемся на этапе technical storage design.
 
+пользователь — (2026-10-18) «какие вопросы»
+
+Codex — Перечислены оставшиеся области Save: согласованность набора данных, crash recovery, consume Draft и derived projections. Пользовательские правила unknown Save/retry/read-only уже приняты.
+
+пользователь — (2026-10-18) «оки - какие у нас идеи ? у нас вообще есть формакт как это все хранить в файлах? что мы обсуждаем?»
+
+Codex — Проверены приложенные file-storage sketches и текущие source-документы. Папки/JSON/Markdown уже описаны, но production serialization и atomic multi-file publication не были закончены. Предложено собрать актуальный проект core file records и конкретный Save/recovery.
+
+пользователь — (2026-10-18) «так на какой вопрос я отвечаю?»
+
+Codex — Уточнено: текущего выбора пользователя в предыдущем сообщении не было; техническая консолидация и подготовка варианта — задача агента.
+
+пользователь — (2026-10-18) «тогда займись плиз и приноси вопрсоы на которые мне надо оытетить»
+
+Codex — **Обновление (2026-10-18):** Подготовлены [проект формата v1](../../07-file-format-v1-draft.md), [Save/recovery](../../08-save-recovery-design.md), core schema и проверяемый JSON before/register/after. Рекомендован copy-on-write с единой publication record для Entry/Revision/catalog/operation result/consume Draft. Для Drive рассмотрен create-once slot на pre-generated file ID; документация проверена, реальный adapter spike не выполнен и остаётся release gate. Техническое предложение не объявлено новым принятым baseline; FQ-03 не закрыт.
+
+Codex — Первая пользовательская развилка выделена в [SQ-01](01_SQ-01_upload-before-save/00_thread.md): Save при незавершённой загрузке прикреплённого файла. Рекомендую дождаться managed original либо явно убрать ожидающее вложение и сохранить без него. Альтернатива — сохранить готовую часть и добавить вложение позже отдельным Save. Следующим, после SQ-01, остаётся manual Save без фактических изменений; в source это пока предложение. Остальные технические решения не требуют повторного согласования уже принятых правил.
+
+**Нужно от пользователя:** выбрать поведение Save при незавершённом managed upload в SQ-01; отвечать по одному вопросу. Имена файлов/JSON, hashes и publication mechanism сейчас не предлагаются как пользовательская анкета.
+
 **Решение:** —
-
-

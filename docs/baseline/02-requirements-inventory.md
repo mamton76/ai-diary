@@ -940,3 +940,9 @@ Canonical names и aliases сравниваются без учёта регис
 При Save недостающие упоминания связанных тегов дописываются в конец body одной строкой, hashtags разделяются одним пробелом. От непустого текста эта строка отделяется пустой строкой; отдельного заголовка Tags: нет. Уже имеющиеся canonical/alias упоминания остаются на своих местах и не дублируются. Если все связанные теги уже упомянуты, новая строка не добавляется; повторный Save не создаёт повторный suffix. В пустом body добавляется только строка hashtags, без ведущей пустой строки. Маркер #_name не считается активным упоминанием.
 
 **История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Это уточняет оформление уже принятого добавления linked hashtags в конец текста.
+
+## Техническая проработка хранения и Save — 18.10.2026
+
+По поручению пользователя подготовлены [проект формата v1](07-file-format-v1-draft.md), [Save/recovery design](08-save-recovery-design.md), core schema и пример before/register/after. Статус: **РАБОЧЕЕ_НАПРАВЛЕНИЕ / техническое предложение**, не новый утверждённый baseline и не выполненная migration. Предложены immutable snapshots + единая publication для Entry/catalog/operation result/consume Draft; Drive adapter требует integration spike. Уже принятые Save/Apply/Restore, retry, read-only editor и правила тегов сохраняются.
+
+Первый вопрос пользователю — [FQ-03/SQ-01: Save при незавершённом managed upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). До ответа блокировка Save по готовности вложений остаётся предложением. Retention/orphan cleanup, no-change Save, hashtag grammar и time semantics не закрываются техническим проектом.

@@ -34,6 +34,15 @@ AI Diary за время обсуждения прошёл через неско
 - [`05-source-ledger.md`](05-source-ledger.md) — карта источников: GitHub, project-документы и наши обсуждения.
 - [`06-future-questions.md`](06-future-questions.md) — parking lot для важных вопросов, сознательно отложенных за пределы текущего MVP/архитектурного этапа.
 
+## Технические проекты от 18.10.2026
+
+Это review-документы поверх принятых требований; они не объявляют новый утверждённый architecture baseline и не запускают migration.
+
+- [Проект файлового формата v1](07-file-format-v1-draft.md) — Entry/Draft/Revision, catalog, Asset/AI границы и authoritative/derived данные.
+- [Проект Save/recovery](08-save-recovery-design.md) — подготовка, публикация, fencing, retry, crash matrix и release gates.
+- [Core JSON Schema](schemas/file-format-v1/core-record.schema.json) и [проверяемый сценарий](examples/file-format-v1/save-with-new-tag.json) — 19 виртуальных файлов, состояния before/register/after; вымышленные IDs.
+- [FQ-03 / SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) — первый текущий вопрос пользователю: Save при незавершённой загрузке вложения.
+
 ## Project skills и файловые обсуждения
 
 Повторяемые правила работы агентов хранятся в репозитории как общие project skills:
