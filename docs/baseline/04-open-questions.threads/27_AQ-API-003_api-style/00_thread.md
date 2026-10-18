@@ -1,10 +1,10 @@
 # AQ-API-003 — API style
 
 **Источник:** [04-open-questions.md / AQ-API-003](../../04-open-questions.md#aq-api-003--api-style)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** voice-summary  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -51,6 +51,8 @@ REST выглядит простым default, но нужно определит
 
 ChatGPT — Восстановлена соседняя беседа от 2026-09-27: API следует выводить из экранов и сценариев (Browse/Search, EntryScreen/EntryPanel, Draft/edit/commit, leases, History/Revisions, proposal review, AI workflows). Рабочее направление: REST + JSON; ресурсы Entries/Drafts/Revisions/Proposals/Jobs; optimistic concurrency через baseRevisionId и явные conflicts; долгие jobs через 202 + jobId; SSE для lightweight notifications. Эти позиции были рекомендациями обсуждения, не окончательно принятым AQ-API-003. Отдельные сессии в настоящее время разбирают экраны, поэтому здесь разумно согласовать минимальные API principles без параллельного проектирования screen-specific endpoints.
 
-**Нужно от пользователя:** согласовать REST + JSON и минимальные API principles сейчас или сначала разобрать один конкретный спорный аспект контракта.
+пользователь — «ну давай по твоей рекомендации» (согласие с рекомендацией contract-first на OpenAPI, без преждевременной детализации всех endpoints).
 
-**Решение:** —
+ChatGPT — Рекомендация принята. OpenAPI-контракт разрабатывается итерационно от подтверждённых user flows и application use cases, служит общей спецификацией frontend/backend. Не нужно заранее полностью проектировать API экранов, которые ещё обсуждаются. Backend Kotlin/Ktor реализует контракт; общие правила ошибок, версионирования, пагинации, конкуренции, auth, assets и asynchronous jobs отражаются в спецификации по мере появления соответствующих операций. Детали retry/durable queue остаются AQ-API-004.
+
+**Решение:** [принято] (2026-10-18) Для web/backend API выбран REST + JSON, contract-first c версионируемой OpenAPI-спецификацией в репозитории. Контракт — общий проверяемый источник соглашений frontend/backend, пополняется по мере стабилизации сценариев; не требуется заранее описывать все endpoints. Спецификация должна учитывать существующие domain-правила revisions/base version, conflicts, draft, asynchronous jobs и auth без изменения уже принятых решений. Точный endpoint/resource design, pagination и технические детали вводятся по мере реализации соответствующих use cases.
