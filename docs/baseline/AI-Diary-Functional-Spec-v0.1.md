@@ -189,7 +189,7 @@
 
 **AST-02 [Д].** Library показывает все active Assets, включая Unlinked; поиск по filename и Asset name. Unlinked означает ноль связей с **Active Entries**, поэтому не доказывает отсутствия archived/historical references. Счётчики и destructive warnings должны различать эти области.
 
-**AST-03 [Д].** Unlink from Entry и Delete asset from library — разные операции; `×` сначала предлагает выбор. Global Delete требует confirmation и информации об использовании другими Entries. Soft delete сохраняет links и допускает Restore.
+**AST-03 [Д; уточнение 18.10].** Unlink from Entry и Delete Asset from library — разные операции. При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked. Отдельный явный Global Delete из библиотеки сохраняет свой confirmation/usage-warning contract. Soft delete сохраняет historical links и допускает Restore. [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
 
 **AST-04 [Д].** Из Trash доступны Delete permanently и Empty Trash. Физически удаляются managed file и preview, Restore после этого невозможен. По assetId остаётся минимальный tombstone (например name/type/deletedAt), в Entry/history — нейтральный placeholder «Файл удалён».
 
@@ -199,7 +199,9 @@
 
 **AST-07 [Д, 18.10.2026].** Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
-**[О]** Orphan cleanup после Discard, исторические warnings, очистка preview/cache при permanent delete и удаление external original у провайдера — FQ-08. Защита файлов актуального Draft уже принята; дальнейший retention после явного Discard ещё не выбран. Удаление ссылки само по себе не означает права физически удалить внешний файл.
+**AST-08 [Д, 18.10; техническая конкретизация подсчёта].** Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
+
+**[О]** Cleanup частичных uploads/late completion, подробности historical warnings, очистка preview/cache при permanent delete и удаление external original у провайдера — FQ-08. Для готового Asset после Discard уже принято условное предложение soft delete; автоматическое удаление не выбиралось. Удаление ссылки само по себе не означает права физически удалить внешний файл.
 
 ## 8. Выборки, поиск и производные данные
 
@@ -313,6 +315,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-23 | Удалить тег Спорт с alias Вело; попробовать Create / Rename / добавить alias спорт или ВЕЛО другому тегу | Дубликат отклонён; показан удалённый владелец и предложен явный Restore того же tagId; сам ввод не восстанавливает тег и не создаёт новые links |
 | SYS-AC-24 | Прикрепить файл, получить uploading/failed, уйти и открыть Draft | Save недоступен до готовности/явного снятия вложения; текст, готовые связи и pending upload IDs/имена/статусы восстановлены; загруженный original сохранён. При невозможности возобновить неполученные bytes показан повторный выбор файла; pending intent не исчезает |
 | SYS-AC-25 | Изменить текст, вернуть исходный вариант, manual Save и retry | При совпадении всего content возвращается прежняя Revision, Draft завершён, History/committedUpdatedAt не меняются. Изменение текста на один пробел или timezone требует новой Revision; stale base не обходится веткой NO_CHANGE |
+| SYS-AC-26 | Снять связь / Discard добавлений Draft: единственный потребитель либо несколько | При единственной связи предложен soft delete с явным выбором; при отказе Asset остаётся в Library. При других потребителях только unlink; история одной Entry не умножает число потребителей. Asset, остающийся в восстановленной Current, не предлагается удалить из-за Discard |
 
 ## 13. Этапы реализации
 
@@ -346,7 +349,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |
 | FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
-| FQ-08 — ОБСУЖДАЕТСЯ | Entry permanent delete dependencies, Restore lifecycle, orphan uploads, external originals, retention/cache cleanup | Первый подпункт — [готовые uploads после Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md); policy ещё не выбрана. Остальные части FQ-08 открыты |
+| FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, Restore lifecycle, partial uploads, external originals, retention/cache cleanup | [Готовые Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): при единственной связи предложить soft delete, при нескольких только unlink. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
 | FQ-10 | Объёмы данных, latency/availability targets, upload limits | Без них нельзя объективно оценить производительность |
 

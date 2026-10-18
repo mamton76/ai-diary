@@ -400,7 +400,7 @@ Manual content editing не должен незаметно превращать
 
 **[Д, 18.10]** Manual Save без фактического изменения content завершает эквивалентный Draft без новой Revision (NO_CHANGE / существующая Revision, без изменения committedUpdatedAt). Неподтверждённый исход сохраняет Draft для проверки/retry. Применяется общая карточка решения из §8; переход на полный экран той же Entry продолжает тот же Draft. [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
-**[О]** Удаление draft не означает физическое удаление уже загруженных файлов; политика таких unlinked uploads и явно отброшенных local recovery points требует отдельного решения.
+**[Д, 18.10]** При Discard готовых attachments действует общее правило: при единственной снимаемой связи предложить soft delete, при других — только unlink; без подтверждения Asset остаётся в библиотеке. Asset, присутствующий в восстановленной Current, не является исчезающим добавлением. **[О]** Cleanup незавершённых uploads/late callbacks и явно отброшенных local recovery points остаётся отдельным вопросом.
 
 ### 9.4.1. EntryVersion и физическое хранение Draft [Д]
 
@@ -560,7 +560,7 @@ Rename сохраняет поиск по старому имени; alias ра�
 
 ### Связи и удаление [Б/Д]
 
-Из Entry действие `×` явно различает «Отвязать от текущей записи, оставить в библиотеке» и «Удалить Asset». Последняя текущая связь требует предупреждения об unlinked Asset; изменение связей входит в WorkingDraft, файл/metadata не редактируются внутри Entry editor.
+Из Entry действие `×` снимает текущую связь. **[Д, уточнение 18.10]** При единственной логической связи предлагается выбор «Удалить в корзину» / «Оставить в библиотеке»; при других связях выполняется только unlink. Это же правило действует для исчезающих добавлений при Discard Draft. Отказ от удаления сохраняет Asset в Library и не отменяет само снятие связи. Изменение связей входит в WorkingDraft; обычный editor не правит bytes/metadata файла, явное soft delete — отдельная подтверждённая операция. [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
 
 - **[Д] Delete = soft delete в Trash:** связи сохраняются; если Asset используется, предупреждение показывает последствия; доступен Restore.
 - **[Д] В Trash: Delete permanently и Empty Trash** для освобождения места. После физического удаления Restore невозможен и preview не сохраняется; минимальная запись Asset и нейтральный placeholder «Файл удалён» остаются в Entries/старых revisions. История не обещает восстановления bytes.
@@ -850,7 +850,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q02 | Как считаем многодневные/приблизительные события в календаре и статистике? | Утвердить единые правила до реализации dashboard/date filtering |
 | UI-Q03 | Лимит/порядок тегов в облаке? | Область уже решена: Active за всё время; цвет непосредственно у тега, type на него не влияет |
 | UI-Q04 | Editor type и форматирование? | AQ-WEB-003: выбрать при editor slice, не менять переносимый content contract |
-| UI-Q05 | Discard recovery points, unlinked uploads и merge draft? | Manual Save/Discard/Later закрыты; остаются побочные данные и самостоятельный merge draft |
+| UI-Q05 | Discard recovery points, partial uploads/late completion и merge draft? | Готовые Asset после Discard: предложение soft delete только при единственной связи; остаются частичные загрузки и самостоятельный merge draft |
 | UI-Q06 | Mobile layout трёхстороннего proposal review? | Обычный C15 Compare уже определён: Before/After или inline diff; детали S07 остаются открыты |
 | UI-Q07 | Последствия permanent delete Entry для зависимых ссылок; external originals? | Entry Trash имеет Restore/permanent delete, без автоматического таймера; Asset delete принят; внешние originals отдельно |
 | UI-Q08 | Lifecycle оставшихся частей complex proposal после partial apply? | Решить при detailed AI review |
@@ -1152,3 +1152,11 @@ Draft сохраняет весь состав вложений: связи с �
 Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
 
 Сравнение выполняется backend по итоговому content; UI dirty flag — только подсказка. В comparison входят Title/Text/EventTimeRange/Tag relations/Asset links; временные статусы autosave/загрузки и служебные timestamps не являются изменением content. Пробелы и регистр текста не игнорируются. Saved state показывается после durable NO_CHANGE outcome; при conflict Draft сохраняется. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
+
+### 26.17. Уточнение 18.10.2026 — снятие единственной связи Asset
+
+При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked.
+
+Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
+
+При предложении удаления смысл двух вариантов явный: связь снимается в обоих случаях, Trash применяется только при подтверждении. Это уточняет прежний общий выбор unlink/delete у `×`; автоматический keep/Trash для всех новых uploads не принят. **История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
