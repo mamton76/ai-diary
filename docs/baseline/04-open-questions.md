@@ -522,26 +522,9 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 ## AQ-API-004 — Background processing
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-API-004 thread](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md)
-
-Нужно выполнять:
-
-- capture normalization;
-- indexing;
-- Calendar sync;
-- AI workflows;
-- migrations/backfills;
-- retries.
-
-Варианты:
-
-- inline execution;
-- queue/jobs;
-- scheduler;
-- Cloud Run jobs;
-- external agent runner;
-- комбинация.
+**Статус:** РЕШЕНО  
+**Решение:** Queue-first для всех canonical mutations (Save, Apply, Restore, изменение тегов) и background computations/integrations. Read/search — синхронные API-запросы. Асинхронный Save показывает «Сохраняется» до committed result и не сообщает «Сохранено» только по факту постановки в очередь. Background/scheduled workflows независимы от browser session; транспорт очереди и точные retry/idempotency/ordering правила уточняются в AQ-OPS-002 и architecture design.  
+**История обсуждения:** [AQ-API-004 thread](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md)
 
 ## AQ-API-005 — Dev/staging/prod
 
