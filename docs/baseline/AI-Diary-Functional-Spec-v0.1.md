@@ -209,7 +209,7 @@
 
 **QRY-02 [Д].** Event date/time range: optional From и To, каждая граница содержит date, optional time, timezone. Только From — односторонняя нижняя граница, только To — верхняя. Это не EventTimeRange самой записи: optional From фильтра не отменяет обязательность From date в записи.
 
-**QRY-03 [Д].** Sorting: Event date/Updated/Created asc/desc, Title A–Z/Z–A; default Event date newest first. При Draft используется текущее Draft-state, включая Event date. Отдельного приоритета Drafts нет. **[О]** Что означает Updated sort при разных Draft.updatedAt и committed Entry.updatedAt — FQ-06; autosave committed timestamp не меняет.
+**QRY-03 [Д].** Sorting: Event date/Updated/Created asc/desc, Title A–Z/Z–A; default Event date newest first. При Draft используется текущее Draft-state, включая Event date. Отдельного приоритета Drafts нет. **[О]** Что означает Updated sort при разных Draft.updatedAt и committed Entry.updatedAt — [FQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md); autosave committed timestamp не меняет. Предложение учитывать последние content-правки Draft ещё не принято.
 
 **QRY-04 [Д].** Current filters — ephemeral state. System preset задаёт initial expression; любая ручная правка отделяет фильтр от preset. Минимальный предварительный каталог: Drafts, Archived, Trash, Needs attention, Open AI proposals, Entries with assets, Last 7 days, Last 30 days и динамические Calendar/TagCloud/Statistics selections. Custom Saved Filters — future.
 
@@ -229,7 +229,7 @@
 | Entries last 30 days | Сегодня + предыдущие 29 дней |
 | Entries with assets | Has assets AND Event date в последних 30 днях |
 
-**QRY-07 [Д].** Клик по показателю открывает выборку, совпадающую с областью подсчёта. Месяц Calendar не меняет all-time облако или rolling periods статистики. Timezone границы дня, overlap intervals и lifecycle counters — FQ-05/06.
+**QRY-07 [Д].** Клик по показателю открывает выборку, совпадающую с областью подсчёта. Месяц Calendar не меняет all-time облако или rolling periods статистики. **[Д, 18.10]** Фильтр по периоду включает интервальную Entry, если хотя бы часть её EventTimeRange пересекается с выбранным периодом; не требуется попадание начала или всего интервала внутрь фильтра. Например, поездка 1–10 июля видна при фильтре 5–7 июля. Одна Entry показывается один раз, независимо от количества пересекающихся дней. Это общее правило date filter; выбор календаря и связанные выборки используют ту же semantics при неизменном lifecycle scope. [FQ-05 — пересечение периодов](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md). Точные границы/mixed precision/timezone и lifecycle counters остаются FQ-05/06.
 
 ## 9. AI Routines, Runs и Proposals
 
@@ -317,6 +317,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-25 | Изменить текст, вернуть исходный вариант, manual Save и retry | При совпадении всего content возвращается прежняя Revision, Draft завершён, History/committedUpdatedAt не меняются. Изменение текста на один пробел или timezone требует новой Revision; stale base не обходится веткой NO_CHANGE |
 | SYS-AC-26 | Снять связь / Discard добавлений Draft: единственный потребитель либо несколько | При единственной связи предложен soft delete с явным выбором; при отказе Asset остаётся в Library. При других потребителях только unlink; история одной Entry не умножает число потребителей. Asset, остающийся в восстановленной Current, не предлагается удалить из-за Discard |
 | SYS-AC-27 | Active / Archived Entry с Draft → Trash → Restore | В обоих случаях ACTIVE; тот же entryId, Current, history и Draft. Новая content Revision не создаётся; прежний Archived lifecycle не восстанавливается |
+| SYS-AC-28 | Entry 1–10 июля; фильтр 5–7 июля | Entry включена один раз по overlap; список/связанный count используют одинаковый predicate и lifecycle scope |
 
 ## 13. Этапы реализации
 
@@ -347,8 +348,8 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | FQ-02 — РЕШЕНО | Merge current relations при immutable snapshot | Canonical redirect в каталоге, без массовых Revision и переписывания snapshots/Draft; audit операции |
 | FQ-03 — ЧАСТИЧНО | Multi-file commit/recovery и canonical location operational state | Автопроверка/retry и временный read-only editor приняты (STO-07/08); нужна техническая проработка физического протокола |
 | FQ-04 — ЧАСТИЧНО | Технические правила Unicode/пробелов и грамматики hashtag mentions | Уникальность без учёта регистра, резервирование deleted labels, #_name после unlink и формат suffix приняты; transfer workflow сейчас не включён; [канонический тред](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md) |
-| FQ-05 — ОБСУЖДАЕТСЯ | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Первый выбор — [overlap при фильтрации по периоду](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md); semantics ещё не выбрана |
-| FQ-06 | Lifecycle counters, Updated sort при Draft, модель review items | Влияет на query/index и совпадение count с результатом |
+| FQ-05 — ЧАСТИЧНО | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/date timezone | [Overlap при фильтрации](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md) принят; точные границы, timezone, отсутствующий To и uncertainty ещё требуют проработки |
+| FQ-06 — ОБСУЖДАЕТСЯ | Lifecycle counters, Updated sort при Draft, модель review items | Первый выбор — [Updated sort при Draft](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md); counters/review semantics ещё открыты |
 | FQ-07 | User routine schema/versioning/application policy, failed-run retry vs already processed, partial proposal resolution | Нельзя смешивать завершённый запуск, успешное применение и возможность retry |
 | FQ-08 — ЧАСТИЧНО | Entry permanent delete dependencies, partial uploads, external originals, retention/cache cleanup | [Asset после Discard/unlink](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md): условное предложение soft delete; [Restore Entry из Trash](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md): всегда ACTIVE. Остальные части FQ-08 открыты |
 | FQ-09 | API error/retry contract, index invalidation/rebuild, migrations | Нужны конкретные технические решения после доменных правил |
