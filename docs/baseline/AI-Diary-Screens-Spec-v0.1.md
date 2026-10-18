@@ -1060,6 +1060,13 @@ User instructions/overrides поддерживаются отдельно от �
 
 ### 26.3. Уточнение 18.10.2026 — явные commit-действия
 
-Принят первый вариант FQ-01: Save фиксирует ручной Draft; Apply подтверждённого AI proposal и Restore исторической версии самостоятельно создают новые Revision, без отдельного Save после них. Autosave/Return later/Discard/Reject Revision не создают. Restore из Trash относится к lifecycle и content Revision не создаёт. Автоматические AI commits ещё обсуждаются.
+Принят первый вариант FQ-01: Save фиксирует ручной Draft; Apply подтверждённого AI proposal и Restore исторической версии самостоятельно создают новые Revision, без отдельного Save после них. Autosave/Return later/Discard/Reject Revision не создают. Restore из Trash относится к lifecycle и content Revision не создаёт. 18.10 также подтверждены прежние исключения: первая normalization из raw и existing tags по routine policy; подробности в §26.4.
 
 История: [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).
+
+
+### 26.4. Уточнение 18.10.2026 — AI auto-apply
+
+Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
+
+В AI activity видны origin automatic, routine и input Revision, результат и созданная Revision; автоматически применённое изменение — исторический факт, не открытый proposal. FQ-01 закрыт; [история решения](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).

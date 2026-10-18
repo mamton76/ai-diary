@@ -24,7 +24,7 @@
 - **UI-0.5:** текущая спецификация экранов; включает проверенный при первоначальной сборке GitHub baseline и уточнения D04. Репозиторий в рамках этой сборки повторно не проверялся.
 - **[Д]** — принято в D04; **[Б]** — унаследовано из baseline, отражённого в UI-0.5; **[П]** — предложенная конкретизация, ещё не утверждена; **[О]** — открытый вопрос; **[F]** — future.
 
-Приоритет имеют новые прямые решения пользователя. Неоднозначность между документами выносится в §14, а не разрешается молчаливым выбором разработчика. Правило «Revision только по Save» относится безусловно к ручному Draft; 18.10.2026 подтверждено: Apply и Restore исторической версии сразу создают по одной новой Revision без дополнительного Save. В FQ-01 остался только охват автоматических AI-изменений.
+Приоритет имеют новые прямые решения пользователя. Неоднозначность между документами выносится в §14, а не разрешается молчаливым выбором разработчика. Правило «Revision только по Save» относится безусловно к ручному Draft; 18.10.2026 подтверждено: Apply и Restore исторической версии сразу создают по одной новой Revision без дополнительного Save. Также сохранены два случая автоматического AI commit: первая normalization из raw и добавление existing tags по разрешённой routine policy (§9.2). FQ-01 закрыт.
 
 Старые Android/Firebase документы — исторический контекст. Из них не переносятся требования к стеку текущего web-приложения или устаревшие lifecycle-статусы.
 
@@ -236,7 +236,7 @@
 
 **AI-10 [Б].** Информационный результат остаётся AIResult и не превращается сам в body Entry. AI не удаляет user-added tags автоматически. Uncertainty не заменяется выдуманным фактом.
 
-**[О]** Прежний baseline допускает автоматическую первую normalization и некоторые привязки существующих tags. Формулировка D04 «Revision только через Save» уточнена 18.10: она ограничивает ручной Draft, а Apply/Restore — самостоятельные commit-действия. Допустимые случаи автоматического AI commit ещё обсуждаются в FQ-01. Batch launch уже принят, массовое бесконтрольное применение не принято. Partial apply и судьба непринятых частей proposal — FQ-07.
+**AI-11 [Д, 18.10.2026].** Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются. [Решение FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Batch launch не разрешает массовое бесконтрольное применение; partial apply и судьба непринятых частей — FQ-07.
 
 ## 10. Capture и интеграции
 
@@ -286,6 +286,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-15 | Клик Home counter / фильтр Tag | Выборка и count совпадают по области и текущему Draft-state, без дублей |
 | SYS-AC-16 | Date-only, optional end, timezone | Не появляется фиктивное midnight; точность/timezone сохраняются после Save/reload |
 | SYS-AC-17 | Отключён AI или Calendar | Базовые доступные чтение/редактирование продолжают работать |
+| SYS-AC-18 | Разрешённый auto-apply existing tags / первая normalization raw | Сохранены raw/trace; создана новая/первая committed Revision; existing Entry с Draft пропущена; произвольные text mutations не auto-apply |
 
 ## 13. Этапы реализации
 
@@ -304,11 +305,13 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 
 ## 14. Открытые системные вопросы
 
-**FQ-01 обсуждается:** [канонический подтред PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). 18.10.2026 принято по явным действиям: Save ручных правок, Apply и Restore исторической версии самостоятельно создают Revision; второго Save не требуется. Остался AI auto-apply. Согласованный порядок: Revision/Save/Apply/Restore → merge тегов → протокол надёжного сохранения.
+**FQ-01 решён (18.10.2026):** [канонический подтред PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Save / Apply / Restore самостоятельно создают Revision; сохранены два исключения автоматического AI commit (§9.2). Согласованный порядок продолжается: merge тегов → протокол надёжного сохранения.
+
+**FQ-02 обсуждается:** [merge тегов](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). Решение о способе разрешения tagId и последствиях для current/historical versions ещё не принято.
 
 | ID | Что нужно решить | Почему это влияет на реализацию |
 |---|---|---|
-| FQ-01 | Остались допустимые автоматические AI commits (raw normalization, existing tags) | Явные Save / Apply / Restore уже согласованы 18.10: по одной новой Revision без второго Save; autosave не коммитит |
+| FQ-01 — РЕШЕНО | Источники committed Revision | Save/Apply/Restore и два узких AI auto-apply случая согласованы 18.10; история в FQ-01 thread |
 | FQ-02 | Как tag merge меняет current relations при immutable committed snapshot | Нужна семантика redirect/projection/versioned operation и взаимодействия с Draft/lease |
 | FQ-03 | Multi-file commit, recovery после частичного Save, idempotency и canonical location operational state | Иначе durable Draft, new tags и currentRevisionId могут расходиться после сбоя |
 | FQ-04 | Коллизии aliases, удаление chip при сохранённом hashtag, формат suffix normalizer | Нужно предсказуемое tag lookup/normalization без потери текста |

@@ -1,10 +1,10 @@
 # FQ-01 — Revision / Save / Apply / Restore
 
 **Источник:** [Функциональное ТЗ / FQ-01](../../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
-**Статус:** ждём пользователя  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** Codex — текущий диалог требований AI Diary  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** [PQ-004](../00_thread.md)  
 **Дочерние треды:** —  
@@ -47,8 +47,8 @@ Codex — (2026-10-18) Фиксирую выбор первого вариант
 
 Codex — (2026-10-18) Следующий подвопрос: сохранить ли прежние узкие исключения PQ-005 — автоматическую первую normalized Entry из сохранённого raw и высокоуверенную привязку existing tags. Предлагаю оставить их per-routine policy с trace и committed Revision для изменения existing Entry, без записи в ручной Draft и с пропуском Draft Entries. Изменения текста existing Entry и новые tags остаются proposals. Это предложение ещё не принято.
 
-**Нужно от пользователя:** сохранить ли эти два ранее допустимых случая AI auto-apply или требовать подтверждения и для них.
+пользователь — (2026-10-18) «мне кажется оставляем»
 
-пользователь —
+Codex — (2026-10-18) Сохранены два исключения auto-apply, обсуждавшиеся непосредственно перед этой репликой: первая normalization из raw и добавление existing tags по routine policy. Это не разрешение на произвольные AI mutations. Решение перенесено в Functional/Screens Specs и baseline/inventory; FQ-01 закрыт. Следующий вопрос по согласованному порядку — FQ-02 (merge тегов).
 
-**Решение:** —
+**Решение:** [принято] (2026-10-18) Save ручного Draft, подтверждённые Apply и Restore исторической версии самостоятельно создают по одной новой Revision без второго Save. Autosave/inactivity/Return later/Discard/Reject Revision не создают. Restore добавляет новую версию без удаления последующей истории; Restore из Trash остаётся lifecycle-операцией. Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.

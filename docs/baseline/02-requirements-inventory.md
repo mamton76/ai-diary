@@ -874,4 +874,9 @@ Selective sharing не входит в обозримый MVP и не долже
 
 ## Уточнение revision commit actions — 18.10.2026
 
-Save фиксирует ручной Draft; Apply и Restore исторической версии сразу создают по одной новой committed Revision, без второго Save. Preview и Reject Revision не создают. AI auto-apply остаётся отдельным незакрытым хвостом [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Это уточняет прежнюю границу ручной editing session; история решений сохранена в PQ-004/FQ-01.
+Save фиксирует ручной Draft; Apply и Restore исторической версии сразу создают по одной новой committed Revision, без второго Save. Preview и Reject Revision не создают. FQ-01 закрыт: сохранены первая normalization raw и auto-apply existing tags по routine policy; изменение existing Entry создаёт Revision и trace, Draft Entries skip. [История FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Это уточняет прежнюю границу ручной editing session; история решений сохранена в PQ-004/FQ-01.
+
+
+### AI auto-apply — подтверждение FQ-01 от 18.10.2026
+
+Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
