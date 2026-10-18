@@ -1,13 +1,13 @@
 # FQ-03 — Протокол надёжного сохранения
 
 **Источник:** [Функциональное ТЗ / FQ-03](../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
-**Статус:** ждём пользователя  
-**Состояние:** in_discussion  
+**Статус:** ждём исследования  
+**Состояние:** paused  
 **Claim:** active  
 **Ведёт:** Codex — текущий диалог требований AI Diary  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [SQ-01 — вложения в Draft и готовность Save, решён](01_SQ-01_upload-before-save/00_thread.md); [SQ-02 — Save без изменения content](02_SQ-02_no-change-save/00_thread.md)  
+**Дочерние треды:** [SQ-01 — вложения в Draft и готовность Save, решён](01_SQ-01_upload-before-save/00_thread.md); [SQ-02 — Save без изменения content, решён](02_SQ-02_no-change-save/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, inventory/product baseline и последующий technical storage design
 
 ## Вопрос
@@ -88,5 +88,11 @@ Codex — **Обновление (2026-10-18):** В [SQ-01](01_SQ-01_upload-befo
 Codex — Следующий один пользовательский выбор — [SQ-02](02_SQ-02_no-change-save/00_thread.md): manual Save, когда итоговое content совпадает с текущей Revision. Рекомендую не создавать пустую Revision, вернуть существующую и завершить эквивалентный Draft без изменения committed timestamps. Apply/Restore этим предложением не меняются. В source это ещё [П], пользователю не приписываем согласие заранее.
 
 **Нужно от пользователя:** ответить в SQ-02: manual Save без изменения content завершает Draft без новой Revision?
+
+Codex — **Обновление (2026-10-18):** В SQ-02 пользователь принял NO_CHANGE для manual Save и уточнил способ определения. Сравнивается итоговое содержимое, не служебные Draft metadata; equality rule и durable consume Draft перенесены в source-документы. SQ-02 resolved, claim none. Оба пользовательских подпункта Save закрыты.
+
+Codex — FQ-03 снова paused с active claim текущего диалога: остаются provider integration spike, crash/fencing validation и физическая проверка publication mechanism. Эти технические остатки не выдаются за решённые. Вопросов пользователю по текущему сравнению больше нет; отдельные FQ-04/05/08 остаются открытыми по своим контрактам.
+
+**Нужно от пользователя:** сейчас ничего по FQ-03; требуется техническая проверка реализации publication/recovery.
 
 **Решение:** —

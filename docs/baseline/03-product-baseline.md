@@ -1094,7 +1094,7 @@ Canonical names и aliases сравниваются без учёта регис
 
 По поручению пользователя подготовлены [проект формата v1](07-file-format-v1-draft.md), [Save/recovery design](08-save-recovery-design.md), core schema и пример before/register/after. Статус: **РАБОЧЕЕ_НАПРАВЛЕНИЕ / техническое предложение**, не новый утверждённый baseline и не выполненная migration. Предложены immutable snapshots + единая publication для Entry/catalog/operation result/consume Draft; Drive adapter требует integration spike. Уже принятые Save/Apply/Restore, retry, read-only editor и правила тегов сохраняются.
 
-Решён [FQ-03/SQ-01: Save при незавершённом upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md): Save disabled до готовности всех оставленных вложений; состав attachments и upload state сохраняются в Draft. Retention/orphan cleanup, no-change Save, hashtag grammar и time semantics не закрываются техническим проектом.
+Решён [FQ-03/SQ-01: Save при незавершённом upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md): Save disabled до готовности всех оставленных вложений; состав attachments и upload state сохраняются в Draft. Retention/orphan cleanup, hashtag grammar и time semantics не закрываются техническим проектом; no-change manual Save согласован отдельно в SQ-02.
 
 ## Уточнение 18.10.2026 — вложения входят в durable Draft
 
@@ -1103,3 +1103,9 @@ Save недоступен, пока хотя бы одно оставленно�
 Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
 **История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup остаётся отдельным FQ-08; физический commit protocol этим решением не утверждён.
+
+## Уточнение 18.10.2026 — manual Save без изменения content
+
+Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
+
+Технически сравнивается итоговый snapshot Title/Text/EventTimeRange/канонические Tag relations/Asset links; служебные Draft/session timestamps не участвуют. Текст сравнивается точно, включая пробелы и регистр. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).

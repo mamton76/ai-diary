@@ -398,7 +398,7 @@ Manual content editing не должен незаметно превращать
 - **[Д]** Discard / «Отменить изменения» удаляет draft и возвращает последнее committed состояние. «Вернуться позже» оставляет draft без commit. Эти действия работают и в full editor.
 - Открытие Entry с draft продолжает его с учётом lease. Draft обозначен в full editor, collapsed/expanded card и Home; доступен глобальный счётчик/фильтр Drafts.
 
-**[П]** Save без фактического изменения не создаёт пустую revision. Неподтверждённый commit сохраняет draft для retry. Применяется общая карточка решения из §8; переход на полный экран той же Entry продолжает тот же draft.
+**[Д, 18.10]** Manual Save без фактического изменения content завершает эквивалентный Draft без новой Revision (NO_CHANGE / существующая Revision, без изменения committedUpdatedAt). Неподтверждённый исход сохраняет Draft для проверки/retry. Применяется общая карточка решения из §8; переход на полный экран той же Entry продолжает тот же Draft. [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
 **[О]** Удаление draft не означает физическое удаление уже загруженных файлов; политика таких unlinked uploads и явно отброшенных local recovery points требует отдельного решения.
 
@@ -1146,3 +1146,9 @@ Save недоступен, пока хотя бы одно оставленно�
 Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
 Перед началом Save pending attachments остаются доступны для retry/повторного выбора/явного снятия, сам editor не блокируется одним фактом загрузки. После фактического запуска commit действует уже согласованный read-only editor. Причина disabled Save показывается рядом с вложением/кнопкой. **История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md).
+
+### 26.16. Уточнение 18.10.2026 — manual Save без изменения content
+
+Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
+
+Сравнение выполняется backend по итоговому content; UI dirty flag — только подсказка. В comparison входят Title/Text/EventTimeRange/Tag relations/Asset links; временные статусы autosave/загрузки и служебные timestamps не являются изменением content. Пробелы и регистр текста не игнорируются. Saved state показывается после durable NO_CHANGE outcome; при conflict Draft сохраняется. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).

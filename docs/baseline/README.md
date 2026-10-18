@@ -41,7 +41,7 @@ AI Diary за время обсуждения прошёл через неско
 - [Проект файлового формата v1](07-file-format-v1-draft.md) — Entry/Draft/Revision, catalog, Asset/AI границы и authoritative/derived данные.
 - [Проект Save/recovery](08-save-recovery-design.md) — подготовка, публикация, fencing, retry, crash matrix и release gates.
 - [Core JSON Schema](schemas/file-format-v1/core-record.schema.json) и [проверяемый сценарий](examples/file-format-v1/save-with-new-tag.json) — 19 виртуальных файлов, состояния before/register/after; вымышленные IDs.
-- [FQ-03 / SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) — решено: Save ждёт готовности вложений, attachments сохраняются в Draft. Следующий выбор — [SQ-02: Save без изменений](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
+- [FQ-03 / SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md) — решено: Save ждёт готовности вложений, attachments сохраняются в Draft. Также решён [SQ-02: Save без изменений](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md): завершить Draft без новой Revision, если итоговое content совпало.
 
 ## Project skills и файловые обсуждения
 

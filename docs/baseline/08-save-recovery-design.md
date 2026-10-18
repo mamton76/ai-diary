@@ -130,7 +130,7 @@ Register — тоже публикация, но не content Revision. Если
 
 Prepared candidates в operation refs сами по себе не меняют Current/catalog. Повторная подготовка после конкурентного catalog change использует новый candidate ID только при необходимой technical revalidation; внешний ответ Save всё равно один committed revisionId. Текст зафиксированного input не меняется молча.
 
-Save без изменений пока [П]: предлагается NO_CHANGE result без новой Revision, но это отдельный пользовательский выбор (§10). Этот вариант не применяется автоматически к Apply/Restore, для которых уже принято создание новой Revision.
+**[Д, 18.10.2026]** Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется. [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md). Техническая ветка NO_CHANGE описана ниже.
 
 ## 6. Что происходит после сбоя
 
@@ -195,9 +195,28 @@ Draft сохраняет весь состав вложений: связи с �
 
 Альтернатива сохранить готовую часть сейчас не выбрана. Условие готовности вложений проверяется и в UI, и backend preflight, затем перед публикацией. Успешный upload не создаёт Revision и не должен незаметно менять уже committed content. Lost Save response/read-only editor остаются отдельным уже принятым flow.
 
-### Следом — Save без изменения content
+### SQ-02 — решён: manual Save без изменения content
 
-В source пока [П]. Рекомендация: если после нормализации и разрешения relations сохраняемый content эквивалентен Current, manual Save возвращает NO_CHANGE без новой Revision. Apply/Restore остаются уже принятыми самостоятельными commit-действиями. После закрытия SQ-01 начат [SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md); до ответа новая политика не утверждена.
+**[Д, 18.10.2026]** Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
+
+Перед сравнением проверяются актуальные lease/base, готовность вложений и выполняется принятая нормализация mentions. Сравниваются title и итоговый text точно, EventTimeRange со всеми сохранёнными датами/временем/точностью/timezone, набор canonical tagIds после разрешения redirects и набор assetIds. Порядок IDs не является изменением содержимого в текущей версии без ручной сортировки вложений. Текстовые пробелы, переносы строк и регистр не игнорируются; case-insensitive lookup тегов не означает case-insensitive сравнение текста. Служебные draftId/draftVersion/updatedAt, session/lease/operation metadata, file paths и Drive IDs в content equality не участвуют. Сами media bytes заново не сравниваются: Entry меняет ссылки по assetId, а Asset metadata/original имеют отдельный контракт.
+
+**[П, реализация]** Для первого варианта достаточно прямого equality сравнения подготовленного content projection. Сравнивается фактический текст по textRef, а не путь/Revision ID JSON-файла. Full-file hash включает служебные поля и не является content equality. Cached content hash можно добавить позднее как ускорение; совпадение hash не отменяет checks и точное сравнение. Контракт сериализации времени/parser version должен оставаться явным.
+
+NO_CHANGE публикует новый Entry state с прежней Current/committedUpdatedAt и без consumed Draft, плюс terminal operation receipt со ссылкой на существующую Revision. Не создаёт Revision/catalog snapshot без реальных catalog изменений, не обновляет Calendar как новую версию. Все base/ownership checks выполняются перед этой веткой, иначе возвращается conflict.
+
+| Различие | Итог manual Save |
+|---|---|
+| Поправили текст и вернули исходный; весь content совпал | NO_CHANGE, без новой Revision |
+| Добавили один пробел или изменили регистр текста | Новая Revision |
+| Изменилась timezone или точность event time | Новая Revision |
+| Изменился только Draft.updatedAt/session/путь к text snapshot | NO_CHANGE при прочем совпадении |
+| Порядок tagIds/assetIds изменился, набор тот же | NO_CHANGE при прочем совпадении |
+| Изменился набор связанных тегов или материалов | Новая Revision |
+| Catalog merge дал тот же canonical набор, текст прежний | NO_CHANGE при прочем совпадении |
+| Current отсутствует | Первая Revision при успешном Save |
+
+**История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
 ### Что не нужно выбирать пользователю сейчас
 
@@ -222,5 +241,5 @@ JSON layout, FileRef/hashes, operation ID, fencing, слот публикаци�
 7. Внешняя правка JSON/Markdown, revoked OAuth, неполный backup/rebind.
 8. Отдельная проверка retention/permanent delete: никогда не возвращать удалённые media bytes из staged copies или audit snapshots.
 
-Открытые gate: no-change policy в SQ-02, adapter spike, parser/time validators и destructive retention design по применимости. SQ-01 по вложениям закрыт. До их закрытия документ пригоден для review и декомпозиции, но не обещает готовый production commit protocol.
+Открытые gate: adapter spike, parser/time validators и destructive retention design по применимости. SQ-01 по вложениям и SQ-02 по NO_CHANGE закрыты. До их закрытия документ пригоден для review и декомпозиции, но не обещает готовый production commit protocol.
 

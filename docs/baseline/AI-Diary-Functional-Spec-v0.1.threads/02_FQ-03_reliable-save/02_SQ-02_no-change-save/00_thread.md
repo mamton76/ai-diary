@@ -1,10 +1,10 @@
 # FQ-03 / SQ-02 — Manual Save без изменения content
 
 **Источник:** [Функциональное ТЗ, §4.1](../../../AI-Diary-Functional-Spec-v0.1.md#41-контракт-операций)  
-**Статус:** ждём пользователя  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** Codex — текущий диалог требований AI Diary  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** [FQ-03](../00_thread.md)  
 **Дочерние треды:** —  
@@ -40,8 +40,12 @@
 
 Codex — (2026-10-18) Рекомендую не добавлять в History две одинаковые версии после manual Save. Если итог совпал с Current, закрываем эквивалентный Draft, показываем saved state и сохраняем durable результат NO_CHANGE с ссылкой на существующую Revision. Это предложение, не принятое требование.
 
-**Нужно от пользователя:** manual Save без фактического изменения content завершает Draft без новой Revision?
+пользователь — (2026-10-18) «да норм - только как понять что ничего не поменялось ? сравнивать?»
 
-пользователь —
+Codex — (2026-10-18) Принят вариант 1. Да: сравнивать итоговый content snapshot с актуальной Current после обычных validation/base/lease checks. Ни fact autosave, ни новый Draft timestamp сами по себе не считаются изменением. Для первой реализации достаточно прямого сравнения content-полей; hashing не обязателен.
 
-**Решение:** —
+**Техническая конкретизация:** Перед сравнением проверяются актуальные lease/base, готовность вложений и выполняется принятая нормализация mentions. Сравниваются title и итоговый text точно, EventTimeRange со всеми сохранёнными датами/временем/точностью/timezone, набор canonical tagIds после разрешения redirects и набор assetIds. Порядок IDs не является изменением содержимого в текущей версии без ручной сортировки вложений. Текстовые пробелы, переносы строк и регистр не игнорируются; case-insensitive lookup тегов не означает case-insensitive сравнение текста. Служебные draftId/draftVersion/updatedAt, session/lease/operation metadata, file paths и Drive IDs в content equality не участвуют. Сами media bytes заново не сравниваются: Entry меняет ссылки по assetId, а Asset metadata/original имеют отдельный контракт.
+
+Codex — Решение перенесено в source-документы и Save/file-format проект. Apply/Restore не переоткрываются. Физический Drive protocol остаётся отдельным техническим gate FQ-03.
+
+**Решение:** [принято] (2026-10-18) Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
