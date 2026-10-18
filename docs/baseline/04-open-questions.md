@@ -875,15 +875,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-OPS-002 — Retry/idempotency contract
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-OPS-002 thread](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md)
-
-Каждый external/background workflow должен определять:
-
-- deterministic source identity;
-- safe retry;
-- partial failure behavior;
-- duplicate prevention.
+**Статус:** РЕШЕНО  
+**Решение:** безопасные технические retries одной операции не должны порождать дубли canonical commits; intentional rerun — отдельная операция. Платные AI retries — пользовательская настройка, default «экономия токенов»: при неопределённом исходе AI-запрос не повторяется автоматически. Retry policy limits/backoff и UI конкретизируются при реализации.  
+**История обсуждения:** [AQ-OPS-002 thread](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md)
 
 ## AQ-OPS-003 — Backup и restore test
 
