@@ -117,7 +117,7 @@
 | ENT-11 | Restore from Trash | Восстанавливает Entry; не является Restore исторической Revision и не создаёт content Revision |
 | ENT-12 | Delete permanently | Доступно из Entry Trash; автоматический таймер permanent delete пока не нужен |
 
-**[О]** В какой lifecycle возвращается восстановленная Entry, последствия её permanent delete для связанных объектов и audit retention — FQ-08. Само наличие Restore/permanent delete уже принято.
+**[О]** В какой lifecycle возвращается восстановленная Entry — [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Предложение: вернуть прежний lifecycle, включая Archived → Trash → Archived; это ещё не принято. Последствия permanent delete для связанных объектов и audit retention остаются FQ-08. Само наличие Restore/permanent delete уже принято.
 
 ### 4.3. EventTimeRange
 
