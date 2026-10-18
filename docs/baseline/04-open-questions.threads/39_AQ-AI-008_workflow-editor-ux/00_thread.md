@@ -163,4 +163,11 @@ ChatGPT — **решение по placement Application policy (2026-10-18):** `
 
 **Нужно от пользователя:** определить, какие поля остаются в компактном Workflow settings и нужен ли отдельный блок Version/Draft status в header.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по editor header/version status (2026-10-18):** versioning state не входит в редактируемый `Workflow settings`. В header editor показывается текущий статус, например `Draft based on v3`, последняя published version и основные actions `Test run`, `Publish`, `History`. Это отделяет identity/defaults workflow от lifecycle/version controls.
+
+**Нужно от пользователя:** определить поведение Test run: запускать его из header и открывать сразу Run Detail, сохраняя текущий Draft snapshot.
+
 **Решение:** —
