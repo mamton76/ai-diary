@@ -529,7 +529,7 @@ Stale/conflicted proposal не имеет быстрого Apply. Несколь
 
 **[Б]** Unlink из Entry — versioned правка этой записи; AI не удаляет user-added tags автоматически. Pending AI candidate не считается применённым тегом. **[Д]** Immutable Revisions при rename/merge/delete **не переписываются**. Подробности:
 
-- Merge переводит **текущие Entry/Draft relations** на surviving tagId; имя второго и его aliases переносятся с дедупликацией. Старый tagId остаётся redirect `mergedInto` для разрешения historical revisions; второй тег перестаёт быть самостоятельным active tag. В merge-dialog нет дополнительных настроек type/color: берутся свойства survivor, меняются позже обычным editor.
+- Merge разрешает **текущие Entry/Draft relations** в surviving tagId через каталог, без физической перезаписи snapshots/Draft и без новых content Revision; имя второго и его aliases переносятся с дедупликацией. Старый tagId остаётся redirect `mergedInto` для разрешения historical revisions; второй тег перестаёт быть самостоятельным active tag. В merge-dialog нет дополнительных настроек type/color: берутся свойства survivor, меняются позже обычным editor.
 - Delete сохраняет самостоятельный historical tagId со state deleted; старые Entry/Draft/Revision relations не меняются. Тег исчезает из autocomplete и обычного TagCloud, новые связи запрещены. Перед удалением используемого тега видны количество связанных Entry/Draft и confirmation; в history допустим приглушённый Deleted label.
 - Удаление alias не меняет relations по tagId, влияет только на дальнейшие autocomplete/распознавание.
 - Types — **пользовательский справочник**, не system enum; optional typeId, без color inheritance/override hierarchy.
@@ -1070,3 +1070,10 @@ User instructions/overrides поддерживаются отдельно от �
 Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
 
 В AI activity видны origin automatic, routine и input Revision, результат и созданная Revision; автоматически применённое изменение — исторический факт, не открытый proposal. FQ-01 закрыт; [история решения](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).
+
+
+### 26.5. Уточнение 18.10.2026 — merge тегов
+
+Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила. Само объединение не помечает каждую Entry изменённой ради создания content Revision. Historical labels/rendering остаются отдельной policy.
+
+**История:** [FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md).

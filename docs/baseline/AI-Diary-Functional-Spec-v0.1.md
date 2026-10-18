@@ -159,14 +159,14 @@
 | TAG-04 | При Save linked tag без canonical/alias hashtag дописывается обычным текстом в конец. Отдельного обязательного Tags: block нет |
 | TAG-05 | Unlink меняет набор tagIds через Draft; удаление hashtag из body без удаления chip связь не снимает |
 | TAG-06 | Rename сохраняет tagId, добавляет старое имя в aliases; ручное удаление alias не меняет relations |
-| TAG-07 | Merge выбирает survivor; переносит имя/aliases с дедупликацией, current Entry/Draft relations на survivor; старый tagId становится mergedInto redirect |
+| TAG-07 | Merge выбирает survivor, переносит имя/aliases с дедупликацией; oldTagId становится mergedInto redirect. Current Entry/Draft relations разрешаются в survivor через каталог, без переписывания snapshots или новых content Revision |
 | TAG-08 | Merge не переписывает immutable revisions. Survivor сохраняет type/color без дополнительных merge options |
 | TAG-09 | Delete — soft delete, tagId и старые relations сохраняются. Новые links запрещены, autocomplete/cloud исключают тег. Used tag требует count/warning/confirmation |
 | TAG-10 | Deleted filter и Restore доступны; permanent delete Tags пока отсутствует |
 | TAG-11 | Types — пользовательский справочник; typeId optional; color непосредственно у Tag, без inheritance |
 | TAG-12 | Entries count у Tag: уникальные Active Entries с текущими Draft, без Archived/Trash |
 
-**[О]** Merge переназначает current relations, однако current committed snapshot immutable: техническая семантика переназначения ещё не определена. Возможные варианты — разрешение redirect в проекции либо отдельная versioned операция; они не выбраны этим документом (FQ-02). Аналогично открыты коллизии aliases и судьба оставшихся текстовых hashtags после удаления chip.
+**[Д, 18.10.2026]** Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила. [Решение FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). **[О]** Цепочки/циклы redirect, конкурентные операции каталога и их надёжная запись проектируются в протоколе хранения; коллизии aliases и текст после удаления chip остаются FQ-04. Это не переоткрывает принятое отсутствие массовых Revision при merge.
 
 ## 7. Assets
 
@@ -277,7 +277,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | SYS-AC-06 | Takeover редактирования | Старая session не может commit, её unsynced input доступен для recovery |
 | SYS-AC-07 | New tag в Draft → Discard / Save | В первом случае нет мусора в каталоге, во втором tagId создан и связан |
 | SYS-AC-08 | Удалить hashtag, оставив chip → Save | Связь остаётся, недостающее упоминание добавлено в конец |
-| SYS-AC-09 | Merge / Delete Tag → открыть старую Revision | Snapshot не переписан; merge разрешает redirect, delete сохраняет historical tag и relations |
+| SYS-AC-09 | Merge / Delete Tag → открыть старую Revision | Snapshot не переписан; merge разрешает redirect и не создаёт новых content Revision, не меняет физически Draft, дедуплицирует счётчики; delete сохраняет historical tag/relations |
 | SYS-AC-10 | Asset permanent delete → читать history | Bytes и preview отсутствуют, tombstone/placeholder доступны, Restore не обещается |
 | SYS-AC-11 | Archive Entry с Draft | Lifecycle/audit изменены без content Revision, Draft доступен в архиве |
 | SYS-AC-12 | Batch содержит Draft и уже обработанные Revision | Draft skip; already processed определяется routineVersion/input Revision; Force rerun доступен |
@@ -297,7 +297,7 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | E0 | Account/storage access, files-only чтение существующих Entries | Минимальные canonical read contracts |
 | E1 | Поиск, filters, sorting, presets | Date semantics, области выборок, query contract; стратегия index при необходимости |
 | E2 | Редактирование, durable Draft, Save, history/Compare/Restore | Commit protocol, concurrency, schemas/migrations, FQ-03; ручные Save/Restore уже определены |
-| E3 | Каталоги Tags/Types, merge/delete, работа с Assets | FQ-02, collision policy, deletion/references |
+| E3 | Каталоги Tags/Types, merge/delete, работа с Assets | Merge через redirect уже определён; остаются collision policy, catalog concurrency, deletion/references |
 | E4 | Routines/runs, proposals/review, model settings | Eligibility/run identity, application policy, cancellation/retry, FQ-07 |
 | Дополнительные UX и интеграции | Home, web-create, полный Assets UI, Calendar adapters | Очерёдность поставки и adapter-specific contracts |
 
@@ -307,12 +307,14 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 
 **FQ-01 решён (18.10.2026):** [канонический подтред PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md). Save / Apply / Restore самостоятельно создают Revision; сохранены два исключения автоматического AI commit (§9.2). Согласованный порядок продолжается: merge тегов → протокол надёжного сохранения.
 
-**FQ-02 обсуждается:** [merge тегов](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). Решение о способе разрешения tagId и последствиях для current/historical versions ещё не принято.
+**FQ-02 решён (18.10.2026):** [merge тегов](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md) — redirect в каталоге, без новых content Revision и переписывания Draft/snapshots.
+
+**FQ-03 обсуждается:** [надёжное сохранение](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Предложение по восстановлению Save и повтору одной операции ещё не принято.
 
 | ID | Что нужно решить | Почему это влияет на реализацию |
 |---|---|---|
 | FQ-01 — РЕШЕНО | Источники committed Revision | Save/Apply/Restore и два узких AI auto-apply случая согласованы 18.10; история в FQ-01 thread |
-| FQ-02 | Как tag merge меняет current relations при immutable committed snapshot | Нужна семантика redirect/projection/versioned operation и взаимодействия с Draft/lease |
+| FQ-02 — РЕШЕНО | Merge current relations при immutable snapshot | Canonical redirect в каталоге, без массовых Revision и переписывания snapshots/Draft; audit операции |
 | FQ-03 | Multi-file commit, recovery после частичного Save, idempotency и canonical location operational state | Иначе durable Draft, new tags и currentRevisionId могут расходиться после сбоя |
 | FQ-04 | Коллизии aliases, удаление chip при сохранённом hashtag, формат suffix normalizer | Нужно предсказуемое tag lookup/normalization без потери текста |
 | FQ-05 | EventTimeRange serialization, mixed precision/uncertainty, inclusivity/overlap/date timezone | Определяет фильтры, календарь и статистику |

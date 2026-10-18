@@ -880,3 +880,10 @@ Save фиксирует ручной Draft; Apply и Restore историчес�
 ### AI auto-apply — подтверждение FQ-01 от 18.10.2026
 
 Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
+
+
+## Уточнение 18.10.2026 — canonical merge тегов
+
+Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила.
+
+**История:** [FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). Коллизии aliases и подробное отображение historical labels остаются отдельными вопросами.

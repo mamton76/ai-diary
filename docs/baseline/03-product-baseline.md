@@ -1029,3 +1029,10 @@ AI Diary — это не просто приложение для написан
 Save ручных правок, Apply подтверждённого AI proposal и Restore исторической версии — самостоятельные commit-действия. Каждое успешное действие создаёт одну новую Revision; второй Save после Apply/Restore не нужен. Restore сохраняет более позднюю историю, добавляя новую Revision с provenance. Autosave, Return later, Discard и Reject Revision не создают. Восстановление из Trash — lifecycle-операция без content Revision. Автоматические AI commits отдельно подтверждены следующим решением FQ-01: Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
 
 **История:** [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).
+
+
+## Уточнение 18.10.2026 — canonical merge тегов
+
+Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила.
+
+**История:** [FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). Коллизии aliases и подробное отображение historical labels остаются отдельными вопросами.
