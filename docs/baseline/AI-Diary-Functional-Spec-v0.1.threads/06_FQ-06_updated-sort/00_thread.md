@@ -41,4 +41,6 @@ Codex — (2026-10-18) SQ-01 завершён: рабочие очереди в�
 
 Codex — (2026-10-18) SQ-02 завершён: Total entries включает ACTIVE + ARCHIVED, исключая TRASH. Открыт SQ-03 — аналогичный отдельный выбор для периодных статистических counters. Его рекомендация ещё не принята.
 
+Codex — (2026-10-18) SQ-03 завершён: три периодных статистических counters учитывают ACTIVE + ARCHIVED, исключая TRASH. Следующий вопрос — timezone rolling days — обсуждается в FQ-05/SQ-01. Полная модель review items и scope прочих агрегатов не объявляются решёнными.
+
 **Решение:** [принято] (2026-10-18) Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.

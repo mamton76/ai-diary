@@ -1009,7 +1009,7 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
 
-**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Принятое правило относится именно к Updated sort. Scope двух рабочих очередей Home согласован ниже; scope Total entries согласован отдельно ниже; scope периодных counters и полная модель review items остаются открытыми.
+**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Принятое правило относится именно к Updated sort. Scope двух рабочих очередей Home согласован ниже; scope Total entries согласован отдельно ниже; scope периодных counters согласован ниже; timezone rolling days и полная модель review items остаются открытыми.
 
 ## Уточнение 18.10.2026 — lifecycle рабочих очередей Home
 
@@ -1021,4 +1021,10 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 «Всего записей» / Total entries на Home считает уникальные ACTIVE и ARCHIVED Entries за всё время, исключая TRASH. Переход по числу открывает список с теми же условиями lifecycle и без ограничения периода. Архивация не уменьшает этот показатель; число Revision одной Entry на него не влияет.
 
-Это не меняет ACTIVE scope Home EntryList/TagCloud. Периодные статистические counters обсуждаются отдельно; полная модель review items остаётся открытой. **История:** [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md).
+Это не меняет ACTIVE scope Home EntryList/TagCloud. Периодные статистические counters согласованы отдельно ниже; полная модель review items остаётся открытой. **История:** [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md).
+
+## Уточнение 18.10.2026 — lifecycle периодной статистики Home
+
+Показатели Home «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» включают уникальные ACTIVE и ARCHIVED Entries и исключают TRASH. Сохраняются соответствующие периоды Event date (сегодня + предыдущие 6 / 29 дней), принятое пересечение интервалов и условие Has assets у третьего показателя. Число и список по клику используют одинаковые условия; архивация не исключает запись из статистики периода.
+
+Это не меняет ACTIVE scope Home EntryList/TagCloud. Timezone границы rolling days и прочие аспекты FQ-05/FQ-06 этим решением не закрываются. **История:** [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md).
