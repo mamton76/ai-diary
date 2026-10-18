@@ -55,4 +55,6 @@ Codex — (2026-10-18) Открыт отдельный SQ-06 — lifecycle Calen
 
 Codex — (2026-10-18) SQ-06 завершён для default Home Calendar: ACTIVE + ARCHIVED без TRASH. Пользователь предложил настройку исключения архива; SQ-07 уточняет, к каким виджетам/показателям она относится. Эта дополнительная настройка ещё не изменяет scopes прочих Home components.
 
+Codex — (2026-10-18) SQ-07 завершён: пользователь выбрал всю главную. Единая настройка включает/исключает архив в Calendar, всей Statistics, TagCloud и EntryList вместе с переходами. Это явное уточнение заменяет прежний Active-only scope Home TagCloud/EntryList; default всех виджетов ACTIVE + ARCHIVED, OFF — ACTIVE, без TRASH. История прежних решений сохраняется; source и index обновлены.
+
 **Решение:** [принято] (2026-10-18) Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.

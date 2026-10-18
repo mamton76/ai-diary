@@ -154,7 +154,7 @@ EntryPanel не владеет навигацией страницы, списк
 
 ### C06. Calendar — календарь записей [Д]
 
-**[Д, 18.10.2026]** Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются. **История:** [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md). **[П]** Пользователь предложил возможность отключить показ и учёт архива; [область этой настройки](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md) ещё уточняется.
+**[Д, 18.10.2026]** Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются. **История:** [FQ-06/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md). **[Д]** Единая настройка «Учитывать архивные» применяется ко всей главной; при выключении Calendar и список по его клику исключают ARCHIVED. [История SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
 
 **[Д, 18.10.2026]** Calendar относит Entry к местной дате события в сохранённой timezone самой записи. Событие «19 октября, 00:30, Токио» показывается на 19 октября, даже если в пользовательской timezone в этот момент ещё 18-е. Выбор дня/диапазона в Calendar открывает список с той же семантикой местных дат и принятым period overlap; индикатор и список используют одинаковый lifecycle scope. Смена пользовательской timezone не переносит сохранённые события между днями Calendar. Date-only сохраняется как дата без выдуманного времени. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md).
 
@@ -187,13 +187,13 @@ EntryPanel не владеет навигацией страницы, списк
 
 **Состояния [П]:** загрузка, готовое облако, нет тегов в данной выборке, ошибка/повтор. Ошибка не подменяется пустым облаком. Для пустого облака видна область, в которой теги отсутствуют.
 
-**[Д, 04.10] Подключение на Home:** все Active Entries за всё время, без Archived/Trash; используем текущее представление с WorkingDraft. Частота — число уникальных связанных Entry. Клик открывает Entry Browser с Active + выбранным tagId, без ограничения месяцем календаря. Цвет — свойство тега; type опционален и не управляет цветом. **[О]** Лимит количества тегов и порядок их размещения не подтверждены найденными сообщениями.
+**[Д, уточнение 18.10] Подключение на Home:** все Entries за всё время в выбранной области главной (ACTIVE + ARCHIVED по умолчанию; только ACTIVE при выключении «Учитывать архивные»; всегда без TRASH); используем текущее представление с WorkingDraft. Частота — число уникальных связанных Entry. Клик открывает Entry Browser с lifecycle-областью главной + выбранным tagId, без ограничения месяцем календаря. Цвет — свойство тега; type опционален и не управляет цветом. **[О]** Лимит количества тегов и порядок их размещения не подтверждены найденными сообщениями.
 
 **Приёмка:** размер согласован с количеством Entry; цвет устойчив во всех представлениях; переход сохраняет область подсчёта; облако читаемо и управляемо на узком экране. Составные условия задаёт C13, а не собственная логика AND/OR облака.
 
 ### C08. EntryList — общий список записей [Д]
 
-Параметры: filter, sort, limit; строки — C02. Одна Entry показывается один раз, при наличии WorkingDraft отображается draft, включая его Event date. Одновременно раскрыта только одна карточка; смена карточки проходит dirty guard. Специальной сортировки Drafts нет. Поведение раскрытия, быстрых правок, dirty guard и перехода на полный экран одинаково на Home и в Entry Browser. На Home — **7 Active Entries**, без диапазона дат, Event date newest first; «Все записи…» открывает полный Entry Browser. Ранний вариант «5 записей» заменён поздним решением.
+Параметры: filter, sort, limit; строки — C02. Одна Entry показывается один раз, при наличии WorkingDraft отображается draft, включая его Event date. Одновременно раскрыта только одна карточка; смена карточки проходит dirty guard. Специальной сортировки Drafts нет. Поведение раскрытия, быстрых правок, dirty guard и перехода на полный экран одинаково на Home и в Entry Browser. На Home — **7 Entries в выбранной области главной**, без диапазона дат, Event date newest first; «Все записи…» открывает полный Entry Browser. Ранний вариант «5 записей» заменён поздним решением.
 
 ### C09. TagInput / TagChips [Д; уточнения реализации отмечены отдельно]
 
@@ -284,6 +284,8 @@ Hybrid UI: активные фильтры всегда видны как chips;
 
 **[Д]** Главный экран состоит из `+ New Entry` и общих виджетов Calendar, Statistics, TagCloud и EntryList; Main Navigation доступна отдельно. Home — overview, не единственный gateway. Drafts входит в Statistics, отдельного Drafts block нет. Полного Routines widget нет; `+ Start AI` — future. Точная раскладка — [П]; этап включения — [О]. На узком экране блоки располагаются последовательно.
 
+**[Д, 18.10.2026] Единая область главной.** Пользовательская настройка «Учитывать архивные» действует на всю главную: Calendar, все показатели Statistics (включая Total entries, Drafts и Needs attention), TagCloud и EntryList. По умолчанию включена: ACTIVE + ARCHIVED; при выключении — только ACTIVE. TRASH исключён всегда. Настройка сохраняется между посещениями. Индикация, числа, размер тегов и показ записей используют эту область; переходы в Browser передают тот же lifecycle-фильтр вместе с условиями выбранного виджета. Переключение пересчитывает всю главную согласованно. Это позднее решение заменяет прежнее Active-only ограничение Home TagCloud/EntryList; периоды, сортировка и лимит 7 записей сохраняются. [История FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+
 ### Календарь — C06
 
 Месяц и стрелки переключения; дни с Entry просто выделены, без counts/state clutter. Любой день, в том числе пустой, открывает Entry Browser с диапазоном этого дня. Выбор диапазона также открывает Browser с From/To; точная механика выделения остаётся открытой. Создание — отдельное действие `+ New Entry`.
@@ -299,17 +301,17 @@ Hybrid UI: активные фильтры всегда видны как chips;
 | Entries · last 7 days | Скользящие последние 7 дней | Соответствующий диапазон Event date |
 | Entries · last 30 days | Скользящие последние 30 дней | Соответствующий диапазон Event date |
 | Entries with assets · last 30 days | Скользящие последние 30 дней | Диапазон Event date AND Has assets = Yes |
-| Total entries | Всё время | ACTIVE + ARCHIVED, без TRASH; уникальные Entry; [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md) |
+| Total entries | Всё время | Выбранная область главной; уникальные Entry; [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md) |
 
-Считаются Entry, не версии и не число предложений. Needs attention — производный признак, а не lifecycle state. **[Д, 18.10]** Total entries включает ACTIVE + ARCHIVED за всё время, исключает TRASH; число и список по клику используют одинаковый scope. **[Д, 18.10]** Периодные счётчики «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» также включают ACTIVE + ARCHIVED, исключая TRASH; число и список по клику используют одинаковые условия. Ранее предложенный Active-only scope не принят. **[Д, 18.10]** Drafts / Needs attention включают ACTIVE + ARCHIVED, исключают TRASH; у числа и результата перехода одинаковые условия фильтра. **[Д]** Last 7 days = сегодня + предыдущие 6 дней; Last 30 days = сегодня + предыдущие 29 дней. Это скользящие календарные дни, не week/month и не произвольные последние 168/720 часов. **[Д, 18.10.2026]** [Timezone границы rolling days](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md) — из настроек пользователя; смена по предложению только после подтверждения; «за всё время» не означает автоматически «включая Trash».
+Считаются Entry, не версии и не число предложений. Needs attention — производный признак, а не lifecycle state. **[Д, 18.10]** При включённом «Учитывать архивные» Total entries включает ACTIVE + ARCHIVED за всё время, исключает TRASH; число и список по клику используют одинаковый scope. **[Д, 18.10]** При включённом «Учитывать архивные» периодные счётчики «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» также включают ACTIVE + ARCHIVED, исключая TRASH; число и список по клику используют одинаковые условия. При выключении настройки все показатели используют только ACTIVE. Ранее предложенный постоянный Active-only scope не принят. **[Д, 18.10]** При включённом «Учитывать архивные» Drafts / Needs attention включают ACTIVE + ARCHIVED, исключают TRASH; у числа и результата перехода одинаковые условия фильтра. **[Д]** Last 7 days = сегодня + предыдущие 6 дней; Last 30 days = сегодня + предыдущие 29 дней. Это скользящие календарные дни, не week/month и не произвольные последние 168/720 часов. **[Д, 18.10.2026]** [Timezone границы rolling days](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md) — из настроек пользователя; смена по предложению только после подтверждения; «за всё время» не означает автоматически «включая Trash».
 
 ### Облако тегов — C07
 
-**[Д]** Все Active Entries за всё время, без Archived/Trash, с текущими Draft. Размер — число связанных Entry. Цвет хранится у тега и редактируется в S08; optional type не влияет на цвет. Клик — Entry Browser по Active + tagId. Месяц календаря не ограничивает облако.
+**[Д, уточнение 18.10]** Все Entries за всё время в выбранной области главной, с текущими Draft; по умолчанию ACTIVE + ARCHIVED, при выключении «Учитывать архивные» только ACTIVE, всегда без TRASH. Размер — число связанных Entry. Цвет хранится у тега и редактируется в S08; optional type не влияет на цвет. Клик — Entry Browser по выбранной lifecycle-области главной + tagId. Месяц календаря не ограничивает облако.
 
 ### Последние записи — C08
 
-**[Д, позднее решение]** **7 Active Entries**, без диапазона дат, Event date от новых к старым. При Draft используется его текущее содержимое и Event date. Каждая Entry однажды; доступно inline раскрытие и редактирование Title/Text/EventTimeRange/Tags/Asset links. «Все записи…» открывает Entry Browser. Первоначальный вариант на 5 записей отменён.
+**[Д, уточнение 18.10]** **7 Entries в выбранной области главной**, без диапазона дат, Event date от новых к старым. При Draft используется его текущее содержимое и Event date. Каждая Entry однажды; доступно inline раскрытие и редактирование Title/Text/EventTimeRange/Tags/Asset links. «Все записи…» открывает Entry Browser. Первоначальный вариант на 5 записей отменён.
 
 ### Приёмка
 
@@ -792,9 +794,9 @@ User instructions/overrides поддерживаются отдельно от �
 | AC-20 | Dirty editor → AI workflow | Успешный Save, затем Run от новой revision; failed Save блокирует Run |
 | AC-21 | Model unavailable | Пользователь явно выбирает замену, тихого fallback нет |
 | AC-22 | Повтор после timeout | Не создаёт duplicate Entry/revision или повторный Apply |
-| AC-23 | Archived/deleted Entry | Исключена из Active-выборки Home; доступна через State/preset; Entries без фильтров не скрывает lifecycle неявно |
+| AC-23 | Переключение «Учитывать архивные» | Все виджеты Home и переходы согласованно используют ACTIVE + ARCHIVED при ON, только ACTIVE при OFF; TRASH всегда исключён. Выбор сохраняется между посещениями; Entries из навигации по-прежнему без скрытого lifecycle-фильтра |
 | AC-24 | Клик по числу статистики | Открыт список соответствующих записей; count согласован с выборкой |
-| AC-25 | Клик по тегу облака Home | Открыта выборка Active по tagId за всё время; месяц Calendar не добавлен в фильтр |
+| AC-25 | Клик по тегу облака Home | Открыта выборка по tagId за всё время в lifecycle-области главной; размер/число тега рассчитаны по той же области; месяц Calendar не добавлен в фильтр |
 | AC-26 | Apply/Reject/failed run без revision | Исходный run и outcome доступны в AI activity |
 | AC-27 | Новая revision при Calendar projection | Обновляется event этой Entry, не создаётся event каждой revision |
 | AC-28 | Pending proposal при Calendar projection | Не публикуется как current Entry |
@@ -814,7 +816,7 @@ User instructions/overrides поддерживаются отдельно от �
 | AC-42 | Date-only / интервал / timezone | Не появляется фиктивное 00:00; To необязателен; конец не раньше начала; timezone сохраняется |
 | AC-43 | Вложенный фильтр с NOT | Видимая структура и полученная выборка соответствуют логическому выражению |
 | AC-44 | Изменить системный preset | Текущий фильтр меняется, определение preset остаётся прежним |
-| AC-45 | Home с более чем 7 Active Entries | Ровно первые 7 по Event date; при Draft используется дата из него; Archived/Trash исключены |
+| AC-45 | Home с более чем 7 Entries в выбранной области | Ровно первые 7 по Event date; при Draft используется дата из него; ARCHIVED учитываются только при ON; TRASH исключён |
 | AC-46 | Сменить месяц Calendar | All-time TagCloud и явно заданные периоды Statistics не меняются на месяц |
 | AC-47 | Rename / merge / delete тега | Старое имя становится alias; merge сохраняет canonical type/color; soft delete допускает Restore |
 | AC-48 | Asset Trash → permanent delete | Bytes/preview удалены; Entry/history показывают нейтральный placeholder |
@@ -862,7 +864,7 @@ User instructions/overrides поддерживаются отдельно от �
 |---|---|---|
 | UI-Q01 | Когда включаем Обзор, web-create, lifecycle UI и полную Asset Library? | Сохранить E0 маленьким; dashboard как отдельный UX slice |
 | UI-Q02 | Как считаем многодневные/приблизительные события в календаре и статистике? | Утвердить единые правила до реализации dashboard/date filtering |
-| UI-Q03 | Лимит/порядок тегов в облаке? | Область уже решена: Active за всё время; цвет непосредственно у тега, type на него не влияет |
+| UI-Q03 | Лимит/порядок тегов в облаке? [Обсуждение лимита](AI-Diary-Screens-Spec-v0.1.threads/01_UI-Q03_tag-cloud-limit/00_thread.md) | Область уже решена: за всё время с общей настройкой архива главной; цвет непосредственно у тега, type на него не влияет |
 | UI-Q04 | Editor type и форматирование? | AQ-WEB-003: выбрать при editor slice, не менять переносимый content contract |
 | UI-Q05 | Discard recovery points, partial uploads/late completion и merge draft? | Готовые Asset после Discard: предложение soft delete только при единственной связи; остаются частичные загрузки и самостоятельный merge draft |
 | UI-Q06 | Mobile layout трёхстороннего proposal review? | Обычный C15 Compare уже определён: Before/After или inline diff; детали S07 остаются открыты |
@@ -1195,21 +1197,21 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 ### 26.21. Уточнение 18.10.2026 — архивные записи в рабочих очередях Home
 
-Очереди «Черновики» / «Требует внимания» на Home включают ACTIVE и ARCHIVED Entries за всё время и исключают TRASH. Счётчик и список по клику используют одинаковые условия lifecycle и соответствующего признака; одна Entry считается один раз, независимо от числа review items.
+При включённом «Учитывать архивные» очереди «Черновики» / «Требует внимания» на Home включают ACTIVE и ARCHIVED Entries за всё время и исключают TRASH. Счётчик и список по клику используют одинаковые условия lifecycle и соответствующего признака; одна Entry считается один раз, независимо от числа review items.
 
-Архивирование — отдельное явное действие «Архивировать» в меню записи. Автоматический перенос по возрасту не задан. Архив сохраняет запись, историю и имеющийся Draft; наличие Draft само по себе не запрещает архивацию. Home EntryList и TagCloud сохраняют свой ACTIVE scope. Scope Total entries и остальных статистических counters этим решением не определяется. **История:** [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md).
+Архивирование — отдельное явное действие «Архивировать» в меню записи. Автоматический перенос по возрасту не задан. Архив сохраняет запись, историю и имеющийся Draft; наличие Draft само по себе не запрещает архивацию. На момент этого решения Home EntryList и TagCloud сохраняли ACTIVE scope; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Scope Total entries и остальных статистических counters этим решением не определяется. **История:** [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md).
 
 ### 26.22. Уточнение 18.10.2026 — Total entries включает архив
 
-«Всего записей» / Total entries на Home считает уникальные ACTIVE и ARCHIVED Entries за всё время, исключая TRASH. Переход по числу открывает список с теми же условиями lifecycle и без ограничения периода. Архивация не уменьшает этот показатель; число Revision одной Entry на него не влияет.
+При включённом «Учитывать архивные» «Всего записей» / Total entries на Home считает уникальные ACTIVE и ARCHIVED Entries за всё время, исключая TRASH. Переход по числу открывает список с теми же условиями lifecycle и без ограничения периода. Архивация не уменьшает этот показатель; число Revision одной Entry на него не влияет.
 
-Это не меняет ACTIVE scope Home EntryList/TagCloud. Lifecycle периодных counters «За 7 дней», «За 30 дней», «С вложениями за 30 дней» обсуждается отдельно в [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md). **История:** [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md).
+На момент этого решения ACTIVE scope Home EntryList/TagCloud не менялся; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Lifecycle периодных counters «За 7 дней», «За 30 дней», «С вложениями за 30 дней» обсуждается отдельно в [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md). **История:** [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md).
 
 ### 26.23. Уточнение 18.10.2026 — lifecycle периодной статистики Home
 
-Показатели Home «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» включают уникальные ACTIVE и ARCHIVED Entries и исключают TRASH. Сохраняются соответствующие периоды Event date (сегодня + предыдущие 6 / 29 дней), принятое пересечение интервалов и условие Has assets у третьего показателя. Число и список по клику используют одинаковые условия; архивация не исключает запись из статистики периода.
+При включённом «Учитывать архивные» показатели Home «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» включают уникальные ACTIVE и ARCHIVED Entries и исключают TRASH. Сохраняются соответствующие периоды Event date (сегодня + предыдущие 6 / 29 дней), принятое пересечение интервалов и условие Has assets у третьего показателя. Число и список по клику используют одинаковые условия; архивация не исключает запись из статистики периода.
 
-Home EntryList и TagCloud сохраняют ACTIVE scope. Timezone границы rolling days обсуждается отдельно; EventTimeRange записи сохраняет собственную timezone по прежним правилам. **История:** [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md).
+На момент этого решения Home EntryList и TagCloud сохраняли ACTIVE scope; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Timezone границы rolling days обсуждается отдельно; EventTimeRange записи сохраняет собственную timezone по прежним правилам. **История:** [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md).
 
 ### 26.24. Обсуждение 18.10.2026 — часовой пояс пользователя и время события
 
@@ -1283,7 +1285,7 @@ Calendar относит Entry к местной дате события в со�
 
 В очередь, фильтр и счётчик «Требует внимания» входят только актуальные причины, требующие действия пользователя, в том числе ошибка AI-обработки, после которой без пользователя продолжить нельзя. Ожидание запланированного запуска, выполняющаяся обработка и назначенный автоматический повтор сами по себе не добавляют Entry в Needs attention: они показываются спокойным статусом, а временная ошибка с автоповтором — мягким предупреждением. Независимые причины внимания, например открытый proposal или conflict, при этом сохраняются. Одна Entry считается один раз; старый уже разрешённый failed run сам по себе причиной не является.
 
-Home очередь сохраняет ранее принятый ACTIVE + ARCHIVED scope без TRASH; число и список по клику используют одинаковые условия. Мягкий статус фоновой работы не приглушает независимую причину внимания той же Entry. Детали retry, разрешения ошибок и audit schema не утверждаются этим продуктовым выбором. **История:** [FQ-06/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/04_SQ-04_failed-ai-attention/00_thread.md).
+Home очередь по умолчанию использует ACTIVE + ARCHIVED без TRASH; при выключении общей настройки архива — только ACTIVE; число и список по клику используют одинаковые условия. Мягкий статус фоновой работы не приглушает независимую причину внимания той же Entry. Детали retry, разрешения ошибок и audit schema не утверждаются этим продуктовым выбором. **История:** [FQ-06/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/04_SQ-04_failed-ai-attention/00_thread.md).
 
 **[Д, 18.10.2026]** [Конкретную причину ошибки AI можно явно убрать из внимания](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/05_SQ-05_dismiss-ai-error/00_thread.md), сохранив историю и остальные причины. Подробности — §26.33.
 
@@ -1351,10 +1353,14 @@ Base не подменяется текущей пользовательской
 
 Новая committed Revision — новая input version для existing already-processed checks; успешность старой пары routineVersion/input Revision не означает успешность новой. Для записи без изменений сохраняется прежний skip готовой части обычного продолжения. Это не разрешение на параллельные запуски или применение stale результата. Точная очередь/input-capture граница и version selection самой routine остаются технической/продуктовой конкретизацией. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
 
-**[Д, уточнение 18.10.2026]** [Calendar Home по умолчанию включает ACTIVE + ARCHIVED, без TRASH](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md); настройка исключения архива обсуждается отдельно в [SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+**[Д, уточнение 18.10.2026]** [Calendar Home по умолчанию включает ACTIVE + ARCHIVED, без TRASH](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md); единая настройка всей главной принята в [SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
 
 ### 26.41. Уточнение 18.10.2026 — Calendar включает архив по умолчанию
 
 Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются.
 
-**[П, предложение пользователя]** В настройках можно предусмотреть исключение архивных записей. Для Calendar это должно одновременно менять выделение дней и scope списка по выбранному дню/диапазону. Рабочее название — «Учитывать архивные», default включён. Точный label/layout и распространение настройки только на Calendar либо также на остальные показатели Home ещё не выбраны; текущая правка не меняет ранее принятые scopes других widgets автоматически. **Обсуждение:** [FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+**[Д, последующее уточнение]** Настройка распространяется на всю главную; актуальное правило — §26.42. Точная короткая подпись и layout остаются деталями UI. **История:** [FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+
+### 26.42. Уточнение 18.10.2026 — единая настройка архива для всей главной
+
+**[Д, 18.10.2026] Единая область главной.** Пользовательская настройка «Учитывать архивные» действует на всю главную: Calendar, все показатели Statistics (включая Total entries, Drafts и Needs attention), TagCloud и EntryList. По умолчанию включена: ACTIVE + ARCHIVED; при выключении — только ACTIVE. TRASH исключён всегда. Настройка сохраняется между посещениями. Индикация, числа, размер тегов и показ записей используют эту область; переходы в Browser передают тот же lifecycle-фильтр вместе с условиями выбранного виджета. Переключение пересчитывает всю главную согласованно. Это позднее решение заменяет прежнее Active-only ограничение Home TagCloud/EntryList; периоды, сортировка и лимит 7 записей сохраняются. [История FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
