@@ -82,8 +82,8 @@ Calendar полезен как очередь/адаптер для голосо
 Capture adapters и background workflows должны быть идемпотентными или duplicate-resistant.
 
 ### CAP-009 — Telegram как capture channel
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
-Желаемый канал, но конкретный UX пока не определён.
+**Статус:** ПОДТВЕРЖДЕНО (scope), реализация поэтапная  
+Telegram — поддерживаемый канал capture. Полный scope ТЗ включает сообщения с text, voice, media/assets (фото, видео, аудио, файлы/документы и другие доступные вложения), links и forwarded content. Подписи, source identity и provenance сохраняются там, где доступны. Оригинальный payload/asset reference должен быть связан с CaptureItem и не теряться после AI-нормализации; generic asset model — ASSET-001…009. В первом implementation slice приоритет text и voice. Остальные asset types входят в требования, но реализуются позднее; конкретная очередность не утверждена. Multi-message capture и dedup semantics — [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md). История решения: [AQ-INT-003](04-open-questions.threads/42_AQ-INT-003_telegram-scope/00_thread.md).
 
 ### CAP-010 — Web create/capture
 **Статус:** ОТЛОЖЕНО / НЕ ОБЯЗАТЕЛЬНО ДЛЯ ПЕРВЫХ ЭТАПОВ  
