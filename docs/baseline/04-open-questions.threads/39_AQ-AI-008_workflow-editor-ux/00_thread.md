@@ -177,4 +177,11 @@ ChatGPT — **решение по Test run flow (2026-10-18):** кнопка `Te
 
 **Нужно от пользователя:** определить UX History для workflow: отдельная panel/page со списком published versions, diff и Restore as new version, доступная из header.
 
+
+пользователь — «норм»
+
+ChatGPT — **решение по workflow History UX (2026-10-18):** `History` открывается из header как отдельный режим/panel/page, а не встраивается под pipeline. Показывается список immutable published versions с датой и кратким changelog/summary. Для user workflow доступны `Compare` и `Restore as new version`; для system workflow — read-only history/diff и `Duplicate this version`.
+
+**Нужно от пользователя:** определить adaptive/mobile UX workflow editor: сохранять тот же вертикальный pipeline, а secondary settings открывать в sheet/full-screen editor на узких экранах.
+
 **Решение:** —
