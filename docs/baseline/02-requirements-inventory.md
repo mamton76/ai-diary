@@ -511,6 +511,10 @@ EntryScreen не содержит отдельный постоянный `AI no
 ### API-002 — API должен быть client-agnostic
 **Статус:** ПОДТВЕРЖДЕНО.
 
+### API-API-CONTRACT — REST + OpenAPI contract-first
+**Статус:** ПОДТВЕРЖДЕНО  
+Основной client-agnostic API использует REST + JSON. Версионируемая OpenAPI-спецификация в repo является общим контрактом frontend/backend и развивается итерационно из согласованных user flows/use cases. Не нужно заранее проектировать все endpoints. Новые операции должны отражать уже принятые domain semantics revisions/base version, conflict handling, working drafts, durable asynchronous jobs, asset access и auth. Точные структуры конкретных endpoints разрабатываются при реализации сценариев. Решение: [AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md).
+
 ### API-003 — Backend framework/language
 **Статус:** ОТКРЫТО  
 Kotlin/Ktor удобен владельцу проекта; Python/FastAPI и TypeScript/Node остаются кандидатами.
