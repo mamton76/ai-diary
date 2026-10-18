@@ -149,4 +149,11 @@ ChatGPT — **решение по capability profile в workflow editor (2026-10
 
 **Нужно от пользователя:** определить состав верхнего блока Workflow settings и решить, какие поля всегда видны, а какие можно свернуть.
 
+
+пользователь — «ну ладно наверное ты права»
+
+ChatGPT — **решение по Eligibility / Scope default placement (2026-10-18):** `Eligibility` и `Scope default` относятся к секции `Input / Trigger`, а не к общему `Workflow settings`. Eligibility задаёт постоянный contract допустимых Entries, а Scope default — стартовый объём выборки для запуска (`This Entry / Current filtered set / All eligible` или совместимый вариант).
+
+**Нужно от пользователя:** определить окончательный состав верхнего блока Workflow settings без Input/Trigger-полей.
+
 **Решение:** —
