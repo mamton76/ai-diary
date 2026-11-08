@@ -94,6 +94,8 @@ Optional later: remote MCP adapter → same backend/domain API.
 
 Workflow definitions — **user-owned versioned canonical data**; runtime/engine — backend. User workflow Draft → immutable Publish; system workflows versioned read-only. Trusted/versioned executors и least-privilege capability profiles являются отдельными объектами; Run фиксирует конкретные versions/bindings и overrides. MVP flow — linear steps + simple conditions; output contracts versioned. AI не переписывает молча пользовательские изменения. Run logs охватывают success/failure/canceled и указывают на inputs/results/proposals без копирования личного содержимого в логи.
 
+**Первый продуктовый AI** ([AQ-AI-012](baseline/04-open-questions.threads/58_AQ-AI-012_ai-runtime-first-stage/00_thread.md), [PQ-019](baseline/04-open-questions.threads/57_PQ-019_digest-first-stage/00_thread.md)): только в Kotlin backend — два системных workflow в коде (извлечение данных из записи, недельный дайджест), параллельно E0 и первой версии; до этого — прототип ценности через внешнего ассистента без записи в дневник.
+
 [AI workflow architecture](baseline/07-ai-workflow-architecture.md) · [AQ-AI-008 resolved editor UX](baseline/04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md)
 
 **Открыты:** storage canonical AI run records vs operational DB, context assembly, prompt customization boundaries, sensitive-data/provider disclosure and consent, exact structured-output validation and repair policy (§11). Эти решения не следует незаметно заменять настройками конкретного провайдера.
