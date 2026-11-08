@@ -1,9 +1,9 @@
 # AQ-AI-008 — Workflow editor UX
 
 **Источник:** выделено из resolved AQ-AI-002 (2026-10-18)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
+**Статус:** решено  
+**Состояние:** resolved  
+**Claim:** released  
 **Ведёт:** ChatGPT  
 **Режим фиксации:** written-turns  
 **Родитель:** AQ-AI-002  
@@ -215,6 +215,8 @@ ChatGPT — **решение по стартовому состоянию нов
 
 пользователь — «ок» (сообщение «jr» в неверной раскладке)
 
+ChatGPT — **восстановленная фиксация решения по Draft/autosave UX (2026-11-08):** после подтверждения пользователя изменения user workflow Draft сохраняются автоматически. Редактор можно закрыть и вернуться к Draft позже без публикации; автосохранение не создаёт immutable published version и не запускает Publish. Этот пункт был согласован, но пропущен при записи в thread.
+
 ChatGPT — **решение по validation feedback в workflow editor (2026-11-08):** конфигурационные ошибки и warnings показываются одновременно в двух уровнях: компактная summary-панель editor-а (например `2 errors · 1 warning`) и локальная индикация на конкретных секциях/steps. Из summary можно переходить к соответствующим проблемам.
 
 **Нужно от пользователя:** определить, нужен ли в editor режим Preview/Read-only summary всего workflow перед Publish, или достаточно обычного editor + validation summary.
@@ -223,6 +225,6 @@ ChatGPT — **решение по validation feedback в workflow editor (2026-1
 
 ChatGPT — **решение по Preview / Publish confirmation UX (2026-11-08):** отдельный read-only `Preview / Summary` всего workflow перед Publish в MVP не нужен: содержимое доступно прямо в editor и validation summary. При нажатии `Publish` показывается компактный confirmation-summary: имя routine, новая version и исходная published version, количество steps, default model/executor/capability profile и актуальные warnings. Пользователь может отменить операцию или подтвердить публикацию. Этот confirmation не заменяет structural publish validation и не является отдельной страницей preview.
 
-**Нужно от пользователя:** закрыть оставшийся незафиксированный вопрос о Draft/autosave UX: автоматически сохранять изменения workflow Draft, включая возможность закрыть editor и продолжить позже без Publish? Или нужен явный Save Draft?
+ChatGPT — **завершение AQ-AI-008 (2026-11-08):** ранее согласованный Draft autosave восстановлен в канонической записи. Все поставленные UX-вопросы закрыты, включая Publish confirmation вместо отдельного Preview. Детали синхронизированы с Screens Spec §15.6.1 и inventory AI-031. Дополнительные UI-прототипы остаются проверкой presentation решений, а не условием закрытия этого треда.
 
-**Решение:** —
+**Решение:** workflow editor — вертикальный adaptive pipeline со scaffold, четырьмя типами step cards, auto input mapping, nested conditions, inline/full prompt editing, external versioned executors + explicit trust, capability profile compatibility, declarative output/application policy, Draft autosave, Test run snapshots, validation summary + local feedback, Publish confirmation без отдельного Preview и immutable version history. См. [Screens Spec §15.6.1](../../AI-Diary-Screens-Spec-v0.1.md) и [inventory AI-031](../../02-requirements-inventory.md).
