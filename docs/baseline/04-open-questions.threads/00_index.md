@@ -7,7 +7,6 @@
 Эта папка содержит только те вопросы из `04-open-questions.md`, для которых уже создан canonical thread.
 
 Треды создаются лениво. Отсутствие папки для вопроса означает только «детальное обсуждение ещё не заведено», а не «вопрос решён».
-| 43 | AQ-WEB-003 | Возможности первого редактора Entry | решён | ✅ resolved | none | — | [📁](43_AQ-WEB-003_editor-semantics/) | [00_thread.md](43_AQ-WEB-003_editor-semantics/00_thread.md) | Screens/Functional Specs, inventory/product baseline |
 
 ## Все созданные треды
 
@@ -42,6 +41,7 @@
 | 31 | AQ-AI-001 | Provider adapter contract | решён | ✅ resolved | none | — | [📁](31_AQ-AI-001_provider-adapter/) | [00_thread.md](31_AQ-AI-001_provider-adapter/00_thread.md) | 02-requirements-inventory.md / architecture AI subsystem design |
 | 32 | AQ-AI-002 | Workflow definition storage | решён | ✅ resolved | none | — | [📁](32_AQ-AI-002_workflow-definition/) | [00_thread.md](32_AQ-AI-002_workflow-definition/00_thread.md) | 02-requirements-inventory.md / 07-ai-workflow-architecture.md |
 | 39 | AQ-AI-008 | Workflow editor UX | решено | ✅ resolved | released | ChatGPT | [📁](39_AQ-AI-008_workflow-editor-ux/) | [00_thread.md](39_AQ-AI-008_workflow-editor-ux/00_thread.md) | AI-Diary-Screens-Spec-v0.1.md / workflow editor UX |
+| 43 | AQ-WEB-003 | Возможности первого редактора Entry | решён | ✅ resolved | none | — | [📁](43_AQ-WEB-003_editor-semantics/) | [00_thread.md](43_AQ-WEB-003_editor-semantics/00_thread.md) | Screens/Functional Specs, inventory/product baseline |
 | 33 | AQ-SEARCH-001 | MVP search semantics | решён | ✅ resolved | none | — | [📁](33_AQ-SEARCH-001_mvp-search-semantics/) | [00_thread.md](33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md) | 02-requirements-inventory.md / search index architecture |
 | 34 | AQ-SEARCH-002 | Semantic search timing | решён | ✅ resolved | none | — | [📁](34_AQ-SEARCH-002_semantic-search-timing/) | [00_thread.md](34_AQ-SEARCH-002_semantic-search-timing/00_thread.md) | 02-requirements-inventory.md / search architecture |
 | 35 | AQ-SEARCH-003 | Rebuild semantics | решён | ✅ resolved | none | — | [📁](35_AQ-SEARCH-003_rebuild-semantics/) | [00_thread.md](35_AQ-SEARCH-003_rebuild-semantics/00_thread.md) | 02-requirements-inventory.md / search index architecture |
@@ -70,6 +70,9 @@
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | решён | ✅ resolved | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
 | 55 | PQ-017 | Запуск синхронизации с Calendar из web | решён | ✅ resolved | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
 | 56 | PQ-018 | Цель «портфолио»: что и как показываем | решён | ✅ resolved | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
+| 59 | AQ-WEB-001 | Frontend stack | решён | ✅ resolved | none | — | [📁](59_AQ-WEB-001_frontend-stack/) | [00_thread.md](59_AQ-WEB-001_frontend-stack/00_thread.md) | inventory WEB-007 / architecture / plan |
+| 60 | AQ-WEB-006 | ChatGPT Sites или обычный web-проект | решён | ✅ resolved | none | — | [📁](60_AQ-WEB-006_sites-role/) | [00_thread.md](60_AQ-WEB-006_sites-role/00_thread.md) | inventory / architecture / plan |
+| 61 | AQ-WEB-002 | Feature parity на телефоне | решён | ✅ resolved | none | — | [📁](61_AQ-WEB-002_mobile-scope/) | [00_thread.md](61_AQ-WEB-002_mobile-scope/00_thread.md) | product baseline §12.2/§22.1 / Screens Spec / inventory |
 
 ## Быстрая легенда lifecycle
 
