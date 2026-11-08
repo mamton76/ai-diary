@@ -526,8 +526,8 @@ Kotlin/Ktor backend предоставляет минимальный provider-n
 Основной client-agnostic API использует REST + JSON. Версионируемая OpenAPI-спецификация в repo является общим контрактом frontend/backend и развивается итерационно из согласованных user flows/use cases. Не нужно заранее проектировать все endpoints. Новые операции должны отражать уже принятые domain semantics revisions/base version, conflict handling, working drafts, durable asynchronous jobs, asset access и auth. Точные структуры конкретных endpoints разрабатываются при реализации сценариев. Решение: [AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md).
 
 ### API-003 — Backend framework/language
-**Статус:** ОТКРЫТО  
-Kotlin/Ktor удобен владельцу проекта; Python/FastAPI и TypeScript/Node остаются кандидатами.
+**Статус:** ПОДТВЕРЖДЕНО  
+Основной backend — Kotlin/Ktor. Дополнительные Python workers/services допустимы позднее для отдельных AI/media/ML задач с обоснованной необходимостью; второй runtime не нужен для первого MVP. Любые canonical mutations проходят через общий domain/backend API. Решение: [AQ-API-001](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md).
 
 ### API-004 — Production runtime/hosting
 **Статус:** ПОДТВЕРЖДЕНО  
