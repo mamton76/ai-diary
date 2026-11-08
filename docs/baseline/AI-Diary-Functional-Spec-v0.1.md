@@ -364,8 +364,9 @@ UI-0.5 содержит отдельные AC-01…62; ниже системны
 | Этап | Основной результат | Что требуется согласовать перед реализацией |
 |---|---|---|
 | E0 | Account/storage access, files-only чтение существующих Entries | Минимальные canonical read contracts |
-| E1 | Поиск, filters, sorting, presets | Date semantics, области выборок, query contract; стратегия index при необходимости |
-| E2 | Редактирование, durable Draft, Save, history/Compare/Restore | Commit protocol, concurrency, schemas/migrations, FQ-03; ручные Save/Restore уже определены |
+| Первая пользовательская версия | Лёгкая правка заголовка и текста на том же экране, Save/Cancel | Обычные Draft, безопасный Save и сохранение прежних ревизий; поиск и экран истории не являются предпосылками |
+| E1 | Поиск, filters, sorting, presets и Обзор с переходами в выборки | Date semantics, области выборок, query contract; стратегия index при необходимости |
+| E2 | Полное редактирование, history/Compare/Restore; базовые Draft и Save уже нужны для ранней лёгкой правки | Commit protocol, concurrency, schemas/migrations, FQ-03; ручные Save/Restore уже определены |
 | E3 | Каталоги Tags/Types, merge/delete, работа с Assets | Merge через redirect уже определён; остаются collision policy, catalog concurrency, deletion/references |
 | E4 | Routines/runs, proposals/review, model settings | Eligibility/run identity, application policy, cancellation/retry, FQ-07 |
 | Дополнительные UX и интеграции | Home, web-create, полный Assets UI, Calendar adapters | Очерёдность поставки и adapter-specific contracts |
