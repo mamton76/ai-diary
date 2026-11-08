@@ -153,7 +153,7 @@
 | AQ-AI-003 | Canonical/operational storage run records | До persistent production runs |
 | AQ-AI-004 | Context building/material selection | До cross-entry workflows |
 | AQ-AI-005 | Prompt customization boundaries | До user prompt customization |
-| AQ-AI-006 | Sensitive data, consent, retention | **До реальных external AI calls** |
+| AQ-AI-006 | Sensitive data, consent, retention | **Решён** ([тред](baseline/04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)); PRIV-002, PRIV-005…009 — gate до реальных external AI calls |
 | AQ-AI-007 | Structured outputs validation/repair | До metadata-changing AI workflows |
 
 **AQ-AI-008 закрыт:** workflow editor UX принят и внесён в Screens Spec. Не открывать заново.
