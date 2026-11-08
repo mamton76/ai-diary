@@ -817,7 +817,10 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-002 — Calendar timeline priority
 
-Полезная derived feature, но вероятно не critical path для новой web/backend архитектуры.
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-INT-002 thread](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md)
+
+Роль Calendar Timeline Projection уже решена: separate one-way derived projection, one Entry — one Calendar event, обновление event на committed revision, не отдельные события для каждой revision (PQ-009). Осталось выбрать приоритет: одновременно с ранней Calendar Inbox или следующим этапом после первых рабочих Entries в web.
 
 ## AQ-INT-003 — Telegram scope
 
