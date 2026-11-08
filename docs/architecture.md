@@ -61,7 +61,7 @@ Optional later: remote MCP adapter → same backend/domain API.
 
 **Web:** полноценный адаптивный интерфейс с одним API; бизнес-правила остаются в backend. Первый рабочий поток — список/чтение существующих Entries, затем search/filters, edit/revision/history, tags, AI workflows. Reusable EntryPanel используется в view/edit/proposal review. Текстовый editor первого релиза поддерживает bold/italic/lists/links и хранит текст как Markdown; встроенный inline-AI editing не нужен ([AQ-WEB-003](baseline/04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md)).
 
-**Не зафиксировано:** frontend framework (React/TypeScript — кандидат), frontend hosting, точная mobile feature parity, обновление UI через polling/SSE/WS, первый revision UX scope и роль ChatGPT Sites. См. §11, не принимать эти решения по умолчанию.
+**Не зафиксировано:** frontend framework (React/TypeScript — кандидат), frontend hosting, точная mobile feature parity и роль ChatGPT Sites. Обновление UI — SSE (API-009, AQ-WEB-004); revision UX — PQ-004/PQ-011, этап E2 (AQ-WEB-005). См. §11, не принимать эти решения по умолчанию.
 
 ## 4. Canonical data, Drive и безопасный Save
 
@@ -138,20 +138,20 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 ## 11. Нерешённые вопросы (по source 04-open-questions.md на 2026-11-08)
 
-**Web (5):**
+**Web (3):**
 - [AQ-WEB-001](baseline/04-open-questions.md#aq-web-001--frontend-stack) — frontend framework/tooling.
 - [AQ-WEB-002](baseline/04-open-questions.md#aq-web-002--feature-parity-на-телефоне) — обязательный mobile scope beyond базовых capabilities.
-- [AQ-WEB-004](baseline/04-open-questions.md#aq-web-004--live-updates) — polling vs SSE/WS и частота refresh.
-- [AQ-WEB-005](baseline/04-open-questions.md#aq-web-005--работа-с-revisions) — граница первого release implementation/history/diff/restore, при уже описанном UX.
 - [AQ-WEB-006](baseline/04-open-questions.md#aq-web-006--chatgpt-sites-или-обычный-web-проект) — роль Sites vs ordinary source-owned web client.
 
-**AI (5):**
+**AI (7):**
 - [AQ-AI-003](baseline/04-open-questions.md#aq-ai-003--где-хранить-run-records) — где durable run records.
 - [AQ-AI-004](baseline/04-open-questions.md#aq-ai-004--context-building) — context selection/assembly.
 - [AQ-AI-005](baseline/04-open-questions.md#aq-ai-005--prompt-customization) — user overrides/user-defined prompts boundary.
-- [AQ-AI-006](baseline/04-open-questions.md#aq-ai-006--sensitive-data-policy) — external LLM consent, privacy, retention.
 - [AQ-AI-007](baseline/04-open-questions.md#aq-ai-007--structured-outputs--validation) — schema validation and repair.
+- [AQ-AI-009](baseline/04-open-questions.md#aq-ai-009--навык-для-внешнего-ассистента-с-текущими-трекерами) — навык внешнего ассистента с текущими трекерами.
+- [AQ-AI-010](baseline/04-open-questions.md#aq-ai-010--модель-трекеров-и-политика-вопросов) — модель трекеров и политика вопросов.
+- [AQ-AI-011](baseline/04-open-questions.md#aq-ai-011--детали-дайджеста-и-детекции-эпизодов) — детали дайджеста и детекции эпизодов.
 
-**Уже решены, не спрашивать заново:** AQ-WEB-003 Markdown editor, AQ-AI-008 workflow editor UX. Подробные требования находятся в source inventory/screens specs.
+**Уже решены, не спрашивать заново:** AQ-WEB-003 Markdown editor, AQ-WEB-004 (SSE), AQ-WEB-005 (revision UX, E2), AQ-AI-006 (данные для внешнего AI), AQ-AI-008 workflow editor UX. Подробные требования находятся в source inventory/screens specs.
 
-Не закрывать оставшиеся 10 вопросов без отдельного решения; не выдавать технические drafts file format/Save recovery за утверждённый release design.
+Не закрывать оставшиеся 10 вопросов (3 Web + 7 AI) без отдельного решения; не выдавать технические drafts file format/Save recovery за утверждённый release design.

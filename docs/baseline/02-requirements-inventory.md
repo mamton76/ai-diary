@@ -267,7 +267,7 @@ Asset имеет storage-independent identity и authoritative original referenc
 
 ### ASSET-006 — Remove asset из Entry различает unlink и delete
 **Статус:** ПОДТВЕРЖДЕНО  
-В edit UX действие удаления asset открывает явный выбор: отвязать от текущей Entry и оставить в Asset Library либо удалить asset из системы. Если asset используется несколькими entries, destructive delete предупреждает о затрагиваемых связях; если после unlink asset станет orphaned, это также явно показывается.
+В edit UX снятие asset с Entry и удаление asset из библиотеки — разные операции. Если снимаемая связь единственная, предлагается удалить сам asset; если есть другие логические связи, снимается только текущая, без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, а не permanent delete; при отказе связь всё равно снимается, asset остаётся в библиотеке. Отдельный явный Global Delete из библиотеки сохраняет confirmation и предупреждение о затрагиваемых связях. Решение FQ-08, см. Functional Spec AST-03/AST-04.
 
 ### ASSET-007 — Минимальный Asset contract не зависит от storage provider
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -431,11 +431,11 @@ Web, будущий Android/iOS и другие клиенты должны ви
 Derived слой можно пересобрать; его рассинхронизация не должна менять каноническую историю.
 
 ### SYNC-006 — Изменения canonical storage должны обнаруживаться и согласовываться
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
+**Статус:** ПОДТВЕРЖДЕНО — решено в [AQ-DATA-004](04-open-questions.threads/19_AQ-DATA-004_change-detection/00_thread.md); детали — DATA-011  
 Если Google Drive/file storage остаётся canonical или допускает ручные изменения, backend должен иметь механизм change detection/reconciliation. Конкретная технология (Drive Changes API, ETag, polling и т. п.) — архитектурный вопрос.
 
 ### SYNC-007 — Полный offline-first sync для новой web/backend версии пока не подтверждён
-**Статус:** ОТКРЫТО  
+**Статус:** ПОДТВЕРЖДЕНО — решено в [PQ-002](04-open-questions.threads/03_PQ-002_offline-first/00_thread.md): MVP online-first, full offline sync отложен  
 Обязательны защита от потери capture при плохой сети, safe retry и устойчивость к временной недоступности. Нужна ли полноценная offline editing + later merge model для всего web-клиента — отдельное решение.
 
 ### DATA-020 — Manual canonical file edits не являются обязательной MVP feature
@@ -582,8 +582,9 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 
 
 
-### API-007 — Основной backend stack — Kotlin/Ktor
+### API-010 — Основной backend stack — Kotlin/Ktor
 **Статус:** ПОДТВЕРЖДЕНО  
+**Примечание:** до 2026-11-08 пункт ошибочно имел ID API-007 (дубль с Monorepo); по содержанию совпадает с API-003.  
 Core backend AI Diary реализуется на Kotlin/Ktor и содержит domain/API logic, storage coordination, revisions, leases, concurrency/reconciliation и integrations. Python может добавляться позднее как специализированный worker/service/job для AI/ML/media/data задач, когда это оправдано конкретным use case; такие workers не обходят domain mutation rules и не становятся независимыми writers canonical diary state. Для MVP второй runtime не обязателен.
 
 # J. Authentication и Google integration
@@ -598,7 +599,7 @@ AI Diary имеет собственный stable internal user/account ID. Goog
 
 ### AUTH-003 — Минимально необходимые permissions/scopes
 **Статус:** ПОДТВЕРЖДЕНО  
-Приложение должно просить только те Google permissions, которые реально нужны.
+Приложение должно просить только те Google permissions, которые реально нужны. Permissions выдаются incremental/per-feature: login отдельно, Drive consent при подключении хранилища дневника, Calendar consent только при включении Calendar features; предпочтительно без full-Drive access ([AQ-AUTH-002](04-open-questions.threads/14_AQ-AUTH-002_google-oauth/00_thread.md)).
 
 
 ### AUTH-006 — Backend получает доступ к Drive от имени пользователя
@@ -607,7 +608,7 @@ AI Diary имеет собственный stable internal user/account ID. Goog
 
 ### AUTH-004 — Конкретный auth service/framework не фиксируется заранее
 **Статус:** ПОДТВЕРЖДЕНО  
-Firebase Auth, direct OIDC или другой auth middleware выбирается вместе с backend/hosting. Продуктовый контракт важнее конкретного провайдера: internal user identity должна оставаться независимой от login method.
+Backend (Kotlin/Ktor, AQ-API-001) и hosting (Cloud Run, AQ-API-002) уже выбраны; конкретный auth middleware (Firebase Auth, direct OIDC или другой) — implementation detail, выбирается при реализации P1. Продуктовый контракт важнее конкретного провайдера: internal user identity должна оставаться независимой от login method.
 
 ### AUTH-007 — Отключение Drive не теряет данные и команды
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -825,7 +826,7 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 **Статус:** ПОДТВЕРЖДЕНО.
 
 ### INT-005 — Telegram adapter должен использовать общую capture boundary
-**Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ.
+**Статус:** ПОДТВЕРЖДЕНО — решено в [AQ-INT-003](04-open-questions.threads/42_AQ-INT-003_telegram-scope/00_thread.md) и [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md)  
 **Этап:** интеграционный, после Calendar (P5) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 
 ### INT-006 — Интеграции должны быть заменяемыми
@@ -925,8 +926,8 @@ Backend, background jobs и integrations должны писать структ�
 Это особенно заметно из голосовых сценариев на велосипеде/в дороге.
 
 ### OFF-002 — Полный offline-first для нового web/native
-**Статус:** ОТКРЫТО  
-Старый Android делал offline-first центральным принципом, но для новой версии это не было повторно подтверждено как обязательное MVP-требование.
+**Статус:** УСТАРЕЛО для MVP — решено в [PQ-002](04-open-questions.threads/03_PQ-002_offline-first/00_thread.md)  
+Первый web/backend MVP — online-first. Full offline browsing/editing и conflict-aware offline sync отложены ([FQ-OFFLINE-001](06-future-questions.md#fq-offline-001--full-offline-editing-и-синхронизация-версий)); уже введённый текст и capture не должны тихо теряться при кратковременной потере сети. Архитектура не блокирует будущий offline-capable клиент.
 
 ### OFF-003 — Потеря сети не должна приводить к тихой потере уже введённого текста
 **Статус:** ПОДТВЕРЖДЕНО.
@@ -1024,7 +1025,8 @@ Selective sharing не входит в обозримый MVP и не долже
 **Статус:** ПОДТВЕРЖДЕНО.
 
 ### LEG-003 — Старый Android-клиент может позже стать native client нового API
-**Статус:** ОТКРЫТО.
+**Статус:** ОТЛОЖЕНО — решено в [PQ-008](04-open-questions.threads/10_PQ-008_android-legacy/00_thread.md)  
+Старый Android/Firebase codebase остаётся historical prototype и не развивается в текущем цикле. К native Android возвращаемся позже при реальной потребности, вместе с offline-first.
 
 ### LEG-004 — Firebase Data Connect migration не требуется
 **Статус:** ЗАКРЫТО / НЕ ТРЕБУЕТСЯ  
@@ -1066,15 +1068,14 @@ Selective sharing не входит в обозримый MVP и не долже
 - Cloud Functions;
 - Google Sites;
 - Apps Script как основной web runtime;
-- Ktor;
 - FastAPI;
 - React;
-- Cloud Run;
-- конкретный формат REST/GraphQL;
 - конкретная DB;
 - конкретный search engine.
 
 Их можно выбрать снова, но только после архитектурного сравнения.
+
+После архитектурного сравнения уже выбраны: Kotlin/Ktor ([AQ-API-001](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md), API-003), Google Cloud Run ([AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md), API-004), REST + JSON с OpenAPI ([AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)). Frontend framework — открытый AQ-WEB-001.
 
 ## Legacy / migration
 
@@ -1168,7 +1169,7 @@ Save недоступен, пока хотя бы одно оставленно�
 
 Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
-**История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup остаётся отдельным FQ-08; физический commit protocol этим решением не утверждён.
+**История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup решён в FQ-08/[SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md) и [SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md); физический commit protocol этим решением не утверждён.
 
 ## Уточнение 18.10.2026 — manual Save без изменения content
 
@@ -1196,7 +1197,7 @@ Manual Save, при котором итоговое сохраняемое conte
 
 Restore Entry из Trash всегда возвращает запись в ACTIVE, независимо от того, была она Active или Archived перед удалением. Сохраняются тот же entryId, Current/content history и существующий durable Draft. Операция меняет lifecycle/audit и не создаёт content Revision; это не Restore исторической Revision.
 
-**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные FQ-08 остаются открытыми.
+**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные части FQ-08 см. ниже: Решены SQ-01…SQ-05: Asset Trash без автоматического срока (SQ-04), автоматическая очистка orphaned partial staging через 7 дней (SQ-05). Открытыми остаются late completion, physical cleanup protocol и backup retention.
 
 ## Уточнение 18.10.2026 — overlap при фильтрации по периоду
 

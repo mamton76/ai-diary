@@ -37,9 +37,9 @@
 
 - storage/backend assumptions отличаются от поздней file-first ветки.
 
-## `docs/architecture.md`
+## `docs/architecture-legacy-android-firebase.md`
 
-Описывает Room/Firebase/Data Connect архитектурные поколения.
+Описывает Room/Firebase/Data Connect архитектурные поколения. До 2026-11-08 этот текст лежал в `docs/architecture.md`.
 
 **Использовано для:**
 
@@ -47,6 +47,12 @@
 - понимания того, какие решения уже пробовались.
 
 **Статус:** legacy architecture.
+
+## `docs/architecture.md`
+
+С 2026-11-08 — **текущая целевая архитектура Web/API MVP**, консолидирующая решения baseline. Рядом — [`implementation-plan-web-mvp.md`](../implementation-plan-web-mvp.md) (порядок работ) и аудиты в [`docs/audits/`](../audits/): Abacus-скрипты и ревью требований.
+
+**Статус:** текущий target design, не описание реализованного кода.
 
 ## `docs/data-model-proposal.md`
 

@@ -162,7 +162,7 @@ Cleanup перечисляет конкретные object IDs/paths consumed sn
 
 Reachability включает: Current, обязательную Revision history, текущие Draft всех Entries, pending operations, raw/provenance и необходимые audit/results. Старые committed Revision payload не собираются как мусор. Неопубликованные candidates могут очищаться только после fencing всех возможных late publication requests. Одного возраста файла недостаточно.
 
-Draft autosave generation хранится только пока актуальна или нужна незавершённой операции; не создаётся постоянная server autosave-history. Retention orphan uploads, operation receipts, tombstones и permanent-delete records согласуется с FQ-08. До утверждения retention не вводить автоматическое destructive GC пользовательских originals.
+Draft autosave generation хранится только пока актуальна или нужна незавершённой операции; не создаётся постоянная server autosave-history. Orphaned partial staging очищается через 7 дней ([SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)); Asset Trash без автоматического срока ([SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md)). Retention operation receipts, tombstones и permanent-delete records остаётся открытой частью FQ-08. Автоматическое destructive GC готовых пользовательских originals не вводится.
 
 ## 8. Проекции, background work и long-running jobs
 
@@ -220,7 +220,7 @@ NO_CHANGE публикует новый Entry state с прежней Current/co
 
 ### Что не нужно выбирать пользователю сейчас
 
-JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. FQ-04 grammar, FQ-05 time policy и FQ-08 destructive retention остаются явно открытыми; этот проект их не закрывает.
+JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. FQ-04 grammar, FQ-05 time policy и оставшиеся части FQ-08 (late completion, physical cleanup protocol, backup retention) остаются явно открытыми; этот проект их не закрывает.
 
 ## 11. Проверки перед реализацией
 

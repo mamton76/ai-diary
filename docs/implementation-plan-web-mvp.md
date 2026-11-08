@@ -139,19 +139,19 @@
 
 ## Решения, которые ещё не следует считать принятыми
 
-### Web — 5
+### Web — 3 открытых
 
 | ID | Вопрос | Когда нужен |
 |---|---|---|
 | AQ-WEB-001 | Frontend framework/tooling | До P3 |
 | AQ-WEB-002 | Mobile feature scope/parity | До P3/P4 |
-| AQ-WEB-004 | Live refresh: polling, SSE, WebSocket | До job-status UX |
-| AQ-WEB-005 | Первый implementation scope History/Diff/Restore | До P4 |
+| AQ-WEB-004 | Live refresh | **Решён:** SSE (API-009) |
+| AQ-WEB-005 | Первый implementation scope History/Diff/Restore | **Решён:** UX — PQ-004/PQ-011, этап E2 (PQ-012) |
 | AQ-WEB-006 | Роль ChatGPT Sites vs обычный web client | До P3 |
 
 **AQ-WEB-003 закрыт:** toolbar Markdown editor; inline AI не нужен в первом редакторе.
 
-### AI — 5
+### AI — 7 открытых
 
 | ID | Вопрос | Когда нужен |
 |---|---|---|
@@ -160,6 +160,9 @@
 | AQ-AI-005 | Prompt customization boundaries | До user prompt customization |
 | AQ-AI-006 | Sensitive data, consent, retention | **Решён** ([тред](baseline/04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)); PRIV-002, PRIV-005…009 — gate до реальных external AI calls |
 | AQ-AI-007 | Structured outputs validation/repair | До metadata-changing AI workflows |
+| AQ-AI-009 | Навык внешнего ассистента с текущими трекерами | E4 |
+| AQ-AI-010 | Модель трекеров и политика вопросов | E4, до трекеров |
+| AQ-AI-011 | Детали дайджеста и детекции эпизодов | E4, до дайджеста |
 
 **AQ-AI-008 закрыт:** workflow editor UX принят и внесён в Screens Spec. Не открывать заново.
 

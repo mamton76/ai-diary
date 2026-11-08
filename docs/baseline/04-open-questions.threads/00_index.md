@@ -7,7 +7,6 @@
 Эта папка содержит только те вопросы из `04-open-questions.md`, для которых уже создан canonical thread.
 
 Треды создаются лениво. Отсутствие папки для вопроса означает только «детальное обсуждение ещё не заведено», а не «вопрос решён».
-| 43 | AQ-WEB-003 | Возможности первого редактора Entry | решён | ✅ resolved | none | — | [📁](43_AQ-WEB-003_editor-semantics/) | [00_thread.md](43_AQ-WEB-003_editor-semantics/00_thread.md) | Screens/Functional Specs, inventory/product baseline |
 
 ## Все созданные треды
 
@@ -42,6 +41,7 @@
 | 31 | AQ-AI-001 | Provider adapter contract | решён | ✅ resolved | none | — | [📁](31_AQ-AI-001_provider-adapter/) | [00_thread.md](31_AQ-AI-001_provider-adapter/00_thread.md) | 02-requirements-inventory.md / architecture AI subsystem design |
 | 32 | AQ-AI-002 | Workflow definition storage | решён | ✅ resolved | none | — | [📁](32_AQ-AI-002_workflow-definition/) | [00_thread.md](32_AQ-AI-002_workflow-definition/00_thread.md) | 02-requirements-inventory.md / 07-ai-workflow-architecture.md |
 | 39 | AQ-AI-008 | Workflow editor UX | решено | ✅ resolved | released | ChatGPT | [📁](39_AQ-AI-008_workflow-editor-ux/) | [00_thread.md](39_AQ-AI-008_workflow-editor-ux/00_thread.md) | AI-Diary-Screens-Spec-v0.1.md / workflow editor UX |
+| 43 | AQ-WEB-003 | Возможности первого редактора Entry | решён | ✅ resolved | none | — | [📁](43_AQ-WEB-003_editor-semantics/) | [00_thread.md](43_AQ-WEB-003_editor-semantics/00_thread.md) | Screens/Functional Specs, inventory/product baseline |
 | 33 | AQ-SEARCH-001 | MVP search semantics | решён | ✅ resolved | none | — | [📁](33_AQ-SEARCH-001_mvp-search-semantics/) | [00_thread.md](33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md) | 02-requirements-inventory.md / search index architecture |
 | 34 | AQ-SEARCH-002 | Semantic search timing | решён | ✅ resolved | none | — | [📁](34_AQ-SEARCH-002_semantic-search-timing/) | [00_thread.md](34_AQ-SEARCH-002_semantic-search-timing/00_thread.md) | 02-requirements-inventory.md / search architecture |
 | 35 | AQ-SEARCH-003 | Rebuild semantics | решён | ✅ resolved | none | — | [📁](35_AQ-SEARCH-003_rebuild-semantics/) | [00_thread.md](35_AQ-SEARCH-003_rebuild-semantics/00_thread.md) | 02-requirements-inventory.md / search index architecture |

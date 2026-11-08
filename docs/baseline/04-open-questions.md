@@ -665,6 +665,9 @@ React/TypeScript — кандидат, не решение.
 
 Для MVP real-time может быть излишним.
 
+**Статус:** РЕШЕНО через другие решения  
+**Решение:** для открытого web UI используется SSE (API-009, [AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md): Cloud Run Service для API + SSE); при следующем открытии данные перечитываются; WebSocket и push не требуются. Детали fallback и частоты переподключения — implementation details.
+
 ## AQ-WEB-005 — Работа с revisions
 
 Нужно решить первый UX:
@@ -674,6 +677,9 @@ React/TypeScript — кандидат, не решение.
 - restore old revision;
 - compare AI proposal;
 - merge conflict screen.
+
+**Статус:** РЕШЕНО через другие решения  
+**Решение:** UX History/Revisions задан в [PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md), [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md) и [PQ-011](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md) (WEB-016/017); этап — E2 по [PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md). Остаточные детали (точный text-diff, визуальная подача) — implementation details.
 
 
 ## AQ-WEB-006 — ChatGPT Sites или обычный web-проект?
