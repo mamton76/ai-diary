@@ -219,4 +219,10 @@ ChatGPT — **решение по validation feedback в workflow editor (2026-1
 
 **Нужно от пользователя:** определить, нужен ли в editor режим Preview/Read-only summary всего workflow перед Publish, или достаточно обычного editor + validation summary.
 
+пользователь — «ок»
+
+ChatGPT — **решение по Preview / Publish confirmation UX (2026-11-08):** отдельный read-only `Preview / Summary` всего workflow перед Publish в MVP не нужен: содержимое доступно прямо в editor и validation summary. При нажатии `Publish` показывается компактный confirmation-summary: имя routine, новая version и исходная published version, количество steps, default model/executor/capability profile и актуальные warnings. Пользователь может отменить операцию или подтвердить публикацию. Этот confirmation не заменяет structural publish validation и не является отдельной страницей preview.
+
+**Нужно от пользователя:** закрыть оставшийся незафиксированный вопрос о Draft/autosave UX: автоматически сохранять изменения workflow Draft, включая возможность закрыть editor и продолжить позже без Publish? Или нужен явный Save Draft?
+
 **Решение:** —
