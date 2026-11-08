@@ -220,7 +220,7 @@ NO_CHANGE публикует новый Entry state с прежней Current/co
 
 ### Что не нужно выбирать пользователю сейчас
 
-JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. FQ-04 grammar, FQ-05 time policy и оставшиеся части FQ-08 (late completion, physical cleanup protocol, backup retention) остаются явно открытыми; этот проект их не закрывает.
+JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. Правила FQ-04 приняты (TAG-14); точная реализация распознавания (Unicode, regex, parser) и её тесты — техническая детализация. FQ-05 time policy и оставшиеся части FQ-08 (late completion, physical cleanup protocol, backup retention) остаются явно открытыми; этот проект их не закрывает.
 
 ## 11. Проверки перед реализацией
 
