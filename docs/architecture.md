@@ -115,6 +115,10 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 ## 9. Проверки перед первым реальным использованием
 
+**Результат статического аудита текущих Abacus scripts (08.11.2026):** [audits/2026-11-08-abacus-diary-scripts.md](audits/2026-11-08-abacus-diary-scripts.md). Найдены готовые Python модули для Calendar→Drive→Entry→Timeline и Telegram operator bot; код не выполнялся и состояние live Abacus не проверялось. Выявлены риск partial commits/duplicate Entries при retry, преждевременный move из Calendar Inbox и сканирование лишь первых N Entries в Timeline projection. Эти риски должны быть закрыты изолированными fixture/recovery tests до работы с реальными diary data.
+
+
+
 - Durable Save и recovery после прерывания операции; не подтверждать Save до commit.
 - Idempotent Calendar import, no duplicate Entries; сохранение raw/source metadata.
 - Calendar Timeline обновляет тот же event и не изменяет canonical diary.
