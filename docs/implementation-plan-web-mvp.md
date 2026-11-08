@@ -76,12 +76,12 @@
 Этапы экранов определены в [Screens Spec](baseline/AI-Diary-Screens-Spec-v0.1.md). Веб-клиент хранится как исходный код проекта, использует общий API и поддерживает телефон и desktop.
 
 1. **E0 — технический срез чтения.** Вход и доступ к дневнику, список существующих записей, открытие записи и уже связанных материалов, состояния загрузки и ошибок. Читаем canonical files через backend; DB/index для этого среза не требуется.
-2. **Первая пользовательская веб-версия — лёгкая правка.** В том же EntryScreen можно изменить заголовок и текст существующей записи, сохранить или отменить правки. Редактор поддерживает базовое форматирование, тело хранится в Markdown. Уже действуют Draft/recovery, проверки конкурентных правок и надёжный Save: изменения создают новую immutable Revision, исходник, прежние версии и связи с материалами сохраняются. Поиск и интерфейс истории не являются условиями этой поставки.
+2. **Первая пользовательская веб-версия — лёгкая правка.** В том же EntryScreen можно изменить заголовок и текст существующей записи, сохранить или отменить правки. Редактор поддерживает базовое форматирование, тело хранится в Markdown. Уже действуют Draft/recovery, проверки конкурентных правок и надёжный Save: изменения создают новую immutable Revision, исходник, прежние версии и связи с материалами сохраняются. Поиск и интерфейс истории не являются условиями этой поставки. Подключаются продуктовые события (OPS-007): отдельно от технических логов, без содержимого дневника, provider выбирается при реализации.
 3. **E1 — поиск, фильтры и Обзор.** Подключаем поиск по заголовку и тексту, фильтры и сортировки через восстанавливаемый индекс. Календарь, облако тегов и доступные счётчики Обзора открывают соответствующие выборки; счётчики черновиков и предложений AI подключаются по готовности функций. После canonical changes индекс обновляется асинхронно; предусмотрены reconciliation и полная перестройка.
 
 **Готово, когда:** E0 читает существующие записи с телефона и desktop; первая пользовательская версия надёжно сохраняет правку без потери исходника и вложений; E1 позволяет находить записи и открывать те же выборки из Обзора. Готовность проверяется отдельно для каждого среза.
 
-**Решения для реализации:** [AQ-WEB-001](baseline/04-open-questions.md#aq-web-001--frontend-stack), [AQ-WEB-002](baseline/04-open-questions.md#aq-web-002--feature-parity-на-телефоне), [AQ-WEB-006](baseline/04-open-questions.md#aq-web-006--chatgpt-sites-или-обычный-web-проект); для статусов фоновых задач — [AQ-WEB-004](baseline/04-open-questions.md#aq-web-004--live-updates).
+**Принятые решения для реализации:** React + TypeScript + Vite SPA, обычный клиент в репозитории ([AQ-WEB-001](baseline/04-open-questions.md#aq-web-001--frontend-stack), [AQ-WEB-006](baseline/04-open-questions.md#aq-web-006--chatgpt-sites-или-обычный-web-проект)); на телефоне всё из E0–E2 ([AQ-WEB-002](baseline/04-open-questions.md#aq-web-002--feature-parity-на-телефоне)); статусы фоновых задач — SSE ([AQ-WEB-004](baseline/04-open-questions.md#aq-web-004--live-updates)); конфликт при Save в первой версии — упрощённый экран для заголовка и текста (REV-016).
 
 ## P4. Полный веб-редактор, история и управление записями (E2)
 
@@ -128,6 +128,7 @@
 |---|---|
 | Canonical safety | raw, Entry, Revisions, Assets и provenance сохраняются; conflict/restore не удаляют историю |
 | Import/idempotency | повтор источника или команды не создаёт duplicate entries/commits |
+| Save protocol | до первой пользовательской версии: adapter spike Drive-примитива публикации (08 §2.2), проверки 08 §11 и failure injection пройдены; иначе mutating release блокируется ([FQ-03](baseline/AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md)) |
 | Single writer | к первому mutating release web единственный писатель canonical-данных — backend; Abacus-скрипты вызывают API или не пишут в canonical-хранилище ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)) |
 | Operations | queued/committed/failed различаются; safe restart/retry; нет автоповтора ambiguous paid LLM |
 | Backup | документированные on-demand restore scripts проверены в изолированном хранилище |
@@ -139,19 +140,19 @@
 
 ## Решения, которые ещё не следует считать принятыми
 
-### Web — 5
+### Web — открытых нет
 
 | ID | Вопрос | Когда нужен |
 |---|---|---|
-| AQ-WEB-001 | Frontend framework/tooling | До P3 |
-| AQ-WEB-002 | Mobile feature scope/parity | До P3/P4 |
-| AQ-WEB-004 | Live refresh: polling, SSE, WebSocket | До job-status UX |
-| AQ-WEB-005 | Первый implementation scope History/Diff/Restore | До P4 |
-| AQ-WEB-006 | Роль ChatGPT Sites vs обычный web client | До P3 |
+| AQ-WEB-001 | Frontend framework/tooling | **Решён:** React + TypeScript + Vite SPA |
+| AQ-WEB-002 | Mobile feature scope/parity | **Решён:** всё из E0–E2 на телефоне, сложные экраны desktop-first |
+| AQ-WEB-004 | Live refresh | **Решён:** SSE (API-009) |
+| AQ-WEB-005 | Первый implementation scope History/Diff/Restore | **Решён:** UX — PQ-004/PQ-011, этап E2 (PQ-012) |
+| AQ-WEB-006 | Роль ChatGPT Sites vs обычный web client | **Решён:** обычный клиент в репозитории |
 
 **AQ-WEB-003 закрыт:** toolbar Markdown editor; inline AI не нужен в первом редакторе.
 
-### AI — 5
+### AI — 7 открытых
 
 | ID | Вопрос | Когда нужен |
 |---|---|---|
@@ -160,6 +161,9 @@
 | AQ-AI-005 | Prompt customization boundaries | До user prompt customization |
 | AQ-AI-006 | Sensitive data, consent, retention | **Решён** ([тред](baseline/04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)); PRIV-002, PRIV-005…009 — gate до реальных external AI calls |
 | AQ-AI-007 | Structured outputs validation/repair | До metadata-changing AI workflows |
+| AQ-AI-009 | Навык внешнего ассистента с текущими трекерами | E4 |
+| AQ-AI-010 | Модель трекеров и политика вопросов | E4, до трекеров |
+| AQ-AI-011 | Детали дайджеста и детекции эпизодов | E4, до дайджеста |
 
 **AQ-AI-008 закрыт:** workflow editor UX принят и внесён в Screens Spec. Не открывать заново.
 

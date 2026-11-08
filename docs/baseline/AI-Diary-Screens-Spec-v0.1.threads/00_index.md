@@ -6,3 +6,4 @@
 | 2 | UI-Q14 | Entry только с материалами без Title/Text | решён | resolved | none | — | [Тред](02_UI-Q14_asset-only-entry/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 3 | UI-Q15 | Manual Save полностью пустой Entry | решён | resolved | none | — | [Тред](03_UI-Q15_empty-entry-save/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 4 | UI-Q06 | Настройка двух вариантов AI review на телефоне | решён | resolved | none | — | [Тред](04_UI-Q06_mobile-proposal-review/00_thread.md) | Screens Spec |
+| 5 | UI-Q16 | Экран конфликта при ручном Save | решён | resolved | none | — | [Тред](05_UI-Q16_manual-save-conflict/00_thread.md) | Screens/Functional Specs, inventory |

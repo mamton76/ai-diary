@@ -90,5 +90,5 @@ See [todo.md](docs/todo.md) for detailed next steps.
 
 ## Related docs
 
-- [PRD](docs/prd.md) — product requirements
+- [Product baseline](docs/baseline/03-product-baseline.md) — current product requirements ([PRD](docs/prd.md) is historical)
 - [Architecture](docs/architecture.md) — technical architecture decisions

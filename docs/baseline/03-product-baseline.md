@@ -417,12 +417,12 @@ Asset не должен быть жёстко owned одной Entry или то
 
 В edit mode удаление asset из записи не должно молча означать только unlink или только физическое удаление.
 
-Действие Remove/Delete открывает явный выбор:
+Правило по решению FQ-08 (Functional Spec AST-03/AST-04, inventory ASSET-006):
 
-- отвязать asset от этой Entry и оставить его в Asset Library;
-- удалить asset из системы целиком.
-
-Если asset используется несколькими entries, destructive delete должен явно предупреждать, что затронет все связи. Если asset связан только с текущей Entry, вариант «оставить в библиотеке» должен предупреждать, что asset станет unlinked/orphaned. Это снижает риск незаметно накопить большое количество забытых assets.
+- если снимаемая связь единственная, предлагается удалить сам asset; если есть другие логические связи, снимается только текущая, без предложения глобального удаления в этом flow;
+- удаление — только по явному подтверждению и означает soft delete в Asset Trash, а не удаление из системы; при отказе связь всё равно снимается, asset остаётся в библиотеке и виден как unlinked;
+- отдельный явный Global Delete из библиотеки предупреждает о затрагиваемых связях;
+- Asset Trash не имеет автоматического срока; permanent delete — только явной командой.
 
 
 ---
@@ -567,7 +567,7 @@ E0 — технический этап чтения существующих з�
 - открыть дневник и прочитать запись (E0);
 - найти запись по тексту/дате/tags (E1).
 
-Editing добавляется по [каноническим этапам](#221-канонические-этапы-продукта): лёгкая правка — в первой пользовательской версии, полноценный редактор и versioning/history — в E2. Объём правки именно на телефоне остаётся вопросом [AQ-WEB-002](04-open-questions.md#aq-web-002--feature-parity-на-телефоне). Capture/create может поначалу оставаться во внешних каналах.
+Editing добавляется по [каноническим этапам](#221-канонические-этапы-продукта): лёгкая правка — в первой пользовательской версии, полноценный редактор и versioning/history — в E2. На телефоне работает всё из E0–E2, включая создание записи и прикрепление фото; desktop-first — подробное сравнение версий бок о бок, workflow editor, массовые операции и debug/admin ([AQ-WEB-002](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)). Capture/create может поначалу оставаться во внешних каналах.
 
 Сложные debug/admin/bulk/revision comparison функции могут сначала остаться desktop-oriented.
 
@@ -996,7 +996,7 @@ Selective sharing остаётся потенциально полезной **f
 | Этап | Состав | Фаза плана |
 |---|---|---|
 | E0 — технический срез чтения | Вход и доступ к дневнику, список и чтение существующих записей, состояния загрузки и ошибок; без DB/index. User-scoped изоляция всего operational state (AUTH-005) | P1, P3.1 |
-| Первая пользовательская версия | Лёгкая правка заголовка и текста существующей записи. Надёжный Save: durable очередь команд (API-006A), lease и baseRevision (DATA-014/018), local recovery snapshots (DATA-013) | P1, P3.2 |
+| Первая пользовательская версия | Лёгкая правка заголовка и текста существующей записи. Надёжный Save: durable очередь команд (API-006A), lease и baseRevision (DATA-014/018), local recovery snapshots (DATA-013). Продуктовая аналитика без содержимого дневника (OPS-007) | P1, P3.2 |
 | E1 — поиск и навигация | Текстовый поиск, фильтры по дате и tags, сортировки, Обзор (SEARCH-001/002) | P3.3 |
 | E2 — полный редактор и история | Полный EntryPanel edit, создание записи (CAP-010), history и Restore, архив/корзина, лёгкая библиотека материалов | P4 |
 | E3 — управление тегами | Каталог, aliases, rename, merge, soft delete/Restore | после P4 |
@@ -1182,7 +1182,7 @@ Save недоступен, пока хотя бы одно оставленно�
 
 Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
-**История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup остаётся отдельным FQ-08; физический commit protocol этим решением не утверждён.
+**История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup решён в FQ-08/[SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md) и [SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md); физический commit protocol этим решением не утверждён.
 
 ## Уточнение 18.10.2026 — manual Save без изменения content
 
@@ -1196,13 +1196,13 @@ Manual Save, при котором итоговое сохраняемое conte
 
 Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
 
-**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; прочие FQ-08 — partial staging/late completion, permanent delete и retention — остаются открытыми; lifecycle после Restore согласован отдельно в SQ-01. Ранее предложенные безусловные keep/Trash не приняты.
+**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; срок хранения Asset Trash решён в [SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md) (без автоматического срока), очистка orphaned partial staging — в [SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md) (7 дней); late completion, physical cleanup protocol и backup retention остаются открытыми; lifecycle после Restore согласован отдельно в SQ-01. Ранее предложенные безусловные keep/Trash не приняты.
 
 ## Уточнение 18.10.2026 — Restore Entry из Trash всегда в ACTIVE
 
 Restore Entry из Trash всегда возвращает запись в ACTIVE, независимо от того, была она Active или Archived перед удалением. Сохраняются тот же entryId, Current/content history и существующий durable Draft. Операция меняет lifecycle/audit и не создаёт content Revision; это не Restore исторической Revision.
 
-**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные FQ-08 остаются открытыми.
+**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные части FQ-08: Решены SQ-01…SQ-05: Asset Trash без автоматического срока (SQ-04), автоматическая очистка orphaned partial staging через 7 дней (SQ-05). Открытыми остаются late completion, physical cleanup protocol и backup retention.
 
 ## Уточнение 18.10.2026 — overlap при фильтрации по периоду
 
