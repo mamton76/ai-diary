@@ -1,5 +1,7 @@
 # Data Model — AI Diary
 
+> **Исторический документ** (legacy Android/Room/Firebase прототип). Текущая модель данных — [file format v1 draft](baseline/07-file-format-v1-draft.md), [inventory](baseline/02-requirements-inventory.md) и [Functional Spec](baseline/AI-Diary-Functional-Spec-v0.1.md). В частности, Draft — отдельная сущность, а не `Entry.status = DRAFT`.
+
 ## Core Principle
 
 > **Entry is the current product object.

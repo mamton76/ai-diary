@@ -560,7 +560,7 @@ listChanges
 </details>
 
 **Статус:** РЕШЕНО  
-**Решение:** один server-side current working draft хранится в operational state; локально клиент держит bounded recovery snapshots. Canonical revisions и operational draft семантически разделены, хотя физически могут жить в одном storage на MVP. Для manual editing используется soft lease с одним active editor и безопасным takeover между sessions. AI mutations используют mutation lease, могут ждать в очереди, уступают ручному редактированию и при устаревшем base state проходят compatibility/revalidation. MVP-defaults: до 5 local snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision, auto-revision после 1 часа inactivity. Server draft очищается после successful revision; при failed commit сохраняется. Draft sync: debounce + guaranteed flush, точные интервалы configurable.  
+**Решение:** один server-side current working draft хранится в operational state; локально клиент держит bounded recovery snapshots. Canonical revisions и operational draft семантически разделены, хотя физически могут жить в одном storage на MVP. Для manual editing используется soft lease с одним active editor и безопасным takeover между sessions. AI mutations используют mutation lease, могут ждать в очереди, уступают ручному редактированию и при устаревшем base state проходят compatibility/revalidation. MVP-defaults: до 5 local snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision. Таймер auto-revision отменён: ручной Draft создаёт Revision только явным Save ([PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md), [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md)); working draft физически хранится в Drive пользователя (PRIV-011). Server draft очищается после successful revision; при failed commit сохраняется. Draft sync: debounce + guaranteed flush, точные интервалы configurable.  
 **История обсуждения:** [AQ-DATA-010 thread](04-open-questions.threads/04_1_AQ-DATA-010_autosave-working-state/00_thread.md)
 
 
@@ -623,6 +623,11 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 React/TypeScript — кандидат, не решение.
 
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-001 thread](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)
+
+**Решение:** React + TypeScript + Vite SPA к REST/OpenAPI API; TS-клиент из OpenAPI; без SSR; hosting статической сборки выбирается при реализации.
+
 Критерии:
 
 - responsive/adaptive UI;
@@ -637,6 +642,11 @@ React/TypeScript — кандидат, не решение.
 ## AQ-WEB-002 — Feature parity на телефоне
 
 Нужно точно определить обязательный mobile web scope.
+
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-002 thread](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)
+
+**Решение:** на телефоне всё из E0–E2 (чтение, лёгкая правка, поиск и Обзор, полный редактор с созданием записи и фото, история и Restore) и AI review по UI-Q06; desktop-first — сравнение версий бок о бок, workflow editor, массовые операции, debug/admin.
 
 Вероятно обязательно:
 
@@ -672,6 +682,9 @@ React/TypeScript — кандидат, не решение.
 
 Для MVP real-time может быть излишним.
 
+**Статус:** РЕШЕНО через другие решения  
+**Решение:** для открытого web UI используется SSE (API-009, [AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md): Cloud Run Service для API + SSE); при следующем открытии данные перечитываются; WebSocket и push не требуются. Детали fallback и частоты переподключения — implementation details.
+
 ## AQ-WEB-005 — Работа с revisions
 
 Нужно решить первый UX:
@@ -682,10 +695,18 @@ React/TypeScript — кандидат, не решение.
 - compare AI proposal;
 - merge conflict screen.
 
+**Статус:** РЕШЕНО через другие решения  
+**Решение:** UX History/Revisions задан в [PQ-004](04-open-questions.threads/04_PQ-004_raw-revisions-ux/00_thread.md), [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md) и [PQ-011](04-open-questions.threads/17_PQ-011_entry-detail-editor/00_thread.md) (WEB-016/017); этап — E2 по [PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md). Остаточные детали (точный text-diff, визуальная подача) — implementation details.
+
 
 ## AQ-WEB-006 — ChatGPT Sites или обычный web-проект?
 
 ChatGPT Sites можно рассмотреть как быстрый способ собрать и захостить первый интерактивный web-прототип AI Diary.
+
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-006 thread](04-open-questions.threads/60_AQ-WEB-006_sites-role/00_thread.md)
+
+**Решение:** обычный web-клиент в репозитории; Sites — максимум одноразовый UX-прототип на вымышленных данных.
 
 Нужно отдельно решить, какую роль Sites играет в проекте:
 
