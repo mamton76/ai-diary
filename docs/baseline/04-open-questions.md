@@ -811,10 +811,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-001 — Calendar inbox priority
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-INT-001 thread](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md)
-
-Роль уже решена в [PQ-009](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md): optional production capture adapter, не canonical storage. Здесь обсуждаем **приоритет подключения Calendar Inbox** относительно Telegram и остальных capture-adapters, а не пересматриваем роль Calendar.
+**Статус:** РЕШЕНО  
+**Решение:** Google Calendar Inbox остаётся optional production transport, не canonical/core dependency (см. PQ-009). После unified CaptureItem/Inbox-to-Entry реализуем Calendar Inbox **раньше Telegram**. В первую очередь оцениваем и развиваем существующие Calendar→Google Drive скрипты, адаптируя их к общему контракту capture, idempotent imports и сохранению raw/provenance; состав и пригодность скриптов уточняются при ревизии кода. Calendar Timeline Projection — отдельная feature.  
+**История обсуждения:** [AQ-INT-001 thread](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md)
 
 ## AQ-INT-002 — Calendar timeline priority
 
