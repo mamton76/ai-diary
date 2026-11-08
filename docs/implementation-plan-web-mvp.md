@@ -128,6 +128,7 @@
 |---|---|
 | Canonical safety | raw, Entry, Revisions, Assets и provenance сохраняются; conflict/restore не удаляют историю |
 | Import/idempotency | повтор источника или команды не создаёт duplicate entries/commits |
+| Save protocol | до первой пользовательской версии: adapter spike Drive-примитива публикации (08 §2.2), проверки 08 §11 и failure injection пройдены; иначе mutating release блокируется ([FQ-03](baseline/AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md)) |
 | Single writer | к первому mutating release web единственный писатель canonical-данных — backend; Abacus-скрипты вызывают API или не пишут в canonical-хранилище ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)) |
 | Operations | queued/committed/failed различаются; safe restart/retry; нет автоповтора ambiguous paid LLM |
 | Backup | документированные on-demand restore scripts проверены в изолированном хранилище |
