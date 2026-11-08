@@ -6,6 +6,8 @@
 **Требования:** [requirements inventory](baseline/02-requirements-inventory.md) · [architecture questions](baseline/04-open-questions.md)  
 **Legacy Android plan:** [todo.md](todo.md) отражает прежний стек и не является планом нового web/backend MVP.
 
+**Этапы продукта:** каноническая таблица E0–E4, интеграционного этапа и Later — [03-product-baseline.md §22.1](baseline/03-product-baseline.md#221-канонические-этапы-продукта) ([PQ-012](baseline/04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)). Этот план задаёт порядок работ и сопоставляет с ними фазы P0–P7.
+
 ## Принципы последовательности
 
 1. Сначала получать проверяемую пользу на **существующих данных и имеющихся Calendar→Drive scripts**, а не переписывать всё ради идеальной архитектуры.
@@ -24,6 +26,8 @@
 ## P0.1. Оставшиеся изолированные проверки
 
 **Зачем:** пользователь сообщил, что уже есть scripts, переносящие записи из Calendar на Drive. Состав и код ещё не аудированы в рамках этого roadmap.
+
+**Временные правила оператора до storage v1 ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)):** скрипты пишут в реальный дневник. После сбоя `/sync2` не перезапускать, пока не проверены `inbox/` и `entries/`; не запускать `--apply-exact-duplicates`; дубли искать отчётом report-only. Изменения кода скриптов вносятся через Abacus отдельной задачей.
 
 **Работы:**
 - Найти реальные scripts и workflows (их репозиторий, точные пути, конфигурацию, права Google API); пометить, что запускается сейчас, а что осталось только в документации.
@@ -56,6 +60,7 @@
 - Адаптировать найденные Calendar→Drive scripts к нормализованному CaptureItem вместо локальной финальной Entry schema.
 - Idempotent import по Google event identity/version; raw event snapshot сохранён; ошибки и повторный запуск предсказуемы.
 - Начать с ручного запуска импорта небольшого набора, не блокируя сценарий на расписании sync.
+- Web-кнопка «Синхронизировать сейчас» и счётчик «ожидает импорта» на Обзоре появляются с первой web-версией (INT-009, [PQ-017](baseline/04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md)); до этого — ручной запуск без web.
 - Не удалять внешние события/исходные записи; если workflow переносит event в processed calendar, эта операция не должна быть единственным подтверждением успешного canonical commit.
 
 **Calendar Timeline:**
@@ -123,11 +128,13 @@
 |---|---|
 | Canonical safety | raw, Entry, Revisions, Assets и provenance сохраняются; conflict/restore не удаляют историю |
 | Import/idempotency | повтор источника или команды не создаёт duplicate entries/commits |
+| Single writer | к первому mutating release web единственный писатель canonical-данных — backend; Abacus-скрипты вызывают API или не пишут в canonical-хранилище ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)) |
 | Operations | queued/committed/failed различаются; safe restart/retry; нет автоповтора ambiguous paid LLM |
 | Backup | документированные on-demand restore scripts проверены в изолированном хранилище |
 | Security | Google auth/OAuth separation, минимальные scopes, server-side credentials, no diary content in debug logs |
 | Costs | Cloud budgets/alerts; monthly AI budget и pause/notification/resume policy |
 | Quality | PR build/test/lint, ручное развёртывание единственного окружения, возможен rollback |
+| Portfolio / публичность | в репозиторий не добавляются личные данные и реальные идентификаторы; синтетический набор P0.1 используется и для демо; публикация репозитория — только после аудита истории git ([PQ-018](baseline/04-open-questions.threads/56_PQ-018_portfolio-goal/00_thread.md)) |
 | Portability | canonical можно прочитать без operational DB; derived indexes/timeline восстанавливаются |
 
 ## Решения, которые ещё не следует считать принятыми
@@ -151,7 +158,7 @@
 | AQ-AI-003 | Canonical/operational storage run records | До persistent production runs |
 | AQ-AI-004 | Context building/material selection | До cross-entry workflows |
 | AQ-AI-005 | Prompt customization boundaries | До user prompt customization |
-| AQ-AI-006 | Sensitive data, consent, retention | **До реальных external AI calls** |
+| AQ-AI-006 | Sensitive data, consent, retention | **Решён** ([тред](baseline/04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)); PRIV-002, PRIV-005…009 — gate до реальных external AI calls |
 | AQ-AI-007 | Structured outputs validation/repair | До metadata-changing AI workflows |
 
 **AQ-AI-008 закрыт:** workflow editor UX принят и внесён в Screens Spec. Не открывать заново.

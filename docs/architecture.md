@@ -103,6 +103,7 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 - **Runtime:** Google Cloud Run Service для backend/API, Cloud Run Jobs для run-to-completion задач, Cloud Scheduler для расписаний; конкретный durable queue mechanism ещё нужно спроектировать. Асинхронные задачи переживают закрытие браузера.
 - **Environments:** одно развёрнутое рабочее окружение, локальный запуск по необходимости; отдельного постоянно развёрнутого staging пока нет.
 - **Authentication:** stable internal user ID, Google login сначала; app authentication отделён от Google Drive/Calendar OAuth grant и токенов. Минимально необходимые permissions.
+- **Security / хранение содержимого:** модель угроз и минимум защиты — [AQ-SEC-001](baseline/04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md) (PRIV-010…012). Долговременные копии содержимого (drafts, run records, debug-копии, proposals, routines, настройки) — в Drive пользователя в технической подпапке; на сервере только очередь команд, derived индекс и OAuth tokens. Облачное шифрование at rest + TLS, refresh tokens только в secret/KMS-хранилище, тест изоляции пользователей, тест отсутствия содержимого в логах.
 - **Observability:** structured technical logs + run history с job/run/request identities, статусами и ошибками; без безусловного логирования raw diary/prompts/secrets.
 - **Retries:** idempotent technical retries; unknown-outcome paid AI calls не повторять автоматически при cost-saving default.
 - **Budget:** пользовательский monthly AI budget и warnings; при достижении лимита новые paid AI jobs не dispatch; queued jobs — `Ожидает бюджета`, видимы, отменяемы. По умолчанию возобновление вручную, opt-in auto resume. Это application guardrail, не гарантированный provider billing cap.
@@ -120,6 +121,7 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 
 - Durable Save и recovery после прерывания операции; не подтверждать Save до commit.
+- Единственный писатель canonical-данных к первому mutating release — backend; до этого для Abacus-скриптов действуют временные операторские правила ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)).
 - Idempotent Calendar import, no duplicate Entries; сохранение raw/source metadata.
 - Calendar Timeline обновляет тот же event и не изменяет canonical diary.
 - История revisions, Restore, provenance, assets переживают backup/restore.
