@@ -616,6 +616,9 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 React/TypeScript — кандидат, не решение.
 
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)
+
 Критерии:
 
 - responsive/adaptive UI;
@@ -630,6 +633,9 @@ React/TypeScript — кандидат, не решение.
 ## AQ-WEB-002 — Feature parity на телефоне
 
 Нужно точно определить обязательный mobile web scope.
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)
 
 Вероятно обязательно:
 
@@ -685,6 +691,9 @@ React/TypeScript — кандидат, не решение.
 ## AQ-WEB-006 — ChatGPT Sites или обычный web-проект?
 
 ChatGPT Sites можно рассмотреть как быстрый способ собрать и захостить первый интерактивный web-прототип AI Diary.
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/60_AQ-WEB-006_sites-role/00_thread.md)
 
 Нужно отдельно решить, какую роль Sites играет в проекте:
 

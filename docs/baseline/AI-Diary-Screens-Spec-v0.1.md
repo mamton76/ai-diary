@@ -937,6 +937,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q13 | Точные visual layouts компонентов? | Одна раскрытая карточка; Title/Text/EventTimeRange/Tags/Asset links в обоих editors уже приняты |
 | UI-Q14 — решён | Entry только с материалами, без Title/Text | Разрешена при наличии хотя бы одного готового Asset, с обычными Event date/attachment/Save checks. [История](AI-Diary-Screens-Spec-v0.1.threads/02_UI-Q14_asset-only-entry/00_thread.md) |
 | UI-Q15 — решён | Manual Save полностью пустой Entry | Draft сохраняется; Save disabled до содержательного Title/Text или готового Asset. Одних даты/тегов недостаточно; пробелы не считаются содержимым. [История](AI-Diary-Screens-Spec-v0.1.threads/03_UI-Q15_empty-entry-save/00_thread.md) |
+| UI-Q16 | Экран конфликта при ручном Save, когда текущая версия ушла вперёд от базы черновика | Обсуждается: [тред](AI-Diary-Screens-Spec-v0.1.threads/05_UI-Q16_manual-save-conflict/00_thread.md) |
 
 Точные breakpoint, ratios, styling gallery, diff algorithm и first-revision empty-state уже отнесены в PQ-011 к implementation/UI details; они не переоткрывают продуктовую модель EntryPanel.
 
