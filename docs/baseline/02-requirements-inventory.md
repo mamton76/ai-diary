@@ -329,6 +329,7 @@ Storage имеет одну общую `formatVersion`. Migration запуска
 
 ### DATA-012 — Незавершённое редактирование хранится как operational working draft
 **Статус:** ПОДТВЕРЖДЕНО  
+**Физическое место:** Google Drive пользователя (техническая подпапка), а не серверная БД — по принципу хранения PRIV-011 ([AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md)).  
 Для entry допускается один server-side current working draft как временное operational state. Он не является canonical revision. Canonical и operational storage могут физически совпадать на MVP, но их роли и lifecycle должны оставаться различимыми.
 
 ### DATA-013 — Нужны local recovery snapshots
@@ -921,6 +922,24 @@ AI run records по умолчанию хранят ссылки на Revision �
 **Этап:** E4  
 Результат AI, вызванный содержимым одной записи, не может через auto-apply менять другие записи, workflow, executors, capability profiles или настройки; такие изменения возможны только через proposal и review. Уточняет auto-apply policy из PQ-005.  
 **Основание:** [AQ-AI-006](04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md) (2026-11-08).
+
+### PRIV-010 — Модель угроз и обязательный минимум защиты
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0  
+Google (Drive и Cloud) считаются доверенными. Защищаемся от утечки серверной БД, логов и бэкапов и от смешивания данных разных пользователей. Обязательный минимум: шифрование at rest средствами облака и TLS для всех соединений; содержимое дневника не попадает в логи и трассировки (проверяется тестом); у серверных копий содержимого есть явный срок жизни или явная очистка; есть тест изоляции данных пользователей. Шифрование полей приложением и end-to-end шифрование в MVP не входят ([FQ-SEC-001](06-future-questions.md#fq-sec-001--усиленное-шифрование-содержимого)).  
+**Основание:** [AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md) (2026-11-08).
+
+### PRIV-011 — Долговременные копии содержимого живут в Drive пользователя
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0  
+Drafts, AI run records, debug-копии prompt и ответа, proposals, routines и настройки хранятся в Google Drive пользователя в отдельной технической подпапке, не мешающей чтению дневника вне приложения (DATA-002). На сервере остаются только кратковременные данные (очередь команд), derived индекс, который можно перестроить, и OAuth tokens. Нагрузку на Drive API (квоты, задержки autosave) учитывает технический проект.  
+**Основание:** [AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md) (2026-11-08).
+
+### PRIV-012 — OAuth refresh tokens хранятся только зашифрованными
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0  
+Refresh tokens Google хранятся только в зашифрованном виде в secret/KMS-хранилище облака и никогда в открытом виде в БД или логах. Конкретный механизм, revocation и re-auth остаются implementation details по AQ-AUTH-002.  
+**Основание:** [AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md) (2026-11-08).
 
 ---
 

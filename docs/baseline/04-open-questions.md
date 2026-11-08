@@ -740,8 +740,11 @@ Google account — естественный first path.
 
 Модель угроз и обязательные меры для operational state (drafts, snapshots, AI run records, FTS-индекс, очередь, логи) и хранения refresh tokens. Сейчас в документах нет требований к шифрованию ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C2). Не переоткрывает AQ-AUTH-002.
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-SEC-001 thread](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md)  
+**Перенесено в:** [inventory PRIV-010…012](02-requirements-inventory.md#priv-010--модель-угроз-и-обязательный-минимум-защиты), [Product baseline §20](03-product-baseline.md#20-privacy), [architecture §7](../architecture.md#7-runtime-identity-operations), [FQ-SEC-001](06-future-questions.md#fq-sec-001--усиленное-шифрование-содержимого)
+
+**Решение:** доверяем Google (Drive и Cloud); защищаемся от утечки серверной БД, логов и бэкапов и от смешивания данных пользователей. Долговременные копии содержимого (drafts, run records, debug-копии, proposals, routines, настройки) живут в Drive пользователя в технической подпапке; на сервере — только очередь, derived индекс и OAuth tokens. Минимум MVP: облачное шифрование at rest и TLS, нет содержимого в логах (тест), срок жизни или явная очистка серверных копий, refresh tokens только в secret/KMS-хранилище, тест изоляции пользователей. Шифрование приложением и E2E — вне MVP (FQ-SEC-001).
 
 ---
 
@@ -785,6 +788,8 @@ Google account — естественный first path.
 - user review/apply state.
 
 Вопрос: canonical file, operational DB, оба слоя?
+
+**Ограничение из [AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md):** долговременные копии содержимого, включая debug-копии prompt и ответа, живут в Drive пользователя; на сервере допустимы только кратковременные и derived данные.
 
 ## AQ-AI-004 — Context building
 
