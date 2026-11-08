@@ -616,8 +616,10 @@ Cloud Run рассматривался вместе с Render и Railway. Кри
 
 React/TypeScript — кандидат, не решение.
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-001 thread](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)
+
+**Решение:** React + TypeScript + Vite SPA к REST/OpenAPI API; TS-клиент из OpenAPI; без SSR; hosting статической сборки выбирается при реализации.
 
 Критерии:
 
@@ -634,8 +636,10 @@ React/TypeScript — кандидат, не решение.
 
 Нужно точно определить обязательный mobile web scope.
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-002 thread](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)
+
+**Решение:** на телефоне всё из E0–E2 (чтение, лёгкая правка, поиск и Обзор, полный редактор с созданием записи и фото, история и Restore) и AI review по UI-Q06; desktop-first — сравнение версий бок о бок, workflow editor, массовые операции, debug/admin.
 
 Вероятно обязательно:
 
@@ -692,8 +696,10 @@ React/TypeScript — кандидат, не решение.
 
 ChatGPT Sites можно рассмотреть как быстрый способ собрать и захостить первый интерактивный web-прототип AI Diary.
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/60_AQ-WEB-006_sites-role/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-WEB-006 thread](04-open-questions.threads/60_AQ-WEB-006_sites-role/00_thread.md)
+
+**Решение:** обычный web-клиент в репозитории; Sites — максимум одноразовый UX-прототип на вымышленных данных.
 
 Нужно отдельно решить, какую роль Sites играет в проекте:
 

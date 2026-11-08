@@ -70,9 +70,9 @@
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | решён | ✅ resolved | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
 | 55 | PQ-017 | Запуск синхронизации с Calendar из web | решён | ✅ resolved | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
 | 56 | PQ-018 | Цель «портфолио»: что и как показываем | решён | ✅ resolved | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
-| 59 | AQ-WEB-001 | Frontend stack | ждём пользователя | 🔒 in_discussion | active | Claude | [📁](59_AQ-WEB-001_frontend-stack/) | [00_thread.md](59_AQ-WEB-001_frontend-stack/00_thread.md) | inventory WEB-007 / architecture / plan |
-| 60 | AQ-WEB-006 | ChatGPT Sites или обычный web-проект | ждём пользователя | 🔒 in_discussion | active | Claude | [📁](60_AQ-WEB-006_sites-role/) | [00_thread.md](60_AQ-WEB-006_sites-role/00_thread.md) | inventory / architecture / plan |
-| 61 | AQ-WEB-002 | Feature parity на телефоне | ждём пользователя | 🔒 in_discussion | active | Claude | [📁](61_AQ-WEB-002_mobile-scope/) | [00_thread.md](61_AQ-WEB-002_mobile-scope/00_thread.md) | product baseline §12.2/§22.1 / Screens Spec / inventory |
+| 59 | AQ-WEB-001 | Frontend stack | решён | ✅ resolved | none | — | [📁](59_AQ-WEB-001_frontend-stack/) | [00_thread.md](59_AQ-WEB-001_frontend-stack/00_thread.md) | inventory WEB-007 / architecture / plan |
+| 60 | AQ-WEB-006 | ChatGPT Sites или обычный web-проект | решён | ✅ resolved | none | — | [📁](60_AQ-WEB-006_sites-role/) | [00_thread.md](60_AQ-WEB-006_sites-role/00_thread.md) | inventory / architecture / plan |
+| 61 | AQ-WEB-002 | Feature parity на телефоне | решён | ✅ resolved | none | — | [📁](61_AQ-WEB-002_mobile-scope/) | [00_thread.md](61_AQ-WEB-002_mobile-scope/00_thread.md) | product baseline §12.2/§22.1 / Screens Spec / inventory |
 
 ## Быстрая легенда lifecycle
 

@@ -56,6 +56,8 @@ Source of truth — user-owned file storage, сейчас Google Drive. Backend 
 
 ## 3. Границы этапов
 
+**[Д, 08.11.2026] Телефон:** все этапы E0–E2 работают на телефоне; desktop-first — подробное сравнение версий бок о бок (на телефоне упрощённое), workflow editor, массовые операции, debug/admin ([AQ-WEB-002](04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)).
+
 **Канон этапов:** [03-product-baseline.md §22.1](03-product-baseline.md#221-канонические-этапы-продукта) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)). Этот раздел детализирует этапы по экранам; при расхождении приоритет у канонической таблицы.
 
 Названия этапов ниже введены для удобства планирования. Их последовательность опирается на PQ-003, уточнение AQ-DATA-001 и B03 §12.1; точная поставка вспомогательных экранов является предложением ТЗ.
@@ -462,7 +464,7 @@ MVP policy defaults: до 5 local snapshots; не более 30 секунд м�
 - Вторая session получает свежий durable Draft через backend, предупреждение и выбор: read-only / «Редактировать всё равно».
 - Takeover передаёт lease новой session. Прежняя уведомляется и становится paused/read-only; её local unsynced changes остаются в recovery.
 - Потерявшая lease session не может Save поверх чужих правок. Сначала повторное получение lease и синхронизация.
-- Если current revision изменилась, UI показывает conflict/rebase flow, не last-write-wins.
+- Если current revision изменилась, UI показывает conflict/rebase flow, не last-write-wins. **[Д, 08.11.2026]** Разные поля объединяются автоматически с уведомлением «Объединено с изменениями от …»; одно и то же поле — экран сравнения «Было / Сейчас / Мой черновик» на основе S07 с действиями «Сохранить мою версию», «Оставить текущую», «Поправить вручную». В первой пользовательской версии экран упрощён до заголовка и текста ([UI-Q16](AI-Diary-Screens-Spec-v0.1.threads/05_UI-Q16_manual-save-conflict/00_thread.md), REV-016).
 
 ### 9.7 Приёмка
 
@@ -937,7 +939,7 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q13 | Точные visual layouts компонентов? | Одна раскрытая карточка; Title/Text/EventTimeRange/Tags/Asset links в обоих editors уже приняты |
 | UI-Q14 — решён | Entry только с материалами, без Title/Text | Разрешена при наличии хотя бы одного готового Asset, с обычными Event date/attachment/Save checks. [История](AI-Diary-Screens-Spec-v0.1.threads/02_UI-Q14_asset-only-entry/00_thread.md) |
 | UI-Q15 — решён | Manual Save полностью пустой Entry | Draft сохраняется; Save disabled до содержательного Title/Text или готового Asset. Одних даты/тегов недостаточно; пробелы не считаются содержимым. [История](AI-Diary-Screens-Spec-v0.1.threads/03_UI-Q15_empty-entry-save/00_thread.md) |
-| UI-Q16 | Экран конфликта при ручном Save, когда текущая версия ушла вперёд от базы черновика | Обсуждается: [тред](AI-Diary-Screens-Spec-v0.1.threads/05_UI-Q16_manual-save-conflict/00_thread.md) |
+| UI-Q16 — решён | Экран конфликта при ручном Save | Разные поля — автообъединение с уведомлением; одно поле — «Было / Сейчас / Мой черновик» на основе S07; в первой версии — только заголовок и текст. [Тред](AI-Diary-Screens-Spec-v0.1.threads/05_UI-Q16_manual-save-conflict/00_thread.md) |
 
 Точные breakpoint, ratios, styling gallery, diff algorithm и first-revision empty-state уже отнесены в PQ-011 к implementation/UI details; они не переоткрывают продуктовую модель EntryPanel.
 

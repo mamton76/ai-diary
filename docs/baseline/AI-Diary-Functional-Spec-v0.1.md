@@ -157,7 +157,7 @@
 
 **STO-02 [Д].** Rebuild индекса восстанавливает поиск/фильтры/relationships, Draft presence, routine history, proposals и derived review state без утраты пользовательских фактов. Временный cache hit не является доказательством durable Save.
 
-**STO-03 [Б].** Save, Apply, Restore и переход ownership проверяют актуальность base/current. При конфликте — разрешение/rebase, без last-write-wins. Один mutation owner на Entry; разные Entries редактируются независимо. Takeover переводит предыдущую session в paused/read-only; её unsynced input остаётся доступным в recovery.
+**STO-03 [Б; уточнено 08.11.2026].** Save, Apply, Restore и переход ownership проверяют актуальность base/current. При конфликте — разрешение/rebase, без last-write-wins: для ручного Save разные поля объединяются автоматически с уведомлением, одно и то же поле — экран «Было / Сейчас / Мой черновик» ([UI-Q16](AI-Diary-Screens-Spec-v0.1.threads/05_UI-Q16_manual-save-conflict/00_thread.md), REV-016). Один mutation owner на Entry; разные Entries редактируются независимо. Takeover переводит предыдущую session в paused/read-only; её unsynced input остаётся доступным в recovery.
 
 **STO-04 [Б].** Durable jobs переживают закрытие страницы. Отменённый или потерявший lease job не имеет права commit, даже если ответ внешнего AI уже пришёл.
 

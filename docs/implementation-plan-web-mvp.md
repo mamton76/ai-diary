@@ -81,7 +81,7 @@
 
 **Готово, когда:** E0 читает существующие записи с телефона и desktop; первая пользовательская версия надёжно сохраняет правку без потери исходника и вложений; E1 позволяет находить записи и открывать те же выборки из Обзора. Готовность проверяется отдельно для каждого среза.
 
-**Решения для реализации:** [AQ-WEB-001](baseline/04-open-questions.md#aq-web-001--frontend-stack), [AQ-WEB-002](baseline/04-open-questions.md#aq-web-002--feature-parity-на-телефоне), [AQ-WEB-006](baseline/04-open-questions.md#aq-web-006--chatgpt-sites-или-обычный-web-проект); для статусов фоновых задач — [AQ-WEB-004](baseline/04-open-questions.md#aq-web-004--live-updates).
+**Принятые решения для реализации:** React + TypeScript + Vite SPA, обычный клиент в репозитории ([AQ-WEB-001](baseline/04-open-questions.md#aq-web-001--frontend-stack), [AQ-WEB-006](baseline/04-open-questions.md#aq-web-006--chatgpt-sites-или-обычный-web-проект)); на телефоне всё из E0–E2 ([AQ-WEB-002](baseline/04-open-questions.md#aq-web-002--feature-parity-на-телефоне)); статусы фоновых задач — SSE ([AQ-WEB-004](baseline/04-open-questions.md#aq-web-004--live-updates)); конфликт при Save в первой версии — упрощённый экран для заголовка и текста (REV-016).
 
 ## P4. Полный веб-редактор, история и управление записями (E2)
 
@@ -140,15 +140,15 @@
 
 ## Решения, которые ещё не следует считать принятыми
 
-### Web — 3 открытых
+### Web — открытых нет
 
 | ID | Вопрос | Когда нужен |
 |---|---|---|
-| AQ-WEB-001 | Frontend framework/tooling | До P3 |
-| AQ-WEB-002 | Mobile feature scope/parity | До P3/P4 |
+| AQ-WEB-001 | Frontend framework/tooling | **Решён:** React + TypeScript + Vite SPA |
+| AQ-WEB-002 | Mobile feature scope/parity | **Решён:** всё из E0–E2 на телефоне, сложные экраны desktop-first |
 | AQ-WEB-004 | Live refresh | **Решён:** SSE (API-009) |
 | AQ-WEB-005 | Первый implementation scope History/Diff/Restore | **Решён:** UX — PQ-004/PQ-011, этап E2 (PQ-012) |
-| AQ-WEB-006 | Роль ChatGPT Sites vs обычный web client | До P3 |
+| AQ-WEB-006 | Роль ChatGPT Sites vs обычный web client | **Решён:** обычный клиент в репозитории |
 
 **AQ-WEB-003 закрыт:** toolbar Markdown editor; inline AI не нужен в первом редакторе.
 
