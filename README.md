@@ -1,3 +1,5 @@
+> **Current target architecture (2026-11-08):** the next AI Diary web/backend MVP is file-first with portable user-owned data, Google Drive, Kotlin/Ktor API and early Google Calendar integrations. See [current architecture](docs/architecture.md) and [implementation plan](docs/implementation-plan-web-mvp.md). The Android/Room/Firebase material below documents the **legacy prototype**, not the target architecture. [Preserved historical architecture](docs/architecture-legacy-android-firebase.md).
+
 # AI Diary
 
 An Android-first, offline-first personal diary app. The foundational layer for **ZoomAlboom**, a spatial media album with an infinite canvas.

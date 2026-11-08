@@ -1,0 +1,1332 @@
+# AI Diary — продуктовый baseline
+
+**Версия:** draft 0.1  
+**Дата:** 2026-09-27  
+**Назначение:** описать, что такое AI Diary и что продукт должен уметь, до выбора новой технической архитектуры.
+
+---
+
+## 1. Определение продукта
+
+AI Diary — это **персональная система памяти**, задача которой — сделать фиксацию и последующее осмысление повседневной жизни значительно проще, чем традиционное ведение структурированного дневника.
+
+Пользователь должен иметь возможность с минимальным усилием сохранить:
+
+- мысль;
+- событие;
+- воспоминание;
+- ссылку;
+- голосовую заметку;
+- фотографию;
+- файл;
+- другой фрагмент жизненного контекста.
+
+Система сохраняет исходный материал, превращает его в устойчивые diary entries, добавляет структуру тогда, когда это полезно, и позже помогает пользователю:
+
+- искать;
+- перечитывать;
+- группировать;
+- связывать;
+- суммировать;
+- анализировать;
+- замечать паттерны во времени.
+
+Главный рабочий принцип:
+
+> **Сначала захватить. Структурировать потом.**
+
+AI должен уменьшать объём ручной работы, а не становиться обязательным посредником между пользователем и его собственным дневником.
+
+---
+
+## 2. Проблема, которую решает продукт
+
+Обычный дневник требует дисциплины и специальных усилий:
+
+- нужно помнить, что пора писать;
+- нужно выделять время;
+- нужно самому структурировать мысли;
+- media и ссылки часто остаются в других приложениях;
+- старые записи трудно исследовать как единую историю;
+- при большом объёме дневника становится трудно видеть долгосрочные темы и связи.
+
+AI Diary должен переносить часть этой нагрузки с пользователя на систему.
+
+Идеальный сценарий выглядит не как «сесть и заполнить дневник», а как:
+
+1. быстро зафиксировать то, что происходит;
+2. не потерять исходный материал;
+3. позже дать системе помочь привести его в читаемый и связный вид;
+4. при необходимости поправить результат;
+5. через месяцы и годы иметь возможность исследовать собственную историю.
+
+---
+
+## 3. Основное обещание продукта
+
+AI Diary должен давать пользователю три вещи одновременно:
+
+### 3.1 Минимум трения при capture
+
+Запись должна появляться быстро и без необходимости заранее решить:
+
+- к какой категории она относится;
+- какие у неё tags;
+- кто в ней упомянут;
+- как её назвать;
+- как она будет использоваться потом.
+
+### 3.2 Контроль и сохранность
+
+Пользователь должен быть уверен, что:
+
+- исходный материал не исчез;
+- AI не переписал его историю молча;
+- изменения можно проследить;
+- данные можно экспортировать и восстановить;
+- система не зависит безвозвратно от одного vendor/backend.
+
+### 3.3 Помощь в осмыслении накопленного материала
+
+С ростом дневника система должна помогать:
+
+- находить записи;
+- видеть тематические группы;
+- находить повторяющиеся события и темы;
+- строить summaries;
+- анализировать выбранный период;
+- создавать производные narratives/episodes;
+- подготавливать материал для ZoomAlboom.
+
+---
+
+## 4. Границы продукта
+
+AI Diary отвечает за:
+
+- capture;
+- diary entries;
+- временную привязку;
+- текст;
+- связи с media/assets;
+- revisions;
+- tags и другую структуру;
+- provenance;
+- search/navigation;
+- AI enrichment;
+- анализ истории;
+- export/integration.
+
+AI Diary **не равен** ZoomAlboom.
+
+ZoomAlboom может позже использовать записи AI Diary для:
+
+- визуальной композиции;
+- spatial navigation;
+- интерактивных альбомов;
+- narrative presentation.
+
+Хорошая граница между продуктами:
+
+> **AI Diary хранит события, содержание и смысл.**  
+> **ZoomAlboom хранит визуальную композицию и навигацию.**
+
+---
+
+## 5. Центральный объект продукта — Entry
+
+Entry — это пользовательски понятная дневниковая запись.
+
+Она должна иметь:
+
+- стабильную идентичность;
+- текстовое содержимое;
+- содержательную дату или интервал;
+- технические timestamps;
+- источник capture;
+- при необходимости tags;
+- связи с assets;
+- историю изменений;
+- provenance.
+
+Точная JSON/DB/file schema относится к архитектуре.
+
+### 5.0 Stable Entry и versioned state
+
+На продуктовом уровне нужно различать стабильную identity записи и её versioned content.
+
+`Entry` — стабильный контейнер/identity. Для него нужны как минимум:
+
+- stable `id`;
+- lifecycle status;
+- ссылка на current committed revision;
+- технические timestamps создания/обновления.
+
+Versioned состояние, которое должно восстанавливаться вместе с выбранной revision, включает содержимое записи: title, содержательную дату/интервал, text, tags, связанные assets и source/composition references. Точная физическая schema остаётся архитектурным решением.
+
+Для пользовательского lifecycle Entry достаточно трёх состояний:
+
+- `ACTIVE` — обычная запись, участвует в нормальном browse/search/timeline;
+- `ARCHIVED` — сохранена, но по умолчанию скрыта из обычного потока; доступна через archive/filter;
+- `DELETED` — soft-deleted / trash, исключена из обычных представлений, но сохраняется для recovery policy.
+
+Постоянный `DRAFT`-status для Entry сейчас не нужен: незавершённое ручное редактирование хранится как operational working draft, а непринятый AI output — как Proposal.
+
+
+### 5.1 Дата записи
+
+Нужно различать:
+
+- когда пользователь что-то **захватил**;
+- когда произошло событие, о котором запись;
+- когда запись была обработана/изменена.
+
+Например, пользователь может 26 сентября надиктовать воспоминание про поездку 20 сентября. Entry должна логически относиться к 20 сентября.
+
+### 5.2 Запись не обязана иметь точное время
+
+Система должна поддерживать:
+
+- date-only entry;
+- точное время;
+- временной интервал;
+- неопределённое/приблизительное время с явной confidence/review semantics.
+
+---
+
+## 6. Capture как отдельный слой продукта
+
+Capture не должен быть привязан к одному UI или одному ассистенту.
+
+Желаемые источники:
+
+- web;
+- Google Calendar;
+- Telegram;
+- Android/native app;
+- raw files/import;
+- другие будущие adapters.
+
+### 6.1 Общая capture boundary
+
+Все источники должны сходиться в логически общую модель входа.
+
+Принцип:
+
+```text
+external source
+   -> normalized capture item
+   -> Inbox-to-Entry processing
+   -> canonical Entry
+```
+
+Это позволяет менять Calendar на Telegram, добавлять native app или импорт, не переписывая сам diary core.
+
+### 6.2 Голосовой capture
+
+Голос должен быть first-class способом записи.
+
+Пользователь должен иметь возможность:
+
+- говорить свободно;
+- делать паузы;
+- продолжать мысль;
+- в конце явно сказать «сохранить»;
+- получить одну законченную запись.
+
+Не следует строить продукт на предположении, что конкретный voice assistant всегда умеет надёжно создавать и потом обновлять одно external event.
+
+### 6.3 Calendar inbox
+
+Google Calendar может быть удобным промежуточным capture channel, особенно пока голосовые интерфейсы ассистентов умеют хорошо работать с Calendar.
+
+Но Calendar event — это **сырой вход**, а не дневник.
+
+---
+
+## 7. Сохранение raw и история
+
+Для системы личной памяти особенно важно не уничтожать источник.
+
+### 7.1 Raw preservation
+
+После обработки должен существовать способ восстановить исходный input:
+
+- оригинальный текст;
+- исходный event snapshot;
+- исходный media file;
+- импортированный документ.
+
+### 7.2 Revisions
+
+Значимые изменения должны быть историческими, а не destructive overwrite.
+
+Источники revisions могут включать:
+
+- raw;
+- AI cleanup;
+- user edit;
+- merge;
+- synthetic summary;
+- импорт/миграцию.
+
+### 7.3 User wins over AI
+
+Если пользователь поправил текст, AI не должен молча вернуть старую AI-версию поверх пользовательской.
+
+При конфликте лучше:
+
+- создать proposal;
+- создать новую revision;
+- показать conflict;
+- попросить review.
+
+### 7.4 UX текущей записи и истории
+
+Для MVP current state остаётся главным содержимым EntryScreen, а History/Revisions доступна прямо под ним как компактная scrollable gallery/timeline revision snippets.
+
+- карточка revision помогает быстро понять, когда и какого типа изменение произошло и что примерно поменялось;
+- клик по revision открывает подробное read-only сравнение **предыдущей revision слева** и **выбранной revision справа**;
+- raw/original остаётся доступным через history/details, но не обязан постоянно отображаться рядом с текущей записью;
+- provenance/metadata изменения показываются отдельно от двух content panels.
+
+### 7.5 Manual editing session и revision boundary
+
+Manual revision создаётся по границе editing session, а не по «размеру» правки:
+
+- session начинается с первой фактической ручной правки;
+- autosave внутри session не создаёт revision;
+- ручной Draft фиксируется только явным Save; таймер inactivity не создаёт Revision (уточнения 04.10/18.10);
+- одна завершённая session создаёт одну manual revision;
+- исправление одной запятой и большая правка подчиняются одному правилу.
+
+Подряд идущие manual revisions могут визуально группироваться в один раскрываемый блок History, но в данных остаются отдельными revisions.
+
+### 7.6 Линейная история и Restore
+
+Revision history для MVP остаётся линейной, без Git-подобных веток.
+
+Restore старой revision не откатывает историю назад и не удаляет более новые изменения. Вместо этого система создаёт новую revision из snapshot выбранной старой версии и сохраняет provenance-ссылку на source revision, например `restoredFromRevisionId`.
+
+Применённая AI mutation существующей entry также всегда создаёт отдельную revision.
+
+### 7.7 Immutable committed revisions
+
+Committed revision — уже зафиксированная часть истории. Для MVP:
+
+- revisions immutable / append-only;
+- у committed revision нет lifecycle статусов `pending/accepted/rejected`: эти состояния принадлежат Proposal;
+- пользователь не удаляет отдельные revisions вручную;
+- Undo/Restore уже применённого изменения создаёт новую revision с нужным snapshot/provenance, а не уничтожает прежнюю;
+- Apply proposal, а затем Undo — это два исторических действия и две committed revisions.
+
+Если history со временем станет слишком большой, отдельная future maintenance-механика может делать compaction через synthetic full-state checkpoint и retention policy. Это не часть обычного editing UX и не блокирует MVP. См. [FQ-REVISION-002](06-future-questions.md#fq-revision-002--revision-history-compaction--retention).
+
+
+---
+
+## 8. Неопределённость и доверие
+
+AI Diary должен быть способен сказать «я не уверен».
+
+Примеры:
+
+- неясная дата;
+- два возможных человека с одинаковым именем;
+- непонятно, относится ли фото к записи;
+- неясно, разбить ли длинную диктовку на две entries;
+- модель предполагает emotion, но текст этого явно не подтверждает.
+
+В таких случаях система должна использовать review/confidence/inferred semantics, а не производить уверенный выдуманный факт.
+
+Это важная часть доверия к персональной памяти.
+
+---
+
+## 9. Tags и организация
+
+Tags нужны в первую очередь для:
+
+- поиска;
+- навигации;
+- группировки;
+- построения cluster/episode;
+- подготовки дальнейшего анализа.
+
+AI должен:
+
+- сначала пытаться использовать существующие tags;
+- не создавать новый tag на каждую мелочь;
+- объяснять спорные предложения;
+- не удалять пользовательские tags без явного действия;
+- уметь работать proposal-only.
+
+На раннем этапе достаточно мягких типов (`person`, `place`, `topic`, `project` и т. п.), без сложной онтологии.
+
+---
+
+## 10. Media / Assets
+
+В долгосрочном продукте entries должны уметь связываться с:
+
+- photos;
+- video;
+- audio;
+- links;
+- documents;
+- screenshots;
+- другими файлами.
+
+Оригиналы должны сохраняться.
+
+Желательно отделять asset identity от конкретной entry, чтобы один asset можно было использовать в нескольких связанных memories/entries.
+
+Asset не обязан означать физическую копию файла внутри AI Diary. Поддерживаются два базовых режима authoritative original: **managed** (original находится под управлением приложения/user-owned storage) и **external** (original остаётся у внешнего provider/source, а AI Diary хранит reference и metadata). Для первого MVP managed media может использовать тот же user-owned Drive/file backend; отдельный object-storage слой не обязателен.
+
+Preview/thumbnail/transcode и другие производные представления не являются authoritative original Asset и могут существовать отдельно как rebuildable derivatives/cache.
+
+### 10.1 Assets и revisions
+
+Asset имеет identity независимо от Entry и может использоваться более чем в одной записи. При этом набор assets является частью versioned состояния Entry: открытие/restore исторической revision должно восстанавливать тот набор asset links, который относился к этой revision.
+
+Поэтому на продуктовом уровне связь нужно мыслить как `EntryRevision ↔ Asset`; `Entry` получает текущий набор assets через current revision. Конкретная join/schema — архитектурная деталь.
+
+### 10.1.1 Asset как общая media identity
+
+Asset не должен быть жёстко owned одной Entry или только AI Diary. Его identity/storage contract должен позволять позднее использовать тот же Asset из ZoomAlboom или другого consumer. Это не означает, что в MVP нужен отдельный Media Library service: достаточно сохранить такую границу модели.
+
+### 10.2 Удаление asset из Entry
+
+В edit mode удаление asset из записи не должно молча означать только unlink или только физическое удаление.
+
+Действие Remove/Delete открывает явный выбор:
+
+- отвязать asset от этой Entry и оставить его в Asset Library;
+- удалить asset из системы целиком.
+
+Если asset используется несколькими entries, destructive delete должен явно предупреждать, что затронет все связи. Если asset связан только с текущей Entry, вариант «оставить в библиотеке» должен предупреждать, что asset станет unlinked/orphaned. Это снижает риск незаметно накопить большое количество забытых assets.
+
+
+---
+
+## 11. Data ownership и переносимость
+
+Для AI Diary это одно из ключевых отличий от обычного SaaS-дневника.
+
+Пользователь должен иметь возможность:
+
+- получить собственные данные;
+- прочитать существенную часть данных без приложения;
+- экспортировать дневник;
+- восстановить систему из canonical data;
+- мигрировать на другой storage backend без полной потери смысла.
+
+Отсюда следует принятое продуктовое правило: **user-owned portable files являются canonical source of truth**.
+
+Operational DB, search index, cache и другие ускоряющие/служебные слои допустимы, но должны быть rebuildable из canonical files и не должны содержать единственную копию существенных diary data.
+
+### 11.1 Google Drive
+
+Google Drive рассматривается как первая практическая реализация storage, потому что:
+
+- уже есть file-first данные и workflows;
+- это user-owned storage;
+- удобно для ручной инспекции;
+- хорошо сочетается с Calendar/Google identity;
+- не требует немедленно строить отдельное дорогое storage infrastructure.
+
+Но Google Drive не должен быть навсегда зашит в diary domain.
+
+### 11.2 Database
+
+Первый MVP сознательно стартует **без database для diary content**: backend читает canonical Drive/files через отдельный data layer/repository abstraction.
+
+Позже DB/index может быть оправдан как:
+
+- derived index;
+- cache;
+- search layer;
+- concurrency aid;
+- operational projection.
+
+Такой слой должен быть rebuildable и не становится source of truth. Canonical diary content и revisions остаются в user-owned storage. Operational state может временно содержать приватные данные только там, где это необходимо для работы продукта; лишние долговременные серверные копии нужно минимизировать.
+
+Отдельный data layer обязателен с самого начала, чтобы добавление index/DB позже не требовало переписывать UI/domain logic.
+
+
+### 11.3 Версионирование как свойство продукта
+
+AI Diary хранит личную историю, поэтому versioning нельзя считать только внутренней технической деталью.
+
+Нужно различать несколько независимых типов версий:
+
+- **entry revisions** — история значимых изменений содержания записи;
+- **format/schema versions** — версия структуры canonical data;
+- **prompt/workflow versions** — какая логика и инструкция породила AI output;
+- **run/model metadata** — какой provider/model реально использовался;
+- при необходимости — версии integration/config.
+
+Для значимых изменений должно быть возможно:
+
+- увидеть, что состояние изменилось;
+- понять источник изменения;
+- сохранить предыдущую версию;
+- восстановить или переиспользовать старое состояние;
+- не смешивать пользовательскую правку с AI proposal;
+- провести миграцию формата без уничтожения исходной истории.
+
+Точный UX diff/restore можно развивать постепенно, но данные, необходимые для истории и восстановления, должны сохраняться с самого начала.
+
+### 11.4 Синхронизация данных
+
+AI Diary должен восприниматься как **один логический дневник**, даже если к нему обращаются через разные клиенты и интеграции.
+
+Это означает, что synchronization — отдельная продуктовая способность, а не побочный эффект конкретного storage SDK.
+
+В перспективе одни и те же данные могут использовать:
+
+- web;
+- Android;
+- iOS;
+- backend/background workers;
+- capture adapters;
+- AI workflows;
+- пользователь, напрямую работающий с user-owned files.
+
+Основные требования к sync:
+
+1. изменения должны сходиться к согласованному состоянию;
+2. повтор операции после сбоя не должен создавать дубликаты;
+3. competing edits не должны тихо теряться через last-write-wins;
+4. для конфликтов должна сохраняться достаточная revision/provenance history;
+5. stable IDs и version/revision tokens либо их эквивалент должны позволять определить, какое состояние редактировалось;
+6. derived indexes/cache/DB projection должны быть rebuildable и не подменять canonical data;
+7. внешние проекции вроде Google Calendar имеют собственную sync policy и не равны core diary synchronization;
+8. если canonical files могут меняться вне backend, такие изменения нужно обнаруживать и reconciliate.
+
+Для первого web/backend MVP принят **online-first** режим. Full offline browsing/editing и conflict-aware offline sync откладываются. Минимально обязательны:
+
+- не терять capture из-за кратковременного отсутствия сети;
+- уметь безопасно повторять операции;
+- явно показывать failure;
+- не уничтожать параллельные пользовательские изменения.
+
+Архитектура не должна необратимо закрывать путь к будущему offline-capable native/mobile client. Конкретный механизм local persistence/autosave/sync определяется отдельно.
+
+
+### 11.5 Legacy Android
+
+Старое Android/Firebase приложение не является основой новой реализации и не развивается в текущем цикле. Оно остаётся historical prototype/reference: отдельные идеи или domain/UI решения можно переиспользовать, если это действительно полезно, но специальная миграция codebase не планируется.
+
+К native Android возвращаемся позже, когда появится конкретная потребность, в том числе полноценный offline-first client. Уникальных ценных данных в старом Firebase/Room, которые требовали бы отдельной миграции, нет.
+
+---
+
+## 12. Web-клиент
+
+Новый web — полноценный продуктовый интерфейс.
+
+### 12.1 Первый web MVP и следующий slice
+
+Самый первый files-only MVP может быть ещё уже: browse/list существующих entries и открыть/прочитать entry через backend data layer, без database/index и без полноценного search.
+
+E0 — технический этап чтения существующих записей. Первая пользовательская веб-версия включает лёгкое редактирование заголовка и текста на том же экране: «Редактировать», «Сохранить», «Отменить». При изменении содержимого Save создаёт новую ревизию; исходник и прежние версии сохраняются. Действуют общие правила Draft и безопасного Save, включая защиту от конкурентных правок. Галерея версий, сравнение и восстановление через интерфейс поставляются позже, в полном E2. Лёгкая правка не зависит от готовности поиска.
+
+Ручное создание новой записи в вебе (S05) поставляется в E2 вместе с полноценным редактором и использует тот же EntryPanel, Draft и Save. Первая пользовательская версия ограничена правкой существующих записей.
+
+Архив и корзина записей поставляются в E2 вместе с полноценным редактором. Режимы списка S03 и действия над существующими записями используют согласованные правила архивации, удаления и восстановления. 
+
+В E2 одновременно с загрузкой и выбором вложений в редакторе (C12) доступен лёгкий самостоятельный экран «Материалы» (S09): список сохранённых материалов, включая непривязанные, имя и предпросмотр или открытие файла. Для материалов, отправленных в корзину из записи, есть просмотр корзины и восстановление. Полный поиск, фильтры, редактирование метаданных и управление окончательным удалением относятся к расширенной библиотеке; точный этап не задан. Оба интерфейса используют один каталог и одно пользовательское хранилище.
+
+«Обзор» включается в E1 вместе с поиском и фильтрами: календарь, облако тегов и доступные счётчики открывают соответствующие выборки. Показатели черновиков и предложений AI включаются по готовности функций, которые дают им данные.
+
+Следующий полезный web slice добавляет:
+
+- обычный текстовый поиск;
+- фильтр по дате/date range;
+- фильтр по tags.
+
+Создание новой записи через web **не является обязательным requirement первых этапов**. Если простая форма create почти не увеличивает сложность, её можно добавить opportunistically.
+
+Далее:
+
+1. editing existing entries + versioning/history;
+2. просмотр и редактирование tags;
+3. AI processing/actions/workflows.
+
+### 12.2 Mobile web
+
+Телефонный интерфейс может быть проще, но первый базовый сценарий должен позволять:
+
+- открыть дневник;
+- найти запись по тексту/дате/tags;
+- прочитать запись.
+
+Editing добавляется на следующем этапе вместе с versioning/history. Capture/create может поначалу оставаться во внешних каналах и не является обязательным mobile-web сценарием первого slice.
+
+Сложные debug/admin/bulk/revision comparison функции могут сначала остаться desktop-oriented.
+
+### 12.4 EntryScreen и переиспользуемый EntryPanel
+
+Экран одной записи разделяется на два уровня:
+
+- `EntryScreen` — page/screen shell: navigation, screen-level actions, reusable EntryPanel, текущие Proposals и компактная History/Revisions gallery/timeline;
+- `EntryPanel` — переиспользуемое представление **самого состояния записи**.
+
+`EntryPanel` должен использоваться как минимум в обычном view, manual edit и proposal merge/review. Его смысловые области:
+
+- `Title` — отдельно от основного текста;
+- `Event time` — содержательная date и опциональные start/end time;
+- `Text` — основной текст записи;
+- `Assets`;
+- `Tags`;
+- вторичная read-only system metadata: created/updated timestamps; она видна всегда, но визуально тихо — внизу secondary column на широкой panel и внизу panel на узкой.
+
+Режимы поведения:
+
+- в view mode title/text/event time read-only;
+- в edit mode title и text становятся редактируемыми;
+- date/start/end получают date/time controls;
+- для Tags и Assets в edit mode появляются действия add и remove; Add должен позволять выбрать уже существующую сущность или создать новую (для assets — через Asset Library/new upload-or-link flow, для tags — через существующий catalog/new tag flow);
+- Base/Proposal в merge view используют тот же panel read-only, Result — editable.
+
+EntryPanel использует adaptive layout по **собственной доступной ширине**:
+
+- при достаточной ширине Text занимает основную content column, а Assets, Tags и вторичные created/updated metadata показываются в правой secondary column;
+- при недостаточной ширине Assets, Tags и secondary metadata переходят под Text в одну вертикальную колонку;
+- Title и Event time остаются верхней частью panel;
+- точные breakpoint и пропорции колонок определяются на UI/implementation уровне.
+
+Такой container-responsive layout обязателен именно из-за reuse: одна EntryPanel на широком detail screen может иметь правую колонку, а три более узкие панели в `Base | Result | Proposal` автоматически складываются вертикально без отдельной merge-specific структуры.
+
+### 12.5 History gallery, revision comparison, provenance и lineage
+
+`Sources / Lineage` не являются отдельным постоянным блоком основного EntryScreen. Provenance относится к конкретным committed revisions.
+
+Под текущей Entry показывается компактная scrollable History/Revisions gallery/timeline. Revision card/snippet позволяет быстро увидеть тип/время изменения, короткий content preview и компактное summary того, что поменялось.
+
+Выбор revision открывает revision details с read-only comparison:
+
+- слева — **предыдущая revision**;
+- справа — **выбранная revision**;
+- обе стороны переиспользуют EntryPanel/diff building blocks;
+- это отличается от proposal merge `Base | Result | Proposal`, где Result редактируется.
+
+Metadata/provenance отделено от content comparison и не сравнивается как часть diff. Оно может включать raw/source links, previous/base revision, manual/AI/restore/import origin, proposal/workflow/AI run references, timestamps и другие trace данные. Краткие provenance details могут показываться через indicator/tooltip/popover, а полные — через `Подробнее`.
+
+Diff versioned content остаётся лёгким и field-aware:
+
+- Tags и Assets показывают добавления/удаления через `+ / −`; порядок Assets не считается значимым и reorder не является change;
+- Text желательно подсвечивать на уровне изменённых фрагментов; точный diff algorithm/visual style выбирается при реализации по читаемости;
+- для title и event date/time достаточно явно показать факт/значение изменения без отдельной сложной history model.
+
+Actionable AI state на основном EntryScreen представлен текущими Proposals; полную историческую AI activity не нужно дублировать отдельной секцией рядом с EntryPanel.
+
+
+### 12.6 AI actions и inline editor assistance
+
+EntryScreen должен давать screen-level AI actions над текущей записью через заметную кнопку/menu `AI ▾`, расположенную рядом с обычными screen actions (например Edit):
+
+- запуск готового workflow;
+- `Custom prompt / Ask AI` для разовой инструкции.
+
+Такие Entry workflows работают от committed revision. Если в manual editor есть dirty working draft, используется `Save & Run`: сначала создаётся manual revision, затем именно она становится input/base revision для AI run. Изменяющий workflow дальше создаёт Proposal и не переписывает Entry напрямую.
+
+AI-помощь непосредственно в редакторе над выделением или рабочим черновиком отложена за пределы первой версии. Отдельные AI-запуски и проверка предложений сохраняются по действующим правилам.
+
+Отдельный постоянный `AI note / annotation` block на EntryScreen не нужен: actionable AI mutation представлена Proposal, применённое изменение — Revision, историческая причина/trace — provenance/AI run details, а non-mutating analysis остаётся workflow result.
+
+### 12.3 UI не владеет бизнес-логикой
+
+Web должен обращаться к backend API, а не становиться единственным местом, где живут правила хранения, revisions, capture и AI.
+
+---
+
+## 13. Backend как product service boundary
+
+Backend нужен, потому что продукт должен жить дольше одного web UI.
+
+Он должен дать общий interface для:
+
+- web;
+- будущего Android;
+- возможно iOS;
+- capture adapters;
+- external integrations.
+
+Backend должен быть местом, где концентрируются:
+
+- domain rules;
+- storage access;
+- revision/conflict semantics;
+- auth;
+- search/indexing;
+- integrations;
+- background processing;
+- LLM workflows.
+
+Язык и hosting здесь сознательно не фиксируются.
+
+---
+
+## 14. Search и исследование истории
+
+Search не блокирует самый первый files-only MVP. На следующем web slice он должен позволять находить entries по:
+
+- тексту;
+- date/date range;
+- tags.
+
+Source/status и другие filters можно добавлять позже, если они окажутся полезны.
+
+Позже могут появиться:
+
+- semantic search;
+- embedding-based retrieval;
+- cross-entry Q&A;
+- поиск паттернов;
+- тематические clusters;
+- people/place exploration.
+
+Search index может быть производным и перестраиваемым.
+
+---
+
+## 15. LLM / AI как отдельная подсистема
+
+LLM subsystem должна быть **перпендикулярна обычной работе дневника**.
+
+Базовый diary flow не должен зависеть от конкретного model provider.
+
+### 15.1 Provider abstraction
+
+Желаемая модель:
+
+```text
+AI Workflow
+   -> Context Builder
+   -> LLM Provider
+        -> OpenAI
+        -> Gemini
+        -> Anthropic
+        -> другие
+```
+
+Workflow не должен знать Drive paths, а provider не должен знать diary storage internals.
+
+### 15.2 Типы AI-задач
+
+Потенциальные workflows:
+
+- cleanup;
+- title suggestion;
+- tag suggestion;
+- extraction;
+- summarization;
+- clustering;
+- synthetic entry;
+- period review;
+- пользовательский custom analysis.
+
+### 15.3 Traceability
+
+Каждый существенный AI run должен быть доступен для drill-down из пользовательского Entry/AI activity и связываться с:
+
+- workflow/version;
+- prompt/version;
+- provider/model;
+- input references/snapshot и base/input revision;
+- output / AIResult;
+- созданными proposals;
+- validation;
+- timestamps;
+- auto-apply / user acceptance / rejection / supersede outcome;
+- committed revisions, появившимися в результате применения;
+- token/cost metadata при необходимости.
+
+Обычный Entry screen может показывать только актуальные actionable proposals, но пользователь должен иметь возможность открыть полную AI activity и детали конкретного run/result, чтобы понять, что именно происходило с записью.
+
+### 15.4 Prompts
+
+Рабочая модель:
+
+- базовые system contracts принадлежат приложению;
+- user instructions/overrides могут быть данными;
+- пользователь может со временем создавать собственные workflows;
+- prompts версионируются.
+
+### 15.5 Пользовательский контроль
+
+AI automation policy определяется per workflow/type of change, а не одной глобальной настройкой.
+
+Для MVP:
+
+- informational/derived AI output может создаваться автоматически;
+- если raw capture сохранён, первая normalized/processed entry может создаваться автоматически; uncertainty должна оставаться явной;
+- существующие tags могут auto-apply при высокой уверенности;
+- создание новых tags по умолчанию идёт через proposal;
+- AI не удаляет user-added tags автоматически;
+- изменение существующего content или неоднозначного metadata через AI сначала создаёт **persistent proposal**, даже если workflow запущен пользователем вручную;
+- proposal не является revision до Accept/Apply;
+- pending proposal хранит target/scope/base state и живёт до Accept/Reject либо supersede;
+- если base state изменился, proposal может стать stale/conflicted и не должен silently применяться;
+- несколько proposals могут существовать параллельно, если их scopes не конфликтуют;
+- точные confidence thresholds и policy для будущих metadata определяются при появлении соответствующего workflow.
+
+Merge/split entries отложены на future stage; bulk AI mutation/delete не являются текущими MVP workflows.
+
+### 15.5.1 Proposal granularity и review UX
+
+Жёсткое правило «один AI run = один proposal» или «одно изменение = один proposal» не вводится.
+
+- один AIResult может содержать один или несколько proposals;
+- один proposal может быть простым или комплексным и затрагивать несколько полей/типов данных;
+- гранулярность определяется конкретным workflow;
+- proposal должен различать способ применения (`USER` / `AUTO`) и собственный lifecycle; эти состояния не переносятся на committed revision.
+
+На Entry screen proposals показываются компактными карточками/snippets:
+
+- бесконфликтный proposal: быстрые `Apply`, `Reject`, `Подробнее`;
+- stale/conflicted proposal: `Reject`, `Подробнее`, без быстрого Apply.
+
+`Подробнее` открывает трёхсторонний review:
+
+```text
+Base              Result              Proposal
+read-only         editable            read-only
+```
+
+`Result` всегда показывает реальное будущее состояние после применения. Независимые изменения Current и Proposal могут auto-merge. Конфликт подсвечивается локально на конкретном field/fragment; пользователь может оставить Current, взять Proposal или отредактировать Result вручную. Для complex proposal detailed mode может фактически принять только часть предложенных изменений.
+
+Подтверждение Result создаёт одну новую committed revision. До подтверждения Result остаётся merge draft и в History не попадает.
+
+
+
+### 15.6 Выбор LLM model
+
+Пользователь может задавать preferred model на нескольких уровнях. Приоритет:
+
+1. override для конкретной task/run;
+2. preferred model workflow;
+3. global preferred model пользователя;
+4. system default.
+
+Ожидаемый основной сценарий — один global preferred model, который наследуют большинство workflows. Отдельный provider пользователю выбирать не нужно: provider определяется выбранной model.
+
+Если preferred model недоступна, AI Diary не должен тихо переключаться на другую model/provider без явного согласия пользователя. Детали fallback/retry/deprecation относятся к implementation и UX policy.
+
+
+---
+
+## 16. AI memory / персонализация
+
+Перспективное направление — различать:
+
+- явные user preferences;
+- накопленный learned context;
+- snapshot контекста, реально использованный конкретным AI run.
+
+Это полезно для того, чтобы AI со временем понимал:
+
+- recurring people/projects;
+- привычные tags;
+- preferred writing cleanup style;
+- rejected suggestions;
+- личные patterns.
+
+Но advanced AI memory не должна блокировать первый web/backend MVP.
+
+---
+
+## 17. Calendar timeline как optional projection
+
+Помимо capture, Calendar может быть удобным native timeline viewer.
+
+В таком сценарии:
+
+- diary entries остаются canonical;
+- Calendar inbox — optional transport/adapter, а не core dependency;
+- timeline projection работает отдельно от capture;
+- одна diary entry соответствует одному Calendar event;
+- при новой committed revision или другом изменении current state существующий Calendar event обновляется;
+- отдельные Calendar events для каждой revision не создаются;
+- pending AI proposals не публикуются как current diary state;
+- projection может быть удалена и перестроена;
+- внешние IDs остаются integration state;
+- Calendar manual edits не обязаны становиться diary edits.
+
+Эта функция полезна, но не является обязательной для первого нового web/backend skeleton.
+
+---
+
+## 18. Authentication и user model
+
+Поскольку Drive/Calendar находятся в Google ecosystem, Google — естественный первый login method для MVP. При этом AI Diary использует собственный stable internal user/account ID, а external login identities привязываются к нему отдельно. Google account ID не является единственным внутренним identity, чтобы позже можно было добавить другие способы входа без миграции основной user model.
+
+Конкретный auth service/framework (Firebase Auth, direct OIDC или другой middleware) сейчас не фиксируется и выбирается вместе с backend/hosting.
+
+Необходимо различать:
+
+- кто залогинен в AI Diary;
+- какие scopes пользователь дал для Drive;
+- какие scopes дал для Calendar;
+- где хранятся refresh tokens;
+- как пользователь отзывает доступ.
+
+
+Для доступа к user-owned Google Drive backend действует **от имени пользователя через OAuth**. Service account + shared folder не является основной моделью доступа для multi-user приложения. Пользователь явно предоставляет приложению Google API permissions, а canonical files продолжают принадлежать его Drive.
+
+AI Diary с самого начала считается **multi-user application**: один backend/application может обслуживать нескольких авторизованных пользователей, и у каждого пользователя свой логический дневник и изолированные данные.
+
+User ownership должен быть явным в authenticated backend context и во всём shared operational/server-side state. При этом canonical files в user-owned storage не обязаны содержать дублирующий `ownerId`, если ownership уже задаётся storage/account boundary.
+
+Это не означает social/collaborative модель: sharing между пользователями и сложные ACL остаются вне MVP.
+
+---
+
+## 19. Reliability
+
+Для персональной памяти важнее надёжность и объяснимость, чем сложная «магия».
+
+Система должна стремиться к следующим свойствам:
+
+- не терять уже введённый текст при сетевых сбоях;
+- safe retries;
+- duplicate resistance;
+- видимые failures;
+- восстановление из canonical data;
+- migration/versioning;
+- backup/restore;
+- прозрачный AI provenance.
+
+Первый web/backend MVP — online-first; полный offline-first отложен, но защита уже введённого текста от кратковременных сетевых сбоев обязательна.
+
+---
+
+## 20. Privacy
+
+Diary data потенциально очень чувствительны.
+
+Продукт должен по возможности:
+
+- хранить минимум лишних копий;
+- давать пользователю понятный контроль;
+- не отправлять весь дневник LLM provider без необходимости;
+- ясно отделять локальное хранение от external AI processing;
+- позволять в будущем выбирать provider/policies.
+
+Privacy-first является сильным направлением и соответствует идее user-owned data.
+
+---
+
+## 21. Sharing
+
+Selective sharing остаётся потенциально полезной **future feature**:
+
+- поделиться конкретной записью;
+- family memory;
+- trip narrative;
+- AI-generated summary;
+- ZoomAlboom story.
+
+Для текущего MVP sharing **out of scope** и не должен определять auth/data model. Это не social-network requirement и не collaborative editing. К access/sharing model возвращаемся только при появлении реального near-term use case.
+
+См. [FQ-SHARING-001](06-future-questions.md#fq-sharing-001--selective-sharing).
+
+---
+
+## 22. Предлагаемый функциональный scope новой базовой версии
+
+Это не финальный roadmap, а продуктовый минимум для архитектурного сравнения.
+
+### Обязательно учитывать
+
+- Google login/identity direction;
+- Google Drive storage adapter;
+- browse/read/create/edit entries;
+- adaptive web;
+- backend API;
+- stable entry identity;
+- revisions/history;
+- raw/provenance preservation;
+- search/filter;
+- storage abstraction;
+- capture normalization boundary;
+- Calendar inbox adapter как минимум на уровне совместимости;
+- LLM provider abstraction и extension point;
+- traceable AI workflows;
+- low-cost deployment.
+
+### Можно отложить
+
+- сложный semantic search;
+- advanced AI memory;
+- full media processing;
+- people/place ontology;
+- sharing;
+- collaborative editing;
+- sophisticated Calendar timeline;
+- ZoomAlboom export format;
+- native Android migration;
+- on-device AI.
+
+---
+
+## 23. Критерии качества продукта
+
+AI Diary должен стремиться быть:
+
+### Быстрым
+Capture — секунды, а не ритуал.
+
+### Надёжным
+Личная история не должна исчезать из-за сбоя workflow или LLM.
+
+### Прозрачным
+Пользователь понимает, что написал он, что предложил AI и откуда взялась derived информация.
+
+### Переносимым
+Данные не заперты навечно в одной backend-схеме.
+
+### Расширяемым
+Новые capture channels, clients и LLM providers можно добавлять без переписывания всей системы.
+
+### Простым в эксплуатации
+Для персонального проекта инфраструктура не должна требовать постоянного DevOps и больших расходов.
+
+---
+
+## 24. Основные non-goals на текущем этапе
+
+Сейчас не требуется заранее проектировать:
+
+- социальную сеть;
+- enterprise collaboration;
+- сложные ACL между множеством пользователей;
+- real-time collaborative editor;
+- recommendation feed;
+- собственную foundation model;
+- тяжёлую microservice architecture;
+- отдельную БД только «потому что так принято»;
+- сложную ontology engine до появления реальной потребности.
+
+---
+
+## 25. Резюме продуктового baseline
+
+AI Diary — это не просто приложение для написания заметок и не просто AI-чат над историей пользователя.
+
+Это система, которая должна соединить четыре слоя:
+
+```text
+1. Capture
+   быстро сохранить жизнь как она есть
+
+2. Durable Memory
+   сохранить raw, entries, revisions, media и provenance
+
+3. Structure & AI
+   помочь организовать и понять накопленное
+
+4. Exploration
+   поиск, timeline, patterns, summaries и позже ZoomAlboom
+```
+
+При этом пользователь должен сохранять контроль над собственными данными и не зависеть критически ни от одной конкретной модели, UI или storage vendor.
+
+## Уточнение 18.10.2026 — Save / Apply / Restore
+
+Save ручных правок, Apply подтверждённого AI proposal и Restore исторической версии — самостоятельные commit-действия. Каждое успешное действие создаёт одну новую Revision; второй Save после Apply/Restore не нужен. Restore сохраняет более позднюю историю, добавляя новую Revision с provenance. Autosave, Return later, Discard и Reject Revision не создают. Восстановление из Trash — lifecycle-операция без content Revision. Автоматические AI commits отдельно подтверждены следующим решением FQ-01: Первая normalized Entry может создаваться автоматически из сохранённого raw с явной uncertainty; existing tags могут добавляться автоматически при высокой уверенности, если это разрешено routine policy. Изменение existing Entry создаёт новую committed Revision с trace routine/input/result; первая обработка создаёт первую committed Revision. Existing Entries с Draft пропускаются, ручной Draft AI не переписывает. Изменения текста existing Entry и создание новых тегов по умолчанию остаются proposals. Конкретные confidence thresholds не фиксируются.
+
+**История:** [FQ-01](04-open-questions.threads/04_PQ-004_raw-revisions-ux/01_FQ-01_revision-commit-actions/00_thread.md).
+
+
+## Уточнение 18.10.2026 — canonical merge тегов
+
+Merge — операция каталога: oldTagId разрешается в survivingTagId через mergedInto redirect. Current Entry/Draft, поиск и счётчики используют canonical ID с дедупликацией; snapshots committed Revision и существующие Draft физически не переписываются, новые content Revision ради merge не создаются. Операция фиксируется в audit каталога. Следующий обычный Save может записать surviving ID; отдельной массовой миграции Entry нет. Type/color survivor и перенос aliases сохраняют ранее принятые правила.
+
+**История:** [FQ-02](AI-Diary-Functional-Spec-v0.1.threads/01_FQ-02_tag-merge/00_thread.md). Коллизии aliases и подробное отображение historical labels остаются отдельными вопросами.
+
+
+## Уточнение 18.10.2026 — неизвестный исход Save
+
+Если подтверждение Save потеряно, приложение показывает «Проверяем сохранение» и после восстановления связи автоматически выясняет исход операции. При уже состоявшемся commit возвращается та же Revision; если commit не состоялся, безопасно повторяется та же операция с тем же operationId и зафиксированным snapshot. Повтор не создаёт дубликат и разрешён только при актуальных base/ownership checks, без отмены/замены операции. При conflict или потере права записи автоматический commit прекращается с понятным сообщением; введённые данные сохраняются. Неизвестный исход не выдаётся ни за успешное, ни за достоверно неуспешное сохранение.
+
+**История:** [FQ-03](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Физический commit/recovery protocol ещё обсуждается; принятие автоматического retry не означает утверждения конкретной файловой реализации.
+
+
+## Уточнение 18.10.2026 — editor read-only во время Save
+
+В первой версии после начала Save редактируемые поля этой Entry и повторный Save временно блокируются до определения результата операции. Просмотр, прокрутка и копирование текста доступны. При потерянном подтверждении действует автоматическая проверка/безопасный retry той же операции, статус «Проверяем сохранение»; редактор остаётся read-only. После подтверждённого успеха редактор доступен с сохранённым состоянием. После достоверного отказа без commit и без конфликта блокировка снимается, исходный Draft сохраняется для исправления/повтора. Conflict или утрата lease разрешаются соответствующим flow; сохранённый текст не очищается и право записи самовольно не восстанавливается. Продолжение ввода параллельно неподтверждённому Save в первую версию не включается.
+
+**История:** [FQ-03](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md). Выбор временной блокировки не определяет физический commit/recovery protocol; этот технический вопрос остаётся открытым.
+
+
+## Уточнение 18.10.2026 — уникальность aliases
+
+Один и тот же alias не может принадлежать двум самостоятельным активным canonical tags. Если alias уже занят, добавление его второму тегу отклоняется с указанием существующего тега; существующие теги автоматически не объединяются. Повторы aliases внутри одного canonical tag дедуплицируются. Merge redirect разрешается в survivor и не считается вторым самостоятельным владельцем alias.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Позднее 18.10 также принят запрет пересечений canonical name/alias между разными активными тегами; сравнение без учёта регистра также принято; резервирование обозначений удалённых тегов также принято; остальные правила Unicode/пробелов ещё открыты.
+
+
+## Уточнение 18.10.2026 — names/aliases и границы scope
+
+Canonical names и aliases образуют единое пространство уникальных обозначений между самостоятельными активными canonical tags. Нельзя создать отдельный тег с именем, уже занятым как name или alias другого тега, либо назначить ему такое имя/alias. При конфликте показывается существующий тег; запись дубликата отклоняется без автоматического merge, переноса обозначения или перепривязки Entry relations. Идея отдельного переноса имени/alias между тегами сохранена на будущее; в текущий scope такой сценарий не включён.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Transfer обозначения не требуется реализовывать сейчас и не означает автоматическую смену существующих relations по tagId.
+
+
+## Уточнение 18.10.2026 — маркер снятого тега
+
+При Save упоминания явно снятого через chip тега преобразуются из #name в #_name, включая употреблённые aliases, с сохранением написанного обозначения. Маркер #_name остаётся в тексте, чтобы такие места можно было найти Text search; он не является активным hashtag, не создаёт связь и не восстанавливает chip. Не считать #_name присутствующим активным упоминанием при нормализации linked tags; обычный Tag filter по-прежнему работает по tagId/relations. Преобразование затрагивает упоминания снятого тега, а не все символы # в документе; повторный Save не добавляет второй underscore. Если тег добавлен обратно до Save, его упоминания не помечаются как снятые. Дополнительный вопрос на каждом Save для этого преобразования не требуется.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Сам маркер не означает действующую связь и не является новым catalog tag.
+
+## Уточнение 18.10.2026 — регистр names/aliases
+
+Canonical names и aliases сравниваются без учёта регистра при проверке уникальности и lookup, включая autocomplete. Спорт, спорт и СПОРТ считаются одним обозначением; различие только в регистре не позволяет создать второй самостоятельный тег или занять его обозначение. Выбранное пользователем написание сохраняется для отображения, автоматическое приведение отображаемого текста к нижнему регистру не требуется. Это правило не меняет tagId и не переписывает существующий текст или immutable snapshots.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Обозначения удалённых тегов остаются занятыми; остальные правила Unicode/пробелов пока открыты.
+
+## Уточнение 18.10.2026 — обозначения удалённых тегов
+
+После soft delete тега его canonical name и aliases остаются занятыми за тем же tagId, в общем пространстве обозначений без учёта регистра. Нельзя создать другой тег или назначить ему name/alias, совпадающий с обозначением удалённого тега. При таком конфликте интерфейс показывает удалённый тег и предлагает явный Restore существующего тега вместо создания нового. Сам ввод имени не восстанавливает тег автоматически. До Restore сохраняется запрет новых links и исключение удалённого тега из обычных autocomplete/cloud; прежние tagId, relations и история сохраняются.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Отдельный перенос имени/alias между tagIds в текущий scope не добавляется.
+
+## Уточнение 18.10.2026 — формат дописываемых hashtags
+
+При Save недостающие упоминания связанных тегов дописываются в конец body одной строкой, hashtags разделяются одним пробелом. От непустого текста эта строка отделяется пустой строкой; отдельного заголовка Tags: нет. Уже имеющиеся canonical/alias упоминания остаются на своих местах и не дублируются. Если все связанные теги уже упомянуты, новая строка не добавляется; повторный Save не создаёт повторный suffix. В пустом body добавляется только строка hashtags, без ведущей пустой строки. Маркер #_name не считается активным упоминанием.
+
+**История:** [FQ-04](AI-Diary-Functional-Spec-v0.1.threads/03_FQ-04_tag-aliases/00_thread.md). Это уточняет оформление уже принятого добавления linked hashtags в конец текста.
+
+## Техническая проработка хранения и Save — 18.10.2026
+
+По поручению пользователя подготовлены [проект формата v1](07-file-format-v1-draft.md), [Save/recovery design](08-save-recovery-design.md), core schema и пример before/register/after. Статус: **РАБОЧЕЕ_НАПРАВЛЕНИЕ / техническое предложение**, не новый утверждённый baseline и не выполненная migration. Предложены immutable snapshots + единая publication для Entry/catalog/operation result/consume Draft; Drive adapter требует integration spike. Уже принятые Save/Apply/Restore, retry, read-only editor и правила тегов сохраняются.
+
+Решён [FQ-03/SQ-01: Save при незавершённом upload](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md): Save disabled до готовности всех оставленных вложений; состав attachments и upload state сохраняются в Draft. Retention/orphan cleanup, hashtag grammar и time semantics не закрываются техническим проектом; no-change manual Save согласован отдельно в SQ-02.
+
+## Уточнение 18.10.2026 — вложения входят в durable Draft
+
+Save недоступен, пока хотя бы одно оставленное вложение имеет неразрешённый статус: выбрано, загружается, проверяется, ошибка или требуется повторный выбор файла. Для продолжения нужно завершить загрузку/проверку, повторить её либо явно убрать вложение. Все оставленные attachments должны быть готовы к включению в Revision; для managed файла это подтверждённый original, для external — сохранённый валидный reference без обязательного скачивания original. Генерация thumbnail/preview не блокирует Save. До начала commit текст продолжает autosave в Draft.
+
+Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
+
+**История:** [FQ-03/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/01_SQ-01_upload-before-save/00_thread.md). Retention после Discard/orphan cleanup остаётся отдельным FQ-08; физический commit protocol этим решением не утверждён.
+
+## Уточнение 18.10.2026 — manual Save без изменения content
+
+Manual Save, при котором итоговое сохраняемое content совпадает с текущей committed Revision, завершает эквивалентный Draft без новой Revision. Возвращается NO_CHANGE со ссылкой на существующую Revision; committedUpdatedAt и content History не меняются. Consume именно этого Draft и результат операции фиксируются durable с обычными ownership/base/idempotency checks. У новой Entry без Current первый успешный Save создаёт первую Revision. Согласованное создание Revision при Apply/Restore сохраняется.
+
+Технически сравнивается итоговый snapshot Title/Text/EventTimeRange/канонические Tag relations/Asset links; служебные Draft/session timestamps не участвуют. Текст сравнивается точно, включая пробелы и регистр. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
+
+## Уточнение 18.10.2026 — Asset после снятия связи / Discard
+
+При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked.
+
+Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
+
+**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; прочие FQ-08 — partial staging/late completion, permanent delete и retention — остаются открытыми; lifecycle после Restore согласован отдельно в SQ-01. Ранее предложенные безусловные keep/Trash не приняты.
+
+## Уточнение 18.10.2026 — Restore Entry из Trash всегда в ACTIVE
+
+Restore Entry из Trash всегда возвращает запись в ACTIVE, независимо от того, была она Active или Archived перед удалением. Сохраняются тот же entryId, Current/content history и существующий durable Draft. Операция меняет lifecycle/audit и не создаёт content Revision; это не Restore исторической Revision.
+
+**История:** [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Прежнее архивное состояние не возвращается автоматически. Остальные FQ-08 остаются открытыми.
+
+## Уточнение 18.10.2026 — overlap при фильтрации по периоду
+
+Фильтр по периоду включает интервальную Entry, если хотя бы часть её EventTimeRange пересекается с выбранным периодом; не требуется попадание начала или всего интервала внутрь фильтра. Например, поездка 1–10 июля видна при фильтре 5–7 июля. Одна Entry показывается один раз, независимо от количества пересекающихся дней. Это общее правило date filter; выбор календаря и связанные выборки используют ту же semantics при неизменном lifecycle scope.
+
+**История:** [FQ-05 — пересечение периодов](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md). Остальные FQ-05 (границы/timezone/precision/uncertainty/отсутствующий To) остаются открытыми.
+
+## Уточнение 18.10.2026 — сортировка Updated учитывает Draft
+
+Сортировка «По изменению» учитывает последние содержательные правки Draft ещё до Save: при текущем Draft используется его content updatedAt, без Draft — committedUpdatedAt Entry. Это производный effectiveUpdatedAt для сортировки, а не изменение committed metadata и не новая Revision. Повторный autosave неизменного содержимого, heartbeat и технический progress загрузки не поднимают Entry заново. После Discard/NO_CHANGE без Draft используется прежний committedUpdatedAt.
+
+**История:** [FQ-06 — Updated sort](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/00_thread.md). Принятое правило относится именно к Updated sort. Scope двух рабочих очередей Home согласован ниже; scope Total entries согласован отдельно ниже; scope периодных counters согласован ниже; timezone rolling days согласована ниже; полная модель review items остаётся открытой.
+
+## Уточнение 18.10.2026 — lifecycle рабочих очередей Home
+
+При включённом «Учитывать архивные» очереди «Черновики» / «Требует внимания» на Home включают ACTIVE и ARCHIVED Entries за всё время и исключают TRASH. Счётчик и список по клику используют одинаковые условия lifecycle и соответствующего признака; одна Entry считается один раз, независимо от числа review items.
+
+На момент этого решения ACTIVE scope Home EntryList/TagCloud не менялся; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Охват Total entries и остальных counters тогда решался отдельно; текущая общая настройка применяется ко всем. Архивирование в текущем ТЗ выполняется явным действием пользователя; автоматический перенос по возрасту не задан. Запись, история и имеющийся Draft сохраняются. **История:** [FQ-06/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/01_SQ-01_home-queue-scope/00_thread.md).
+
+## Уточнение 18.10.2026 — Total entries включает архив
+
+При включённом «Учитывать архивные» «Всего записей» / Total entries на Home считает уникальные ACTIVE и ARCHIVED Entries за всё время, исключая TRASH. Переход по числу открывает список с теми же условиями lifecycle и без ограничения периода. Архивация не уменьшает этот показатель; число Revision одной Entry на него не влияет.
+
+На момент этого решения ACTIVE scope Home EntryList/TagCloud не менялся; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Периодные статистические counters согласованы отдельно ниже; полная модель review items остаётся открытой. **История:** [FQ-06/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/02_SQ-02_total-entries-scope/00_thread.md).
+
+## Уточнение 18.10.2026 — lifecycle периодной статистики Home
+
+При включённом «Учитывать архивные» показатели Home «За 7 дней», «За 30 дней» и «С вложениями за 30 дней» включают уникальные ACTIVE и ARCHIVED Entries и исключают TRASH. Сохраняются соответствующие периоды Event date (сегодня + предыдущие 6 / 29 дней), принятое пересечение интервалов и условие Has assets у третьего показателя. Число и список по клику используют одинаковые условия; архивация не исключает запись из статистики периода.
+
+На момент этого решения ACTIVE scope Home EntryList/TagCloud не менялся; позднее он заменён общей настройкой главной (FQ-06/SQ-07). Timezone границы rolling days и прочие аспекты FQ-05/FQ-06 этим решением не закрываются. **История:** [FQ-06/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/03_SQ-03_period-counter-scope/00_thread.md).
+
+## Уточнение 18.10.2026 — время события и default timezone
+
+Основное отображение Entry использует местные дату и время события в его сохранённом часовом поясе. При ручном создании пояс события по умолчанию берётся из настроек пользователя, если он там задан; иначе сохраняется прежний fallback на пояс устройства. Явно выбранный пояс события имеет приоритет над default. Пояс сохраняется в EventTimeRange записи; последующая смена пользовательских настроек не пересчитывает и не переписывает её местные дату/время или timezone. Если время суток отсутствует, оно не подставляется.
+
+Выбор основного отображения не утверждает физическую сериализацию instant/offset, обработку неоднозначного времени, отдельный UI пересчёта или правило группирования Calendar. Настройка rolling days обсуждается отдельно. **История:** [FQ-05/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/02_SQ-02_event-time-display/00_thread.md).
+
+## Уточнение 18.10.2026 — Calendar по местным датам событий
+
+Calendar относит Entry к местной дате события в сохранённой timezone самой записи. Событие «19 октября, 00:30, Токио» показывается на 19 октября, даже если в пользовательской timezone в этот момент ещё 18-е. Выбор дня/диапазона в Calendar открывает список с той же семантикой местных дат и принятым period overlap; индикатор и список используют одинаковый lifecycle scope. Смена пользовательской timezone не переносит сохранённые события между днями Calendar. Date-only сохраняется как дата без выдуманного времени.
+
+Выбранный lifecycle scope не расширяется автоматически. Источник «сегодня» для rolling days, точные временные границы и mixed precision остаются отдельными аспектами FQ-05. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md).
+
+## Уточнение 18.10.2026 — timezone пользователя для «сегодня»
+
+«Сегодня» и границы календарных rolling days Home определяются по сохранённому часовому поясу из настроек пользователя. При первоначальной настройке предлагается пояс устройства. Если обнаружено отличие пояса устройства от сохранённого пользовательского, приложение предлагает сменить настройку и применяет изменение только после подтверждения. Смена настройки может изменить текущее «сегодня» и период статистики, но не переписывает даты/время/timezone сохранённых событий и не переносит их между днями Calendar.
+
+Периоды остаются «сегодня + 6 / 29 предыдущих дней»; число и список по клику используют одинаковый период. Точный layout настройки и частота повторного предложения смены зоны этим выбором не определены. **История:** [FQ-05/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md).
+
+## Уточнение 18.10.2026 — запись без окончания
+
+Отсутствие To у Entry означает одиночное событие на указанную From дату/время, без автоматического продолжения до текущего дня или в будущее. Если указана только дата, дневной Calendar и связанный date filter относят запись к этой местной дате без выдуманного времени суток. Если задано время, опорой служит указанный момент без придуманной длительности. Это правило не меняет односторонние границы query filter.
+
+Отдельное ongoing-состояние не вводится. Точные граничные и mixed-precision comparisons этим решением не утверждаются. **История:** [FQ-05/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/04_SQ-04_missing-event-end/00_thread.md).
+
+## Уточнение 18.10.2026 — последний день date-only интервала включён
+
+У интервала записи с From/To, заданными датами без времени, последний указанный день To включается целиком в пользовательском смысле. «Поездка 1–10 июля» видна и при выборе 10 июля. Date-only верхняя граница фильтра «по 10 июля» также включает весь указанный день. Сохранённые значения остаются date-only: фиктивные 00:00/23:59:59 в EventTimeRange не записываются.
+
+Это правило не выбирает автоматически точные clock/mixed-precision/DST comparisons. **История:** [FQ-05/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/05_SQ-05_date-only-end-inclusion/00_thread.md).
+
+## Уточнение 18.10.2026 — date-only запись в фильтре по часам
+
+Запись с известной датой, но без времени суток, включается в фильтр по часам того же дня как возможное совпадение. Например, «18 октября» без времени попадает в «18 октября, 12:00–14:00». В результате сохраняется явная пометка «время не указано»; запись не получает выдуманные часы, длительность на весь день или новое content-значение.
+
+Точная формализация разных timezone, mixed precision и DST этим решением не закрывается. **История:** [FQ-05/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/06_SQ-06_date-only-clock-filter/00_thread.md).
+
+## Уточнение 18.10.2026 — визуальная важность AI-работы
+
+**[Д, направление UX пользователя]** Пока AI-обработка ожидает запланированного запуска, выполняется или ожидает автоматического продолжения/повтора, её состояние показывается менее заметно, чем причины, требующие действия пользователя. Scope Needs attention согласован ниже: фоновая работа сама по себе не входит в очередь и счётчик.
+
+Статусы/предупреждения для штатной работы, автоматического retry и остановки до действия пользователя предложены отдельно в экранном ТЗ §26.31. Scope очереди и счётчика согласован отдельным решением ниже; конкретные цвета и retry-policy остаются открытыми. **Обсуждение:** [FQ-06/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/04_SQ-04_failed-ai-attention/00_thread.md).
+
+## Уточнение 18.10.2026 — Needs attention требует пользователя
+
+В очередь, фильтр и счётчик «Требует внимания» входят только актуальные причины, требующие действия пользователя, в том числе ошибка AI-обработки, после которой без пользователя продолжить нельзя. Ожидание запланированного запуска, выполняющаяся обработка и назначенный автоматический повтор сами по себе не добавляют Entry в Needs attention: они показываются спокойным статусом, а временная ошибка с автоповтором — мягким предупреждением. Независимые причины внимания, например открытый proposal или conflict, при этом сохраняются. Одна Entry считается один раз; старый уже разрешённый failed run сам по себе причиной не является.
+
+По умолчанию lifecycle Home очереди — ACTIVE + ARCHIVED, без TRASH; при выключении общей настройки архива — только ACTIVE; число и список имеют одинаковый predicate. Возможность ручного снятия причины ошибки без повторного запуска согласована отдельным решением ниже. **История:** [FQ-06/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/04_SQ-04_failed-ai-attention/00_thread.md).
+
+## Уточнение 18.10.2026 — убрать конкретную ошибку AI из внимания
+
+Пользователь может явно убрать из «Требует внимания» конкретную причину ошибки AI без успешного повторного запуска, если обработка больше не нужна. Снимается только эта причина; неуспешный Run и его история сохраняются и не помечаются успешными. Другие причины внимания Entry остаются; при отсутствии остальных причин Entry выходит из очереди и счётчика. Новая ошибка нового запуска может снова потребовать внимания и не наследует снятие прежней. Действие не удаляет Entry/историю, не создаёт content Revision, не выключает routine глобально и не отменяет выполняющийся job.
+
+Снятие причины фиксируется как явное пользовательское решение; физическая структура resolution/audit относится к техническому проекту. **История:** [FQ-06/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/05_SQ-05_dismiss-ai-error/00_thread.md).
+
+## Уточнение 18.10.2026 — трёхпанельный review и «Принято частично»
+
+Подробный review использует три панели: исходник Base — сохранённое состояние, на котором работал AI, только чтение; Result — редактируемый будущий итог; Proposal — исходное предложение AI, только чтение. В Result и Proposal подсвечиваются изменения относительно Base. Если пользователь принимает только часть предложения и подтверждает итоговый Result, proposal получает понятный статус «Принято частично» и закрывается целиком как разобранный. Создаётся одна committed Revision с подтверждённым Result, без дополнительного Save. Исходный Proposal и итоговый Result/Revision сохраняются в AI history; непринятые части не остаются pending и автоматически не превращаются в новые proposals. Причина внимания этого proposal снимается, остальные причины Entry сохраняются.
+
+Точный storage outcome enum требует технической конкретизации; восстановление незавершённого review Result согласовано ниже; общий manual Apply/Restore Revision contract сохраняется. **История:** [FQ-07](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md).
+
+## Уточнение 18.10.2026 — автосохранение прогресса AI review
+
+Незавершённый Result подробного AI review автоматически сохраняется как черновик разбора и восстанавливается после выхода, reload и следующего сеанса — по тому же принципу, что Draft записи. Пока Apply не подтверждён, исходный proposal остаётся pending, Current Entry и committed History не меняются. При возвращении ручные правки Result сохраняются; если Current изменился, выполняется обычная проверка base/current и разрешение conflicts без silent overwrite. Черновик разбора не подменяет существующий WorkingDraft ручного редактирования.
+
+При неприменённых изменениях сохраняется принцип явного выбора при уходе: применить, отбросить правки разбора или вернуться позже. Неприменённый Result не создаёт content Revision; точные file paths/schema и recovery относятся к техническому проекту. **История:** [FQ-07/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/01_SQ-01_review-draft-resume/00_thread.md).
+
+## Уточнение 18.10.2026 — обычный повтор после ошибки AI
+
+Достоверно failed AI Run без успешного результата не считается успешно already processed. Обычный повтор той же routineVersion/input Revision разрешён даже без изменения записи; обычный batch не пропускает запись только из-за такого failure. Неуспешный Run остаётся в истории. Для успешно выполненной обработки прежние already-processed правила сохраняются независимо от принятия/отклонения proposal; сознательный повтор успешной обработки использует Force rerun. Это правило не разрешает слепой повтор при неизвестном исходе и не меняет пользовательскую политику платных автоматических AI retries.
+
+Queued/running работа не дублируется; неизвестный исход сначала требует определения результата. Уже принятое в [AQ-OPS-002](04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md) разделение safe technical retry и potentially paid AI rerun сохраняется; текущий выбор определяет eligibility после failure, а не новый автоматический бюджет. **История:** [FQ-07/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/02_SQ-02_failed-run-retry/00_thread.md).
+
+## Уточнение 18.10.2026 — готовые результаты при отмене batch
+
+При отмене пакетной AI-обработки сохраняются уже успешно опубликованные результаты: pending proposals и разрешённые routine policy committed изменения. Оставшаяся работа останавливается по общему cancellation contract; отмена не выполняет массовый Undo/Reject уже готовых результатов. Pending proposal не становится применённым от сохранения после отмены. Отменённый job не получает право позднего commit; история batch различает завершённую и отменённую/неисполненную части.
+
+Повторная eligibility отменённой/необработанной части, частично успешного отдельного Run и физическая commit/cancel граница требуют отдельной конкретизации. **История:** [FQ-07/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/03_SQ-03_batch-cancel-results/00_thread.md).
+
+## Уточнение 18.10.2026 — аналитика продукта и содержимого дневника
+
+**Статус:** согласовано разделение задач и границ данных; конкретные внешние SDK и backend не выбраны.
+
+В AI Diary существуют **два независимых вида аналитики**.
+
+### Содержательная аналитика дневника (first-party)
+
+- Анализирует пользовательские diary entries, tags, темы, связи и изменения во времени: тематическую статистику, повторяющиеся паттерны, анализ выбранного периода, рефлексию и подготовку историй.
+- Реализуется собственными механизмами AI Diary: запросами/агрегациями по canonical diary data и rebuildable derived indexes, собственными AI workflows и, когда необходимо, LLM.
+- Не использует GA4, PostHog или другие внешние сервисы **продуктовой аналитики** для анализа содержимого.
+- Независима от выбранного backend/storage и от провайдера продуктовой телеметрии. Применение внешнего LLM, если выбрано пользователем/продуктом, регулируется отдельными правилами AI processing и privacy; оно не тождественно отправке данных в аналитический SDK.
+- Пользовательские показатели Home, TagCloud и поиск по тегам относятся именно к содержательной аналитике, а не к продуктовой телеметрии.
+
+### Продуктовая аналитика и наблюдаемость приложения
+
+- Нужна для понимания использования Web/Android, надёжности и качества: посещения, регистрации, частота создания Entry, использование AI actions, принятие/отклонение proposals, ошибки и performance.
+- Передаются только минимально необходимые технические события и безопасные агрегаты. **Нельзя отправлять** в стороннюю продуктовую аналитику raw/cleaned diary text, содержимое prompts и AI responses, названия личных тегов, filenames, пользовательские истории или другие поля, раскрывающие содержимое дневника. Эти же ограничения действуют для error reports, breadcrumbs, URL и session replay.
+- Сбор продуктовой телеметрии должен учитывать consent/preferences пользователя и требования применимого законодательства; privacy-safe настройки определяются до включения SDK.
+- Инструмент не должен определять доменную модель или выбор backend. Предпочтителен небольшой provider-neutral интерфейс для событий, чтобы заменить или отключить поставщика без изменения core business logic.
+
+### Технологические кандидаты, но не утверждённый стек
+
+- **GA4 / Firebase Analytics** — рабочий кандидат для продуктовых событий Web и будущего Android.
+- **Firebase Crashlytics** — рабочий кандидат для Android crashes/ANR; **Sentry** — возможный инструмент диагностики ошибок Web.
+- PostHog и другие платформы сейчас не являются обязательным требованием.
+- **Firebase как backend не выбран**. Использование Google analytics/crash SDK не обязывает выбирать Firebase Auth/Data Connect/Firestore или иной Firebase backend.
+- Конкретный SDK, схема событий, сроки подключения и observability tooling остаются техническими решениями следующего этапа. Первый рабочий web MVP не должен блокироваться из-за отсутствия полной платформы продуктовой аналитики.
+
+**Основание:** обсуждение двух независимых видов аналитики, privacy и кандидатов GA4/Crashlytics/Sentry (18.10.2026); предпочтение Google tooling не является финальным выбором технологии.
+
+## Уточнение 18.10.2026 — продолжение отменённой части и полный повтор
+
+После подтверждённой отмены пользователь может обычным повтором обработать отменённую/необработанную часть без успешного результата. Для того же выбранного набора и неизменных routineVersion/input Revision уже успешно обработанная часть пропускается; отмена без результата сама по себе не означает already processed. Сознательный полный повтор выбранного набора, включая уже успешную часть, доступен отдельным явным действием Force rerun. Общие eligibility/Draft/ownership checks сохраняются; прежняя queued/running работа не дублируется, неизвестный исход сначала требует reconciliation. История предыдущих запусков сохраняется.
+
+Короткие названия двух действий ещё обсуждаются; физическая модель попыток и источник selection при повторе не утверждены. **История:** [FQ-07/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/04_SQ-04_interrupted-batch-retry/00_thread.md).
+
+## Уточнение 18.10.2026 — исходный набор при продолжении/повторе batch
+
+Продолжение и полный повтор конкретного batch используют исходный список Entry IDs этого запуска. Состав не пересчитывается заново по изменившемуся filter: новые совпадения автоматически не добавляются. Обработка актуальной выборки Browser запускается отдельным новым заданием. Обычные eligibility/Draft/lifecycle/ownership checks сохраняются; исходный список IDs не разрешает принудительно обрабатывать недоступную Entry. Этот выбор фиксирует состав записей, но не замораживает автоматически версии их content или routine.
+
+Например, исходные 20 Entries не превращаются в 22 из-за появления новых совпадений filter. Версия Entry при новом пользовательском продолжении/повторе обсуждается отдельно; версии input уже выполняющегося Run этим решением не меняются. **История:** [FQ-07/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/05_SQ-05_batch-selection-snapshot/00_thread.md).
+
+## Уточнение 18.10.2026 — актуальная версия Entry при новом продолжении/повторе
+
+При новом явном пользовательском продолжении или полном повторе обработки существующих Entry берётся актуальная committed Revision каждой допущенной к обработке записи при фиксации input нового Run. Состав Entry IDs остаётся исходным. Несохранённый WorkingDraft не используется: действуют прежние Draft skip/Save guards. После фиксации input конкретного Run он не переключается на следующую Revision; технический retry той же операции сохраняет исходный input. Изменения Current после фиксации input обрабатываются прежними freshness/base/conflict checks.
+
+Точное место input capture в очереди и версия самой routine при повторе требуют отдельной конкретизации; эти вопросы не решаются выбором актуальной версии Entry. **История:** [FQ-07/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/06_SQ-06_repeat-entry-version/00_thread.md).
+
+## Уточнение 18.10.2026 — default scope Calendar Home
+
+Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED Entries, исключая TRASH. Выделение дней и список по выбранному дню/диапазону используют одинаковый lifecycle scope. Календарь сохраняет местные даты событий и принятую period-overlap semantics; state badges и counts в ячейках не добавляются.
+
+Первоначально область настройки уточнялась отдельно. Последующая реплика пользователя выбрала всю главную; актуальное правило приведено ниже. **История:** [FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+
+## Уточнение 18.10.2026 — единая настройка архива для всей главной
+
+**[Д, 18.10.2026] Единая область главной.** Пользовательская настройка «Учитывать архивные» действует на всю главную: Calendar, все показатели Statistics (включая Total entries, Drafts и Needs attention), TagCloud и EntryList. По умолчанию включена: ACTIVE + ARCHIVED; при выключении — только ACTIVE. TRASH исключён всегда. Настройка сохраняется между посещениями. Индикация, числа, размер тегов и показ записей используют эту область; переходы в Browser передают тот же lifecycle-фильтр вместе с условиями выбранного виджета. Переключение пересчитывает всю главную согласованно. Это позднее решение заменяет прежнее Active-only ограничение Home TagCloud/EntryList; периоды, сортировка и лимит 7 записей сохраняются. [История FQ-06/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md).
+
+## Уточнение 18.10.2026 — лимит облака тегов главной
+
+**[Д, 18.10.2026]** Облако главной первоначально показывает до 30 самых частых тегов. Частота — число уникальных связанных Entry за всё время в текущей области главной, с учётом настройки архива и текущих Draft; deleted tags исключены. Если подходящих тегов больше 30, «Показать все» раскрывает остальные в том же облаке; при 30 или менее показаны все без лишнего действия. Лимит ограничивает только отображаемые теги, не набор записей для подсчёта и не результат перехода по тегу. Размер по частоте и настраиваемый цвет сохраняются. [История UI-Q03](AI-Diary-Screens-Spec-v0.1.threads/01_UI-Q03_tag-cloud-limit/00_thread.md).
+
+## Уточнение 18.10.2026 — внешние originals не удаляются
+
+**[Д, 18.10.2026]** AI Diary не удаляет originals внешних Asset у сторонних провайдеров (например, Google Photos или внешний Drive-файл). Unlink, soft delete, permanent delete и Empty Trash действуют на связь/Asset внутри дневника и собственные управляемые копии. Физическое удаление допустимо только для managed originals и производных файлов в хранилище, которым управляет дневник, по уже принятой политике Trash/permanent delete. Само наличие ссылки, доступа к внешнему файлу или прав API не делает его managed. Если внешний файл отдельно импортирован, удаляется только импортированная managed-копия, внешний original сохраняется. Для external Asset после permanent delete сохраняется принятый минимальный tombstone/placeholder без preview; его внешнее существование не обещает Restore Asset внутри дневника. Команд удаления original у внешнего провайдера нет. [История FQ-08/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/02_SQ-02_external-original-delete/00_thread.md).
+
+## Уточнение 18.10.2026 — окончательное удаление Entry и связанные Asset
+
+**[Д, 18.10.2026] Окончательное удаление Entry.** «Удалить» переносит сохранённую запись в Trash вместе с Draft/history и допускает Restore; Archive — отдельное обратимое действие. Автоматического permanent-delete таймера нет. Только отдельное явно подтверждённое «Удалить навсегда» из Entry Trash удаляет всё содержимое этой Entry: Current, принадлежащие ей raw/исходные данные (медиафайлы подчиняются отдельному правилу Asset ниже), все revisions, Draft и review draft, предложения, сохранённые текстовые input/output AI и прочие содержащие её текст представления. В приложении нет Undo/Restore после завершения; это удаление, не перенос в архив. Остаётся лишь минимальный технический след без текста/содержимого для целостности ссылок и идемпотентности. Общие определения routines, содержимое других Entries/общего batch и чужие источники не удаляются; собственные текстовые фрагменты этой Entry в общих производных структурах очищаются. Неизменяемость revisions при редактировании не запрещает их удаление в составе явного permanent delete всей Entry.
+
+**Связанные Asset:** перед завершением учитываются все исчезающие связи этой Entry, включая Draft/history. Для Asset, у которого эта Entry была единственным логическим потребителем, предлагается отдельное «Удалить в корзину материалов» / «Оставить в библиотеке» по ранее принятой политике. Отказ сохраняет Asset и не отменяет удаление Entry. Если есть другие потребители (другие Entries во всех lifecycle-состояниях, их Draft/history или актуальные операции), удаляются лишь связи удаляемой Entry, сам Asset сохраняется. Подтверждение удаления Entry не является подтверждением удаления Asset; его permanent delete остаётся отдельной командой из Asset Trash. Внешние originals не удаляются. [История FQ-08/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/03_SQ-03_entry-permanent-delete-content/00_thread.md).
+
+## Уточнение 18.10.2026 — запись без текста с готовыми материалами
+
+**[Д, 18.10.2026] Запись только с материалами.** Entry можно сохранить без Title и Text при наличии хотя бы одного готового связанного Asset (например, фото, аудио или документа). Обязательный Event date и все остальные проверки Save сохраняются; все оставленные вложения должны иметь разрешённый готовый статус. AI-транскрипция или генерация описания не является обязательным условием такого Save. Пустые Title/Text не заполняются выдуманным содержимым; в UI используется отображаемый fallback названия без записи его как пользовательского title. Первый успешный Save создаёт обычную первую Revision этой Entry; материалы не превращаются в отдельный тип записи. [История UI-Q14](AI-Diary-Screens-Spec-v0.1.threads/02_UI-Q14_asset-only-entry/00_thread.md).
+
+## Уточнение 18.10.2026 — Save требует заголовка, текста или материала
+
+**[Д, 18.10.2026] Пустая Entry и manual Save.** Для manual Save требуется хотя бы одно содержательное поле Title/Text либо хотя бы одна связь с готовым Asset. Полностью пустой итоговый snapshot (без Title, Text и Asset links) не сохраняется как committed Revision: Save disabled с пояснением «Добавьте заголовок, текст или материал». Одних даты/тегов/служебных metadata недостаточно. Title/Text только из пробельных символов не считаются содержимым; проверка не обрезает и не переписывает пользовательский текст и не меняет точное content equality для NO_CHANGE. Создание/автосохранение Draft разрешено; уже введённые данные сохраняются по общим правилам, пустота сама по себе не вызывает автоматический Discard. Заголовок без body допустим; материалы без Title/Text допустимы по UI-Q14. Все остальные Event date, готовность всех оставленных attachments и ownership/base guards продолжают действовать. [История UI-Q15](AI-Diary-Screens-Spec-v0.1.threads/03_UI-Q15_empty-entry-save/00_thread.md).
+
+## Уточнение 19.10.2026 — адаптивная проверка AI-предложения на телефоне
+
+**[Д, 19.10.2026] Настраиваемый mobile AI review.** Три смысловые роли Base / Result / Proposal сохраняются при любой компоновке; широкий desktop использует три панели. Для телефона в S11 «Настройки → Отображение → Проверка AI» доступны два режима: **«Переключение»** — одна роль за раз через «Исходник / Результат / Предложение AI», при входе показан Result; **«Две панели»** — редактируемый Result и read-only область с переключателем «Исходник / Предложение AI». В двухпанельном режиме landscape располагает области рядом при достаточной ширине, portrait — одну над другой; при недостатке ширины используется вертикальная компоновка. Начальный режим — «Две панели» по предыдущему уточнению; пользователь может попробовать оба, выбор сохраняется между открытиями. Это предпочтение отображения, не content Entry/Revision. Result и Proposal показывают diff относительно Base; Current доступен при конфликте. Переключение режима, роли сравнения или ориентации продолжает тот же review draft без потери правок и без Apply/новой Revision; прежние autosave/resume, dirty и freshness guards действуют. Конкретные breakpoint/пропорции — реализация. [История UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md).
+
+### Уточнение 08.11.2026 — редактор Entry
+
+Редактор первого релиза поддерживает жирный, курсив, списки и ссылки через кнопки. Текст записи хранится как Markdown; знание синтаксиса не требуется. Поддерживаемое форматирование сохраняется при повторном открытии, Save и Restore. [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md).

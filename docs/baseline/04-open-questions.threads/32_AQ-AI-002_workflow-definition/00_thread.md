@@ -1,0 +1,217 @@
+# AQ-AI-002 — Где живёт workflow definition
+
+**Источник:** [04-open-questions.md / AQ-AI-002](../../04-open-questions.md#aq-ai-002--где-живёт-workflow-definition)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
+**Режим фиксации:** written-turns  
+**Родитель:** —  
+**Дочерние треды:** —  
+**Куда переносим решение:** ../../02-requirements-inventory.md и ../../07-ai-workflow-architecture.md
+
+## Вопрос
+
+Где хранить определения AI workflows: кодовая orchestration, prompts/config, user instructions, output schemas, validators и tools? Как отделять пользовательское содержимое workflow от доверенного исполняемого backend кода?
+
+## Варианты
+
+1. Workflows в repo/backend code, prompts/config как версионируемые файлы приложения.
+2. Определения workflows как user-owned portable files рядом с дневником; backend предоставляет generic engine и безопасные разрешённые capabilities.
+3. Гибрид: user-owned workflow definitions/prompts/settings и code-defined versioned executors, validators и tools.
+
+## Контекст
+
+Принято: user-owned portable files — canonical source of truth (PQ-001), operational DB/cache — rebuildable derivatives; workflows запускаются в backend через durable jobs (AQ-API-004), используют provider-neutral adapters (AQ-AI-001). В file-based prototype уже предусмотрен каталог _prompts/, PROMPTSET.json и versioned prompt files; эти проектные примеры не определяют сами по себе полную форму workflow definition.
+
+## Обсуждение
+
+пользователь — «я считаю что AI workflows так же хранятся в базе/файлах недалеко от данных пользователя -»
+
+ChatGPT — Это подразумевает, что пользовательские workflows, их инструкции и настройки являются частью user-owned diary storage, а не только backend deployment config. Runtime engine может быть общим и находиться в коде приложения. Нужно отдельно определить границу: сохраняем ли сами workflow definitions как переносимые пользовательские файлы, а backend лишь интерпретирует их, или вместе с ними допускается пользовательский исполняемый код? Для MVP безопаснее декларативные workflow definitions (шаги, prompt refs, model choice, input/output contracts) и заранее определённые tools/validators backend.
+
+**Нужно от пользователя:** подтверждаем ли, что workflow — редактируемый и переносимый user-owned declarative definition, без произвольного исполняемого кода в MVP?
+
+пользователь — «дальше AI workflow обсуждаем с сессии Уточнение разных требований для ТЗ - можешь передать туда данные - с тобой давай обсуждать что-то сниим не связанное пока»
+
+ChatGPT — **handoff (2026-10-18):** освобождаю claim для сессии «Уточнение разных требований для ТЗ». Уже выраженная позиция пользователя: definitions AI workflows должны храниться в базе/файлах рядом с пользовательскими diary data, не исключительно в backend repo. Это направление, а не окончательно закрытое решение о format/security. Пример возможного layout: workflows/<workflow-id>/workflow.json + prompt.md (иллюстрация, не утверждённая схема). Backend Kotlin engine выполняет workflows; ранее приняты PQ-001, AQ-AI-001, AQ-API-004. **Открытая развилка:** допускаем ли исполняемый пользовательский код или ограничиваем MVP декларативными workflows + разрешёнными backend tools. Не считать рекомендацию ChatGPT («начать с декларативных») согласованной позицией пользователя. Следующая сессия должна перечитать source, thread, index и занять claim перед продолжением.
+
+**Нужно от пользователя:** ответить на вопрос о декларативных workflow versus custom executable code в сессии «Уточнение разных требований для ТЗ».
+
+
+пользователь — «давай в каком-то доверенном варианте оставим возможность выполнениия скриптов питонячих и не только - только как-то надо будет поджумать в какой момент они нужны и кто их пишет и так далее - но мне кажется возможность крутая»
+
+ChatGPT — **обновление (2026-10-18):** подтверждено направление, что user workflows/routines являются частью user-owned data и должны храниться рядом с diary data, а backend остаётся engine/runtime. При этом архитектуру нельзя ограничивать только декларативными шагами: workflow model должна допускать trusted/controlled executable steps (Python и потенциально другие runtimes). Не зафиксированы конкретный язык, sandbox/runtime, момент использования script-step, автор скрипта, permissions и trust UX. Эти детали остаются открытыми; произвольный код внутри основного backend-процесса не следует считать принятым вариантом.
+
+**Нужно от пользователя:** решить trust UX для executable step: достаточно ли один раз просмотреть/подтвердить конкретную версию скрипта и затем разрешить ей выполняться автоматически, или подтверждение нужно перед каждым запуском?
+
+
+пользователь — «да давай»
+
+ChatGPT — **решение по trust UX (2026-10-18):** конкретная версия executable script-step до первого запуска считается untrusted. Пользователь один раз просматривает и явно подтверждает её; после этого именно этот hash/version считается trusted и может выполняться автоматически в workflow. Любое изменение кода создаёт новую untrusted version и снова требует подтверждения. Подтверждение перед каждым повторным запуском неизменённой trusted version не требуется.
+
+пользователь — «да норм»
+
+ChatGPT — **решение об авторстве script-step (2026-10-18):** executable step может быть создан самим пользователем; AI может написать его по прямой просьбе пользователя; AI также может сам предложить script-step как подходящий шаг workflow. AI не активирует и не делает такой код trusted молча: код/изменение показывается пользователю, а trust для конкретной версии выдаётся только явным подтверждением пользователя.
+
+**Нужно от пользователя:** определить, какие данные и capabilities executable step получает по умолчанию: весь user-owned diary/storage или только явно переданные workflow inputs и разрешённые tools?
+
+
+пользователь — «да»
+
+ChatGPT — **решение о permissions executable step (2026-10-18):** по умолчанию script-step работает по принципу least privilege. Он не получает весь diary/Drive автоматически, а видит только явно переданные workflow inputs и разрешённые этому workflow tools/capabilities. Доступ к поиску по дневнику, Assets, внешним данным или записи результата должен быть объявлен отдельно и выдан как capability/permission.
+
+**Нужно от пользователя:** определить versioning system workflows: системный workflow может обновляться приложением на новую версию автоматически, или пользователь должен явно выбирать/подтверждать переход на новую версию?
+
+
+пользователь — «автоматически к латест при обновлении конечно (можно при обноылении говорить что там у него поменялось)»
+
+ChatGPT — **решение о versioning system workflows (2026-10-18):** новые запуски system workflow автоматически используют latest опубликованную версию. Пользователю не требуется отдельно подтверждать переход на каждую новую системную версию. При обновлении UI должен позволять сообщить/показать, что изменилось (version/changelog). Каждый Run сохраняет точную workflow version, которая реально выполнялась. User-owned копия, созданная через Duplicate/Copy, является самостоятельным workflow и не обновляется автоматически вслед за system workflow.
+
+**Нужно от пользователя:** нужно ли versioning и для пользовательских workflows: сохранять историю опубликованных/сохранённых версий и привязывать Run к точной версии, или достаточно хранить только текущее definition плюс snapshot definition внутри каждого Run?
+
+
+пользователь — «ну да - у нас же у пользователея будут хранится все версии системных файлов до-после обновлений - копирвоать ее в каждый ран не лишнее? может только для совсем каких-то ручных?»
+
+ChatGPT — **уточнение versioning/run trace (2026-10-18):** если workflow versions являются immutable и все их версии сохраняются в user-owned storage, Run не должен дублировать полный workflow definition. Достаточно ссылки на точную workflowVersion + content hash/идентификатор, а также реально использованных runtime-параметров (model/provider и overrides). Полный snapshot execution definition нужен только для эфемерных/ручных запусков, где нет устойчивой versioned сущности, например Custom prompt или временный одноразовый override. Это избегает дублирования, сохраняя воспроизводимость.
+
+**Нужно от пользователя:** считать ли Custom prompt и другие одноразовые ручные overrides отдельным ephemeral workflow snapshot, который целиком сохраняется внутри Run, без создания постоянного user workflow?
+
+
+пользователь — «ну такой кастом коненчо, но я так понимаю он заведет себе библиотеку рутин если ему это надо»
+
+ChatGPT — **решение по Custom prompt / библиотеке routines (2026-10-18):** одноразовый Custom prompt не создаёт постоянный workflow и сохраняется как ephemeral execution snapshot внутри Run. Если пользователь хочет переиспользовать такой сценарий, он явно сохраняет его в свою библиотеку routines (например, Save as routine); тогда создаётся самостоятельный user-owned workflow с первой version и дальше он живёт по обычным правилам versioning.
+
+**Нужно от пользователя:** при Save as routine сохранять только prompt/instructions текущего ad hoc запуска или весь фактический execution setup (scope defaults, model override, tools/capabilities, script-steps и прочие настройки)?
+
+
+пользователь — «мне кажется весь»
+
+ChatGPT — **решение по Save as routine (2026-10-18):** при сохранении ad hoc запуска как постоянной routine переносится весь фактический execution setup, а не только prompt/instructions: prompt, model override при наличии, tools/capabilities, script-steps, eligibility/scope defaults и другие настройки, влияющие на поведение. Это создаёт первую версию user-owned workflow, максимально соответствующую запуску, который пользователь решил сохранить.
+
+**Нужно от пользователя:** различать ли в user routine два класса настроек — постоянные defaults в definition и launch-time overrides, которые можно менять для конкретного запуска без создания новой workflow version?
+
+
+пользователь — «да это норм»
+
+ChatGPT — **решение о definition defaults и launch-time overrides (2026-10-18):** user/system routine хранит постоянные default-настройки в своём versioned definition. Перед конкретным Run допустимы временные launch-time overrides для разрешённых параметров; такие overrides не создают новую workflow version и сохраняются в Run trace как фактически использованная конфигурация.
+
+**Нужно от пользователя:** какие параметры нельзя менять как launch-time override и следует менять только через новую версию routine? В частности, считать ли script-step/code и набор permissions/capabilities частью versioned definition, а не временным override?
+
+
+пользователь — «я думаю могут быть какие-то общие абстрактные воркфлоу к которым можно подцеплять код - из доверенных. ща считаем одно потом другое - не?»
+
+ChatGPT — **уточнение модели executable steps (2026-10-18):** да, workflow definition и executable code лучше не склеивать. Возможна отдельная библиотека versioned trusted executors/scripts/tools, а workflow лишь ссылается на них и передаёт параметры/inputs. Один и тот же generic workflow может использовать разные совместимые trusted implementations. Trust относится к конкретной версии исполняемого модуля, а не обязательно ко всей workflow. Нужно отдельно решить, является ли выбор конкретного trusted executor частью versioned workflow definition или допустимым launch-time binding/override.
+
+**Нужно от пользователя:** разрешать ли generic workflow выбирать/подключать совместимый trusted executor при запуске, не создавая новую версию самого workflow, если interface/capabilities executor подходят?
+
+
+пользователь — «и аналогично про пермишены же?»
+
+ChatGPT — **уточнение capabilities/permissions (2026-10-18):** да, permissions/capabilities также не обязаны быть жёстко зашиты в конкретную workflow version. Workflow может объявлять контракт: какие capabilities обязательны, какие опциональны и какие типы доступа допустимы. Конкретный Run связывает workflow с выбранным permission/capability profile и сохраняет фактически выданный набор. Такой profile может быть отдельной user-owned versioned/trusted сущностью и переиспользоваться разными workflows. При этом workflow не должна получать capability, которое не совместимо с её объявленным контрактом; выдача более широкого профиля не означает автоматического доступа ко всему профилю, если шаги workflow его не запрашивают.
+
+**Нужно от пользователя:** хотим ли мы отдельную библиотеку reusable permission/capability profiles (например «read-only diary», «read + proposals», «read assets + external web»), которые можно выбирать при запуске и переиспользовать между workflows?
+
+
+пользователь — «ну да выглядит так»
+
+ChatGPT — **решение о capability profiles (2026-10-18):** вводится отдельная user-owned библиотека reusable capability/permission profiles. Профиль является самостоятельной versioned сущностью и может переиспользоваться разными workflows. Workflow объявляет требуемые/опциональные capabilities и совместимый контракт доступа; конкретный Run фиксирует выбранный profile и фактически выданные permissions.
+
+**Нужно от пользователя:** хранить ли в workflow default executor и default capability profile, которые подставляются при запуске автоматически, но могут быть заменены совместимыми trusted вариантами в launch sheet без создания новой workflow version?
+
+
+пользователь — «да»
+
+ChatGPT — **решение о defaults для запуска (2026-10-18):** workflow может хранить default executor и default capability profile. Они автоматически подставляются при обычном запуске, чтобы не требовать ручной настройки каждый раз. В launch sheet пользователь может заменить их на другие совместимые trusted варианты без создания новой workflow version. Run сохраняет фактически выбранные executor/version и capability profile/version.
+
+**Нужно от пользователя:** нужно ли показывать executor/profile в обычном launch sheet всегда, или скрывать под Advanced и показывать по умолчанию только scope/eligibility/итоговые counts?
+
+
+пользователь — «спрятать всегда успеем - оставь мне пока так»
+
+ChatGPT — **решение по launch sheet (2026-10-18):** пока не прячем executor и capability profile под Advanced. В launch sheet они остаются видимыми как обычные параметры запуска наряду со scope/eligibility/counts. Упростить интерфейс и перенести их в Advanced можно позже, если экран окажется перегруженным.
+
+**Нужно от пользователя:** считать ли workflow линейной последовательностью шагов на первом этапе, или сразу поддерживать ветвления/условия и циклы?
+
+
+пользователь — «да окей»
+
+ChatGPT — **решение по структуре workflow MVP (2026-10-18):** на первом этапе workflow моделируется как линейный pipeline шагов с поддержкой простых условий/ветвлений `if/condition`. Полноценные циклы/итеративные конструкции в MVP не требуются и откладываются до появления конкретного сценария.
+
+**Нужно от пользователя:** как поступать с ошибкой отдельного шага: по умолчанию останавливать весь workflow, или разрешать на уровне шага policy вроде stop / skip / continue-with-warning?
+
+
+пользователь — «норм»
+
+ChatGPT — **решение по error policy шагов (2026-10-18):** для каждого шага workflow допускается явная error policy, как минимум `stop`, `skip`, `continue-with-warning`. Значение по умолчанию — `stop`, чтобы последующие шаги не выполнялись на некорректных/неполных данных, если автор workflow явно не разрешил иное поведение.
+
+**Нужно от пользователя:** считать ли output schema и validators частью versioned workflow definition (декларативно), а сами validator implementations — отдельными trusted/versioned executors/tools, на которые workflow ссылается?
+
+
+пользователь — «да норм»
+
+ChatGPT — **решение по output schema и validators (2026-10-18):** ожидаемый output schema и декларативные правила валидации являются частью versioned workflow definition. Простые структурные проверки могут быть описаны непосредственно декларативно. Если validator требует исполняемого кода, его implementation оформляется как отдельный trusted/versioned executor/tool, на который workflow ссылается.
+
+**Нужно от пользователя:** как versioning пользовательского workflow должно работать в редакторе: каждое сохранение создаёт новую immutable version, или пока пользователь редактирует — существует draft definition, а новая immutable version появляется только при Publish/Save version?
+
+
+пользователь — «согласна что **Draft definition → Publish/Save version** аналогично сущностям»
+
+ChatGPT — **решение по versioning user workflows (2026-10-18):** пользовательский workflow редактируется через отдельный Draft definition, аналогично другим versioned сущностям проекта. Промежуточные изменения не создают immutable versions. Новая immutable workflow version появляется только при явном Publish/Save version. Runs используют только опубликованные immutable versions; Draft сам по себе не является исполняемой опубликованной версией.
+
+**Нужно от пользователя:** разрешать ли запуск Draft workflow для тестирования до Publish, если такой запуск явно помечен как Test run и сохраняет snapshot Draft definition внутри Run?
+
+
+пользователь — «оки - но надо из тстового рана мочь о кнопке перейти в ревизию - принять его»
+
+ChatGPT — **решение по promotion Test run в workflow version (2026-10-18):** Draft workflow можно запускать до Publish как явно помеченный Test run; Run сохраняет snapshot Draft definition, который реально был выполнен. Из успешного Test run должна быть доступна явная action (например, `Accept / Publish this tested version`), которая публикует именно протестированный snapshot как новую immutable workflow version, без необходимости вручную повторять изменения в редакторе.
+
+**Нужно от пользователя:** если после Test run текущий Draft уже успели изменить, action Publish from Test run должна публиковать именно старый протестированный snapshot отдельной новой version, не затирая текущий Draft?
+
+
+пользователь — «ну ок норм»
+
+ChatGPT — **решение по расхождению Test run snapshot и текущего Draft (2026-10-18):** если после запуска Test run текущий Draft workflow был изменён, action `Publish tested version` публикует именно snapshot workflow, который реально был протестирован. Более новый текущий Draft сохраняется без изменений и продолжает жить как Draft поверх опубликованной версии; результат Test run и текущий Draft не смешиваются.
+
+**Нужно от пользователя:** после публикации протестированного snapshot должен ли текущий Draft автоматически перебазироваться на только что опубликованную version как baseRevision, или продолжать ссылаться на прежнюю базу до следующего сохранения/разрешения расхождения?
+
+
+пользователь — «да норм»
+
+ChatGPT — **решение по rebasing текущего Draft после публикации tested snapshot (2026-10-18):** если tested snapshot публикуется как новая immutable workflow version, а текущий Draft уже ушёл дальше, содержимое Draft не меняется, но его base автоматически переводится на только что опубликованную version. История остаётся линейной: новая published version становится базой для продолжающегося Draft.
+
+**Нужно от пользователя:** хранить ли старые published versions user workflow бессрочно (как историю сущности), с возможностью посмотреть diff и восстановить любую старую version как новую текущую version?
+
+
+пользователь — «да норм»
+
+ChatGPT — **решение по истории published user workflow versions (2026-10-18):** старые опубликованные immutable versions пользовательского workflow сохраняются как история сущности без автоматического удаления. Пользователь может просматривать историю/diff и восстанавливать старую version только через создание новой текущей version (`Restore as new version`); исторические versions не переписываются.
+
+**Нужно от пользователя:** если user workflow удаляется из библиотеки, делать ли это soft delete (как у других сущностей), сохраняя все versions и Runs, с возможностью Restore; permanent delete пока не вводить?
+
+
+пользователь — «в принципе системные рутины тоже норм бы показывать их историю, просто без возможности менять?»
+
+ChatGPT — **уточнение истории system workflows (2026-10-18):** да, для системных workflows также полезно показывать историю immutable published versions и diff/changelog между версиями. В отличие от user-owned workflow, системные версии доступны только для просмотра: их нельзя редактировать, удалять или восстанавливать как текущую system version. При необходимости пользователь может Duplicate выбранную историческую system version в свою библиотеку, после чего она становится самостоятельным user-owned workflow.
+
+**Нужно от пользователя:** разрешать ли Duplicate не только latest system workflow, но и любую историческую system version, чтобы пользователь мог сохранить себе старое поведение?
+
+
+пользователь — «Permanent delete пока вообще не вводить. да согласна»
+
+ChatGPT — **решение по удалению user workflows (2026-10-18):** удаление пользовательской routine из библиотеки — только soft delete. Все published versions, Draft (если применимо) и связанные Runs сохраняются; routine можно восстановить. Permanent delete для workflows на этом этапе не вводится.
+
+**Нужно от пользователя:** отдельно подтвердить, разрешаем ли Duplicate любой исторической system workflow version, а не только latest.
+
+
+пользователь — «Тогда, если пользователю нравилось старое поведение, он может забрать именно ту версию себе в библиотеку и дальше уже развивать её как user-owned routine. - хорошая идея»
+
+ChatGPT — **решение по Duplicate исторических system workflow versions (2026-10-18):** пользователь может Duplicate не только latest, но и любую историческую immutable version системной routine. Выбранная version копируется в user-owned библиотеку как самостоятельный workflow с первой пользовательской version; дальнейшие изменения и обновления system workflow на эту копию не влияют.
+
+**Нужно от пользователя:** нужно ли теперь закрывать AQ-AI-002 как resolved, или ещё отдельно обсудить структуру workflow definition на уровне шагов/полей редактора?
+
+пользователь — «да именно так»
+
+ChatGPT — **закрытие AQ-AI-002 (2026-10-18):** архитектурный вопрос workflow definition считаем resolved. Конкретную структуру полей/шагов и UX редактора выносим в отдельный вопрос, чтобы не смешивать архитектурную модель с интерфейсом.
+
+**Решение:** workflow definitions являются versioned user-owned data рядом с diary data, а backend предоставляет engine/runtime. System workflows имеют immutable историю, автоматически переходят на latest для новых запусков и доступны read-only; любую историческую system version можно Duplicate в независимый user workflow. User workflows редактируются через Draft definition и публикуются как immutable versions; история хранится, Restore создаёт новую version, удаление только soft delete. Draft можно запускать как Test run со snapshot и публиковать именно протестированный snapshot; более новый Draft сохраняется и rebases на опубликованную version. Custom prompt остаётся ephemeral snapshot Run, но может быть Save as routine с полным execution setup. Workflow хранит defaults, а Run — фактические overrides/bindings. Executable code отделён в reusable versioned trusted executors/tools; конкретная code version требует однократного explicit trust, изменение кода требует нового trust. Permissions отделены в reusable versioned capability profiles; workflow объявляет required/optional capability contract, а Run фиксирует фактически выданный profile/permissions. Workflow может иметь default executor/profile, заменяемые при запуске совместимыми trusted вариантами. MVP workflow — linear pipeline с простыми conditions, без полноценных loops; step error policy поддерживает stop/skip/continue-with-warning с default stop. Output schema и declarative validation входят в workflow definition, сложные code validators — отдельные trusted/versioned executors/tools.

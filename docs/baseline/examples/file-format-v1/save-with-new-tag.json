@@ -1,0 +1,615 @@
+{
+  "status": "proposal-only; fictitious IDs, not a live diary",
+  "formatVersion": "1.0.0-draft.1",
+  "jsonBytesCodec": "UTF-8, ensure_ascii=false, indent=2, insertion property order as stored, final LF",
+  "fingerprintCodec": "example-sorted-json-utf8-v1: sorted keys, no insignificant whitespace, no final LF; inputs contain no floating point values",
+  "notes": [
+    "All files are represented for validation; prepared candidates are invisible before final publication.",
+    "BOOTSTRAP represents adoption of an already existing first Revision; it is not a new user save.",
+    "Drive IDs are deliberately non-live example placeholders.",
+    "Draft payload remains physically present in this after-publication-before-cleanup fixture, but draftRef is null."
+  ],
+  "phases": {
+    "before": {
+      "path": "_system/commits/000000.json",
+      "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+    },
+    "registered": {
+      "path": "_system/commits/000001.json",
+      "sha256": "5c672f3489ff5391ee99015d1ab8a3210f21dcd8051c0674398cd399e2256043"
+    },
+    "after": {
+      "path": "_system/commits/000002.json",
+      "sha256": "c359b24ed13355dfce04aad6813f57d57e19172058817f1e0b7566d6a112c518"
+    }
+  },
+  "files": {
+    "entries/entry_demo/revisions/rev_demo_1/text.md": {
+      "encoding": "text",
+      "value": "Велопрогулка.\n\n#велосипед\n"
+    },
+    "entries/entry_demo/revisions/rev_demo_1/revision.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "revision",
+        "entryId": "entry_demo",
+        "revisionId": "rev_demo_1",
+        "sequence": 1,
+        "previousRevisionId": null,
+        "operationId": "op_original",
+        "createdAt": "2026-10-18T15:00:00Z",
+        "origin": "USER_SAVE",
+        "restoredFromRevisionId": null,
+        "content": {
+          "title": "Велопрогулка",
+          "eventTime": {
+            "from": {
+              "date": "2026-10-18",
+              "time": null
+            },
+            "to": null,
+            "timeZone": "Europe/Belgrade",
+            "uncertainties": []
+          },
+          "textRef": {
+            "path": "entries/entry_demo/revisions/rev_demo_1/text.md",
+            "sha256": "f9df056b60bb4a405a50c28d0e87cde5c2669dc57d11824cd8344c94364f96fd"
+          },
+          "tagIds": [
+            "tag_bike"
+          ],
+          "assetIds": []
+        },
+        "provenanceRefs": []
+      }
+    },
+    "entries/entry_demo/draft/snapshots/7/entry.md": {
+      "encoding": "text",
+      "value": "После велосипеда ещё прошлась пешком. #ВЕЛО\n"
+    },
+    "entries/entry_demo/draft/snapshots/7/DRAFT.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "draft",
+        "entryId": "entry_demo",
+        "draftId": "draft_demo",
+        "draftVersion": 7,
+        "baseRevisionId": "rev_demo_1",
+        "updatedAt": "2026-10-18T17:00:00Z",
+        "sessionId": "session_demo",
+        "mutationEpoch": 3,
+        "content": {
+          "title": "Прогулка после работы",
+          "eventTime": {
+            "from": {
+              "date": "2026-10-18",
+              "time": null
+            },
+            "to": null,
+            "timeZone": "Europe/Belgrade",
+            "uncertainties": []
+          },
+          "textRef": {
+            "path": "entries/entry_demo/draft/snapshots/7/entry.md",
+            "sha256": "33d3f4f9795b90470e30b53e01c2e51d03b95a8e24b1d3798eb68490a8a5b904"
+          },
+          "tagIds": [
+            "tag_bike",
+            "tag_walk"
+          ],
+          "assetIds": []
+        },
+        "pendingTags": [
+          {
+            "tagId": "tag_walk",
+            "name": "прогулка",
+            "aliases": [
+              "пешком"
+            ],
+            "typeId": null,
+            "color": "#22AA66"
+          }
+        ],
+        "tagEditIntents": [],
+        "pendingUploads": []
+      }
+    },
+    "catalogs/tags/snapshots/cat_1/tags.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "tag-catalog",
+        "catalogVersion": "cat_1",
+        "tags": [
+          {
+            "tagId": "tag_bike",
+            "name": "велосипед",
+            "aliases": [
+              "вело",
+              "езда"
+            ],
+            "typeId": null,
+            "color": "#3366CC",
+            "state": "ACTIVE",
+            "mergedInto": null,
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          },
+          {
+            "tagId": "tag_sport_deleted",
+            "name": "спорт",
+            "aliases": [
+              "тренировка"
+            ],
+            "typeId": null,
+            "color": "#555555",
+            "state": "DELETED",
+            "mergedInto": null,
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          },
+          {
+            "tagId": "tag_old_ride",
+            "name": "езда",
+            "aliases": [],
+            "typeId": null,
+            "color": "#777777",
+            "state": "MERGED",
+            "mergedInto": "tag_bike",
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          }
+        ]
+      }
+    },
+    "_system/leases/entry_demo/epoch_3.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "mutation-lease",
+        "entryId": "entry_demo",
+        "ownerId": "session_demo",
+        "mutationEpoch": 3,
+        "state": "ACTIVE"
+      }
+    },
+    "entries/entry_demo/states/state_before/ENTRY.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "entry-state",
+        "entryId": "entry_demo",
+        "stateId": "state_before",
+        "createdAt": "2026-10-18T14:50:00Z",
+        "lifecycle": "ACTIVE",
+        "currentRevisionId": "rev_demo_1",
+        "currentRevisionRef": {
+          "path": "entries/entry_demo/revisions/rev_demo_1/revision.json",
+          "sha256": "43feb399d4e5021f1227cc87ae55ac1b7899f911c5c4704571c4a116f16e151d"
+        },
+        "committedUpdatedAt": "2026-10-18T15:00:00Z",
+        "draftRef": {
+          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
+          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+        },
+        "pendingOperationId": null,
+        "provenanceRefs": []
+      }
+    },
+    "_system/commits/000000.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "publication",
+        "sequence": 0,
+        "publicationId": "pub_bootstrap",
+        "operationId": "op_bootstrap",
+        "kind": "BOOTSTRAP",
+        "createdAt": "2026-10-18T17:00:01Z",
+        "previous": null,
+        "nextSlot": {
+          "path": "_system/commits/000001.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_ID_000001"
+        },
+        "conditions": [],
+        "changes": [
+          {
+            "resourceKey": "entry:entry_demo",
+            "before": null,
+            "after": {
+              "path": "entries/entry_demo/states/state_before/ENTRY.json",
+              "sha256": "ffd02967b13ce402596c8e52242447f373f9b1f0d6b7e6831baf53a7f4f9111b"
+            }
+          },
+          {
+            "resourceKey": "catalog:tags",
+            "before": null,
+            "after": {
+              "path": "catalogs/tags/snapshots/cat_1/tags.json",
+              "sha256": "79aa44368116f288cfa1b9001f5456a40f5dcbeebbf7093af0237e2281feab61"
+            }
+          },
+          {
+            "resourceKey": "lease:entry_demo",
+            "before": null,
+            "after": {
+              "path": "_system/leases/entry_demo/epoch_3.json",
+              "sha256": "14b60d70d1b8ef7a03677e31e45715ab6d3f1bf3a540d357b4937a1e5914870f"
+            }
+          }
+        ]
+      }
+    },
+    "_system/operations/op_save_demo/input.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "operation-input",
+        "operationId": "op_save_demo",
+        "kind": "SAVE",
+        "entryId": "entry_demo",
+        "baseRevisionId": "rev_demo_1",
+        "draftId": "draft_demo",
+        "draftVersion": 7,
+        "frozenDraftRef": {
+          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
+          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+        },
+        "mutationEpoch": 3,
+        "parserVersion": "hashtag-v1-draft.1"
+      }
+    },
+    "_system/operations/op_save_demo/states/preparing.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "operation",
+        "operationId": "op_save_demo",
+        "requestFingerprint": "c160e85edc26e93c300e3a36764a84140f92f3972ed7537405a3c0fe559c6dd6",
+        "inputRef": {
+          "path": "_system/operations/op_save_demo/input.json",
+          "sha256": "764771769f2776e74cc75965cb525694242c9aa37ad19301feb493fa77b2326f"
+        },
+        "status": "PREPARING",
+        "result": null
+      }
+    },
+    "entries/entry_demo/states/state_registered/ENTRY.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "entry-state",
+        "entryId": "entry_demo",
+        "stateId": "state_registered",
+        "createdAt": "2026-10-18T14:50:00Z",
+        "lifecycle": "ACTIVE",
+        "currentRevisionId": "rev_demo_1",
+        "currentRevisionRef": {
+          "path": "entries/entry_demo/revisions/rev_demo_1/revision.json",
+          "sha256": "43feb399d4e5021f1227cc87ae55ac1b7899f911c5c4704571c4a116f16e151d"
+        },
+        "committedUpdatedAt": "2026-10-18T15:00:00Z",
+        "draftRef": {
+          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
+          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+        },
+        "pendingOperationId": "op_save_demo",
+        "provenanceRefs": []
+      }
+    },
+    "_system/commits/000001.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "publication",
+        "sequence": 1,
+        "publicationId": "pub_register",
+        "operationId": "op_save_demo",
+        "kind": "REGISTER",
+        "createdAt": "2026-10-18T17:00:02Z",
+        "previous": {
+          "path": "_system/commits/000000.json",
+          "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+        },
+        "nextSlot": {
+          "path": "_system/commits/000002.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_ID_000002"
+        },
+        "conditions": [
+          {
+            "resourceKey": "lease:entry_demo",
+            "expected": {
+              "path": "_system/leases/entry_demo/epoch_3.json",
+              "sha256": "14b60d70d1b8ef7a03677e31e45715ab6d3f1bf3a540d357b4937a1e5914870f"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "resourceKey": "entry:entry_demo",
+            "before": {
+              "path": "entries/entry_demo/states/state_before/ENTRY.json",
+              "sha256": "ffd02967b13ce402596c8e52242447f373f9b1f0d6b7e6831baf53a7f4f9111b"
+            },
+            "after": {
+              "path": "entries/entry_demo/states/state_registered/ENTRY.json",
+              "sha256": "7da4a143ed1aef2be4e1e1ad08f35c1725f94e225b2b1f92f3f1f93ed2df2c41"
+            }
+          },
+          {
+            "resourceKey": "operation:op_save_demo",
+            "before": null,
+            "after": {
+              "path": "_system/operations/op_save_demo/states/preparing.json",
+              "sha256": "2c04e5c7a23a620942a4fc22fb45144080cb151ae10c63b48398dac25cf2abfb"
+            }
+          }
+        ]
+      }
+    },
+    "entries/entry_demo/revisions/rev_demo_2/text.md": {
+      "encoding": "text",
+      "value": "После велосипеда ещё прошлась пешком. #ВЕЛО\n\n#прогулка\n"
+    },
+    "entries/entry_demo/revisions/rev_demo_2/revision.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "revision",
+        "entryId": "entry_demo",
+        "revisionId": "rev_demo_2",
+        "sequence": 2,
+        "previousRevisionId": "rev_demo_1",
+        "operationId": "op_save_demo",
+        "createdAt": "2026-10-18T17:00:03Z",
+        "origin": "USER_SAVE",
+        "restoredFromRevisionId": null,
+        "content": {
+          "title": "Прогулка после работы",
+          "eventTime": {
+            "from": {
+              "date": "2026-10-18",
+              "time": null
+            },
+            "to": null,
+            "timeZone": "Europe/Belgrade",
+            "uncertainties": []
+          },
+          "textRef": {
+            "path": "entries/entry_demo/revisions/rev_demo_2/text.md",
+            "sha256": "82d4ad4c4b3cb244ddaefce8f235680d6a2364f866d545213cbe478c118f41fb"
+          },
+          "tagIds": [
+            "tag_bike",
+            "tag_walk"
+          ],
+          "assetIds": []
+        },
+        "provenanceRefs": []
+      }
+    },
+    "catalogs/tags/snapshots/cat_2/tags.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "tag-catalog",
+        "catalogVersion": "cat_2",
+        "tags": [
+          {
+            "tagId": "tag_bike",
+            "name": "велосипед",
+            "aliases": [
+              "вело",
+              "езда"
+            ],
+            "typeId": null,
+            "color": "#3366CC",
+            "state": "ACTIVE",
+            "mergedInto": null,
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          },
+          {
+            "tagId": "tag_sport_deleted",
+            "name": "спорт",
+            "aliases": [
+              "тренировка"
+            ],
+            "typeId": null,
+            "color": "#555555",
+            "state": "DELETED",
+            "mergedInto": null,
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          },
+          {
+            "tagId": "tag_old_ride",
+            "name": "езда",
+            "aliases": [],
+            "typeId": null,
+            "color": "#777777",
+            "state": "MERGED",
+            "mergedInto": "tag_bike",
+            "createdAt": "2026-10-01T10:00:00Z",
+            "updatedAt": "2026-10-18T14:00:00Z"
+          },
+          {
+            "tagId": "tag_walk",
+            "name": "прогулка",
+            "aliases": [
+              "пешком"
+            ],
+            "typeId": null,
+            "color": "#22AA66",
+            "state": "ACTIVE",
+            "mergedInto": null,
+            "createdAt": "2026-10-18T17:00:03Z",
+            "updatedAt": "2026-10-18T17:00:03Z"
+          }
+        ]
+      }
+    },
+    "entries/entry_demo/states/state_after/ENTRY.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "entry-state",
+        "entryId": "entry_demo",
+        "stateId": "state_after",
+        "createdAt": "2026-10-18T14:50:00Z",
+        "lifecycle": "ACTIVE",
+        "currentRevisionId": "rev_demo_2",
+        "currentRevisionRef": {
+          "path": "entries/entry_demo/revisions/rev_demo_2/revision.json",
+          "sha256": "889731fb29d4c6ba0e997016de1e2c44d73b342a390177616b7a94a32435dfcb"
+        },
+        "committedUpdatedAt": "2026-10-18T17:00:03Z",
+        "draftRef": null,
+        "pendingOperationId": null,
+        "provenanceRefs": []
+      }
+    },
+    "_system/operations/op_save_demo/states/committed.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "operation",
+        "operationId": "op_save_demo",
+        "requestFingerprint": "c160e85edc26e93c300e3a36764a84140f92f3972ed7537405a3c0fe559c6dd6",
+        "inputRef": {
+          "path": "_system/operations/op_save_demo/input.json",
+          "sha256": "764771769f2776e74cc75965cb525694242c9aa37ad19301feb493fa77b2326f"
+        },
+        "status": "COMMITTED",
+        "result": {
+          "revisionId": "rev_demo_2",
+          "revisionRef": {
+            "path": "entries/entry_demo/revisions/rev_demo_2/revision.json",
+            "sha256": "889731fb29d4c6ba0e997016de1e2c44d73b342a390177616b7a94a32435dfcb"
+          },
+          "consumedDraftRef": {
+            "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
+            "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+          }
+        }
+      }
+    },
+    "_system/commits/000002.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "publication",
+        "sequence": 2,
+        "publicationId": "pub_commit_save",
+        "operationId": "op_save_demo",
+        "kind": "SAVE",
+        "createdAt": "2026-10-18T17:00:03Z",
+        "previous": {
+          "path": "_system/commits/000001.json",
+          "sha256": "5c672f3489ff5391ee99015d1ab8a3210f21dcd8051c0674398cd399e2256043"
+        },
+        "nextSlot": {
+          "path": "_system/commits/000003.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_ID_000003"
+        },
+        "conditions": [
+          {
+            "resourceKey": "lease:entry_demo",
+            "expected": {
+              "path": "_system/leases/entry_demo/epoch_3.json",
+              "sha256": "14b60d70d1b8ef7a03677e31e45715ab6d3f1bf3a540d357b4937a1e5914870f"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "resourceKey": "entry:entry_demo",
+            "before": {
+              "path": "entries/entry_demo/states/state_registered/ENTRY.json",
+              "sha256": "7da4a143ed1aef2be4e1e1ad08f35c1725f94e225b2b1f92f3f1f93ed2df2c41"
+            },
+            "after": {
+              "path": "entries/entry_demo/states/state_after/ENTRY.json",
+              "sha256": "fe5277bbcff604960987daeea1bfcc2bb98b6dbe2d30821492aacf80732c17cd"
+            }
+          },
+          {
+            "resourceKey": "catalog:tags",
+            "before": {
+              "path": "catalogs/tags/snapshots/cat_1/tags.json",
+              "sha256": "79aa44368116f288cfa1b9001f5456a40f5dcbeebbf7093af0237e2281feab61"
+            },
+            "after": {
+              "path": "catalogs/tags/snapshots/cat_2/tags.json",
+              "sha256": "1aceba2af54dd0bf1ee28e38b91fbff1a0b2c2101696f673a129b8aabd5589da"
+            }
+          },
+          {
+            "resourceKey": "operation:op_save_demo",
+            "before": {
+              "path": "_system/operations/op_save_demo/states/preparing.json",
+              "sha256": "2c04e5c7a23a620942a4fc22fb45144080cb151ae10c63b48398dac25cf2abfb"
+            },
+            "after": {
+              "path": "_system/operations/op_save_demo/states/committed.json",
+              "sha256": "d3720f1afcc72570e6151de5434b1cc93a9e2722c760ff7a083409fc268e6bad"
+            }
+          }
+        ]
+      }
+    },
+    "_system/storage_manifest.json": {
+      "encoding": "json",
+      "value": {
+        "formatVersion": "1.0.0-draft.1",
+        "schema": "storage-manifest",
+        "storageId": "storage_example",
+        "storageIncarnation": "incarnation_example",
+        "publicationProtocol": "append-slot-v1",
+        "genesisRef": {
+          "path": "_system/commits/000000.json",
+          "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+        }
+      }
+    }
+  },
+  "expected": {
+    "before": {
+      "currentRevisionId": "rev_demo_1",
+      "hasDraft": true,
+      "canonicalTagIds": [
+        "tag_bike",
+        "tag_sport_deleted",
+        "tag_old_ride"
+      ],
+      "operationStatus": null
+    },
+    "registered": {
+      "currentRevisionId": "rev_demo_1",
+      "hasDraft": true,
+      "canonicalTagIds": [
+        "tag_bike",
+        "tag_sport_deleted",
+        "tag_old_ride"
+      ],
+      "operationStatus": "PREPARING"
+    },
+    "after": {
+      "currentRevisionId": "rev_demo_2",
+      "hasDraft": false,
+      "canonicalTagIds": [
+        "tag_bike",
+        "tag_sport_deleted",
+        "tag_old_ride",
+        "tag_walk"
+      ],
+      "operationStatus": "COMMITTED"
+    },
+    "retryResultRevisionId": "rev_demo_2"
+  }
+}

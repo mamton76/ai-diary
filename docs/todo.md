@@ -1,3 +1,5 @@
+> **New AI Diary web/backend plan:** [implementation-plan-web-mvp.md](implementation-plan-web-mvp.md). The checklist below belongs to the **legacy Android/Room/Firebase prototype**; do not use it as the new MVP delivery roadmap.
+
 # Diary App — Next Steps
 
 ## Phase 0: Foundation (done)
