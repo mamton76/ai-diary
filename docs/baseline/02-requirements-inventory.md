@@ -1055,7 +1055,11 @@ Manual Save, при котором итоговое сохраняемое conte
 
 Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
 
-**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; прочие FQ-08 — partial staging/late completion, permanent delete и retention — остаются открытыми; lifecycle после Restore согласован отдельно в SQ-01. Ранее предложенные безусловные keep/Trash не приняты.
+**История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md). Готовые attachments получили policy; lifecycle после Restore согласован в SQ-01, внешние originals в SQ-02, Entry permanent-delete content в SQ-03, срок хранения Asset Trash в SQ-04. Partial staging, orphaned uploads/late completion, technical cleanup и backup retention остаются отдельными открытыми деталями. Ранее предложенные безусловные keep/Trash не приняты.
+
+## Уточнение 08.11.2026 — Asset Trash без автоматического срока удаления
+
+**Статус: ПОДТВЕРЖДЕНО.** Готовые Asset после soft delete остаются в Asset Trash без автоматического permanent-delete таймера, пока пользователь явно не выберет `Delete permanently` для конкретного Asset или `Empty Trash`. До этого момента Asset может быть восстановлен; физическое удаление касается только managed copies/preview, но не внешних originals, а в исторических ссылках после permanent delete остаются tombstones/placeholders. Это правило не охватывает неоконченные/осиротевшие загрузки, временные staging/late callbacks и техническую политику их cleanup. [FQ-08/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md).
 
 ## Уточнение 18.10.2026 — Restore Entry из Trash всегда в ACTIVE
 
