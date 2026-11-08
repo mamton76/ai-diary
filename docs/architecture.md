@@ -121,6 +121,7 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 
 - Durable Save и recovery после прерывания операции; не подтверждать Save до commit.
+- Единственный писатель canonical-данных к первому mutating release — backend; до этого для Abacus-скриптов действуют временные операторские правила ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)).
 - Idempotent Calendar import, no duplicate Entries; сохранение raw/source metadata.
 - Calendar Timeline обновляет тот же event и не изменяет canonical diary.
 - История revisions, Restore, provenance, assets переживают backup/restore.

@@ -971,8 +971,11 @@ Provider должен получать уже подготовленный conte
 
 Что делать с действующими Calendar→Drive→Entry скриптами, которые пишут реальные данные без атомарного commit (аудит S2), до появления backend/storage v1, и когда они перестают быть писателями canonical-данных ([аудит](../audits/2026-11-08-abacus-diary-scripts.md), [ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C4/C5).
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [AQ-OPS-006 thread](04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)  
+**Перенесено в:** [план реализации P0.1 и gates](../implementation-plan-web-mvp.md), [architecture §9](../architecture.md#9-проверки-перед-первым-реальным-использованием)
+
+**Решение:** скрипты пишут в реальный дневник, поэтому до storage v1 действуют временные операторские правила: после сбоя `/sync2` не перезапускать без проверки `inbox/` и `entries/`, не запускать `--apply-exact-duplicates`, дубли искать в режиме report-only. Изменения кода скриптов — отдельная задача пользователя через Abacus. К первому mutating release web единственный писатель canonical-данных — backend.
 
 ---
 

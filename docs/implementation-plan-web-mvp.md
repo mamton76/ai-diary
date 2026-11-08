@@ -27,6 +27,8 @@
 
 **Зачем:** пользователь сообщил, что уже есть scripts, переносящие записи из Calendar на Drive. Состав и код ещё не аудированы в рамках этого roadmap.
 
+**Временные правила оператора до storage v1 ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)):** скрипты пишут в реальный дневник. После сбоя `/sync2` не перезапускать, пока не проверены `inbox/` и `entries/`; не запускать `--apply-exact-duplicates`; дубли искать отчётом report-only. Изменения кода скриптов вносятся через Abacus отдельной задачей.
+
 **Работы:**
 - Найти реальные scripts и workflows (их репозиторий, точные пути, конфигурацию, права Google API); пометить, что запускается сейчас, а что осталось только в документации.
 - Сопоставить текущие входы/выходы с historical project workflow `04_Workflow_Google_Calendar_Inbox.md` / [CaptureItem contract](baseline/04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md).
@@ -126,6 +128,7 @@
 |---|---|
 | Canonical safety | raw, Entry, Revisions, Assets и provenance сохраняются; conflict/restore не удаляют историю |
 | Import/idempotency | повтор источника или команды не создаёт duplicate entries/commits |
+| Single writer | к первому mutating release web единственный писатель canonical-данных — backend; Abacus-скрипты вызывают API или не пишут в canonical-хранилище ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)) |
 | Operations | queued/committed/failed различаются; safe restart/retry; нет автоповтора ambiguous paid LLM |
 | Backup | документированные on-demand restore scripts проверены в изолированном хранилище |
 | Security | Google auth/OAuth separation, минимальные scopes, server-side credentials, no diary content in debug logs |
