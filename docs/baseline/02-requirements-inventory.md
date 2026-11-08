@@ -741,7 +741,7 @@ Output schema и declarative validation rules являются частью vers
 
 ### INT-002 — Calendar timeline — derived projection
 **Статус:** ПОДТВЕРЖДЕНО.  
-Приоритет: реализовать Calendar Timeline Projection **рано, параллельно Calendar Inbox**, до готовности полноценного web UI, чтобы пользователь мог просматривать и визуально валидировать обработанные Entries через привычный календарь. Canonical Diary остаётся source of truth, projection односторонняя (Entry → Calendar), один Entry ↔ один event, существующий event обновляется при committed changes. Calendar edits не становятся diary revisions автоматически; возможный write-back/действия валидации из Calendar требуют отдельного явного решения. История: [AQ-INT-002](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md).
+Приоритет: реализовать Calendar Timeline Projection **рано, параллельно Calendar Inbox**, до готовности полноценного web UI, чтобы пользователь мог просматривать и визуально валидировать обработанные Entries через привычный календарь. Canonical Diary остаётся source of truth, projection односторонняя (Entry → Calendar), один Entry ↔ один event, существующий event обновляется при committed changes. Calendar Timeline используется только для просмотра/визуальной проверки, без возможностей редактировать, исправлять или подтверждать Entry через Calendar. Любые ручные изменения projected Calendar event не переносятся обратно в canonical Diary и могут быть перезаписаны следующей проекцией; write-back не входит в MVP. История: [AQ-INT-002](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md).
 
 ### INT-003 — Timeline projection можно перестроить из diary data
 **Статус:** ПОДТВЕРЖДЕНО.
