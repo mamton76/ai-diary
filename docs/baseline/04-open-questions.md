@@ -738,10 +738,12 @@ Google account — естественный first path.
 
 ## AQ-AI-008 — Workflow editor UX
 
-**Статус:** открыто  
-**Обсуждение:** [AQ-AI-008 thread](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md)
+**Статус:** РЕШЕНО (08.11.2026)  
+**Обсуждение:** [AQ-AI-008 thread](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md)  
+**Screens Spec:** [S13 §15.6.1](AI-Diary-Screens-Spec-v0.1.md)  
+**Inventory:** AI-031
 
-Архитектурная модель workflow закрыта в AQ-AI-002. Здесь отдельно нужно определить UX/editor surface: представление pipeline/conditions, поля шагов, prompt/schema editing, executor/capability selection, trust UX, Draft/Test/Publish, history/diff и адаптацию desktop/mobile.
+Архитектурная модель закрыта в AQ-AI-002. UX editor определён: вертикальный adaptive pipeline с nested conditions, общим step-card scaffold (AI/Executor/Condition/Validator), auto input mapping, inline/full prompt editor, versioned executors и explicit trust, capability profile validation, Input/Trigger и отдельными Output/Application policy; Draft autosave, Test run Draft snapshot, Publish validation/confirmation без отдельного Preview и immutable History/Compare/Restore. Детали фиксируются в Screens Spec; точные визуальные решения nested conditions проверяются прототипом.
 
 ## AQ-AI-003 — Где хранить run records
 
