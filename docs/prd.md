@@ -1,5 +1,7 @@
 # PRD — AI Diary (MVP)
 
+> **Исторический документ (весна 2026).** Текущее направление продукта задаёт [product baseline](baseline/03-product-baseline.md#11-для-кого-и-главный-ценностный-цикл) ([PQ-014](baseline/04-open-questions.threads/52_PQ-014_positioning-value-loop/00_thread.md), 2026-11-08): в первую очередь личный инструмент как подготовка к ZoomAlboom, web-first, а не Android-first; рыночная вертикаль §12 не является текущим направлением.
+
 ## 1. Overview
 
 Product name: AI Diary
