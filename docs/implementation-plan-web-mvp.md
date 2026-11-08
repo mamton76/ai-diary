@@ -21,7 +21,7 @@
 
 **Работы:**
 - Найти реальные scripts и workflows (их репозиторий, точные пути, конфигурацию, права Google API); пометить, что запускается сейчас, а что осталось только в документации.
-- Сопоставить текущие входы/выходы с [Google Calendar Inbox workflow](../04_Workflow_Google_Calendar_Inbox.md) / [CaptureItem contract](baseline/04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md).
+- Сопоставить текущие входы/выходы с historical project workflow `04_Workflow_Google_Calendar_Inbox.md` / [CaptureItem contract](baseline/04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md).
 - Проверить source event IDs, повторный импорт, raw snapshots, output filenames, idempotency, provenance, ошибки и ручные шаги.
 - Подготовить небольшой синтетический тестовый календарь/набор CaptureItems и Entry (без реальных личных текстов в тестовых logs/fixtures).
 - Выделить reusable части скриптов и необходимые изменения, не обещая автоматический перенос старых файлов без migration plan.
