@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [FQ-08/SQ-01 — lifecycle после Restore из Trash](01_SQ-01_restore-lifecycle/00_thread.md); [FQ-08/SQ-02 — external original](02_SQ-02_external-original-delete/00_thread.md); [FQ-08/SQ-03 — содержимое при permanent delete Entry](03_SQ-03_entry-permanent-delete-content/00_thread.md); [FQ-08/SQ-04 — срок хранения Asset Trash](04_SQ-04_asset-trash-retention/00_thread.md)  
+**Дочерние треды:** [FQ-08/SQ-01 — lifecycle после Restore из Trash](01_SQ-01_restore-lifecycle/00_thread.md); [FQ-08/SQ-02 — external original](02_SQ-02_external-original-delete/00_thread.md); [FQ-08/SQ-03 — содержимое при permanent delete Entry](03_SQ-03_entry-permanent-delete-content/00_thread.md); [FQ-08/SQ-04 — срок хранения Asset Trash](04_SQ-04_asset-trash-retention/00_thread.md); [FQ-08/SQ-05 — orphaned partial uploads cleanup](05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format / Save design, inventory/product baseline
 
 ## Вопрос
@@ -55,5 +55,7 @@ Codex — (2026-10-18) SQ-02 завершён: внешние originals не у�
 Codex — (2026-10-18) SQ-03 завершён: отдельно подтверждённое permanent delete удаляет всё содержимое Entry; для исключительно связанных Asset отдельно предлагается soft delete/оставить. Обычное Delete остаётся Trash/Restore. Source и index обновлены; технический протокол очистки/backup retention ещё не утверждён.
 
 Codex / ChatGPT — (2026-11-08) Отдельное решение по отсутствию автоматического срока удаления готовых Asset из Trash принято в [SQ-04](04_SQ-04_asset-trash-retention/00_thread.md). Это не меняет поведение Discard/unlink и не закрывает технический cleanup частичных uploads.
+
+ChatGPT — (2026-11-08) Отдельный SQ-05 подтвердил автоматическую очистку *неуспешных* partial/staging uploads после 7 дней без актуальных удерживающих ссылок, с повторной проверкой. Готовые originals не затрагиваются; late completion остаётся открытым. [SQ-05](05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md).
 
 **Решение:** [принято] (2026-10-18) При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked.
