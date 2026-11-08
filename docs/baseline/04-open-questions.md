@@ -267,6 +267,20 @@ Manual Drive edits, conflict UX и конкретный механизм optimis
 
 Visual polish, точный text-diff, first-revision edge case и breakpoint values считаются implementation details и не блокируют продуктовый baseline.
 
+## PQ-012 — Каноническая граница этапов MVP
+
+Где живёт единственная таблица этапов продукта (web E0–E4, интеграции, AI) и какие из подтверждённых «тяжёлых» требований действительно входят в E0–E2. Сейчас WEB-003, SEARCH-001, PB §12/§22 и Screens Spec §3 описывают первый релиз по-разному ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C1/H18).
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)
+
+## PQ-013 — Export, отключение Google-доступа и удаление аккаунта
+
+Что считается export для DATA-010 (у пункта нет тела), что происходит с данными при отзыве Drive/Calendar-доступа и при удалении аккаунта AI Diary ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), H10/H11).
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md)
+
 ---
 
 # 2. Data / storage вопросы
@@ -719,6 +733,13 @@ Google account — естественный first path.
 **Решение:** backend получает доступ к Google Drive каждого пользователя через OAuth и действует от имени этого пользователя. Service account + shared folder не является основным access pattern для multi-user приложения. Детали scopes, refresh-token storage, revocation и re-auth определяются отдельно в AQ-AUTH-002.
 
 
+## AQ-SEC-001 — Защита содержимого дневника на стороне сервиса
+
+Модель угроз и обязательные меры для operational state (drafts, snapshots, AI run records, FTS-индекс, очередь, логи) и хранения refresh tokens. Сейчас в документах нет требований к шифрованию ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C2). Не переоткрывает AQ-AUTH-002.
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md)
+
 ---
 
 # 6. AI subsystem вопросы
@@ -787,6 +808,9 @@ Provider должен получать уже подготовленный conte
 Вероятен гибрид, но нужна permission/versioning model.
 
 ## AQ-AI-006 — Sensitive-data policy
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)
 
 До полноценного multi-provider AI нужно определить:
 
@@ -897,6 +921,13 @@ Provider должен получать уже подготовленный conte
 **Статус:** РЕШЕНО  
 **Решение:** полуавтоматический CI/CD — проверки PR автоматически (build/tests/lint по мере готовности), deployment web/backend в единственное рабочее окружение только вручную, без auto-deploy после merge. Secrets не хранить в Git; предусмотреть возможность документированного rollback. Детали workflow/набор checks — при реализации.  
 **История обсуждения:** [AQ-OPS-005 thread](04-open-questions.threads/40_AQ-OPS-005_ci-cd/00_thread.md)
+
+## AQ-OPS-006 — Правила для живых Abacus-скриптов до storage v1
+
+Что делать с действующими Calendar→Drive→Entry скриптами, которые пишут реальные данные без атомарного commit (аудит S2), до появления backend/storage v1, и когда они перестают быть писателями canonical-данных ([аудит](../audits/2026-11-08-abacus-diary-scripts.md), [ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C4/C5).
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)
 
 ---
 
