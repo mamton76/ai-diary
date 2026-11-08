@@ -30,8 +30,8 @@ A small import log is stored in:
 
     indexes/source_google_calendar_events.jsonl
 
-This log is used as a simple duplicate guard. It is derived/debug data and can
-be rebuilt later from processed raw sources or entries if needed.
+This log is diagnostic. Active and archived Drive packages determine whether an
+event has been imported.
 
 Usage:
 
@@ -60,6 +60,7 @@ import argparse
 import hashlib
 import json
 import sys
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -68,7 +69,7 @@ from typing import Any
 from googleapiclient.discovery import build as gapi_build
 from googleapiclient.http import MediaInMemoryUpload
 
-from drive_client import DriveClient
+from drive_client import DriveClient, DriveFile
 from gcal_client import (
     CALENDAR_SCOPES,
     CalendarClient,
@@ -82,6 +83,7 @@ FORMAT_VERSION = "v0.1.0"
 SCHEMA_RAW_INPUT = "raw_input_message"
 IMPORT_LOG_PATH = ["indexes"]
 IMPORT_LOG_FILE = "source_google_calendar_events.jsonl"
+STAGING_PATH = ("inbox", "processing")
 FOLDER_MIME = "application/vnd.google-apps.folder"
 
 
@@ -113,17 +115,17 @@ def event_date(event: CalendarEvent) -> str:
 
 def event_identity_key(calendar_id: str, event: CalendarEvent) -> str:
     """Stable identity key for this calendar event occurrence."""
-    return f"{calendar_id}|{event.id}|{event.start_dt}"
+    return json.dumps([calendar_id, event.id], ensure_ascii=False, separators=(",", ":"))
 
 
 def raw_input_id(calendar_id: str, event: CalendarEvent) -> str:
     """Deterministic raw input id from calendar + event occurrence identity."""
-    return f"raw_gcal_event_{short_hash(event_identity_key(calendar_id, event))}"
+    return f"raw_gcal_event_{short_hash(event_identity_key(calendar_id, event), length=32)}"
 
 
 def package_folder_name(event: CalendarEvent, calendar_id: str) -> str:
     """Deterministic package folder name for easier debugging and duplicate detection."""
-    h = short_hash(event_identity_key(calendar_id, event))
+    h = short_hash(event_identity_key(calendar_id, event), length=32)
     return f"{event_date(event)}__google_calendar__event_{h}"
 
 
@@ -217,7 +219,7 @@ def ensure_folder_path(drive: DriveClient, root_id: str, path_parts: list[str]) 
     return folder.id
 
 
-def find_folder_by_path(drive: DriveClient, root_id: str, path_parts: list[str]) -> str | None:
+def find_folder_by_path(drive: DriveClient, root_id: str, path_parts: list[str] | tuple[str, ...]) -> str | None:
     current = root_id
     for part in path_parts:
         found = drive.find_child_folder(current, part)
@@ -273,55 +275,8 @@ def drive_create_or_update_text(
     return resp["id"]
 
 # ------------------------------------------------------------------ #
-# Import log / duplicate guard                                        #
+# Import log                                                          #
 # ------------------------------------------------------------------ #
-
-
-def read_import_log(drive: DriveClient, root_id: str) -> list[dict[str, Any]]:
-    indexes_id = find_folder_by_path(drive, root_id, IMPORT_LOG_PATH)
-    if not indexes_id:
-        return []
-
-    log_file_id = drive_find_child_file_id(drive.service, indexes_id, IMPORT_LOG_FILE)
-    if not log_file_id:
-        return []
-
-    text = drive_download_text_by_id(drive.service, log_file_id)
-    records: list[dict[str, Any]] = []
-    for line in text.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            # Keep the importer tolerant. Broken debug log lines should not block capture.
-            continue
-    return records
-
-
-def already_imported(drive: DriveClient, root_id: str, raw_id: str) -> bool:
-    for record in read_import_log(drive, root_id):
-        if record.get("rawInputId") == raw_id:
-            return True
-
-    # Fallback for old packages created before the log existed: scan inbox/new only.
-    new_folder_id = find_folder_by_path(drive, root_id, ["inbox", "new"])
-    if new_folder_id:
-        for folder in drive.list_children(new_folder_id):
-            if folder.mime_type != FOLDER_MIME:
-                continue
-            try:
-                msg_file = next((f for f in drive.list_children(folder.id) if f.name == "MESSAGE.json"), None)
-                if not msg_file:
-                    continue
-                data = json.loads(drive.download_text(msg_file))
-                if data.get("id") == raw_id:
-                    return True
-            except Exception:
-                continue
-
-    return False
 
 
 def append_import_log(
@@ -364,6 +319,66 @@ class CreatedPackage:
     target_path: str
     raw_id: str
     status: str
+    already_complete: bool = False
+
+
+@dataclass(frozen=True)
+class ExistingPackage:
+    parent_id: str
+    folder: DriveFile
+    path: tuple[str, ...]
+    message: dict
+    complete: bool
+
+
+def calendar_package_locations(
+    drive: DriveClient, root_id: str,
+) -> Iterator[tuple[tuple[str, ...], str]]:
+    for path in (("inbox", "new"), ("inbox", "needs_review"), STAGING_PATH):
+        folder_id = find_folder_by_path(drive, root_id, path)
+        if folder_id:
+            yield path, folder_id
+
+    archived = find_folder_by_path(drive, root_id, ["inbox", "archived"])
+    if archived:
+        for year in drive.list_children(archived, mime_type=FOLDER_MIME):
+            for month in drive.list_children(year.id, mime_type=FOLDER_MIME):
+                yield ("inbox", "archived", year.name, month.name), month.id
+
+
+def find_calendar_package(
+    drive: DriveClient, root_id: str, calendar_id: str, event: CalendarEvent,
+) -> ExistingPackage | None:
+    identity_suffix = raw_input_id(calendar_id, event).removeprefix("raw_gcal_")
+    legacy_key = f"{calendar_id}|{event.id}|{event.start_dt}"
+    legacy_name = f"{event_date(event)}__google_calendar__event_{short_hash(legacy_key)}"
+    partial = None
+
+    for path, parent_id in calendar_package_locations(drive, root_id):
+        for folder in drive.list_children(parent_id, mime_type=FOLDER_MIME):
+            _, marker, folder_hash = folder.name.rpartition("__google_calendar__event_")
+            if not marker or (len(folder_hash) == 32 and f"event_{folder_hash}" != identity_suffix):
+                continue
+            files = {file.name: file for file in drive.list_children(folder.id) if not file.is_folder}
+            message = json.loads(drive.download_text(files["MESSAGE.json"])) if "MESSAGE.json" in files else {}
+            source = message.get("source", {})
+            if message:
+                matches = (source.get("type"), source.get("calendarId"), source.get("eventId")) == (
+                    "google_calendar", calendar_id, event.id,
+                )
+            else:
+                matches = folder.name.endswith(f"__google_calendar__{identity_suffix}") or folder.name == legacy_name
+            if not matches:
+                continue
+
+            complete = bool(message.get("id")) and {"raw_text.md", "source_event.json"} <= files.keys()
+            package = ExistingPackage(parent_id, folder, path, message, complete)
+            if complete and path != STAGING_PATH:
+                return package
+            if partial is None:
+                partial = package
+
+    return partial
 
 
 def create_calendar_package(
@@ -384,13 +399,22 @@ def create_calendar_package(
     raw_id = raw_input_id(calendar_id, event)
     folder_name = package_folder_name(event, calendar_id)
 
-    if has_useful_content(event):
-        target_parts = ["inbox", "new"]
-        status = "new"
-        review_reason = None
-    else:
-        target_parts = ["inbox", "needs_review"]
-        status = "needs_review"
+    existing = None if dry_run else find_calendar_package(drive, root_id, calendar_id, event)
+    if existing:
+        folder_name = existing.folder.name
+        raw_id = existing.message.get("id") or raw_id
+        if existing.complete and existing.path != STAGING_PATH:
+            return CreatedPackage(
+                folder_name, "/".join(existing.path) + "/", raw_id,
+                existing.message.get("status", "new"), already_complete=True,
+            )
+        if existing.path[:2] == ("inbox", "archived"):
+            raise RuntimeError(f"Archived package is incomplete: {folder_name}")
+
+    status = "new" if has_useful_content(event) else "needs_review"
+    target_parts = ["inbox", status]
+    review_reason = None
+    if status == "needs_review":
         review_reason = "Google Calendar event has neither title nor description."
 
     target_path = "/".join(target_parts) + "/"
@@ -417,27 +441,21 @@ def create_calendar_package(
         print("    [dry-run] Would create MESSAGE.json, raw_text.md, source_event.json")
         return CreatedPackage(folder_name=folder_name, target_path=target_path, raw_id=raw_id, status=status)
 
+    staging_id = ensure_folder_path(drive, root_id, list(STAGING_PATH))
+    if existing:
+        pkg_folder_id = existing.folder.id
+        if existing.parent_id != staging_id:
+            drive.move_file(pkg_folder_id, staging_id, old_parent_ids=[existing.parent_id])
+    else:
+        pkg_folder_id = drive.create_folder(staging_id, folder_name).id
+
+    # Retry staged writes in place and publish only after all three writes succeed.
+    drive.upsert_text(pkg_folder_id, "raw_text.md", raw_text, mime_type="text/markdown")
+    drive.upsert_json(pkg_folder_id, "source_event.json", source_event)
+    drive.upsert_json(pkg_folder_id, "MESSAGE.json", message)
+
     target_folder_id = ensure_folder_path(drive, root_id, target_parts)
-    existing_pkg = drive.find_child_folder(target_folder_id, folder_name)
-    if existing_pkg:
-        raise RuntimeError(f"Package folder already exists: {target_path}{folder_name}")
-
-    pkg_folder = drive.create_folder(target_folder_id, folder_name)
-    pkg_folder_id = pkg_folder.id
-
-    drive.upload_text(
-        pkg_folder_id,
-        "MESSAGE.json",
-        json.dumps(message, ensure_ascii=False, indent=2),
-        mime_type="application/json",
-    )
-    drive.upload_text(pkg_folder_id, "raw_text.md", raw_text, mime_type="text/markdown")
-    drive.upload_text(
-        pkg_folder_id,
-        "source_event.json",
-        json.dumps(source_event, ensure_ascii=False, indent=2),
-        mime_type="application/json",
-    )
+    drive.move_file(pkg_folder_id, target_folder_id, old_parent_ids=[staging_id])
 
     return CreatedPackage(folder_name=folder_name, target_path=target_path, raw_id=raw_id, status=status)
 
@@ -535,35 +553,6 @@ def run_workflow(
 
         print(f"\n[{i}/{len(batch)}] Event: {title}")
 
-        if not dry_run and already_imported(drive, root_folder_id, raw_id):
-            print(f"  ⏭  Already imported (raw_id={raw_id}).")
-            moved = False
-            try:
-                moved = try_move_event(
-                    cal=cal,
-                    inbox_calendar_id=inbox_cal_id,
-                    event_id=event.id,
-                    processed_calendar_id=processed_cal_id,
-                    processed_calendar_name=processed_calendar_name,
-                    dry_run=dry_run,
-                )
-            except Exception as exc:
-                print(f"    ⚠  Already imported, but move failed: {exc}")
-
-            results.append(
-                WorkflowResult(
-                    event_id=event.id,
-                    title=event.summary or "",
-                    raw_id=raw_id,
-                    folder_name="",
-                    success=True,
-                    skipped=True,
-                    moved=moved,
-                    status="already_imported",
-                )
-            )
-            continue
-
         try:
             created = create_calendar_package(
                 drive=drive,
@@ -587,31 +576,33 @@ def run_workflow(
             )
             continue
 
-        import_record = {
-            "formatVersion": FORMAT_VERSION,
-            "source": "google_calendar",
-            "rawInputId": created.raw_id,
-            "calendarId": inbox_cal_id,
-            "calendarName": inbox_calendar_name,
-            "eventId": event.id,
-            "iCalUID": event.ical_uid,
-            "eventStart": event.start_dt,
-            "eventEnd": event.end_dt,
-            "sourceUpdatedAt": event.updated or "",
-            "packagePath": f"{created.target_path}{created.folder_name}/",
-            "packageStatus": created.status,
-            "importedAt": utc_now_iso(),
-        }
+        if not created.already_complete:
+            import_record = {
+                "formatVersion": FORMAT_VERSION,
+                "source": "google_calendar",
+                "rawInputId": created.raw_id,
+                "calendarId": inbox_cal_id,
+                "calendarName": inbox_calendar_name,
+                "eventId": event.id,
+                "iCalUID": event.ical_uid,
+                "eventStart": event.start_dt,
+                "eventEnd": event.end_dt,
+                "sourceUpdatedAt": event.updated or "",
+                "packagePath": f"{created.target_path}{created.folder_name}/",
+                "packageStatus": created.status,
+                "importedAt": utc_now_iso(),
+            }
 
-        try:
-            append_import_log(drive, root_folder_id, import_record, dry_run=dry_run)
-            if not dry_run:
-                print(f"    ✓ Import logged in indexes/{IMPORT_LOG_FILE}")
-        except Exception as exc:
-            # Package exists; log failure should not cause duplicate package creation in this run.
-            print(f"    ⚠  Package created, but import log update failed: {exc}")
+            try:
+                append_import_log(drive, root_folder_id, import_record, dry_run=dry_run)
+                if not dry_run:
+                    print(f"    ✓ Import logged in indexes/{IMPORT_LOG_FILE}")
+            except Exception as exc:
+                # Package exists; log failure should not cause duplicate package creation in this run.
+                print(f"    ⚠  Package created, but import log update failed: {exc}")
 
         moved = False
+        move_error = ""
         try:
             moved = try_move_event(
                 cal=cal,
@@ -622,8 +613,8 @@ def run_workflow(
                 dry_run=dry_run,
             )
         except Exception as exc:
-            print(f"    ⚠  Package created, but calendar move failed: {exc}")
-            print("       Next run should skip this event via the import log.")
+            print(f"    ⚠  Package saved, but calendar move failed: {exc}")
+            move_error = str(exc)
 
         results.append(
             WorkflowResult(
@@ -631,9 +622,11 @@ def run_workflow(
                 title=event.summary or "",
                 raw_id=created.raw_id,
                 folder_name=created.folder_name,
-                success=True,
+                success=not move_error,
+                skipped=created.already_complete,
                 moved=moved,
-                status=created.status,
+                status="already_imported" if created.already_complete else created.status,
+                error=move_error,
             )
         )
 

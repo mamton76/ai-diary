@@ -1,103 +1,29 @@
-# AI Diary Google Drive Workflow — rewritten version
+# Скрипты AI Diary из Abacus
 
-This package contains a cleaner version of the Google Drive inbox-to-entry workflow.
+Снимок из `ai-diary-scripts.zip` для проверки и дальнейшей работы в отдельной ветке. [Статический аудит исходного архива](../../docs/audits/2026-11-08-abacus-diary-scripts.md).
 
-## Files
+- `gcal_to_inbox.py` сохраняет событие Calendar как пакет в `inbox/new/` или `inbox/needs_review/`. Затем переносит событие в календарь Processed. Этот календарь означает, что исходник сохранён в Drive.
+- `input_to_entry_2.py` читает пакет из `inbox/new/`, создаёт Entry и архивирует пакет.
+- `gcal_projection.py`, Telegram-пульт и утилиты поиска дубликатов входят в снимок. Тесты этой ветки охватывают первые два шага.
 
-- `ai_diary_drive_client.py` — low-level Google Drive API wrapper.
-- `inbox_to_entry_drive.py` — AI Diary workflow that processes files from `inbox/drop/text` and `inbox/drop/mixed`.
+## Тесты
 
-## Install dependencies
-
-```bash
-pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
-```
-
-## First run
-
-python input_to_entry_2.py \
-  --root-folder-id YOUR_AI_DIARY_ROOT_FOLDER_ID \
-  --credentials ~/ai-diary/google_credentials.json \
-  --token ~/ai-diary/google_token.json \
-  --dry-run
-
-python gcal_to_inbox.py   --root-folder-id YOUR_AI_DIARY_ROOT_FOLDER_ID   --inbox-calendar "Дневничок"   --processed-calendar "Дневничок обработанное"   --credentials google_credentials.json   --token google_token.json   --dry-run
-
-/opt/computersetup/.pyenv/versions/3.11.6/bin/python3 \
-  /home/ubuntu/ai-diary/gcal_projection.py \
-  --root-folder-id YOUR_AI_DIARY_ROOT_FOLDER_ID \
-  --credentials /home/ubuntu/ai-diary/google_credentials.json \
-  --token /home/ubuntu/ai-diary/google_token.json \
-  --limit 500 \
-  --dry-run
+Из корня репозитория с Python 3.11 или новее.
 
 ```bash
-python inbox_to_entry_drive.py \
-  --root-folder-id YOUR_AI_DIARY_ROOT_FOLDER_ID \
-  --credentials ~/ai-diary/google_credentials.json \
-  --token ~/ai-diary/google_token.json \
-  --dry-run
+cd scripts/abacus
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-test.txt
+python -m unittest discover -s tests -v
 ```
 
-Then create one entry:
+Тесты используют синтетические события и Drive в памяти. OAuth, Abacus и реальные Google API для запуска не нужны. Имитация падает как до записи, так и после записи, когда клиент не получил ответ от сервера.
 
-```bash
-python inbox_to_entry_drive.py \
-  --root-folder-id YOUR_AI_DIARY_ROOT_FOLDER_ID \
-  --credentials ~/ai-diary/google_credentials.json \
-  --token ~/ai-diary/google_token.json \
-  --limit 1
-```
+## Восстановление
 
-## What it processes
+- Событие определяется по паре `calendarId` и `eventId`. Импорт проверяет активные и архивированные пакеты, включая старый формат. Перенос времени события и отсутствие записи в JSONL не приводят к повторному импорту.
+- Пакет собирается в `inbox/processing/` и переносится в `inbox/new/` или `inbox/needs_review/` после записи текста, снимка события и `MESSAGE.json`. Повторный импорт дописывает неполный пакет. Если перенос в Calendar не состоялся, повторный запуск использует уже сохранённый пакет.
+- Для Calendar-пакета повторное сохранение использует тот же ID Entry. `ENTRY.json` записывается после ревизии, ссылок и отчёта обработки. Если прервался только перенос исходного пакета в архив, следующий запуск завершает перенос без перезаписи Entry.
 
-Only:
-
-```text
-inbox/drop/text
-inbox/drop/mixed
-```
-
-Supported entry input files:
-
-```text
-.txt
-.md
-.markdown
-.json
-```
-
-Media-only files are skipped for now.
-
-## What it creates
-
-For an input file such as:
-
-```text
-inbox/drop/text/2026-04-25-test.md
-```
-
-it creates:
-
-```text
-entries/2026/04/2026-04-25__entry_<id>/
-  ENTRY.json
-  entry.md
-  revisions/
-    000_raw/
-      revision.json
-      text.md
-  links/
-    source_raw_inputs.json
-  ai/
-```
-
-and moves original raw input to:
-
-```text
-inbox/_processed_raw/2026/04/raw_batch_2026-04-25_entry_<id>/
-  original_files/
-    2026-04-25-test.md
-  PROCESSING_RESULT.json
-```
-
+Проверено для последовательных запусков. Одновременная обработка одного события несколькими процессами требует отдельного механизма координации. Скрипты не мигрируют частичные Entry, созданные прежней версией со случайными ID. Формат flat-файлов из `inbox/drop/` сохранил прежнее поведение.

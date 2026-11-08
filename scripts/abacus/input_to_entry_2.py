@@ -292,6 +292,12 @@ class InboxToEntryDriveWorkflow:
             if not msg_file or not raw_text_file:
                 continue  # not a valid structured package
 
+            if not source_event_file:
+                # Calendar packages are published only when the source snapshot is present.
+                metadata = json.loads(self.drive.download_text(msg_file))
+                if metadata.get("source", {}).get("type") == "google_calendar":
+                    continue
+
             items.append(
                 RawInputItem(
                     label=f"inbox/new/{pkg.name}",
@@ -629,7 +635,9 @@ class InboxToEntryDriveWorkflow:
     # Archiving helpers
     # ------------------------------------------------------------------
 
-    def copy_folder_children_to_original_files(self, raw_item: RawInputItem, original_files_folder: DriveFile) -> list[str]:
+    def copy_folder_children_to_original_files(
+        self, raw_item: RawInputItem, original_files_folder: DriveFile, *, resume: bool = False,
+    ) -> list[str]:
         """
         Copy contents of a folder raw item into original_files/.
 
@@ -645,6 +653,10 @@ class InboxToEntryDriveWorkflow:
             if self.should_ignore(child):
                 continue
 
+            if resume and not child.is_folder and self.drive.list_children(original_files_folder.id, name=child.name):
+                source_files.append(f"original_files/{child.name}")
+                continue
+
             if child.is_folder:
                 child_archive_folder = self.drive.ensure_folder(original_files_folder.id, child.name)
                 grand_children = self.drive.list_children(child.id)
@@ -652,8 +664,9 @@ class InboxToEntryDriveWorkflow:
                 for grand_child in sorted(grand_children, key=lambda f: f.name.lower()):
                     if grand_child.is_folder or self.should_ignore(grand_child):
                         continue
-                    copied = self.drive.copy_file(grand_child.id, child_archive_folder.id)
-                    source_files.append(f"original_files/{child.name}/{copied.name}")
+                    if not resume or not self.drive.list_children(child_archive_folder.id, name=grand_child.name):
+                        self.drive.copy_file(grand_child.id, child_archive_folder.id)
+                    source_files.append(f"original_files/{child.name}/{grand_child.name}")
             else:
                 copied = self.drive.copy_file(child.id, original_files_folder.id)
                 source_files.append(f"original_files/{copied.name}")
@@ -696,10 +709,19 @@ class InboxToEntryDriveWorkflow:
 
         date_info = self.infer_date_from_name_or_metadata(raw_item, raw_text)
         title = self.infer_title(raw_item, raw_text)
-        entry_id = self.generate_entry_id()
-
-        raw_input_id = self.infer_raw_input_id(raw_item, date_info, entry_id)
         external_source = self.infer_external_source(raw_item)
+        calendar_package = (
+            raw_item.kind == "folder" and external_source
+            and external_source.get("type") == "google_calendar"
+        )
+        if calendar_package:
+            calendar_id = external_source["calendarId"]
+            event_id = external_source["eventId"]
+            source_key = json.dumps([calendar_id, event_id], ensure_ascii=False, separators=(",", ":"))
+            entry_id = f"entry_gcal_{uuid.uuid5(uuid.NAMESPACE_URL, source_key).hex}"
+        else:
+            entry_id = self.generate_entry_id()
+        raw_input_id = self.infer_raw_input_id(raw_item, date_info, entry_id)
 
         needs_review = date_info.confidence in {"system_date", "file_modifiedTime"}
         review_reason = None
@@ -739,6 +761,22 @@ class InboxToEntryDriveWorkflow:
                 raw_archive_path=raw_archive_path,
             )
 
+        if calendar_package:
+            entry_folder = self.find_folder_path(entry_parts)
+            if entry_folder and self.drive.list_children(entry_folder.id, name="ENTRY.json"):
+                # The commit succeeded. A retry only needs to archive the original package.
+                source_archive_path = self.archive_processed_folder_item(raw_item, year, month)
+                return ProcessResult(
+                    status="success",
+                    source=f"{raw_item.label}/{raw_item.item.name}",
+                    entry_id=entry_id,
+                    entry_title=title,
+                    entry_date=date_info.entry_date,
+                    entry_path=entry_path,
+                    raw_archive_path=raw_archive_path,
+                    source_archive_path=source_archive_path,
+                )
+
         # 1. Create raw archive.
         raw_archive_folder = self.drive.ensure_path(self.root_folder_id, raw_archive_parts)
         original_files_folder = self.drive.ensure_folder(raw_archive_folder.id, "original_files")
@@ -748,7 +786,9 @@ class InboxToEntryDriveWorkflow:
         if raw_item.kind == "folder":
             # Copy folder contents to raw archive. The original folder is moved to inbox/archived
             # only after all entry files and PROCESSING_RESULT.json are successfully written.
-            source_files = self.copy_folder_children_to_original_files(raw_item, original_files_folder)
+            source_files = self.copy_folder_children_to_original_files(
+                raw_item, original_files_folder, resume=bool(calendar_package),
+            )
         else:
             moved = self.drive.move_file(raw_item.item.id, original_files_folder.id, old_parent_ids=[raw_item.parent_folder.id])
             source_files.append(f"original_files/{moved.name}")
@@ -775,20 +815,22 @@ class InboxToEntryDriveWorkflow:
         revision_json = self.build_revision_json(entry_id=entry_id)
         source_links_json = self.build_source_links_json(raw_input_id=raw_input_id, raw_ref_path=raw_ref_path)
 
-        # 4. Write entry files.
-        self.drive.upload_json(entry_folder.id, "ENTRY.json", entry_json)
-        self.drive.upload_text(entry_folder.id, "entry.md", entry_markdown, mime_type="text/markdown")
-        self.drive.upload_json(raw_revision_folder.id, "revision.json", revision_json)
-        self.drive.upload_text(raw_revision_folder.id, "text.md", raw_text + "\n", mime_type="text/markdown")
-        self.drive.upload_json(links_folder.id, "source_raw_inputs.json", source_links_json)
+        write_json = self.drive.upsert_json if calendar_package else self.drive.upload_json
+        write_text = self.drive.upsert_text if calendar_package else self.drive.upload_text
+        if not calendar_package:
+            write_json(entry_folder.id, "ENTRY.json", entry_json)
+        write_text(entry_folder.id, "entry.md", entry_markdown, mime_type="text/markdown")
+        write_json(raw_revision_folder.id, "revision.json", revision_json)
+        write_text(raw_revision_folder.id, "text.md", raw_text + "\n", mime_type="text/markdown")
+        write_json(links_folder.id, "source_raw_inputs.json", source_links_json)
 
-        # 5. Move processed folder item out of active inbox, if applicable.
-        # Flat files were already moved into original_files above.
         source_archive_path = None
-        if raw_item.kind == "folder":
+        if calendar_package:
+            # Publish ENTRY.json only after its revisions and provenance are durable.
+            source_archive_path = f"inbox/archived/{year}/{month}/{raw_item.item.name}"
+        elif raw_item.kind == "folder":
             source_archive_path = self.archive_processed_folder_item(raw_item, year, month)
 
-        # 6. Write PROCESSING_RESULT.json last, including sourceArchivePath.
         processing_result_json = self.build_processing_result_json(
             raw_input_id=raw_input_id,
             source_label=f"{raw_item.label}/{raw_item.item.name}",
@@ -798,7 +840,11 @@ class InboxToEntryDriveWorkflow:
             external_source=external_source,
             source_archive_path=source_archive_path,
         )
-        self.drive.upload_json(raw_archive_folder.id, "PROCESSING_RESULT.json", processing_result_json)
+        write_json(raw_archive_folder.id, "PROCESSING_RESULT.json", processing_result_json)
+
+        if calendar_package:
+            write_json(entry_folder.id, "ENTRY.json", entry_json)
+            self.archive_processed_folder_item(raw_item, year, month)
 
         return ProcessResult(
             status="success",
