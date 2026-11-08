@@ -1343,7 +1343,7 @@ Home очередь по умолчанию использует ACTIVE + ARCHIV
 
 UI предоставляет явное действие у конкретной ошибки; рабочее название — «Убрать из внимания». Это не общий сброс всех review items Entry. Точное место кнопки и physical resolution/audit schema остаются деталями реализации. **История:** [FQ-06/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/05_SQ-05_dismiss-ai-error/00_thread.md).
 
-**[О]** Следующий отдельный выбор — [исход комплексного proposal после частичного принятия](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md); возможность частичного review уже есть, но судьба оставшихся частей не выбрана.
+**[Д, 18.10.2026]** [Исход комплексного proposal после частичного принятия](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md) уже согласован: подтверждение Result закрывает весь proposal со статусом «Принято частично», создаёт одну Revision; непринятые части не остаются pending. Подробности — §26.34.
 
 ### 26.34. Уточнение 18.10.2026 — трёхпанельный review и «Принято частично»
 
