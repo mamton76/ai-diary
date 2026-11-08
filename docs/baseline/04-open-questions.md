@@ -811,7 +811,10 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-001 — Calendar inbox priority
 
-Оставляем production feature или считаем transition adapter?
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-INT-001 thread](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md)
+
+Роль уже решена в [PQ-009](04-open-questions.threads/09_PQ-009_calendar-inbox-role/00_thread.md): optional production capture adapter, не canonical storage. Здесь обсуждаем **приоритет подключения Calendar Inbox** относительно Telegram и остальных capture-adapters, а не пересматриваем роль Calendar.
 
 ## AQ-INT-002 — Calendar timeline priority
 
