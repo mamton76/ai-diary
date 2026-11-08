@@ -1,10 +1,10 @@
 # AQ-INT-002 — Calendar Timeline priority
 
 **Источник:** [04-open-questions.md / AQ-INT-002](../../04-open-questions.md#aq-int-002--calendar-timeline-priority)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation (2026-11-08)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -26,6 +26,8 @@ ChatGPT — Рекомендация для MVP: Timeline Projection не дел
 
 **Нужно от пользователя:** Calendar Timeline Projection реализовываем одновременно с ранним Calendar Inbox или отдельно следующим этапом, после первых рабочих записей в web?
 
-пользователь —
+пользователь — «мне кажется умение обновлять в календаре это очень удобно - до полученяи полнорабочего сайта есть другой интерфейс для валидации»
 
-**Решение:** —
+ChatGPT — Принято: Calendar Timeline Projection нужна рано, одновременно с развитием Calendar Inbox, а не после готовности полноценного web UI. Это позволяет визуально проверять результат обработки записей в привычном Calendar интерфейсе до завершения сайта. Существующий исторический workflow 05_Workflow_Google_Calendar_Timeline_Projection.md предусматривает идемпотентные create/update из canonical Entries, one-way sync, один Calendar event на Entry и overwrite ручных изменений Calendar при следующей проекции. Слово «валидация» не означает автоматически редактирование canonical Diary из Calendar: write-back остаётся отдельным открытым UX вопросом; нельзя незаметно менять ранее утверждённый one-way model.
+
+**Решение:** [принято] (2026-11-08) Calendar Timeline Projection — часть раннего интеграционного этапа рядом с Calendar Inbox, до полнофункционального web UI. Использовать как альтернативный интерфейс просмотра и визуальной проверки Entry. Сохранить one-way canonical Entry → Calendar event с обновлением одного event при committed changes и независимостью от Calendar Inbox. Вопрос о корректировках/подтверждении записей непосредственно через Calendar требует отдельного явного решения; пока не включать calendar-to-diary write-back.
