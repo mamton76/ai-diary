@@ -68,6 +68,7 @@
 | 52 | PQ-014 | Для кого продукт и какой главный ценностный цикл | ждём пользователя | 🟢 open | none | — | [📁](52_PQ-014_positioning-value-loop/) | [00_thread.md](52_PQ-014_positioning-value-loop/00_thread.md) | 03-product-baseline.md / prd.md |
 | 53 | PQ-015 | Трекеры, цели и вопросы в голосовых сессиях | ждём пользователя | 🟢 open | none | — | [📁](53_PQ-015_trackers-questions/) | [00_thread.md](53_PQ-015_trackers-questions/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / file format |
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | ждём пользователя | 🟢 open | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
+| 55 | PQ-017 | Запуск синхронизации с Calendar из web | ждём пользователя | 🟢 open | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
 
 ## Быстрая легенда lifecycle
 

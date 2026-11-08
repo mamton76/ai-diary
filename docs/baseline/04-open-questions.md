@@ -308,6 +308,13 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 **Статус:** ОТКРЫТО  
 **Обсуждение:** [тред](04-open-questions.threads/54_PQ-016_digest-album-proposal/00_thread.md)
 
+## PQ-017 — Запуск синхронизации с Calendar из web
+
+При подключённой интеграции с Google Calendar: нужна ли в web-клиенте ручная синхронизация, что именно она делает (импорт Inbox, обновление Timeline) и где она в интерфейсе. Сейчас ручной запуск есть только у Telegram-бота прототипа.
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md)
+
 ---
 
 # 2. Data / storage вопросы
