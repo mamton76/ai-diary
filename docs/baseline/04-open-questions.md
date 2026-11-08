@@ -817,10 +817,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-002 — Calendar timeline priority
 
-**Статус:** обсуждаем  
-**Обсуждение:** [AQ-INT-002 thread](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md)
-
-Роль Calendar Timeline Projection уже решена: separate one-way derived projection, one Entry — one Calendar event, обновление event на committed revision, не отдельные события для каждой revision (PQ-009). Осталось выбрать приоритет: одновременно с ранней Calendar Inbox или следующим этапом после первых рабочих Entries в web.
+**Статус:** РЕШЕНО  
+**Решение:** Calendar Timeline Projection реализуется на раннем интеграционном этапе параллельно с развитием Calendar Inbox — **до полнофункционального web UI**. Google Calendar нужен как альтернативный интерфейс для просмотра и визуальной проверки обработанных Entries. Сохраняем one-way derived projection из canonical Entry в Calendar с обновлением существующего event на committed changes (один event на Entry, без публикации pending proposals). Изменение diary canonical files из Calendar не разрешено текущим решением, write-back/validation actions обсудить отдельно.  
+**История обсуждения:** [AQ-INT-002 thread](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md)
 
 ## AQ-INT-003 — Telegram scope
 
