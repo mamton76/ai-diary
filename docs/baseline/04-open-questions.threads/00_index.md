@@ -70,7 +70,7 @@
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | решён | ✅ resolved | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
 | 55 | PQ-017 | Запуск синхронизации с Calendar из web | решён | ✅ resolved | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
 | 56 | PQ-018 | Цель «портфолио»: что и как показываем | решён | ✅ resolved | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
-| 57 | AQ-AI-010 | Модель трекеров и политика вопросов | открыт | 🟢 open | none | — | [📁](57_AQ-AI-010_tracker-model-questions/) | [00_thread.md](57_AQ-AI-010_tracker-model-questions/00_thread.md) | 03-product-baseline.md §15.7 / inventory AI-032, AI-033 / файловый формат |
+| 57 | AQ-AI-010 | Модель трекеров и политика вопросов | обсуждаем | 🔒 in_discussion | active | Claude | [📁](57_AQ-AI-010_tracker-model-questions/) | [00_thread.md](57_AQ-AI-010_tracker-model-questions/00_thread.md) | 03-product-baseline.md §15.7 / inventory AI-032, AI-033 / файловый формат |
 
 ## Быстрая легенда lifecycle
 
