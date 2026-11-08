@@ -320,7 +320,11 @@ Canonical content и revisions остаются в user-owned storage. Operation
 Storage имеет одну общую `formatVersion`. Migration запускается как явная операция с backup/snapshot и maintenance/read-only lock: на время migration запрещены user edits и любые mutating workflows, включая legacy Calendar/Telegram/file-based writers. Migration переписывает только реально изменившиеся типы данных, затем проходит schema/integrity/data-loss validation; новая format version активируется только после успешной полной проверки. Пользователь получает migration report и может точечно открыть before/after для изменённых или проблемных объектов.
 
 ### DATA-010 — Нужны backup/export/restore semantics
-**Статус:** ПОДТВЕРЖДЕНО.
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0 — export через файлы и документ формата; Later — кнопка «Скачать архив»  
+**Export:** для E0–E2 export — это сами canonical-файлы в Drive пользователя плюс документ «как читать свои данные без приложения» (формат, раскладка папок, где лежат revisions, assets и provenance). Отдельной функции экспорта нет. Кнопка «Скачать архив» с консистентным zip-снимком — Later ([FQ-EXPORT-001](06-future-questions.md#fq-export-001--скачать-архив-дневника)).  
+**Backup/restore:** по [AQ-OPS-003](04-open-questions.threads/38_AQ-OPS-003_backup-restore-test/00_thread.md) — воспроизводимый restore test по команде в изолированном хранилище.  
+**Основание:** [PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md) (2026-11-08).
 
 ### DATA-011 — External canonical changes не должны приводить к silent overwrite
 **Статус:** ПОДТВЕРЖДЕНО ДЛЯ MVP  
@@ -598,6 +602,24 @@ AI Diary имеет собственный stable internal user/account ID. Goog
 ### AUTH-004 — Конкретный auth service/framework не фиксируется заранее
 **Статус:** ПОДТВЕРЖДЕНО  
 Firebase Auth, direct OIDC или другой auth middleware выбирается вместе с backend/hosting. Продуктовый контракт важнее конкретного провайдера: internal user identity должна оставаться независимой от login method.
+
+### AUTH-007 — Отключение Drive не теряет данные и команды
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0  
+При отключении Drive в настройках или отзыве доступа в аккаунте Google файлы в Drive, включая черновики, не трогаются. Команды в очереди получают статус «Нужен доступ к Drive» и выполняются после повторного подключения или отменяются пользователем, но не теряются молча. Derived индекс удаляется и перестраивается после повторного подключения. Внешний отзыв распознаётся по ошибке токена и показывается как «Доступ к Drive отозван — подключить снова».  
+**Основание:** [PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md) (2026-11-08).
+
+### AUTH-008 — Отключение Calendar останавливает интеграции, но не удаляет события
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** интеграционный  
+При отключении Calendar импорт из Calendar Inbox и обновление Calendar Timeline останавливаются; уже созданные события в календаре остаются.  
+**Основание:** [PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md) (2026-11-08).
+
+### AUTH-009 — Удаление аккаунта AI Diary
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** не обсуждался — назначить по таблице этапов §22.1  
+После явного подтверждения (например, ввода слова) сервер сразу удаляет всё своё: очередь, индекс, токены с отзывом grant в Google, учётную запись и настройки. Записи дневника в Drive этим действием никогда не удаляются. Опциональные галочки: «удалить также технические данные AI Diary из Drive» (только техническая подпапка, PRIV-011) и «удалить события Calendar Timeline».  
+**Основание:** [PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md) (2026-11-08).
 
 ### AUTH-005 — Multi-user application с изолированными данными
 **Статус:** ПОДТВЕРЖДЕНО  

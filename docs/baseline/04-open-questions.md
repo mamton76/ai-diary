@@ -281,8 +281,11 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 Что считается export для DATA-010 (у пункта нет тела), что происходит с данными при отзыве Drive/Calendar-доступа и при удалении аккаунта AI Diary ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), H10/H11).
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [PQ-013 thread](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md)  
+**Перенесено в:** [inventory DATA-010, AUTH-007…009](02-requirements-inventory.md#data-010--нужны-backupexportrestore-semantics), [Product baseline §18](03-product-baseline.md#18-authentication-и-user-model), [Screens Spec S11](AI-Diary-Screens-Spec-v0.1.md#16-s11--настройки-и-подключения), [FQ-EXPORT-001](06-future-questions.md#fq-export-001--скачать-архив-дневника)
+
+**Решение:** export для E0–E2 — canonical-файлы в Drive плюс документ о чтении данных без приложения; «Скачать архив» — Later. При отключении Drive файлы не трогаются, очередь ждёт повторного подключения (или отменяется), индекс удаляется и перестраивается, внешний отзыв показывается понятно. При отключении Calendar импорт и Timeline останавливаются, события остаются. Удаление аккаунта после подтверждения сразу стирает серверные данные и токены; записи в Drive не удаляются никогда, техническая подпапка и события Timeline — по опциональным галочкам.
 
 ---
 

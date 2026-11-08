@@ -706,7 +706,7 @@ Accepted и rejected proposals не исчезают из history. Accepted пе
 
 ### Аккаунт и дневник
 
-Состояние входа, Google Drive connection, возможность дать необходимый consent. Calendar — отдельное optional подключение. **[О]** Account switch/revocation/re-auth UX уточняется при реализации OAuth.
+Состояние входа, Google Drive connection, возможность дать необходимый consent. Calendar — отдельное optional подключение. **[Д, 08.11.2026]** Отключение Drive и Calendar и удаление аккаунта следуют AUTH-007…AUTH-009 ([PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md)): статус «Доступ к Drive отозван — подключить снова»; удаление аккаунта с явным подтверждением и опциональными галочками «удалить технические данные AI Diary из Drive» и «удалить события Calendar Timeline»; записи в Drive не удаляются. **[О]** Account switch и детали re-auth UX уточняются при реализации OAuth.
 
 ### AI
 
