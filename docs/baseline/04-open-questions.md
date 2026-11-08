@@ -836,6 +836,9 @@ Provider должен получать уже подготовленный conte
 
 ## AQ-INT-005 — Assistant-specific integrations
 
+**Статус:** обсуждаем  
+**Обсуждение:** [AQ-INT-005 thread](04-open-questions.threads/46_AQ-INT-005_assistant-integrations/00_thread.md)
+
 Если ChatGPT/Gemini/другие ассистенты умеют напрямую писать в Calendar или API, нужно решить, считать ли это официальным integration path или просто удобным external capture mechanism.
 
 ---
