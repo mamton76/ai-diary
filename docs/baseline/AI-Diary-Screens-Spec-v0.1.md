@@ -647,7 +647,31 @@ Unlinked Asset виден в Library. Soft delete сохраняет связи 
 
 Обязательный самостоятельный экран: catalog of routines, запуск, создание и редактирование user routine, history/runs, результаты и статистика **processed / skipped / errors / time или duration**. Детали запуска переиспользуют S10. **[П]** Структура вкладок Routines / Runs (History).
 
-System routines immutable; доступна Duplicate / Copy в пользовательскую копию с редактированием. Минимальная модель user routine: **name, description, prompt/instructions, scope/eligibility, application policy**. Точная форма и application policy остаются [О]; model preference продолжает общую иерархию настроек.
+System routines immutable; доступна Duplicate / Copy в пользовательскую копию с редактированием. Минимальная модель user routine: **name, description, prompt/instructions, scope/eligibility, application policy**. Форма editor и размещение Application policy определены ниже; model preference продолжает общую иерархию настроек.
+
+### 15.6.1. Workflow editor UX [Д, 08.11.2026]
+
+Канонический thread: [AQ-AI-008](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md). Решения об editor UX применяются поверх архитектуры [AQ-AI-002](07-ai-workflow-architecture.md); исполняемый код, trust и versioned profiles остаются отдельными сущностями.
+
+**Presentation / scaffold.** User routine редактируется вертикальным pipeline раскрываемых карточек, не node-canvas. `+ New routine` сразу показывает scaffold `Workflow settings → Input / Trigger → Processing pipeline (+ Add step) → Output / Side effects → Application policy`. Основной CTA на Routines — `+ New routine`; дополнительно `Duplicate` и `Save as routine` из Custom prompt / ad hoc Run. Последний путь переносит фактический execution setup, а не только prompt.
+
+**Header / workflow settings.** В header: имя, `Draft based on vN`, последняя published version, `Test run`, `Publish`, `History`. Общие редактируемые settings компактны: Name, Description, Default model, Default executor, Default capability profile. Lifecycle/version status не входит в settings. Draft сохраняется автоматически; закрытие и повторное открытие editor продолжает сохранённый Draft, без Publish.
+
+**Input / Trigger.** Отдельная, не переставляемая секция над pipeline. Определяет trigger/source, Eligibility (какие записи вообще допустимы) и Scope default (какой набор выбрать при конкретном запуске). Scope default не заменяет eligibility.
+
+**Processing pipeline.** В первом прототипе `+ Add step` предлагает только `AI step`, `Executor / Tool`, `Condition`, `Validator`. Все карточки имеют каркас `Type / Inputs / Config / Outputs / Error policy`, но Config зависит от типа. Свернутая карточка показывает номер, тип/имя, краткое `input → output`, важные runtime hints и error policy. Несколько карточек могут быть открыты одновременно. Если совместимый input имеет однозначный безопасный source, outputs предыдущих шагов связываются автоматически; `Inputs mapping` позволяет проверить и вручную изменить связь. Condition рисуется как вложенные вертикальные ветви, которые могут сходиться к общему шагу; это надо проверить в UI-прототипе на реальных workflows.
+
+**AI step.** Поля: Name, Instructions/Prompt, Inputs mapping, Output schema, Model, Error policy. По умолчанию модель `Inherit workflow default`; step-specific override допускается. Prompt редактируется inline в большом поле; `Open full editor` даёт просторный editor с доступными inputs/variables и expected output schema. Сложный validator не скрывается внутри AI step.
+
+**Executor / Tool.** Карточка показывает module/executor, version, trust status, parameters, capabilities, inputs/outputs и error policy; полный код и trust review доступны через `View code / Review trust`. Untrusted module разрешено выбирать, сохранять в Draft и включать в published routine, но Test run/обычный Run заблокирован до explicit trust конкретной module version; опубликованная routine помечается `requires trust before run`.
+
+**Validator / capabilities.** Простые declarative checks (`required`, `type`, `enum`, `range`, `pattern`, `non-empty` и подобные) настраиваются прямо в Validator card; code validator ссылается на отдельный trusted/versioned tool. Default capability profile находится в верхних settings, а шаг показывает только свои requirements. Несовместимость requirements и выбранного profile видна в editor.
+
+**Output / Side effects и Application policy.** Обе отдельные декларативные секции после pipeline, не draggable steps. Output описывает analysis results, Proposals, canonical mutations, external updates и derived state, в том числе отсутствие изменений canonical Entry. Application policy определяет auto-apply / proposal / review (для Tag Enrichment: confident existing tag может auto-apply, новый tag — Proposal, uncertain — Review). Это не Condition: Condition меняет control flow.
+
+**Test / Publish / validation.** `Test run` в header запускает snapshot текущего Draft и открывает Run Detail со статусами шагов, outputs и errors/warnings. Успешный test даёт `Publish tested version` именно проверенного snapshot. Editor показывает `N errors · M warnings` сверху и локальные проблемы рядом с секциями/шагами, summary ведёт к проблеме. Publish блокируют structural/configuration errors (broken mapping, required input без source, invalid condition, incompatible output contracts, missing mandatory executor/tool, unsatisfiable capability requirement). Runtime-readiness issues (untrusted executor, unavailable model, temporarily missing default capability profile при возможности выбрать его при Run) — warnings: Publish возможен с `requires setup / not ready to run`. Отдельный read-only Preview всего workflow не нужен; при Publish показывается компактное confirmation с именем routine, номером новой/базовой version, числом шагов, default model/executor/profile и warnings, с Cancel / Confirm.
+
+**History / mobile.** `History` — отдельная panel/page, не часть pipeline: immutable versions, даты, краткие changelogs, Compare, Restore as new version для user workflows; system history read-only с diff и Duplicate this version. На mobile семантика вертикального pipeline та же; карточки на всю ширину, сложные Config/mapping/schema могут открываться sheet/full-screen, вложенные Condition сохраняются, а History/full prompt/code-trust — отдельные full-screen surfaces.
 
 ### 15.7. Точки входа, scope и повторные запуски [Д]
 
@@ -680,7 +704,7 @@ Accepted и rejected proposals не исчезают из history. Accepted пе
 
 Если модель недоступна, тихая замена другой моделью/provider запрещена. **[П]** UI показывает проблему и предлагает явный выбор доступной модели или повтор позже.
 
-User instructions/overrides поддерживаются отдельно от стабильных system contracts. **[Д]** Создание пользовательских routines вынесено в S13 (§15.6). **[О]** Конкретные controls редактора и расширенные trigger/schedule возможности ещё не определены; разовый Custom prompt остаётся самостоятельным действием.
+User instructions/overrides поддерживаются отдельно от стабильных system contracts. **[Д]** Создание пользовательских routines вынесено в S13 (§15.6). **[Д]** Controls workflow editor определены в S13 §15.6.1; **[О]** расширенные trigger/schedule возможности ещё не определены. Разовый Custom prompt остаётся самостоятельным действием.
 
 ### Calendar
 
