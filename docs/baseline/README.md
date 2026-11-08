@@ -34,6 +34,10 @@ AI Diary за время обсуждения прошёл через неско
 - [`05-source-ledger.md`](05-source-ledger.md) — карта источников: GitHub, project-документы и наши обсуждения.
 - [`06-future-questions.md`](06-future-questions.md) — parking lot для важных вопросов, сознательно отложенных за пределы текущего MVP/архитектурного этапа.
 
+## Актуальная целевая архитектура и delivery plan (08.11.2026)
+
+Решения из этого baseline консолидированы в [текущей архитектуре Web/API MVP](../architecture.md) и [поэтапном плане реализации](../implementation-plan-web-mvp.md). Эти документы описывают целевой design и порядок работ, а не состояние реализованного кода. Старый Android/Room/Firebase вариант сохранён как [historical architecture](../architecture-legacy-android-firebase.md).
+
 ## Технические проекты от 18.10.2026
 
 Это review-документы поверх принятых требований; они не объявляют новый утверждённый architecture baseline и не запускают migration.
