@@ -70,6 +70,8 @@
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | решён | ✅ resolved | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
 | 55 | PQ-017 | Запуск синхронизации с Calendar из web | решён | ✅ resolved | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
 | 56 | PQ-018 | Цель «портфолио»: что и как показываем | решён | ✅ resolved | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
+| 57 | PQ-019 | Дайджест со статистикой на первом этапе | обсуждаем | 🔒 in_discussion | active | Claude | [📁](57_PQ-019_digest-first-stage/) | [00_thread.md](57_PQ-019_digest-first-stage/00_thread.md) | 03-product-baseline.md §22.1 / план / inventory |
+| 58 | AQ-AI-012 | Где выполняется AI на первом этапе | обсуждаем | 🔒 in_discussion | active | Claude | [📁](58_AQ-AI-012_ai-runtime-first-stage/) | [00_thread.md](58_AQ-AI-012_ai-runtime-first-stage/00_thread.md) | architecture.md §6 / план / 07-ai-workflow-architecture.md |
 
 ## Быстрая легенда lifecycle
 
