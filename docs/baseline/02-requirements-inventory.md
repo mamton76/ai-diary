@@ -731,6 +731,14 @@ Reusable executors/scripts/tools являются отдельными versioned
 **Статус:** ПОДТВЕРЖДЕНО  
 Output schema и declarative validation rules являются частью versioned workflow definition. Простые structural checks задаются декларативно; сложные validators с executable code реализуются отдельными trusted/versioned executors/tools. Архитектурная база: [07-ai-workflow-architecture.md](07-ai-workflow-architecture.md). Конкретный workflow editor UX вынесен в [AQ-AI-008](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md).
 
+### AI-031 — Workflow editor UX: vertical pipeline, Draft autosave and Publish confirmation
+**Статус:** ПОДТВЕРЖДЕНО (AQ-AI-008, 08.11.2026)  
+User workflow редактируется через вертикальный pipeline раскрываемых step cards с simple nested conditions, а не graph/node canvas. Новая routine открывается со scaffold из Workflow settings, Input/Trigger (eligibility и scope default), Processing pipeline, Output/Side effects и Application policy. Первый прототип имеет четыре типа step: AI, Executor/Tool, Condition, Validator; общие поля Type/Inputs/Config/Outputs/Error policy, auto-mapping при однозначности с ручным remap.
+
+Workflow defaults: name, description, model, executor, capability profile. AI prompt редактируется inline с возможностью открыть полный editor с variables/output schema; modules/version/trust/capability requirements видны в карточке, подробный код/trust — отдельно. Untrusted module не блокирует Draft/Publish, но блокирует Run/Test до explicit trust конкретной версии. Simple declarative validators редактируются inline, code validators используют trusted executor.
+
+Workflow Draft autosaves с возможностью закрыть editor и вернуться без Publish. Header содержит Draft/published-version status, Test run, Publish, History. Test run сохраняет snapshot, открывает Run Detail и позволяет Publish tested version. Validation feedback виден как summary и локально; Publish блокирует structural errors, а runtime readiness issues допускает опубликование с warning/not-ready. Отдельный read-only Preview не нужен: Publish показывает confirmation с version, steps, defaults и warnings. History хранит immutable published versions с Compare/Restore (system history — read-only и Duplicate). На mobile сохраняется вертикальный pipeline с full-width cards, sheets/full-screen secondary editors. Канонические детали: [AQ-AI-008 thread](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md), [Screens Spec §15.6.1](AI-Diary-Screens-Spec-v0.1.md).
+
 ---
 
 # L. Calendar / integrations
