@@ -1,0 +1,11 @@
+.env
+*.env
+secrets/
+google_token.json
+google_token.pickle
+google_credentials.json
+*.log
+*.pid
+__pycache__/
+*.pyc
+diary_agent_state.json
