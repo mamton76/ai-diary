@@ -774,6 +774,18 @@ Workflow defaults: name, description, model, executor, capability profile. AI pr
 
 Workflow Draft autosaves с возможностью закрыть editor и вернуться без Publish. Header содержит Draft/published-version status, Test run, Publish, History. Test run сохраняет snapshot, открывает Run Detail и позволяет Publish tested version. Validation feedback виден как summary и локально; Publish блокирует structural errors, а runtime readiness issues допускает опубликование с warning/not-ready. Отдельный read-only Preview не нужен: Publish показывает confirmation с version, steps, defaults и warnings. History хранит immutable published versions с Compare/Restore (system history — read-only и Duplicate). На mobile сохраняется вертикальный pipeline с full-width cards, sheets/full-screen secondary editors. Канонические детали: [AQ-AI-008 thread](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md), [Screens Spec §15.6.1](AI-Diary-Screens-Spec-v0.1.md).
 
+### AI-032 — Трекеры: живые и заданные пользователем
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E4  
+Статистика динамики строится на сущности Tracker. AI предлагает трекеры по повторяющимся темам; пользователь может задать трекер сам, в том числе как цель на старте. Жизненный цикл: предложен → активен → на паузе / в архиве; история архивного трекера сохраняется. Если по трекеру перестают поступать данные, система спрашивает, продолжать ли его отслеживать. Большинство трекеров — журналы событий; числовая шкала, счётчик и свободный прогресс — дополнительные типы. Цели хранятся с периодом действия, и каждый период сравнивается с действовавшей тогда целью. Новый трекер можно заполнить задним числом по старым записям с пометкой «выведено AI». Детали — AQ-AI-010.  
+**Основание:** [PQ-015](04-open-questions.threads/53_PQ-015_trackers-questions/00_thread.md) (2026-11-08).
+
+### AI-033 — Вопросы по трекерам: сначала асинхронно
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E4  
+На первом шаге система присылает 2–3 вопроса по трекерам письмом или уведомлением; пользователь отвечает голосовой заметкой, AI раскладывает ответ по трекерам. Вопросы ротируются и не спрашивают о том, что уже есть в записях за эти дни. Живой голосовой диалог — позже, поверх того же механизма. Навык для внешнего ассистента — AQ-AI-009.  
+**Основание:** [PQ-015](04-open-questions.threads/53_PQ-015_trackers-questions/00_thread.md) (2026-11-08).
+
 ---
 
 # L. Calendar / integrations
