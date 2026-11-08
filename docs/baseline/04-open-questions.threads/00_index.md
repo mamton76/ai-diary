@@ -63,7 +63,7 @@
 | 47 | PQ-012 | Каноническая граница этапов MVP | решён | ✅ resolved | none | — | [📁](47_PQ-012_mvp-stage-scope/) | [00_thread.md](47_PQ-012_mvp-stage-scope/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec §3 / implementation plan |
 | 48 | AQ-AI-006 | Sensitive-data policy | решён | ✅ resolved | none | — | [📁](48_AQ-AI-006_sensitive-data-policy/) | [00_thread.md](48_AQ-AI-006_sensitive-data-policy/00_thread.md) | 02-requirements-inventory.md (PRIV) / 03-product-baseline.md / Functional Spec / plan P6 |
 | 49 | AQ-SEC-001 | Защита содержимого дневника на стороне сервиса | решён | ✅ resolved | none | — | [📁](49_AQ-SEC-001_content-protection/) | [00_thread.md](49_AQ-SEC-001_content-protection/00_thread.md) | 02-requirements-inventory.md (PRIV/NFR) / 03-product-baseline.md / architecture.md |
-| 50 | PQ-013 | Export, отключение Google-доступа и удаление аккаунта | ждём пользователя | 🟢 open | none | — | [📁](50_PQ-013_data-exit/) | [00_thread.md](50_PQ-013_data-exit/00_thread.md) | 02-requirements-inventory.md (DATA-010) / 03-product-baseline.md / Functional/Screens Spec |
+| 50 | PQ-013 | Export, отключение Google-доступа и удаление аккаунта | ждём пользователя | 🔒 in_discussion | active | Claude | [📁](50_PQ-013_data-exit/) | [00_thread.md](50_PQ-013_data-exit/00_thread.md) | 02-requirements-inventory.md (DATA-010) / 03-product-baseline.md / Functional/Screens Spec |
 | 51 | AQ-OPS-006 | Правила для живых Abacus-скриптов до storage v1 | ждём пользователя | 🟢 open | none | — | [📁](51_AQ-OPS-006_live-scripts-interim/) | [00_thread.md](51_AQ-OPS-006_live-scripts-interim/00_thread.md) | implementation plan / architecture.md §9 / 02-requirements-inventory.md |
 
 ## Быстрая легенда lifecycle
