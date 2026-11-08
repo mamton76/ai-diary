@@ -736,7 +736,8 @@ Output schema и declarative validation rules являются частью vers
 # L. Calendar / integrations
 
 ### INT-001 — Calendar inbox — adapter, не ядро
-**Статус:** ПОДТВЕРЖДЕНО.
+**Статус:** ПОДТВЕРЖДЕНО.  
+Приоритет реализации: после общей CaptureItem/Inbox-to-Entry pipeline подключить Calendar Inbox **до Telegram**. Развивать уже имеющиеся скрипты переноса записей из Calendar в Google Drive после технической ревизии, приводя совместимые части к unified CaptureItem contract, сохранению raw/provenance и idempotent imports. Интеграция остаётся optional, не canonical storage и не core dependency; Calendar Timeline — отдельный этап. История: [AQ-INT-001](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md).
 
 ### INT-002 — Calendar timeline — derived projection
 **Статус:** ПОДТВЕРЖДЕНО.
