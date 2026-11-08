@@ -622,7 +622,7 @@ EntryScreen должен давать screen-level AI actions над текущ�
 
 Такие Entry workflows работают от committed revision. Если в manual editor есть dirty working draft, используется `Save & Run`: сначала создаётся manual revision, затем именно она становится input/base revision для AI run. Изменяющий workflow дальше создаёт Proposal и не переписывает Entry напрямую.
 
-Отдельно сохраняется кандидатная функция **inline AI editor assistance**: AI-команда над selection/current working draft (например rewrite, shorten, fix, continue). Это может оказаться полезным уже в MVP, но не является blocking requirement. Решение о включении принимается при реализации editor slice с учётом стоимости и необходимости отдельно определить undo/proposal/revision semantics для draft-level AI.
+AI-помощь непосредственно в редакторе над выделением или рабочим черновиком отложена за пределы первой версии. Отдельные AI-запуски и проверка предложений сохраняются по действующим правилам.
 
 Отдельный постоянный `AI note / annotation` block на EntryScreen не нужен: actionable AI mutation представлена Proposal, применённое изменение — Revision, историческая причина/trace — provenance/AI run details, а non-mutating analysis остаётся workflow result.
 
@@ -1316,3 +1316,7 @@ Calendar на Home по умолчанию учитывает ACTIVE и ARCHIVED
 ## Уточнение 19.10.2026 — адаптивная проверка AI-предложения на телефоне
 
 **[Д, 19.10.2026] Настраиваемый mobile AI review.** Три смысловые роли Base / Result / Proposal сохраняются при любой компоновке; широкий desktop использует три панели. Для телефона в S11 «Настройки → Отображение → Проверка AI» доступны два режима: **«Переключение»** — одна роль за раз через «Исходник / Результат / Предложение AI», при входе показан Result; **«Две панели»** — редактируемый Result и read-only область с переключателем «Исходник / Предложение AI». В двухпанельном режиме landscape располагает области рядом при достаточной ширине, portrait — одну над другой; при недостатке ширины используется вертикальная компоновка. Начальный режим — «Две панели» по предыдущему уточнению; пользователь может попробовать оба, выбор сохраняется между открытиями. Это предпочтение отображения, не content Entry/Revision. Result и Proposal показывают diff относительно Base; Current доступен при конфликте. Переключение режима, роли сравнения или ориентации продолжает тот же review draft без потери правок и без Apply/новой Revision; прежние autosave/resume, dirty и freshness guards действуют. Конкретные breakpoint/пропорции — реализация. [История UI-Q06](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md).
+
+### Уточнение 08.11.2026 — редактор Entry
+
+Редактор первого релиза поддерживает жирный, курсив, списки и ссылки через кнопки. Текст записи хранится как Markdown; знание синтаксиса не требуется. Поддерживаемое форматирование сохраняется при повторном открытии, Save и Restore. [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md).

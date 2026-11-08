@@ -403,7 +403,7 @@ Proposals находятся вне EntryPanel; их точное положен
 
 В view содержимое read-only. При edit становятся доступны соответствующие controls C01. Title остаётся отдельным от body; дата события редактируется отдельно от created/updated.
 
-**[О]** Textarea, Markdown, rich text с Markdown-сериализацией или structured editor — выбор AQ-WEB-003, ещё не принят. ТЗ не требует конкретную библиотеку или сложную панель форматирования.
+**[Д, 08.11.2026]** Редактор первого релиза поддерживает жирный, курсив, списки и ссылки через кнопки. Текст записи хранится как Markdown; знание синтаксиса не требуется. Поддерживаемое форматирование сохраняется при повторном открытии, Save и Restore. [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md).
 
 Manual content editing не должен незаметно превращаться в редактирование source/composition. Отдельный composition editor в текущий scope не включается.
 
@@ -641,7 +641,7 @@ Unlinked Asset виден в Library. Soft delete сохраняет связи 
 
 ### 15.5 Что пока не включать
 
-**[F]** Merge/split Entry, bulk AI mutation/delete, advanced model comparison и AI memory. **[О]** Inline assistance над selection/working draft — кандидат на editor slice; его undo/proposal/revision semantics ещё не определены. Он не подменяет Save & Run.
+**[F]** Merge/split Entry, bulk AI mutation/delete, advanced model comparison и AI memory. **[F]** AI-помощь непосредственно в редакторе над выделением или рабочим черновиком отложена за пределы первой версии. Отдельные AI-запуски и проверка предложений сохраняются по действующим правилам.
 
 ### 15.6 S13 — Routines [Д]
 
@@ -883,13 +883,13 @@ User instructions/overrides поддерживаются отдельно от �
 | UI-Q01 | Когда включаем Обзор, web-create, lifecycle UI и полную Asset Library? | Сохранить E0 маленьким; dashboard как отдельный UX slice |
 | UI-Q02 | Как считаем многодневные/приблизительные события в календаре и статистике? | Утвердить единые правила до реализации dashboard/date filtering |
 | UI-Q03 — решён | Первоначальный лимит облака: [история](AI-Diary-Screens-Spec-v0.1.threads/01_UI-Q03_tag-cloud-limit/00_thread.md) | До 30 самых частых тегов; «Показать все» раскрывает остальные. Частота по всей области главной. Конкретное размещение/равные частоты — детали реализации |
-| UI-Q04 | Editor type и форматирование? | [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md): базовое форматирование кнопками либо обычный текст; пользовательский выбор ещё открыт, сериализация/библиотека отдельно |
+| UI-Q04 — решён | Редактор текста | Базовое форматирование кнопками, хранение текста в Markdown. [AQ-WEB-003](04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md) |
 | UI-Q05 — технический остаток | Partial uploads/late completion и recovery protocol | Готовые Asset после Discard согласованы; review draft имеет autosave/resume по FQ-07/SQ-01. Остаётся технический протокол частичных загрузок/recovery, а не повторный продуктовый выбор merge draft |
 | UI-Q06 — решён | Настраиваемый mobile AI proposal review | S11 «Отображение → Проверка AI»: «Переключение» / «Две панели», выбор сохраняется. Две панели рядом в landscape, друг над другом в portrait. Desktop — три панели. [История](AI-Diary-Screens-Spec-v0.1.threads/04_UI-Q06_mobile-proposal-review/00_thread.md) |
 | UI-Q07 — решён (продуктовая семантика) | Окончательное удаление Entry и зависимые материалы: [FQ-08/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/03_SQ-03_entry-permanent-delete-content/00_thread.md) | Всё содержимое Entry удаляется без восстановления; исключительно связанные Asset — отдельное предложение soft delete; остальные остаются. Внешние originals не удаляем. Протокол очистки/backup retention — техническая проработка |
 | UI-Q08 — решён | Исход после partial apply | «Принято частично» закрывает весь proposal; непринятые части остаются в исходном Proposal/history без pending-остатка. [История FQ-07](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/00_thread.md) |
 | UI-Q09 — решён | Timezone rolling days: [FQ-05/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/01_SQ-01_rolling-day-timezone/00_thread.md) | Настройка пользователя; при отличии устройства предложить смену, применить после подтверждения. Lifecycle counters и периоды +6/+29 приняты; прочие аспекты FQ-05 отдельны |
-| UI-Q10 | Inline AI assistance над draft? | Кандидат; сначала undo/proposal/revision semantics |
+| UI-Q10 — отложено | AI-помощь внутри редактора | За пределами первой версии; отдельные AI-запуски сохраняются |
 | UI-Q11 | Standalone Inbox, детали routine editor, export/maintenance screens? | Экран Routines и создание пользовательских routines приняты; детали формы и этап поставки уточняются |
 | UI-Q12 | Правила Unicode/пробелов и точный historic rendering name/color? Уникальность без учёта регистра и резервирование names/aliases удалённых тегов уже приняты | Immutable Revisions не переписываются; merge хранит redirect, delete сохраняет tagId/relations |
 | UI-Q13 | Точные visual layouts компонентов? | Одна раскрытая карточка; Title/Text/EventTimeRange/Tags/Asset links в обоих editors уже приняты |
