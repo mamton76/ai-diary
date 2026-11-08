@@ -806,6 +806,12 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 **Этап:** Later — optional proof of concept (P7) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 В первом работающем AI Diary ChatGPT/Gemini/Claude могут выступать внешними capture interfaces через общие supported transports, сначала Calendar Inbox (развитие существующих scripts), затем Telegram. Не требуются отдельные provider-specific assistant backends. Backend/domain API и CaptureItem contract проектируются так, чтобы можно было добавить remote MCP server как тонкий adapter без дублирования бизнес-логики. После базового API/Calendar pipeline предусмотрен ранний небольшой MCP proof of concept (save capture, finalize capture session, check status), но MCP не блокирует MVP. Нужны identity/auth, safe write controls и идемпотентность; конкретный client/plan/voice support каждого ассистента должен быть проверен, не предполагается универсальным. Решение: [AQ-INT-005](04-open-questions.threads/46_AQ-INT-005_assistant-integrations/00_thread.md).
 
+### INT-009 — Ручная синхронизация с Calendar из web
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** интеграционный; в web — с первой web-версией после подключения Calendar  
+Кнопка «Синхронизировать сейчас» есть в S11 → Calendar и на Обзоре (S02). Она ставит в общую очередь (API-006A) ту же команду, что и синхронизация по расписанию: импорт из Calendar Inbox, затем обновление Calendar Timeline. Расписание сохраняется. Повторное нажатие во время идущей синхронизации не запускает вторую, а показывает текущую; статус приходит по SSE (API-009). Рядом статус последнего запуска: когда, сколько импортировано, ошибки. Обзор показывает счётчик «ожидает импорта из календаря». Он вычисляется только при загрузке страницы (и после завершения запущенной синхронизации), без постоянного опроса календаря; может устаревать до перезагрузки. Без подключённого Calendar кнопка и счётчик скрыты.  
+**Основание:** [PQ-017](04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md) (2026-11-08).
+
 ### INT-007 — Calendar projection обновляет существующий event на committed revision
 **Статус:** ПОДТВЕРЖДЕНО.
 

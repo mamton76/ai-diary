@@ -58,6 +58,7 @@
 - Адаптировать найденные Calendar→Drive scripts к нормализованному CaptureItem вместо локальной финальной Entry schema.
 - Idempotent import по Google event identity/version; raw event snapshot сохранён; ошибки и повторный запуск предсказуемы.
 - Начать с ручного запуска импорта небольшого набора, не блокируя сценарий на расписании sync.
+- Web-кнопка «Синхронизировать сейчас» и счётчик «ожидает импорта» на Обзоре появляются с первой web-версией (INT-009, [PQ-017](baseline/04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md)); до этого — ручной запуск без web.
 - Не удалять внешние события/исходные записи; если workflow переносит event в processed calendar, эта операция не должна быть единственным подтверждением успешного canonical commit.
 
 **Calendar Timeline:**

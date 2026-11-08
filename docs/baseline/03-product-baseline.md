@@ -963,7 +963,7 @@ Selective sharing остаётся потенциально полезной **f
 | E2 — полный редактор и история | Полный EntryPanel edit, создание записи (CAP-010), history и Restore, архив/корзина, лёгкая библиотека материалов | P4 |
 | E3 — управление тегами | Каталог, aliases, rename, merge, soft delete/Restore | после P4 |
 | E4 — AI | Routines, workflows, proposals и review, executors и capability profiles (AI-026/027), workflow editor (AI-031); AI-бюджет (OPS-004) — gate до первого платного AI-вызова | P6 |
-| Интеграционный | Calendar Inbox и Calendar Timeline параллельно (INT-001/002); затем Telegram capture (INT-005) | P2, P5 |
+| Интеграционный | Calendar Inbox и Calendar Timeline параллельно (INT-001/002); ручная синхронизация из web — в настройках и на Обзоре, с первой web-версией после подключения Calendar (INT-009); затем Telegram capture (INT-005) | P2, P3, P5 |
 | Later | Регистрация и онбординг других пользователей; MCP proof of concept (INT-008, optional); пункты из «Можно отложить» ниже | P7 / вне плана |
 
 ### 22.2 Продуктовый минимум для архитектурного сравнения

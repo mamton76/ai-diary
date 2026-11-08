@@ -312,8 +312,11 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 При подключённой интеграции с Google Calendar: нужна ли в web-клиенте ручная синхронизация, что именно она делает (импорт Inbox, обновление Timeline) и где она в интерфейсе. Сейчас ручной запуск есть только у Telegram-бота прототипа.
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [PQ-017 thread](04-open-questions.threads/55_PQ-017_web-calendar-sync/00_thread.md)  
+**Перенесено в:** [inventory INT-009](02-requirements-inventory.md#int-009--ручная-синхронизация-с-calendar-из-web), [Screens Spec](AI-Diary-Screens-Spec-v0.1.md#calendar), [Product baseline §22.1](03-product-baseline.md#221-канонические-этапы-продукта)
+
+**Решение:** кнопка «Синхронизировать сейчас» в настройках Calendar и на Обзоре; та же команда, что по расписанию (импорт Inbox → обновление Timeline), через общую очередь, без параллельного запуска; счётчик «ожидает импорта» на Обзоре считается только при загрузке страницы и после завершения синхронизации, без постоянного опроса; без подключённого Calendar скрыто.
 
 ---
 
