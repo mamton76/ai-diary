@@ -1,10 +1,10 @@
 # AQ-INT-001 — Calendar Inbox priority
 
 **Источник:** [04-open-questions.md / AQ-INT-001](../../04-open-questions.md#aq-int-001--calendar-inbox-priority)  
-**Статус:** обсуждаем  
-**Состояние:** in_discussion  
-**Claim:** active  
-**Ведёт:** ChatGPT conversation (2026-11-08)  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
 **Дочерние треды:** —  
@@ -29,6 +29,8 @@ ChatGPT — Проверены source AQ-INT-001, принятый PQ-009 и и�
 
 **Нужно от пользователя:** ставим Calendar Inbox в первую очередь после общего capture pipeline или сначала реализуем Telegram, а Calendar подключим следующим этапом?
 
-пользователь —
+пользователь — «у нас джае уже есть наборы скриптов которые переносят на драйв записи - так что предлагаю его развивать. так что да А»
 
-**Решение:** —
+ChatGPT — Принят ранний приоритет Calendar Inbox: после готовности общей capture boundary/Inbox-to-Entry подключить Calendar раньше Telegram. Не писать новый adapter с нуля без проверки имеющихся скриптов переноса записей на Google Drive: сперва провести их audit, выделить переиспользуемые операции и адаптировать их к общему CaptureItem contract с сохранением raw, idempotency и provenance. Факт существования набора скриптов подтверждён пользователем; их полный состав, качество и совместимость здесь не проверялись. Google Calendar остаётся optional transport, не core dependency. Первый итерационный запуск может быть ручным / пакетным; расписание и automated sync определить при реализации.
+
+**Решение:** [принято] (2026-11-08) В реализации AI Diary после общей capture pipeline сначала интегрировать Calendar Inbox, затем Telegram. Развивать уже существующий набор Calendar→Drive scripts после ревизии их кода, переиспользуя годные части и приводя их к unified CaptureItem/Inbox-to-Entry, idempotent imports и сохранению оригиналов/provenance. Не требовать Calendar как обязательный core component и не путать с отдельной Timeline Projection.
