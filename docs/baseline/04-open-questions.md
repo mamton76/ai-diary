@@ -271,8 +271,11 @@ Visual polish, точный text-diff, first-revision edge case и breakpoint va
 
 Где живёт единственная таблица этапов продукта (web E0–E4, интеграции, AI) и какие из подтверждённых «тяжёлых» требований действительно входят в E0–E2. Сейчас WEB-003, SEARCH-001, PB §12/§22 и Screens Spec §3 описывают первый релиз по-разному ([ревью 2026-11-08](../audits/2026-11-08-requirements-review.md), C1/H18).
 
-**Статус:** ОТКРЫТО  
-**Обсуждение:** [тред](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)
+**Статус:** РЕШЕНО  
+**История обсуждения:** [PQ-012 thread](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)  
+**Перенесено в:** [Product baseline §22.1](03-product-baseline.md#221-канонические-этапы-продукта), [inventory](02-requirements-inventory.md), [Screens Spec §3](AI-Diary-Screens-Spec-v0.1.md#3-границы-этапов), [план](../implementation-plan-web-mvp.md)
+
+**Решение:** каноническая таблица этапов — 03-product-baseline.md §22.1 (web, backend, интеграции, AI); Screens Spec §3 — детализация по экранам; план сопоставляет фазы P0–P7 с этапами. Лёгкая правка остаётся в первой пользовательской версии вместе с надёжным Save (очередь, lease/baseRevision, local snapshots); поиск — E1; создание записи — E2; AI-тяжёлые пункты (executors, capability profiles, workflow editor, AI-бюджет) — E4; Calendar Inbox/Timeline — интеграционный этап параллельно P2; регистрация других пользователей и MCP — Later. У требований inventory появляется поле «Этап».
 
 ## PQ-013 — Export, отключение Google-доступа и удаление аккаунта
 

@@ -86,8 +86,9 @@ Capture adapters и background workflows должны быть идемпоте�
 Telegram — поддерживаемый канал capture. Полный scope ТЗ включает сообщения с text, voice, media/assets (фото, видео, аудио, файлы/документы и другие доступные вложения), links и forwarded content. Подписи, source identity и provenance сохраняются там, где доступны. Оригинальный payload/asset reference должен быть связан с CaptureItem и не теряться после AI-нормализации; generic asset model — ASSET-001…009. Первый Telegram UX — личный диалог 1:1 с ботом для приватных дневниковых записей; сбор сообщений из групп и каналов не входит в MVP. Приём дневниковых CaptureItems разрешён только после явной отзываемой привязки Telegram user ID к authenticated AI Diary user через одноразовое подтверждение; посторонние отправители не попадают в Inbox. Username не использовать как устойчивую identity. Код привязки одноразовый и ограничен по времени; способ и TTL — при реализации. Бот даёт два отдельных уведомления: после успешного сохранения исходного CaptureItem в Inbox («Сохранено»), а затем после фактического завершения обработки («Обработано» / «Ошибка обработки»). Telegram-доставка сообщения сама по себе не считается подтверждением сохранения в AI Diary; уведомление о результате не означает автоматический запуск AI после каждого сообщения. Для серии Telegram-сообщений нужна явная граница commit/начала групповой обработки: кнопка «Готово» завершает capture session; одиночное сообщение тоже не запускает AI автоматически. Альтернативный целевой UX — отдельное короткое голосовое «готово» как команда завершения; механизм распознавания и очерёдность реализации уточняются, при сомнительном распознавании команда не должна случайно запускать обработку. Приём и подтверждение сохранения каждого исходного сообщения не зависят от завершения сессии. Незавершённые Telegram capture sessions должны отображаться в web Inbox отдельным списком/фильтром «Незавершённые рассказы» со счётчиком и возможностью открыть/продолжить/явно завершить серию; показывать число сообщений и время последней активности. Это сохранённые raw CaptureItems, а не Entry Draft, committed Entry или failed AI runs. Telegram capture session определяется явной цепочкой reply: сообщение Reply на CaptureItem незавершённой серии продолжает именно эту серию вне зависимости от прошедшего времени; обычное сообщение без Reply создаёт отдельную незавершённую серию, даже если сообщения идут подряд. Нельзя автоматически объединять или разделять CaptureItems на основании времени. Кнопка «Готово» относится к конкретной сессии; при нескольких открытых сериях не должно быть неявного выбора. Пробное UX-правило: отдельная команда «Готово» через Reply на сообщение открытой сессии завершает именно её; без Reply при нескольких незавершённых сериях бот предлагает выбрать сессию. Это правило требуется проверить в реальном использовании и при необходимости упростить. После долгой паузы можно напоминать о незавершённой сессии (задержка уточняется при реализации), но не запускать AI автоматически по тайм-ауту. В первом implementation slice приоритет text и voice. Остальные asset types входят в требования, но реализуются позднее; конкретная очередность не утверждена. Multi-message capture и dedup semantics — [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md). История решения: [AQ-INT-003](04-open-questions.threads/42_AQ-INT-003_telegram-scope/00_thread.md).
 
 ### CAP-010 — Web create/capture
-**Статус:** ОТЛОЖЕНО / НЕ ОБЯЗАТЕЛЬНО ДЛЯ ПЕРВЫХ ЭТАПОВ  
-Первый полезный web slice работает с существующими entries. Простую форму create можно добавить opportunistically, если она почти не увеличивает scope, но она не должна задерживать browse/read/search/edit/versioning.
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E2 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
+Ручное создание новой записи в web (S05) поставляется в E2 вместе с полноценным редактором и использует тот же EntryPanel, Draft и Save. E0 и первая пользовательская версия работают только с существующими entries.
 
 ### CAP-011 — Raw file drop / import
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ  
@@ -332,10 +333,12 @@ Storage имеет одну общую `formatVersion`. Migration запуска
 
 ### DATA-013 — Нужны local recovery snapshots
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** первая пользовательская версия ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Клиент хранит bounded local recovery snapshots для защиты от случайных пользовательских действий и кратких сбоев. MVP-default: до 5 snapshots, не более 30 секунд между recovery points, retention 24 часа после successful revision. Эти значения являются configurable policy constants. Local snapshots не входят в обычную revision history.
 
 ### DATA-014 — Один active mutation owner на entry
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** первая пользовательская версия ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Для ручного редактирования и AI mutation используется lease-based модель: у entry в каждый момент один active mutation owner. Manual editing может перехватить lease у другой session или AI job; активная AI mutation не вытесняет пользователя.
 
 ### DATA-015 — AI mutation должна быть безопасна относительно новых revisions
@@ -348,6 +351,7 @@ AI result привязан к base revision. Если entry изменилась
 
 ### DATA-018 — Commit требует актуального per-entry lease и base revision
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** первая пользовательская версия ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Editing/mutation lease scoped на конкретную Entry: разные Entries могут редактироваться параллельно независимыми sessions. Потерявшая lease session не имеет права committed write, пока заново не получит lease и не синхронизируется со свежим server draft. Перед committed mutation backend проверяет и актуальное lease ownership, и `baseRevisionId`/эквивалентный domain version. Несовпадение base/current revision не приводит к overwrite; используется compatibility/rebase/merge/conflict path.
 
 ### DATA-019 — Canonical write использует storage-level conditional version check
@@ -444,7 +448,8 @@ Canonical files должны оставаться readable/portable. Если в
 
 ### WEB-003 — Пошаговый scope web
 **Статус:** ПОДТВЕРЖДЕНО  
-Первый slice: browse/list + read + search/filter существующих entries. Следующий этап: edit + versioning/history. Затем tags view/edit. Затем AI processing/workflows. Web create не является обязательным для первых этапов.
+**Этап:** E0 → первая пользовательская версия → E1 → E2 → E3 → E4 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
+Web поставляется этапами по [канонической таблице этапов](03-product-baseline.md#221-канонические-этапы-продукта): E0 — чтение существующих entries без DB/index; первая пользовательская версия — лёгкая правка заголовка и текста существующей записи; E1 — поиск, фильтры и Обзор; E2 — полный редактор, создание записи, history, архив/корзина, материалы; E3 — управление тегами; E4 — AI.
 
 ### WEB-004 — Нужны search/filter/navigation
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -543,6 +548,7 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 
 ### API-006A — Queue-first mutations и вычисления
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** первая пользовательская версия (простая durable очередь без отдельного брокера) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Все изменения canonical diary state, включая Save, Apply/Restore, изменение тегов, выполняются через durable async command queue; фоновые вычисления, ingestion, AI workflows и indexing также исполняются асинхронно. Read/search queries не ставятся в очередь. Принятая команда и committed результат различаются: UI сообщает «Сохраняется» до подтверждения successful commit и отображает failures/conflicts явно. Autosave draft допускает coalescing/debounce вместо задачи на каждую клавишу. Конкретная queue provider, retry/idempotency и ordering semantics уточняются в AQ-OPS-002 и architecture design. Решение: [AQ-API-004](04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md).
 
 ### API-006B — Одно рабочее окружение для прототипа
@@ -594,6 +600,7 @@ Firebase Auth, direct OIDC или другой auth middleware выбирает�
 
 ### AUTH-005 — Multi-user application с изолированными данными
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0 — user-scoped изоляция всего operational/server-side state; Later — регистрация и онбординг других пользователей ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 AI Diary с самого начала проектируется как multi-user application: один backend/application может обслуживать нескольких авторизованных пользователей, у каждого свой логический дневник и изолированные данные.
 
 Authenticated user context обязателен для shared operational/server-side state. Drafts, leases, jobs, proposals, indexes/cache, OAuth tokens, settings и AI run records должны быть user-scoped.
@@ -715,10 +722,12 @@ System workflows имеют read-only immutable history, новые Runs авт�
 
 ### AI-026 — Executable code отделён от workflow definition
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E4 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Reusable executors/scripts/tools являются отдельными versioned исполняемыми модулями. Workflow может ссылаться на совместимый executor contract, хранить default executor и при запуске заменять его на другой совместимый trusted вариант без новой workflow version. Trust выдаётся явно конкретной code version/hash один раз; изменение кода требует нового trust. Script может быть написан пользователем или предложен/создан AI, но AI не может молча активировать или доверить новую code version.
 
 ### AI-027 — Permissions оформляются через reusable capability profiles
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E4 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Доступ строится по least privilege. Workflow объявляет required/optional capability contract, а reusable capability profiles являются отдельными user-owned versioned сущностями и могут использоваться разными workflows. Workflow может иметь default profile; Run фиксирует фактически выбранную profile version и выданные permissions. Более широкий profile не даёт workflow неограниченного доступа вне объявленного contract.
 
 ### AI-028 — Run фиксирует фактические bindings и overrides
@@ -735,6 +744,7 @@ Output schema и declarative validation rules являются частью vers
 
 ### AI-031 — Workflow editor UX: vertical pipeline, Draft autosave and Publish confirmation
 **Статус:** ПОДТВЕРЖДЕНО (AQ-AI-008, 08.11.2026)  
+**Этап:** E4 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 User workflow редактируется через вертикальный pipeline раскрываемых step cards с simple nested conditions, а не graph/node canvas. Новая routine открывается со scaffold из Workflow settings, Input/Trigger (eligibility и scope default), Processing pipeline, Output/Side effects и Application policy. Первый прототип имеет четыре типа step: AI, Executor/Tool, Condition, Validator; общие поля Type/Inputs/Config/Outputs/Error policy, auto-mapping при однозначности с ручным remap.
 
 Workflow defaults: name, description, model, executor, capability profile. AI prompt редактируется inline с возможностью открыть полный editor с variables/output schema; modules/version/trust/capability requirements видны в карточке, подробный код/trust — отдельно. Untrusted module не блокирует Draft/Publish, но блокирует Run/Test до explicit trust конкретной версии. Simple declarative validators редактируются inline, code validators используют trusted executor.
@@ -747,10 +757,12 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 
 ### INT-001 — Calendar inbox — adapter, не ядро
 **Статус:** ПОДТВЕРЖДЕНО.  
+**Этап:** интеграционный, параллельно P2 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Приоритет реализации: после общей CaptureItem/Inbox-to-Entry pipeline подключить Calendar Inbox **до Telegram**. Развивать уже имеющиеся скрипты переноса записей из Calendar в Google Drive после технической ревизии, приводя совместимые части к unified CaptureItem contract, сохранению raw/provenance и idempotent imports. Интеграция остаётся optional, не canonical storage и не core dependency; Calendar Timeline — отдельный этап. История: [AQ-INT-001](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md).
 
 ### INT-002 — Calendar timeline — derived projection
 **Статус:** ПОДТВЕРЖДЕНО.  
+**Этап:** интеграционный, параллельно P2 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Приоритет: реализовать Calendar Timeline Projection **рано, параллельно Calendar Inbox**, до готовности полноценного web UI, чтобы пользователь мог просматривать и визуально валидировать обработанные Entries через привычный календарь. Canonical Diary остаётся source of truth, projection односторонняя (Entry → Calendar), один Entry ↔ один event, существующий event обновляется при committed changes. Calendar Timeline используется только для просмотра/визуальной проверки, без возможностей редактировать, исправлять или подтверждать Entry через Calendar. Любые ручные изменения projected Calendar event не переносятся обратно в canonical Diary и могут быть перезаписаны следующей проекцией; write-back не входит в MVP. История: [AQ-INT-002](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md).
 
 ### INT-003 — Timeline projection можно перестроить из diary data
@@ -761,12 +773,14 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 
 ### INT-005 — Telegram adapter должен использовать общую capture boundary
 **Статус:** РАБОЧЕЕ_НАПРАВЛЕНИЕ.
+**Этап:** интеграционный, после Calendar (P5) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 
 ### INT-006 — Интеграции должны быть заменяемыми
 **Статус:** ПОДТВЕРЖДЕНО.
 
 ### INT-008 — Assistant-agnostic capture и будущий MCP adapter
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** Later — optional proof of concept (P7) ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 В первом работающем AI Diary ChatGPT/Gemini/Claude могут выступать внешними capture interfaces через общие supported transports, сначала Calendar Inbox (развитие существующих scripts), затем Telegram. Не требуются отдельные provider-specific assistant backends. Backend/domain API и CaptureItem contract проектируются так, чтобы можно было добавить remote MCP server как тонкий adapter без дублирования бизнес-логики. После базового API/Calendar pipeline предусмотрен ранний небольшой MCP proof of concept (save capture, finalize capture session, check status), но MCP не блокирует MVP. Нужны identity/auth, safe write controls и идемпотентность; конкретный client/plan/voice support каждого ассистента должен быть проверен, не предполагается универсальным. Решение: [AQ-INT-005](04-open-questions.threads/46_AQ-INT-005_assistant-integrations/00_thread.md).
 
 ### INT-007 — Calendar projection обновляет существующий event на committed revision
@@ -779,11 +793,13 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 # M. Search / navigation
 
 ### SEARCH-001 — Обычный текстовый поиск нужен, но не в самом первом MVP
-**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E1 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Search остаётся продуктовым требованием следующего этапа, но первый files-only MVP может стартовать без него.
 
 ### SEARCH-002 — Date/tag filters нужны после базового files-only MVP
-**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E1 ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 Date/date range и tags входят в ближайший следующий web slice вместе с index/search layer, а не блокируют самый первый MVP.
 
 ### SEARCH-003 — Semantic search / embeddings
@@ -822,6 +838,7 @@ Semantic retrieval для cross-entry AI возможно в будущем; emb
 
 ### OPS-004 — Cost guardrails
 **Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E4; обязательный gate до первого платного AI-вызова ([PQ-012](04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md), [таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта))  
 В пользовательских настройках — месячный бюджет платных AI-вызовов, учёт расходов и предупреждения; при достижении бюджета новые платные AI-вызовы блокируются при dispatch из очереди. Задачи не удаляются, получают статус «Ожидает бюджета», отображаются пользователю с возможностью просмотра и отмены. При новом бюджетном периоде default — ручное возобновление; пользователь может включить автоматическое возобновление в настройках. Уже исполняющиеся вызовы не прерываются. Проверка/резервирование ориентировочной стоимости для параллельных работ минимизирует превышения, но абсолютный billing hard cap не гарантирует. Hosting, storage, logs/egress — облачные мониторинг и бюджетные предупреждения. Решение: [AQ-OPS-004](04-open-questions.threads/39_AQ-OPS-004_cost-guardrails/00_thread.md).
 
 ### OPS-005 — Полный observability stack enterprise-уровня
