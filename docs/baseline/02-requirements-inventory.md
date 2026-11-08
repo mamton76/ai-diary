@@ -445,7 +445,7 @@ AI result привязан к base revision. Если entry изменилась
 ### DATA-016 — Working draft синхронизируется debounce + guaranteed flush
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** первая пользовательская версия  
-Локальное working state синхронизируется на backend комбинированно: debounce после паузы во вводе плюс гарантированный flush при наличии unsynced changes. Обязательный flush выполняется перед Save, передачей lease и auto-revision. Конкретные интервалы настраиваемы.
+Локальное working state синхронизируется на backend комбинированно: debounce после паузы во вводе плюс гарантированный flush при наличии unsynced changes. Обязательный flush выполняется перед Save и передачей lease. Auto-revision по таймеру нет (REV-008, PQ-004/FQ-01). Конкретные интервалы настраиваемы.
 
 ### DATA-018 — Commit требует актуального per-entry lease и base revision
 **Статус:** ПОДТВЕРЖДЕНО  
