@@ -134,6 +134,7 @@
 | Security | Google auth/OAuth separation, минимальные scopes, server-side credentials, no diary content in debug logs |
 | Costs | Cloud budgets/alerts; monthly AI budget и pause/notification/resume policy |
 | Quality | PR build/test/lint, ручное развёртывание единственного окружения, возможен rollback |
+| Portfolio / публичность | в репозиторий не добавляются личные данные и реальные идентификаторы; синтетический набор P0.1 используется и для демо; публикация репозитория — только после аудита истории git ([PQ-018](baseline/04-open-questions.threads/56_PQ-018_portfolio-goal/00_thread.md)) |
 | Portability | canonical можно прочитать без operational DB; derived indexes/timeline восстанавливаются |
 
 ## Решения, которые ещё не следует считать принятыми

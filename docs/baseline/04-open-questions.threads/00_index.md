@@ -69,7 +69,7 @@
 | 53 | PQ-015 | Трекеры, цели и вопросы в голосовых сессиях | ждём пользователя | 🟢 open | none | — | [📁](53_PQ-015_trackers-questions/) | [00_thread.md](53_PQ-015_trackers-questions/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / file format |
 | 54 | PQ-016 | Дайджест и предложение эпизода/альбома | ждём пользователя | 🟢 open | none | — | [📁](54_PQ-016_digest-album-proposal/) | [00_thread.md](54_PQ-016_digest-album-proposal/00_thread.md) | 03-product-baseline.md / 02-requirements-inventory.md / Screens Spec |
 | 55 | PQ-017 | Запуск синхронизации с Calendar из web | решён | ✅ resolved | none | — | [📁](55_PQ-017_web-calendar-sync/) | [00_thread.md](55_PQ-017_web-calendar-sync/00_thread.md) | 02-requirements-inventory.md (INT) / Screens Spec / product baseline §22.1 / plan |
-| 56 | PQ-018 | Цель «портфолио»: что и как показываем | ждём пользователя | 🟢 open | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
+| 56 | PQ-018 | Цель «портфолио»: что и как показываем | решён | ✅ resolved | none | — | [📁](56_PQ-018_portfolio-goal/) | [00_thread.md](56_PQ-018_portfolio-goal/00_thread.md) | 03-product-baseline.md §1.1 / §22.1 / README.md |
 
 ## Быстрая легенда lifecycle
 
