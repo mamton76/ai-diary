@@ -740,7 +740,8 @@ Output schema и declarative validation rules являются частью vers
 Приоритет реализации: после общей CaptureItem/Inbox-to-Entry pipeline подключить Calendar Inbox **до Telegram**. Развивать уже имеющиеся скрипты переноса записей из Calendar в Google Drive после технической ревизии, приводя совместимые части к unified CaptureItem contract, сохранению raw/provenance и idempotent imports. Интеграция остаётся optional, не canonical storage и не core dependency; Calendar Timeline — отдельный этап. История: [AQ-INT-001](04-open-questions.threads/44_AQ-INT-001_calendar-inbox-priority/00_thread.md).
 
 ### INT-002 — Calendar timeline — derived projection
-**Статус:** ПОДТВЕРЖДЕНО.
+**Статус:** ПОДТВЕРЖДЕНО.  
+Приоритет: реализовать Calendar Timeline Projection **рано, параллельно Calendar Inbox**, до готовности полноценного web UI, чтобы пользователь мог просматривать и визуально валидировать обработанные Entries через привычный календарь. Canonical Diary остаётся source of truth, projection односторонняя (Entry → Calendar), один Entry ↔ один event, существующий event обновляется при committed changes. Calendar edits не становятся diary revisions автоматически; возможный write-back/действия валидации из Calendar требуют отдельного явного решения. История: [AQ-INT-002](04-open-questions.threads/45_AQ-INT-002_calendar-timeline-priority/00_thread.md).
 
 ### INT-003 — Timeline projection можно перестроить из diary data
 **Статус:** ПОДТВЕРЖДЕНО.
