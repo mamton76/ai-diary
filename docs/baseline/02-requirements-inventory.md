@@ -763,6 +763,10 @@ Workflow Draft autosaves с возможностью закрыть editor и в
 ### INT-006 — Интеграции должны быть заменяемыми
 **Статус:** ПОДТВЕРЖДЕНО.
 
+### INT-008 — Assistant-agnostic capture и будущий MCP adapter
+**Статус:** ПОДТВЕРЖДЕНО  
+В первом работающем AI Diary ChatGPT/Gemini/Claude могут выступать внешними capture interfaces через общие supported transports, сначала Calendar Inbox (развитие существующих scripts), затем Telegram. Не требуются отдельные provider-specific assistant backends. Backend/domain API и CaptureItem contract проектируются так, чтобы можно было добавить remote MCP server как тонкий adapter без дублирования бизнес-логики. После базового API/Calendar pipeline предусмотрен ранний небольшой MCP proof of concept (save capture, finalize capture session, check status), но MCP не блокирует MVP. Нужны identity/auth, safe write controls и идемпотентность; конкретный client/plan/voice support каждого ассистента должен быть проверен, не предполагается универсальным. Решение: [AQ-INT-005](04-open-questions.threads/46_AQ-INT-005_assistant-integrations/00_thread.md).
+
 ### INT-007 — Calendar projection обновляет существующий event на committed revision
 **Статус:** ПОДТВЕРЖДЕНО.
 
