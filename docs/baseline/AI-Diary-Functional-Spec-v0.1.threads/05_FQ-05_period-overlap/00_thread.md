@@ -7,7 +7,7 @@
 **Ведёт:** —  
 **Режим фиксации:** written-turns  
 **Родитель:** —  
-**Дочерние треды:** [FQ-05/SQ-06 — date-only запись в фильтре по часам](06_SQ-06_date-only-clock-filter/00_thread.md); [FQ-05/SQ-05 — последний день date-only интервала](05_SQ-05_date-only-end-inclusion/00_thread.md); [FQ-05/SQ-04 — запись без окончания](04_SQ-04_missing-event-end/00_thread.md); [FQ-05/SQ-03 — дата группирования Calendar](03_SQ-03_calendar-event-date/00_thread.md); [FQ-05/SQ-01 — timezone rolling days](01_SQ-01_rolling-day-timezone/00_thread.md); [FQ-05/SQ-02 — отображение времени события](02_SQ-02_event-time-display/00_thread.md)  
+**Дочерние треды:** [FQ-05/SQ-07 — формат времени, смешанная точность, пояса, неизвестная дата](07_SQ-07_time-precision-serialization/00_thread.md); [FQ-05/SQ-06 — date-only запись в фильтре по часам](06_SQ-06_date-only-clock-filter/00_thread.md); [FQ-05/SQ-05 — последний день date-only интервала](05_SQ-05_date-only-end-inclusion/00_thread.md); [FQ-05/SQ-04 — запись без окончания](04_SQ-04_missing-event-end/00_thread.md); [FQ-05/SQ-03 — дата группирования Calendar](03_SQ-03_calendar-event-date/00_thread.md); [FQ-05/SQ-01 — timezone rolling days](01_SQ-01_rolling-day-timezone/00_thread.md); [FQ-05/SQ-02 — отображение времени события](02_SQ-02_event-time-display/00_thread.md)  
 **Куда переносим решение:** Functional/Screens Specs, file-format, inventory/product baseline
 
 ## Вопрос

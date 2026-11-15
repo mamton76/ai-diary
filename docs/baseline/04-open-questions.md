@@ -872,6 +872,9 @@ Google account — естественный first path.
 
 Вопрос: canonical file, operational DB, оба слоя?
 
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md)
+
 **Ограничение из [AQ-SEC-001](04-open-questions.threads/49_AQ-SEC-001_content-protection/00_thread.md):** долговременные копии содержимого, включая debug-копии prompt и ответа, живут в Drive пользователя; на сервере допустимы только кратковременные и derived данные.
 
 ## AQ-AI-004 — Context building
@@ -924,6 +927,9 @@ Provider должен получать уже подготовленный conte
 - retry/repair;
 - invalid output handling;
 - user review.
+
+**Статус:** ОТКРЫТО  
+**Обсуждение:** [тред](04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md)
 
 ## AQ-AI-009 — Навык для внешнего ассистента с текущими трекерами
 

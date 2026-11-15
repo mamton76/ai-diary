@@ -1,0 +1,45 @@
+# FQ-09 — Контракт ошибок и повторов API, инвалидация индекса, миграции
+
+**Источник:** [Functional Spec §14 / FQ-09](../../AI-Diary-Functional-Spec-v0.1.md#14-открытые-системные-вопросы)  
+**Статус:** ждём пользователя  
+**Состояние:** in_discussion  
+**Claim:** active  
+**Ведёт:** Claude — сессия уточнения требований (ветка `docs/start-blockers`)  
+**Режим фиксации:** written-turns  
+**Родитель:** —  
+**Дочерние треды:** —  
+**Куда переносим решение:** AI-Diary-Functional-Spec-v0.1.md / architecture.md / 02-requirements-inventory.md
+
+## Вопрос
+
+Source: «API error/retry contract, index invalidation/rebuild, migrations — нужны конкретные технические решения после доменных правил».
+
+## Варианты
+
+1. Принять предложенный ниже контракт.
+2. Отложить до реализации P1 и решать по ходу.
+
+## Контекст
+
+Почти всё доменное уже решено:
+- REST + JSON, OpenAPI contract-first ([AQ-API-003](../../04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)); queue-first мутации (API-006A); SSE для статусов (API-009).
+- Безопасные повторы без дублей, платные AI-вызовы с неизвестным исходом не повторяются автоматически ([AQ-OPS-002](../../04-open-questions.threads/37_AQ-OPS-002_safe-retries/00_thread.md)); потерянный Save — «Проверяем сохранение» и повтор той же операции ([FQ-03](../02_FQ-03_reliable-save/00_thread.md)).
+- Индекс: асинхронное обновление после commit, сверка примерно раз в 12 часов, полный rebuild как recovery (SEARCH-INDEX-UPDATE, AQ-SEARCH-003).
+- Миграции формата: явная операция с backup, maintenance lock и отчётом (DATA-009, [AQ-DATA-006](../../04-open-questions.threads/20_AQ-DATA-006_schema-migrations/00_thread.md)).
+
+## Обсуждение
+
+Claude — Предлагаю зафиксировать контракт, который сводит эти решения в правила для API:
+
+1. **Формат ошибки** — единый JSON по RFC 9457 (problem details) с машинным `code` из закрытого списка: `CONFLICT_BASE_CHANGED`, `LEASE_LOST`, `VALIDATION_FAILED`, `DRIVE_ACCESS_REVOKED`, `BUDGET_EXCEEDED`, `RATE_LIMITED`, `UNAVAILABLE` и т. п.; текст для пользователя UI берёт по коду.
+2. **Мутации** — `POST` с заголовком `Idempotency-Key` (= operationId); ответ `202 Accepted` со ссылкой на ресурс операции; исход — через SSE и `GET /operations/{id}`. Повтор с тем же ключом возвращает ту же операцию, а не создаёт новую.
+3. **Версии** — изменения передают `baseRevisionId`; несовпадение → `409` с `CONFLICT_BASE_CHANGED` (дальше UI-Q16); потеря lease → `409 LEASE_LOST`.
+4. **Повторы на клиенте** — автоматически только для `429/502/503/504` и сетевых ошибок, экспоненциальная задержка с jitter, уважение `Retry-After`, всегда с тем же Idempotency-Key; `4xx` кроме 429 не повторяются.
+5. **Индекс** — инвалидация событием commit из очереди; сверка раз в 12 часов; полный rebuild при смене formatVersion и по команде; пока rebuild идёт, поиск отвечает с флагом «индекс обновляется».
+6. **Миграции** — по DATA-009: на время миграции мутирующие запросы получают `503 MAINTENANCE` с `Retry-After`, чтение работает.
+
+**Нужно от пользователя:** подтвердить контракт (вариант 1). Пунктов, требующих продуктового выбора, здесь нет.
+
+пользователь —
+
+**Решение:** —
