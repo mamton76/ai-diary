@@ -6,7 +6,7 @@
 **Claim:** none
 **Owner:** Product Owner
 **Related canonical thread:** —
-**Decision destination:** [collaboration rules](../../../../collaboration/README.md), [orchestration rules](../../../../orchestration/README.md)
+**Decision destination:** [collaboration rules](../../../../../collaboration/README.md), [orchestration rules](../../../../../orchestration/README.md)
 
 ## Вопрос
 
