@@ -4,7 +4,7 @@
 **Date:** 2026-11-15
 **External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
 **Presentation:** required — [`presentation/index.html`](presentation/index.html), черновик, ждёт независимой проверки
-**Presentation preview URL:** https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh — закрытая страница claude.ai (доступ только владельцу, расшаривание — решение Product Owner); опубликована с разрешения Product Owner 2026-11-15, открытие проверено
+**Presentation preview URL:** https://ai-diary-935.pages.dev/ — Cloudflare Pages (ссылка предоставлена Product Owner; прямую страницу задачи пока не удалось проверить из среды агента). Альтернатива: https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh (приватный Claude Artifact).
 
 ## Что сделано
 
@@ -18,7 +18,7 @@
 | Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | первый успешный run 43766624892 (`8540d69`); после правок Claude 43767682324 (`f52f994`); каждый следующий push тоже зелёный |
 | Independent review | Claude review проведён, замечания исправлены; повторное ревью Codex актуального head — ожидается (S6) | [review](https://github.com/mamton76/ai-diary/pull/10#pullrequestreview-5913174681) |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
-| Presentation / human review | черновик создан, не проверен; независимый Cloudflare preview пока не опубликован | [presentation/index.html](presentation/index.html); [publishing instructions](../../../publishing/README.md) |
+| Presentation / human review | черновик создан, не проверен; Cloudflare Pages URL предоставлен Product Owner; независимая проверка ещё не завершена | [presentation/index.html](presentation/index.html); [publishing instructions](../../../publishing/README.md) |
 | Static preview export CI | ожидает нового запуска GitHub Actions после добавления build_preview_site.py | scripts/agent-team/build_preview_site.py, test_build_preview_site.py |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
 
@@ -34,7 +34,7 @@
 
 - **Claude Artifact:** [открыть](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh) — приватный адрес уже добавлен Claude, его доступность для пользователя требует проверки.
 - **Переносимый статический сайт:** экспорт и CI подготовлены (allowlist: только TASK-0001), конфигурация: [publishing/README.md](../../../publishing/README.md).
-- **Cloudflare Pages URL:** `not deployed` — требуется подключение Cloudflare Git integration владельцем; нельзя указывать выдуманный URL.
+- **Cloudflare Pages URL:** https://ai-diary-935.pages.dev/ — Product Owner сообщил о работающем деплое; наличие прямого пути `/TASK-0001/index.html` в текущей среде не удалось подтвердить.
 - После успешной публикации и проверки ссылки: обновить task.md, result.md и PR, закрыть S8 с реальным временем.
 
 ## Презентация результата
