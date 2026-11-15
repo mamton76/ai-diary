@@ -1,0 +1,49 @@
+name: "Agent task (GitHub adapter)"
+description: "Mirror a canonical repository task; files remain the source of truth."
+title: "[TASK-NNNN] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **GitHub Issue is an adapter, not the canonical task.**
+        Create or link docs/agent-team/tasks/active/TASK-NNNN_slug/task.md first.
+        Opening this Issue does not authorize starting an agent automatically.
+  - type: input
+    id: task_id
+    attributes:
+      label: Canonical task ID
+      description: "Stable repository ID, not GitHub issue number."
+      placeholder: "TASK-0002"
+    validations:
+      required: true
+  - type: input
+    id: task_file
+    attributes:
+      label: Canonical task file
+      placeholder: "docs/agent-team/tasks/active/TASK-0002_example/task.md"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Goal and acceptance criteria
+      description: "Short mirror; canonical specification is in task.md."
+    validations:
+      required: true
+  - type: textarea
+    id: documentation
+    attributes:
+      label: Documentation Impact
+      description: "Impacted documents or explicit none with rationale."
+    validations:
+      required: true
+  - type: dropdown
+    id: permission
+    attributes:
+      label: Execution permission
+      description: "Form selection is metadata; only canonical ready state authorizes work."
+      options:
+        - "Draft — do not start"
+        - "Ready — after canonical approval"
+    validations:
+      required: true
