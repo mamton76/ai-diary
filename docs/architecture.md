@@ -150,7 +150,7 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 - [AQ-AI-004](baseline/04-open-questions.md#aq-ai-004--context-building) — context selection/assembly.
 - [AQ-AI-005](baseline/04-open-questions.md#aq-ai-005--prompt-customization) — user overrides/user-defined prompts boundary.
 - [AQ-AI-009](baseline/04-open-questions.md#aq-ai-009--навык-для-внешнего-ассистента-с-текущими-трекерами) — навык внешнего ассистента с текущими трекерами.
-- [AQ-AI-011](baseline/04-open-questions.md#aq-ai-011--детали-дайджеста-и-детекции-эпизодов) — детали дайджеста и детекции эпизодов.
+- [AQ-AI-011](baseline/04-open-questions.md#aq-ai-011--детали-дайджеста-и-детекции-эпизодов) — детали дайджеста: пустая неделя и непринятый дайджест решены 15.11; частота и эпизоды — E4.
 
 **Уже решены, не спрашивать заново:** AQ-WEB-001 (React + TS + Vite SPA), AQ-WEB-002 (паритет на телефоне по этапам), AQ-WEB-006 (обычный клиент, не Sites), AQ-WEB-003 Markdown editor, AQ-WEB-004 (SSE), AQ-WEB-005 (revision UX, E2), AQ-AI-006 (данные для внешнего AI), AQ-AI-008 workflow editor UX, AQ-AI-003 (run records в Drive, индекс в БД), AQ-AI-007 (JSON Schema, одна попытка исправления), AQ-AI-010 (модель трекеров). Подробные требования находятся в source inventory/screens specs.
 

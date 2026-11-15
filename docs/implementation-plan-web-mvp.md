@@ -176,7 +176,7 @@
 | AQ-AI-007 | Structured outputs validation/repair | **Решён** ([тред](baseline/04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md)): JSON Schema, проверка на нашей стороне, одна попытка исправления |
 | AQ-AI-009 | Навык внешнего ассистента с текущими трекерами | E4 |
 | AQ-AI-010 | Модель трекеров и политика вопросов | **Решён** ([тред](baseline/04-open-questions.threads/57_AQ-AI-010_tracker-model-questions/00_thread.md)) |
-| AQ-AI-011 | Детали дайджеста и детекции эпизодов | E4, до дайджеста |
+| AQ-AI-011 | Детали дайджеста и детекции эпизодов | Пустая неделя и непринятый дайджест **решены** ([тред](baseline/04-open-questions.threads/64_AQ-AI-011_digest-details/00_thread.md)); частота и эпизоды — E4 |
 
 **AQ-AI-008 закрыт:** workflow editor UX принят и внесён в Screens Spec. Не открывать заново.
 

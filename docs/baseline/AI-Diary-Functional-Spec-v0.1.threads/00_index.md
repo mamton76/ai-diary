@@ -45,3 +45,4 @@
 | 6.6 | FQ-06/SQ-06 | Lifecycle Calendar на Home | решён (default) | resolved | none | — | [Тред](06_FQ-06_updated-sort/06_SQ-06_home-calendar-scope/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 6.7 | FQ-06/SQ-07 | Единая настройка архива для всей главной | решён | resolved | none | — | [Тред](06_FQ-06_updated-sort/07_SQ-07_archive-visibility-setting/00_thread.md) | Functional/Screens Specs, inventory/product baseline |
 | 8 | FQ-09 | Контракт ошибок и повторов API, индекс, миграции | решён | resolved | none | — | [Тред](08_FQ-09_api-errors-index-migrations/00_thread.md) | Functional Spec, architecture, inventory |
+| 9 | FQ-10 | Объёмы данных, задержки, лимиты загрузки | отложен | resolved | none | — | [Тред](09_FQ-10_volumes-limits/00_thread.md) | Functional Spec, inventory OPS-008 |
