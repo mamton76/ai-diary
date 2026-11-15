@@ -30,3 +30,13 @@ jobs:
         run: python3 -m unittest discover -s scripts/agent-team -p "test_*.py"
       - name: Verify generated discussion bundles
         run: python3 scripts/agent-team/build_discussions.py --check
+      - name: Build explicitly public presentation site
+        run: python3 scripts/agent-team/build_preview_site.py
+      - name: Verify TASK-0001 export
+        run: test -s dist/agent-team-previews/TASK-0001/index.html
+      - name: Upload portable presentation site
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-team-presentation-site
+          path: dist/agent-team-previews/
+          if-no-files-found: error
