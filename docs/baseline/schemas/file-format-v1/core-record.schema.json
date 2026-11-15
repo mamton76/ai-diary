@@ -76,7 +76,31 @@
         "uncertainties": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "field": {
+                "enum": [
+                  "from",
+                  "to",
+                  "timeZone"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "approximate",
+                  "unknown_time",
+                  "inferred"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "field",
+              "kind"
+            ],
+            "additionalProperties": false
           }
         }
       },

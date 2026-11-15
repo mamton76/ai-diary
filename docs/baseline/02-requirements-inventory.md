@@ -170,6 +170,7 @@ AI не может молча переписать то, что пользова
 ### ENTRY-008 — Явная неопределённость
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
+Приблизительная дата хранится как день с пометкой `approximate` и основанием (`uncertainties` — объекты `{field, kind, evidence}`); минимальная точность для Save — день; месяц/год без дня — Later ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md), 2026-11-15).  
 Если дата, grouping, person/place identity и т. п. неясны, система должна хранить неопределённость/review state вместо выдуманного факта.
 
 ### ENTRY-009 — Связь CaptureItems и Entries
@@ -185,6 +186,7 @@ AI не может молча переписать то, что пользова
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
+From и to могут иметь разную точность; сравнение — по абсолютному времени в поясе записи, правила DST фиксированы ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md)).  
 Модель должна поддерживать day-level и timestamp/interval-level содержание.
 
 ### ENTRY-012 — Entry — стабильный контейнер, content versioned через Revision
@@ -723,17 +725,22 @@ AI workflows, indexing, import, Calendar sync, migrations/backfills и друг�
 **Этап:** первая пользовательская версия  
 Для lightweight server-to-browser уведомлений о завершении/изменении background state используется SSE. WebSocket не нужен без отдельного bidirectional realtime use case. При закрытой странице push/Web Push не требуется; при следующем открытии клиент перечитывает актуальное authoritative state. Потеря SSE notification не должна означать потерю результата.
 
----
-
-
-
 ### API-010 — Основной backend stack — Kotlin/Ktor
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
 **Примечание:** до 2026-11-08 пункт ошибочно имел ID API-007 (дубль с Monorepo); по содержанию совпадает с API-003.  
 Core backend AI Diary реализуется на Kotlin/Ktor и содержит domain/API logic, storage coordination, revisions, leases, concurrency/reconciliation и integrations. Python может добавляться позднее как специализированный worker/service/job для AI/ML/media/data задач, когда это оправдано конкретным use case; такие workers не обходят domain mutation rules и не становятся независимыми writers canonical diary state. Для MVP второй runtime не обязателен.
 
+### API-011 — Контракт ошибок, повторов и миграций API
+**Статус:** ПОДТВЕРЖДЕНО  
+**Этап:** E0  
+Ошибки — RFC 9457 problem details с машинным `code`. Мутации — `POST` с `Idempotency-Key` (= operationId) → `202 Accepted` и ресурс операции; исход через SSE и `GET /operations/{id}`. `baseRevisionId` в изменениях; конфликт — `409 CONFLICT_BASE_CHANGED`, потеря lease — `409 LEASE_LOST`. Клиент автоматически повторяет только `429/502/503/504` и сетевые ошибки, с backoff, jitter и тем же ключом. Индекс инвалидируется событием commit, полностью пересобирается при смене formatVersion и по команде. Во время миграции мутации получают `503 MAINTENANCE`, чтение работает.  
+**Основание:** [FQ-09](AI-Diary-Functional-Spec-v0.1.threads/08_FQ-09_api-errors-index-migrations/00_thread.md) (2026-11-15).
+
+---
+
 # J. Authentication и Google integration
+
 
 ### AUTH-001 — Internal user identity независима от login provider
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -835,6 +842,7 @@ Workflow определяет задачу/контекст/валидацию; 
 ### AI-010 — AI run должен сохранять достаточную трассировку и быть доступен для drill-down
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E4  
+Run record — `runs/<runId>/run.json` в Drive, источник истины; в БД — пересобираемый индекс; хранение бессрочное ([AQ-AI-003](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md), 2026-11-15).  
 Пользователь должен из Entry/AI activity открыть детали конкретного run/result: workflow/prompt versions, provider/model, input/base revision, output/AIResult, proposals, validation, timestamps, auto/user outcome и resulting committed revisions; позже usage/cost.
 
 ### AI-011 — AI output не должен автоматически становиться истиной
@@ -949,6 +957,7 @@ Reusable executors/scripts/tools являются отдельными versioned
 ### AI-030 — Output contracts versioned, code validators reusable
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E4  
+Проверка всегда выполняется на нашей стороне: структурная и поэлементная; невалидные элементы отбрасываются поштучно; одна автоматическая попытка исправления с учётом в бюджете, затем видимая ошибка ([AQ-AI-007](04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md), 2026-11-15).  
 Output schema и declarative validation rules являются частью versioned workflow definition. Простые structural checks задаются декларативно; сложные validators с executable code реализуются отдельными trusted/versioned executors/tools. Архитектурная база: [07-ai-workflow-architecture.md](07-ai-workflow-architecture.md). Конкретный workflow editor UX вынесен в [AQ-AI-008](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md).
 
 ### AI-031 — Workflow editor UX: vertical pipeline, Draft autosave and Publish confirmation
