@@ -86,6 +86,7 @@ Executable code не обязан быть встроен в workflow definition
 - Output schema и declarative validation rules входят в versioned workflow definition.
 - Простые structural checks описываются декларативно.
 - Сложные validators с исполняемым кодом оформляются как отдельные trusted/versioned executors/tools.
+- **[Д, 15.11.2026]** Схема ответа — JSON Schema в workflow definition (для системных workflow — в коде); при поддержке моделью передаётся провайдеру, но проверка на нашей стороне выполняется всегда. Две проверки: структурная (весь ответ) и смысловая по элементам. Невалидная структура — ответ отклоняется; невалидные элементы отбрасываются по одному с причиной в run record. Одна автоматическая попытка исправления с передачей ошибок модели, учитывается в бюджете и при исчерпанном бюджете ждёт его по OPS-004; затем статус «Не удалось разобрать ответ AI». Применение — по политике workflow (PQ-005); проверка не заменяет review. [AQ-AI-007](04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md).
 
 ## 9. Run trace
 

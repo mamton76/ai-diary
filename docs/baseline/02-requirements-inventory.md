@@ -186,7 +186,7 @@ AI не может молча переписать то, что пользова
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
-From и to могут иметь разную точность; сравнение — по абсолютному времени в поясе записи, правила DST фиксированы; запись только с датой и без To не превращается в 00:00 и попадает в фильтр по часам того же дня как возможное совпадение (SQ-06) ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md)).  
+From и to могут иметь разную точность; фильтр только по датам сравнивается с местными датами события в поясе записи (как Calendar, SQ-03), фильтр с указанным временем — по абсолютному времени; правила DST фиксированы; запись только с датой и без To не превращается в 00:00 и попадает в фильтр по часам того же дня как возможное совпадение (SQ-06) ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md)).  
 Модель должна поддерживать day-level и timestamp/interval-level содержание.
 
 ### ENTRY-012 — Entry — стабильный контейнер, content versioned через Revision
@@ -734,13 +734,12 @@ Core backend AI Diary реализуется на Kotlin/Ktor и содержи�
 ### API-011 — Контракт ошибок, повторов и миграций API
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
-Ошибки — RFC 9457 problem details с машинным `code`. Мутации — `POST` с `Idempotency-Key` (= operationId) → `202 Accepted` и ресурс операции; исход через SSE и `GET /operations/{id}`. `baseRevisionId` в изменениях; конфликт — `409 CONFLICT_BASE_CHANGED`, потеря lease — `409 LEASE_LOST`. Клиент автоматически повторяет только `429/502/503/504` и сетевые ошибки, с backoff, jitter и тем же ключом. Индекс инвалидируется событием commit, полностью пересобирается при смене formatVersion и по команде. Во время миграции мутации получают `503 MAINTENANCE`, чтение работает.  
+Ошибки — RFC 9457 problem details с машинным `code`. Мутации — `POST` с `Idempotency-Key` (= operationId) → `202 Accepted` и ресурс операции; исход через SSE и `GET /operations/{id}`. `baseRevisionId` в изменениях; конфликт — `CONFLICT_BASE_CHANGED`, потеря lease — `LEASE_LOST`: если это видно при приёме команды — синхронный `409`, если при commit — завершение операции с тем же `code`. Повтор с тем же ключом и другим телом — `422 IDEMPOTENCY_KEY_REUSED`; `VALIDATION_FAILED` — `422`; закрытый список кодов — в OpenAPI. Клиент автоматически повторяет только `429/502/503/504` и сетевые ошибки, с backoff, jitter и тем же ключом. Индекс инвалидируется событием commit, полностью пересобирается при смене formatVersion и по команде. Во время миграции мутации получают `503 MAINTENANCE`, чтение работает.  
 **Основание:** [FQ-09](AI-Diary-Functional-Spec-v0.1.threads/08_FQ-09_api-errors-index-migrations/00_thread.md) (2026-11-15).
 
 ---
 
 # J. Authentication и Google integration
-
 
 ### AUTH-001 — Internal user identity независима от login provider
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -842,7 +841,7 @@ Workflow определяет задачу/контекст/валидацию; 
 ### AI-010 — AI run должен сохранять достаточную трассировку и быть доступен для drill-down
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E4  
-Run record — `runs/<runId>/run.json` в Drive, источник истины; в БД — пересобираемый индекс; хранение бессрочное ([AQ-AI-003](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md), 2026-11-15).  
+Run record — `runs/<runId>/run.json` в Drive, источник истины; в БД — пересобираемый индекс; хранение бессрочное; `run.json` создаётся со статусом «pending» до платного вызова; ошибка — код без текста провайдера ([AQ-AI-003](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md), 2026-11-15).  
 Пользователь должен из Entry/AI activity открыть детали конкретного run/result: workflow/prompt versions, provider/model, input/base revision, output/AIResult, proposals, validation, timestamps, auto/user outcome и resulting committed revisions; позже usage/cost.
 
 ### AI-011 — AI output не должен автоматически становиться истиной
@@ -957,7 +956,7 @@ Reusable executors/scripts/tools являются отдельными versioned
 ### AI-030 — Output contracts versioned, code validators reusable
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E4  
-Проверка всегда выполняется на нашей стороне: структурная и поэлементная; невалидные элементы отбрасываются поштучно; одна автоматическая попытка исправления с учётом в бюджете, затем видимая ошибка ([AQ-AI-007](04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md), 2026-11-15).  
+Проверка всегда выполняется на нашей стороне: структурная и поэлементная; невалидные элементы отбрасываются поштучно; одна автоматическая попытка исправления с учётом в бюджете (при исчерпанном бюджете — ожидание по OPS-004), затем видимая ошибка ([AQ-AI-007](04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md), 2026-11-15).  
 Output schema и declarative validation rules являются частью versioned workflow definition. Простые structural checks задаются декларативно; сложные validators с executable code реализуются отдельными trusted/versioned executors/tools. Архитектурная база: [07-ai-workflow-architecture.md](07-ai-workflow-architecture.md). Конкретный workflow editor UX вынесен в [AQ-AI-008](04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md).
 
 ### AI-031 — Workflow editor UX: vertical pipeline, Draft autosave and Publish confirmation
@@ -1103,7 +1102,7 @@ Semantic retrieval для cross-entry AI возможно в будущем; emb
 ### OPS-RUN-LOG — История всех запусков
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
-Для capture, sync, import и AI workflows сохраняются все запуски: run ID, время, этап, статус, число попыток, ошибка, модель (если применимо). Журнал ссылается на точные исходные и результирующие ревизии, а при отсутствии новой ревизии — на proposal/result. Полные личные данные по умолчанию не копируются; расширенная диагностика включается отдельно. Решение: [AQ-OPS-001](04-open-questions.threads/36_AQ-OPS-001_run-log/00_thread.md).
+Для capture, sync, import и AI workflows сохраняются все запуски: run ID, время, этап, статус, число попыток, ошибка, модель (если применимо). Журнал ссылается на точные исходные и результирующие ревизии, а при отсутствии новой ревизии — на proposal/result. Полные личные данные по умолчанию не копируются; расширенная диагностика включается отдельно. Решение: [AQ-OPS-001](04-open-questions.threads/36_AQ-OPS-001_run-log/00_thread.md). Для AI-запусков журнал — `runs/<runId>/run.json` в Drive и пересобираемый индекс в БД ([AQ-AI-003](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md), 2026-11-15).
 
 ### OPS-002 — Safe retries и пользовательская политика AI-повторов
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -1450,7 +1449,7 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 Фильтр по периоду включает интервальную Entry, если хотя бы часть её EventTimeRange пересекается с выбранным периодом; не требуется попадание начала или всего интервала внутрь фильтра. Например, поездка 1–10 июля видна при фильтре 5–7 июля. Одна Entry показывается один раз, независимо от количества пересекающихся дней. Это общее правило date filter; выбор календаря и связанные выборки используют ту же semantics при неизменном lifecycle scope.
 
-**История:** [FQ-05 — пересечение периодов](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md). Остальные FQ-05 (границы/timezone/precision/uncertainty/отсутствующий To) остаются открытыми.
+**История:** [FQ-05 — пересечение периодов](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/00_thread.md). Остальные FQ-05 (границы/timezone/precision/uncertainty/отсутствующий To) остаются открытыми. **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — сортировка Updated учитывает Draft
 
@@ -1480,13 +1479,13 @@ Restore Entry из Trash всегда возвращает запись в ACTIV
 
 Основное отображение Entry использует местные дату и время события в его сохранённом часовом поясе. При ручном создании пояс события по умолчанию берётся из настроек пользователя, если он там задан; иначе сохраняется прежний fallback на пояс устройства. Явно выбранный пояс события имеет приоритет над default. Пояс сохраняется в EventTimeRange записи; последующая смена пользовательских настроек не пересчитывает и не переписывает её местные дату/время или timezone. Если время суток отсутствует, оно не подставляется.
 
-Выбор основного отображения не утверждает физическую сериализацию instant/offset, обработку неоднозначного времени, отдельный UI пересчёта или правило группирования Calendar. Настройка rolling days обсуждается отдельно. **История:** [FQ-05/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/02_SQ-02_event-time-display/00_thread.md).
+Выбор основного отображения не утверждает физическую сериализацию instant/offset, обработку неоднозначного времени, отдельный UI пересчёта или правило группирования Calendar. Настройка rolling days обсуждается отдельно. **История:** [FQ-05/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/02_SQ-02_event-time-display/00_thread.md). **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — Calendar по местным датам событий
 
 Calendar относит Entry к местной дате события в сохранённой timezone самой записи. Событие «19 октября, 00:30, Токио» показывается на 19 октября, даже если в пользовательской timezone в этот момент ещё 18-е. Выбор дня/диапазона в Calendar открывает список с той же семантикой местных дат и принятым period overlap; индикатор и список используют одинаковый lifecycle scope. Смена пользовательской timezone не переносит сохранённые события между днями Calendar. Date-only сохраняется как дата без выдуманного времени.
 
-Выбранный lifecycle scope не расширяется автоматически. Источник «сегодня» для rolling days, точные временные границы и mixed precision остаются отдельными аспектами FQ-05. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md).
+Выбранный lifecycle scope не расширяется автоматически. Источник «сегодня» для rolling days, точные временные границы и mixed precision остаются отдельными аспектами FQ-05. **История:** [FQ-05/SQ-03](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/03_SQ-03_calendar-event-date/00_thread.md). **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — timezone пользователя для «сегодня»
 
@@ -1498,19 +1497,19 @@ Calendar относит Entry к местной дате события в со�
 
 Отсутствие To у Entry означает одиночное событие на указанную From дату/время, без автоматического продолжения до текущего дня или в будущее. Если указана только дата, дневной Calendar и связанный date filter относят запись к этой местной дате без выдуманного времени суток. Если задано время, опорой служит указанный момент без придуманной длительности. Это правило не меняет односторонние границы query filter.
 
-Отдельное ongoing-состояние не вводится. Точные граничные и mixed-precision comparisons этим решением не утверждаются. **История:** [FQ-05/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/04_SQ-04_missing-event-end/00_thread.md).
+Отдельное ongoing-состояние не вводится. Точные граничные и mixed-precision comparisons этим решением не утверждаются. **История:** [FQ-05/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/04_SQ-04_missing-event-end/00_thread.md). **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — последний день date-only интервала включён
 
 У интервала записи с From/To, заданными датами без времени, последний указанный день To включается целиком в пользовательском смысле. «Поездка 1–10 июля» видна и при выборе 10 июля. Date-only верхняя граница фильтра «по 10 июля» также включает весь указанный день. Сохранённые значения остаются date-only: фиктивные 00:00/23:59:59 в EventTimeRange не записываются.
 
-Это правило не выбирает автоматически точные clock/mixed-precision/DST comparisons. **История:** [FQ-05/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/05_SQ-05_date-only-end-inclusion/00_thread.md).
+Это правило не выбирает автоматически точные clock/mixed-precision/DST comparisons. **История:** [FQ-05/SQ-05](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/05_SQ-05_date-only-end-inclusion/00_thread.md). **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — date-only запись в фильтре по часам
 
 Запись с известной датой, но без времени суток, включается в фильтр по часам того же дня как возможное совпадение. Например, «18 октября» без времени попадает в «18 октября, 12:00–14:00». В результате сохраняется явная пометка «время не указано»; запись не получает выдуманные часы, длительность на весь день или новое content-значение.
 
-Точная формализация разных timezone, mixed precision и DST этим решением не закрывается. **История:** [FQ-05/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/06_SQ-06_date-only-clock-filter/00_thread.md).
+Точная формализация разных timezone, mixed precision и DST этим решением не закрывается. **История:** [FQ-05/SQ-06](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/06_SQ-06_date-only-clock-filter/00_thread.md). **Обновление 15.11.2026:** оставшиеся аспекты (точные границы, смешанная точность, пояса, DST, приблизительные даты) закрыты в [FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md); текст выше — историческая запись.
 
 ## Уточнение 18.10.2026 — визуальная важность AI-работы
 
