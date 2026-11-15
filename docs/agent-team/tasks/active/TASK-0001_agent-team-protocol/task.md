@@ -9,7 +9,7 @@
 **External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
 **Presentation:** required (содержательная архитектурная/процессная задача)
 **Presentation source:** [`presentation/index.html`](presentation/index.html) — черновик создан, ждёт независимой проверки (S7)
-**Presentation preview URL:** not deployed — публикация ещё не настроена
+**Presentation preview URL:** https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh — закрытая страница claude.ai (доступ только владельцу, расшаривание — решение Product Owner); опубликована с разрешения Product Owner 2026-11-15, открытие проверено
 
 ## Цель и границы
 
