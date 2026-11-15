@@ -186,7 +186,7 @@ AI не может молча переписать то, что пользова
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
-From и to могут иметь разную точность; сравнение — по абсолютному времени в поясе записи, правила DST фиксированы ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md)).  
+From и to могут иметь разную точность; сравнение — по абсолютному времени в поясе записи, правила DST фиксированы; запись только с датой и без To не превращается в 00:00 и попадает в фильтр по часам того же дня как возможное совпадение (SQ-06) ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md)).  
 Модель должна поддерживать day-level и timestamp/interval-level содержание.
 
 ### ENTRY-012 — Entry — стабильный контейнер, content versioned через Revision
