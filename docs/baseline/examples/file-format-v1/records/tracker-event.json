@@ -1,0 +1,25 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "tracker-event",
+  "eventId": "tev_demo_1",
+  "trackerId": "trk_reading_en",
+  "trackerVersion": 1,
+  "value": null,
+  "occurredOn": {
+    "date": "2026-11-14",
+    "time": null,
+    "timeZone": "Europe/Belgrade"
+  },
+  "origin": "AI",
+  "confirmed": false,
+  "confidence": 0.91,
+  "source": {
+    "entryId": "entry_demo_a",
+    "revisionId": "rev_1"
+  },
+  "runId": "run_extract_demo",
+  "answerToQuestionId": null,
+  "state": "ACTIVE",
+  "supersedesEventId": null,
+  "createdAt": "2026-11-14T21:00:00Z"
+}

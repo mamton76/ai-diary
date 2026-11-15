@@ -1,0 +1,24 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "capture-item",
+  "captureId": "cap_demo_1",
+  "source": "google_calendar",
+  "sourceId": "EXAMPLE_EVENT_ID",
+  "idempotencyKey": "google_calendar:EXAMPLE_EVENT_ID",
+  "receivedAt": "2026-11-15T19:02:10Z",
+  "sourceTimestamp": "2026-11-15T18:30:00+01:00",
+  "textRef": {
+    "path": "inbox/2026/11/cap_demo_1/original.txt",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "assetIds": [],
+  "sourceMetadataRef": {
+    "path": "inbox/2026/11/cap_demo_1/source_event.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "processing": {
+    "state": "INBOX",
+    "entryId": null,
+    "operationId": null
+  }
+}

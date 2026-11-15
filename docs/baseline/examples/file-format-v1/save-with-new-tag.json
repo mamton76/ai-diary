@@ -7,28 +7,29 @@
     "All files are represented for validation; prepared candidates are invisible before final publication.",
     "BOOTSTRAP represents adoption of an already existing first Revision; it is not a new user save.",
     "Drive IDs are deliberately non-live example placeholders.",
-    "Draft payload remains physically present in this after-publication-before-cleanup fixture, but draftRef is null."
+    "Draft payload remains physically present in this after-publication-before-cleanup fixture, but the Entry state's draftCursor already points past it (slot 8), so it is no longer the current Draft.",
+    "Entry folder follows the live layout entries/YYYY/MM/YYYY-MM-DD__<entryId>/ (07/Q-01). Draft autosave uses the Entry's own create-once slot chain draft/slots/NNNNNN/; only Save/Apply/Restore/Discard/lifecycle/catalog go through the global chain (TASK-0002)."
   ],
   "phases": {
     "before": {
       "path": "_system/commits/000000.json",
-      "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+      "sha256": "e524d9fe38699d6a769ec863828c60943f1821c769863704fac9f4bc076dda65"
     },
     "registered": {
       "path": "_system/commits/000001.json",
-      "sha256": "5c672f3489ff5391ee99015d1ab8a3210f21dcd8051c0674398cd399e2256043"
+      "sha256": "33f0216e8b354de4be2dcd6a1c2f32f9cd9bf852f5bce4e1fb14889d8ae7f38c"
     },
     "after": {
       "path": "_system/commits/000002.json",
-      "sha256": "c359b24ed13355dfce04aad6813f57d57e19172058817f1e0b7566d6a112c518"
+      "sha256": "630cba281c266c906198ba96cfc46bc0bc7755e50f59084d233ca9422b02e0bf"
     }
   },
   "files": {
-    "entries/entry_demo/revisions/rev_demo_1/text.md": {
+    "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_1/text.md": {
       "encoding": "text",
       "value": "Велопрогулка.\n\n#велосипед\n"
     },
-    "entries/entry_demo/revisions/rev_demo_1/revision.json": {
+    "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_1/revision.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -53,7 +54,7 @@
             "uncertainties": []
           },
           "textRef": {
-            "path": "entries/entry_demo/revisions/rev_demo_1/text.md",
+            "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_1/text.md",
             "sha256": "f9df056b60bb4a405a50c28d0e87cde5c2669dc57d11824cd8344c94364f96fd"
           },
           "tagIds": [
@@ -64,11 +65,11 @@
         "provenanceRefs": []
       }
     },
-    "entries/entry_demo/draft/snapshots/7/entry.md": {
+    "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/entry.md": {
       "encoding": "text",
       "value": "После велосипеда ещё прошлась пешком. #ВЕЛО\n"
     },
-    "entries/entry_demo/draft/snapshots/7/DRAFT.json": {
+    "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/DRAFT.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -92,7 +93,7 @@
             "uncertainties": []
           },
           "textRef": {
-            "path": "entries/entry_demo/draft/snapshots/7/entry.md",
+            "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/entry.md",
             "sha256": "33d3f4f9795b90470e30b53e01c2e51d03b95a8e24b1d3798eb68490a8a5b904"
           },
           "tagIds": [
@@ -113,7 +114,12 @@
           }
         ],
         "tagEditIntents": [],
-        "pendingUploads": []
+        "pendingUploads": [],
+        "nextSlot": {
+          "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000008/DRAFT.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_DRAFT_ID_000008"
+        }
       }
     },
     "catalogs/tags/snapshots/cat_1/tags.json": {
@@ -175,7 +181,7 @@
         "state": "ACTIVE"
       }
     },
-    "entries/entry_demo/states/state_before/ENTRY.json": {
+    "entries/2026/10/2026-10-18__entry_demo/states/state_before/ENTRY.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -184,18 +190,23 @@
         "stateId": "state_before",
         "createdAt": "2026-10-18T14:50:00Z",
         "lifecycle": "ACTIVE",
+        "origin": {
+          "kind": "USER",
+          "syntheticType": null
+        },
         "currentRevisionId": "rev_demo_1",
         "currentRevisionRef": {
-          "path": "entries/entry_demo/revisions/rev_demo_1/revision.json",
-          "sha256": "43feb399d4e5021f1227cc87ae55ac1b7899f911c5c4704571c4a116f16e151d"
+          "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_1/revision.json",
+          "sha256": "bf66b087375ee58f1eecc508c623e07fc7cb6940aaf173cb9ea3df807e1e4fe9"
         },
         "committedUpdatedAt": "2026-10-18T15:00:00Z",
-        "draftRef": {
-          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
-          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
-        },
         "pendingOperationId": null,
-        "provenanceRefs": []
+        "provenanceRefs": [],
+        "draftCursor": {
+          "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/DRAFT.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_DRAFT_ID_000007"
+        }
       }
     },
     "_system/commits/000000.json": {
@@ -220,8 +231,8 @@
             "resourceKey": "entry:entry_demo",
             "before": null,
             "after": {
-              "path": "entries/entry_demo/states/state_before/ENTRY.json",
-              "sha256": "ffd02967b13ce402596c8e52242447f373f9b1f0d6b7e6831baf53a7f4f9111b"
+              "path": "entries/2026/10/2026-10-18__entry_demo/states/state_before/ENTRY.json",
+              "sha256": "badc6e58a2b2a27f838ea20d5a6db49e3fe03f9194f758aa4239beb80611b9f7"
             }
           },
           {
@@ -255,8 +266,8 @@
         "draftId": "draft_demo",
         "draftVersion": 7,
         "frozenDraftRef": {
-          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
-          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+          "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/DRAFT.json",
+          "sha256": "69a738788511710999d6a39d890ddf4c8a9f1ef5c84138dc20aeb740d5120134"
         },
         "mutationEpoch": 3,
         "parserVersion": "hashtag-v1-draft.1"
@@ -271,13 +282,13 @@
         "requestFingerprint": "c160e85edc26e93c300e3a36764a84140f92f3972ed7537405a3c0fe559c6dd6",
         "inputRef": {
           "path": "_system/operations/op_save_demo/input.json",
-          "sha256": "764771769f2776e74cc75965cb525694242c9aa37ad19301feb493fa77b2326f"
+          "sha256": "8b9fef4b6e3eaea6444fad5043f3a578f16a80dc3c6e6334f2004a56ee9f97be"
         },
         "status": "PREPARING",
         "result": null
       }
     },
-    "entries/entry_demo/states/state_registered/ENTRY.json": {
+    "entries/2026/10/2026-10-18__entry_demo/states/state_registered/ENTRY.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -286,18 +297,23 @@
         "stateId": "state_registered",
         "createdAt": "2026-10-18T14:50:00Z",
         "lifecycle": "ACTIVE",
+        "origin": {
+          "kind": "USER",
+          "syntheticType": null
+        },
         "currentRevisionId": "rev_demo_1",
         "currentRevisionRef": {
-          "path": "entries/entry_demo/revisions/rev_demo_1/revision.json",
-          "sha256": "43feb399d4e5021f1227cc87ae55ac1b7899f911c5c4704571c4a116f16e151d"
+          "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_1/revision.json",
+          "sha256": "bf66b087375ee58f1eecc508c623e07fc7cb6940aaf173cb9ea3df807e1e4fe9"
         },
         "committedUpdatedAt": "2026-10-18T15:00:00Z",
-        "draftRef": {
-          "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
-          "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
-        },
         "pendingOperationId": "op_save_demo",
-        "provenanceRefs": []
+        "provenanceRefs": [],
+        "draftCursor": {
+          "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/DRAFT.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_DRAFT_ID_000007"
+        }
       }
     },
     "_system/commits/000001.json": {
@@ -312,7 +328,7 @@
         "createdAt": "2026-10-18T17:00:02Z",
         "previous": {
           "path": "_system/commits/000000.json",
-          "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+          "sha256": "e524d9fe38699d6a769ec863828c60943f1821c769863704fac9f4bc076dda65"
         },
         "nextSlot": {
           "path": "_system/commits/000002.json",
@@ -332,12 +348,12 @@
           {
             "resourceKey": "entry:entry_demo",
             "before": {
-              "path": "entries/entry_demo/states/state_before/ENTRY.json",
-              "sha256": "ffd02967b13ce402596c8e52242447f373f9b1f0d6b7e6831baf53a7f4f9111b"
+              "path": "entries/2026/10/2026-10-18__entry_demo/states/state_before/ENTRY.json",
+              "sha256": "badc6e58a2b2a27f838ea20d5a6db49e3fe03f9194f758aa4239beb80611b9f7"
             },
             "after": {
-              "path": "entries/entry_demo/states/state_registered/ENTRY.json",
-              "sha256": "7da4a143ed1aef2be4e1e1ad08f35c1725f94e225b2b1f92f3f1f93ed2df2c41"
+              "path": "entries/2026/10/2026-10-18__entry_demo/states/state_registered/ENTRY.json",
+              "sha256": "4cceece43080fec5ae19a1b73f2f2c0b90cd0d8d5cb52c28522cb1c159dc53d3"
             }
           },
           {
@@ -345,17 +361,17 @@
             "before": null,
             "after": {
               "path": "_system/operations/op_save_demo/states/preparing.json",
-              "sha256": "2c04e5c7a23a620942a4fc22fb45144080cb151ae10c63b48398dac25cf2abfb"
+              "sha256": "f71cce433444769468b77e9cf86cdf84a26438bee8ea71d9bbb46d76aa189551"
             }
           }
         ]
       }
     },
-    "entries/entry_demo/revisions/rev_demo_2/text.md": {
+    "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_2/text.md": {
       "encoding": "text",
       "value": "После велосипеда ещё прошлась пешком. #ВЕЛО\n\n#прогулка\n"
     },
-    "entries/entry_demo/revisions/rev_demo_2/revision.json": {
+    "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_2/revision.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -380,7 +396,7 @@
             "uncertainties": []
           },
           "textRef": {
-            "path": "entries/entry_demo/revisions/rev_demo_2/text.md",
+            "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_2/text.md",
             "sha256": "82d4ad4c4b3cb244ddaefce8f235680d6a2364f866d545213cbe478c118f41fb"
           },
           "tagIds": [
@@ -453,7 +469,7 @@
         ]
       }
     },
-    "entries/entry_demo/states/state_after/ENTRY.json": {
+    "entries/2026/10/2026-10-18__entry_demo/states/state_after/ENTRY.json": {
       "encoding": "json",
       "value": {
         "formatVersion": "1.0.0-draft.1",
@@ -462,15 +478,23 @@
         "stateId": "state_after",
         "createdAt": "2026-10-18T14:50:00Z",
         "lifecycle": "ACTIVE",
+        "origin": {
+          "kind": "USER",
+          "syntheticType": null
+        },
         "currentRevisionId": "rev_demo_2",
         "currentRevisionRef": {
-          "path": "entries/entry_demo/revisions/rev_demo_2/revision.json",
-          "sha256": "889731fb29d4c6ba0e997016de1e2c44d73b342a390177616b7a94a32435dfcb"
+          "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_2/revision.json",
+          "sha256": "dbbf24c49dea3a1120b9fb63525a2f4e52196504294a5cf396fc92e584f2b20b"
         },
         "committedUpdatedAt": "2026-10-18T17:00:03Z",
-        "draftRef": null,
         "pendingOperationId": null,
-        "provenanceRefs": []
+        "provenanceRefs": [],
+        "draftCursor": {
+          "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000008/DRAFT.json",
+          "provider": "google_drive",
+          "objectId": "EXAMPLE_PREGENERATED_DRAFT_ID_000008"
+        }
       }
     },
     "_system/operations/op_save_demo/states/committed.json": {
@@ -482,18 +506,18 @@
         "requestFingerprint": "c160e85edc26e93c300e3a36764a84140f92f3972ed7537405a3c0fe559c6dd6",
         "inputRef": {
           "path": "_system/operations/op_save_demo/input.json",
-          "sha256": "764771769f2776e74cc75965cb525694242c9aa37ad19301feb493fa77b2326f"
+          "sha256": "8b9fef4b6e3eaea6444fad5043f3a578f16a80dc3c6e6334f2004a56ee9f97be"
         },
         "status": "COMMITTED",
         "result": {
           "revisionId": "rev_demo_2",
           "revisionRef": {
-            "path": "entries/entry_demo/revisions/rev_demo_2/revision.json",
-            "sha256": "889731fb29d4c6ba0e997016de1e2c44d73b342a390177616b7a94a32435dfcb"
+            "path": "entries/2026/10/2026-10-18__entry_demo/revisions/rev_demo_2/revision.json",
+            "sha256": "dbbf24c49dea3a1120b9fb63525a2f4e52196504294a5cf396fc92e584f2b20b"
           },
           "consumedDraftRef": {
-            "path": "entries/entry_demo/draft/snapshots/7/DRAFT.json",
-            "sha256": "6999e6498dd18db10115ff37cdfc79b3ef71e7749ae939794d2e409719e56f2e"
+            "path": "entries/2026/10/2026-10-18__entry_demo/draft/slots/000007/DRAFT.json",
+            "sha256": "69a738788511710999d6a39d890ddf4c8a9f1ef5c84138dc20aeb740d5120134"
           }
         }
       }
@@ -510,7 +534,7 @@
         "createdAt": "2026-10-18T17:00:03Z",
         "previous": {
           "path": "_system/commits/000001.json",
-          "sha256": "5c672f3489ff5391ee99015d1ab8a3210f21dcd8051c0674398cd399e2256043"
+          "sha256": "33f0216e8b354de4be2dcd6a1c2f32f9cd9bf852f5bce4e1fb14889d8ae7f38c"
         },
         "nextSlot": {
           "path": "_system/commits/000003.json",
@@ -530,12 +554,12 @@
           {
             "resourceKey": "entry:entry_demo",
             "before": {
-              "path": "entries/entry_demo/states/state_registered/ENTRY.json",
-              "sha256": "7da4a143ed1aef2be4e1e1ad08f35c1725f94e225b2b1f92f3f1f93ed2df2c41"
+              "path": "entries/2026/10/2026-10-18__entry_demo/states/state_registered/ENTRY.json",
+              "sha256": "4cceece43080fec5ae19a1b73f2f2c0b90cd0d8d5cb52c28522cb1c159dc53d3"
             },
             "after": {
-              "path": "entries/entry_demo/states/state_after/ENTRY.json",
-              "sha256": "fe5277bbcff604960987daeea1bfcc2bb98b6dbe2d30821492aacf80732c17cd"
+              "path": "entries/2026/10/2026-10-18__entry_demo/states/state_after/ENTRY.json",
+              "sha256": "8d55b29daa84a4ab487f7261ab60cd93cf4c83ea842b3d0d021e65fa3c1dbd24"
             }
           },
           {
@@ -553,11 +577,11 @@
             "resourceKey": "operation:op_save_demo",
             "before": {
               "path": "_system/operations/op_save_demo/states/preparing.json",
-              "sha256": "2c04e5c7a23a620942a4fc22fb45144080cb151ae10c63b48398dac25cf2abfb"
+              "sha256": "f71cce433444769468b77e9cf86cdf84a26438bee8ea71d9bbb46d76aa189551"
             },
             "after": {
               "path": "_system/operations/op_save_demo/states/committed.json",
-              "sha256": "d3720f1afcc72570e6151de5434b1cc93a9e2722c760ff7a083409fc268e6bad"
+              "sha256": "3092e14f8a5d65b88e755f355944332edbcec85a3e8e47947556f5873aba3b58"
             }
           }
         ]
@@ -573,7 +597,7 @@
         "publicationProtocol": "append-slot-v1",
         "genesisRef": {
           "path": "_system/commits/000000.json",
-          "sha256": "a980c5acaa92a220c9205dceb823320397066c7d79ec769005fb2003651e4fa9"
+          "sha256": "e524d9fe38699d6a769ec863828c60943f1821c769863704fac9f4bc076dda65"
         }
       }
     }

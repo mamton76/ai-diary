@@ -1,0 +1,25 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "checkpoint",
+  "storageIncarnation": "incarnation_example",
+  "sequence": 1000,
+  "publicationRef": {
+    "path": "_system/commits/001000.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "nextSlot": {
+    "path": "_system/commits/001001.json",
+    "provider": "google_drive",
+    "objectId": "EXAMPLE_PREGENERATED_ID_001001"
+  },
+  "resources": [
+    {
+      "resourceKey": "entry:entry_demo",
+      "ref": {
+        "path": "entries/2026/10/2026-10-18__entry_demo/states/state_after/ENTRY.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    }
+  ],
+  "createdAt": "2026-11-16T03:00:00Z"
+}

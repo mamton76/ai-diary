@@ -1,0 +1,31 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "run",
+  "runId": "run_digest_demo",
+  "workflow": {
+    "id": "system.weekly-digest",
+    "version": "1"
+  },
+  "provider": "example_provider",
+  "model": "example-model",
+  "inputRevisionRefs": [
+    {
+      "path": "entries/2026/11/2026-11-10__entry_demo_a/revisions/rev_1/revision.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+    }
+  ],
+  "contextHash": "0000000000000000000000000000000000000000000000000000000000000001",
+  "parameters": {
+    "period": "2026-W45"
+  },
+  "status": "PENDING",
+  "error": null,
+  "startedAt": "2026-11-09T07:59:58Z",
+  "finishedAt": null,
+  "usage": null,
+  "validation": null,
+  "resultRefs": [],
+  "proposalIds": [],
+  "resultRevisionIds": [],
+  "debugRef": null
+}

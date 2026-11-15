@@ -45,6 +45,8 @@ Domain repository предоставляет publishOnce(expectedHead, commitByt
 
 Инициализация storage — отдельный однократный bootstrap под maintenance: создаётся один выбранный manifest/genesis и проверяется его identity. Две независимо созданные папки/manifest с одинаковым именем не объединяются автоматически. Если manifest/genesis неоднозначен или повреждён, mutations запрещены до reconciliation.
 
+**[П, TASK-0002]** Тот же create-once примитив используется для собственной цепочки автосейва каждой записи (07 §5.1); общая цепочка не получает публикацию на каждый автосейв. Каждые N публикаций в цепочке публикуется checkpoint карты ресурсов (07 §2.1), чтобы холодный старт без кеша не перечитывал историю с genesis.
+
 Для cold start можно кешировать проверенный checkpoint resource map, но безусловно доверять mutable HEAD.json нельзя. Актуальность проверяется чтением nextSlot по известному ID до подтверждённого хвоста; permission/network failures дают UNKNOWN. Старые commit records остаются источником восстановления checkpoint.
 
 Предыдущий commit связывает logical path с provider ID. Для offline backup/export нужен полный набор commit records, referenced snapshots и manifest; при чтении локальной копии используются paths/hashes. Перенос на другой Drive/account требует явного rebind/bootstrap под maintenance с validation, новым storage incarnation и сохранением импортированной истории, а не слепого использования старых Drive IDs. Это часть future migration tooling, не runtime ручное редактирование manifest.
@@ -72,7 +74,7 @@ Commit содержит изменения resource map: resourceKey, before (ex
 
 Одной публикацией Save:
 
-- Entry state: currentRevisionId/ref → новая Revision; committedUpdatedAt → assigned server timestamp; draftRef → null; pendingOperationId → null.
+- Entry state: currentRevisionId/ref → новая Revision; committedUpdatedAt → assigned server timestamp; draftCursor → nextSlot потреблённого Draft (Draft перестаёт быть текущим); pendingOperationId → null.
 - Catalog state: включить новые pendingTags, если они есть.
 - Operation result: COMMITTED, тот же operationId/input fingerprint и revisionId/ref.
 - При Apply — durable proposal resolution с revisionId; при Restore — provenance restoredFromRevisionId.
@@ -143,7 +145,7 @@ Prepared candidates в operation refs сами по себе не меняют C
 | Другой tag/Entry/lease commit занял slot | Слот содержит другой operation/hash | Replay; перепроверить preconditions; safe retry или conflict, без overwrite |
 | Publication request timeout | Исход UNKNOWN | Читать точный slot ID и chain/result; не объявлять fail только по timeout |
 | Publication прошла, response потерян | В map есть COMMITTED operation result | Вернуть ту же Revision; новая не создаётся |
-| Publish прошёл, Draft files не удалены | Entry state уже имеет draftRef=null и consumed draftVersion в result | Не показывать старый Draft; idempotent physical cleanup |
+| Publish прошёл, Draft files не удалены | draftCursor Entry state уже за потреблённым слотом, consumed draftVersion в result | Не показывать старый Draft; idempotent physical cleanup |
 | Пользователь создал новый Draft после success | Новый draftId/version опубликован | Старый cleanup не удаляет его; удаляется конкретный consumed snapshot |
 | Current уже стал более новым | Исторический receipt operationId остаётся | Вернуть исходный revisionId, не менять Current назад |
 | Owner/base отозван до final publication | Новый head с epoch/base mismatch | Stop, записать conflict/failed result безопасной публикацией, сохранить Draft |
@@ -228,11 +230,13 @@ JSON layout, FileRef/hashes, operation ID, fencing, слот публикаци�
 
 Документационный комплект имеет core JSON Schema и пример before/prepared/after. Проверяется schema, точные hashes, foreign refs, previous revision chain, pending new tag → canonical tag, consumed Draft, операция → та же Revision, отсутствие new tag в before.
 
+**Обновление 16.11.2026 (TASK-0002):** пример пересобран под раскладку `entries/YYYY/MM/YYYY-MM-DD__<entryId>/` и цепочку слотов Draft; проверка воспроизводима: `python3 tools/format-check/check_format.py` (схема, hashes, цепочка, replay трёх фаз, 8 негативных случаев).
+
 Это **не runtime тест Drive** и не доказательство distributed safety.
 
 Перед mutating release обязательны:
 
-1. Adapter spike §2.2 и failure injection на каждом шаге таблицы §6.
+1. Adapter spike §2.2 и failure injection на каждом шаге таблицы §6; в spike — конкурирующие автосейвы одной записи в её цепочке слотов, задержка автосейва и Save, рост числа файлов, обход лимита Cloud Run 32 MiB при загрузке (OPS-008).
 2. Две Entries одновременно создают одинаковые canonical name/alias; один победитель, второй conflict с сохранённым Draft.
 3. Takeover/cancel между validate и publish; старый request не может дописать после fence.
 4. Повтор Save/Apply/Restore после потери ответа и после следующего successful Save.

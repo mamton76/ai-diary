@@ -1,0 +1,18 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "tracker-definition",
+  "trackerId": "trk_reading_en",
+  "version": 1,
+  "previousVersionRef": null,
+  "name": "Чтение на английском",
+  "type": "EVENT_LOG",
+  "lifecycle": "ACTIVE",
+  "period": "P1W",
+  "goal": null,
+  "extractionInstructions": "Отмечать эпизоды чтения на английском.",
+  "questions": {
+    "enabled": true,
+    "staleAfter": "P2D"
+  },
+  "createdAt": "2026-11-08T20:00:00Z"
+}
