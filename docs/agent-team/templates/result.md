@@ -3,6 +3,7 @@
 **Status:** in-progress | ready-for-human | completed | blocked
 **Date:** YYYY-MM-DD
 **External links:** Issue / PR / CI (необязательно)
+**Presentation:** путь к переносимой презентации или not-needed с причиной
 
 ## Что сделано
 
