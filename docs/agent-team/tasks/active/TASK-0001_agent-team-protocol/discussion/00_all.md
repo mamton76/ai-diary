@@ -8,7 +8,7 @@
 **Claim:** none
 **Owner:** Product Owner
 **Related canonical thread:** —
-**Decision destination:** [collaboration rules](../../../../../collaboration/README.md), [orchestration rules](../../../../../orchestration/README.md)
+**Decision destination:** docs/agent-team/collaboration/README.md; docs/agent-team/orchestration/README.md
 
 ## Вопрос
 
@@ -44,7 +44,7 @@
 **Claim:** none
 **Owner:** Product Owner
 **Related canonical thread:** —
-**Decision destination:** [task registry](../../../../README.md), [orchestration rules](../../../../../orchestration/README.md)
+**Decision destination:** docs/agent-team/tasks/README.md; docs/agent-team/orchestration/README.md
 
 ## Вопрос
 
