@@ -20,6 +20,7 @@
 | Реестр и жизненный цикл задач | [tasks/README.md](tasks/README.md) |
 | Активные и завершённые задачи | tasks/active/ и tasks/completed/ |
 | Шаблоны переносимых записей | [templates/](templates/) |
+| Публикация презентаций | [publishing/README.md](publishing/README.md) — переносимый HTML, allowlist и настройки preview |
 | Продуктовые требования | [../baseline/](../baseline/) |
 | Текущая архитектура продукта | [../architecture.md](../architecture.md) |
 | Реализация Web/API MVP | [../implementation-plan-web-mvp.md](../implementation-plan-web-mvp.md) |
