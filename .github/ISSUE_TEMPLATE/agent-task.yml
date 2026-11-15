@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         **GitHub Issue is an adapter, not the canonical task.**
-        Create or link docs/agent-team/tasks/active/TASK-NNNN_slug/task.md first.
+        Request an ID through the central Task Registrar first (docs/agent-team/registrar/README.md), then link its canonical draft task.md. Never independently allocate TASK-NNNN.
         Opening this Issue does not authorize starting an agent automatically.
   - type: input
     id: task_id
