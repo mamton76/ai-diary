@@ -30,6 +30,8 @@ jobs:
         run: python3 -m unittest discover -s scripts/agent-team -p "test_*.py"
       - name: Verify generated discussion bundles
         run: python3 scripts/agent-team/build_discussions.py --check
+      - name: Verify central task registry and reservations
+        run: python3 scripts/agent-team/register_task.py --validate
       - name: Build explicitly public presentation site
         run: python3 scripts/agent-team/build_preview_site.py
       - name: Verify TASK-0001 export

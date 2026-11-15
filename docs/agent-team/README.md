@@ -18,6 +18,7 @@
 | Текущий протокол исполнения | [orchestration/README.md](orchestration/README.md) |
 | История решений о команде | collaboration/decisions/ и orchestration/decisions/ |
 | Реестр и жизненный цикл задач | [tasks/README.md](tasks/README.md) |
+| Централизованная выдача TASK-ID | [registrar/README.md](registrar/README.md) — workflow и миграция существующих номеров |
 | Активные и завершённые задачи | tasks/active/ и tasks/completed/ |
 | Шаблоны переносимых записей | [templates/](templates/) |
 | Публикация презентаций | [publishing/README.md](publishing/README.md) — переносимый HTML, allowlist и настройки preview |
