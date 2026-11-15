@@ -87,6 +87,7 @@ AI-Diary/
 - ENTRY.json, entry.md, draft/DRAFT.json, draft/entry.md и tags.json по удобным стабильным путям — **materialized views**, которые можно восстановить из опубликованных snapshots;
 - application repository всегда читает согласованный префикс публикаций, даже если materialized views ещё обновляются;
 - standalone reader также должен учитывать commit chain. Просто открыть entry.md можно для чтения текста, но он может отставать от последней публикации.
+- **[Д, 16.11.2026]** Удобная копия `entry.md` (и `draft/entry.md`) начинается с YAML-шапки: заголовок, дата и время события, пояс, теги текущими названиями; затем текст. `revisions/<id>/text.md` остаётся чистым текстом Revision; хеши и сравнение NO_CHANGE считаются по нему ([07/Q-02](07-file-format-v1-draft.threads/02_readable-entry-md/00_thread.md)).
 
 Это **явное изменение старого эскиза**, где ENTRY.json и entry.md выглядели независимыми текущими canonical файлами. Authoritative данные остаются в user-owned storage, а не переезжают в backend DB. Принятие такой физической организации ещё не объявляется принятым baseline.
 
