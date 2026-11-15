@@ -6,7 +6,7 @@
 **Created:** `2026-11-16T00:51:37+01:00`  
 **Source:** обсуждение Product Owner 2026-11-16; конфликт с TASK-0002 в [PR #13](https://github.com/mamton76/ai-diary/pull/13)  
 **Related tasks:** [TASK-0001](../../../completed/TASK-0001_agent-team-protocol/task.md); [TASK-0002 в PR #13](https://github.com/mamton76/ai-diary/pull/13)  
-**External links:** PR создаётся из ветки `feat/agent-team-orchestration-mvp`  
+**External links:** [draft PR #14](https://github.com/mamton76/ai-diary/pull/14) — первый этап, не для merge до review  
 **Presentation:** required (существенная техническая интеграция); до финального review не создана  
 **Presentation source:** planned `presentation/index.html`  
 **Presentation preview URL:** not deployed; публичная публикация требует отдельного согласования
