@@ -8,6 +8,8 @@
 **Related tasks:** —
 **External links (optional):** GitHub Issue / PR / run URL
 **Presentation:** required | not-needed (с обоснованием)
+**Presentation preview URL:** — (только после успешной публикации; не выдумывать ссылку)
+**Presentation source:** — (например `presentation/index.html`)
 
 ## Цель и границы
 
