@@ -9,7 +9,7 @@
 **External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
 **Presentation:** required (содержательная архитектурная/процессная задача)
 **Presentation source:** [`presentation/index.html`](presentation/index.html) — черновик создан, ждёт независимой проверки (S7)
-**Presentation preview URL:** https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh — приватный Claude Artifact; отдельно готовится переносимый Cloudflare preview (URL ещё не получен)
+**Presentation preview URL:** https://ai-diary-935.pages.dev/ — Cloudflare Pages, адрес сообщил Product Owner; доступность напрямую не проверена из среды агента. Приватный альтернативный вариант: https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh.
 **Публичная публикация:** Product Owner явно разрешил публичный preview TASK-0001 (`2026-11-15T23:57:38+01:00`; презентация содержит только синтетические данные)
 
 ## Цель и границы
@@ -86,7 +86,7 @@
   - **Поставлен:** `2026-11-15T23:37:56+01:00`
   - **Закрыт:** —
   - **Зависит от:** S7 (готовность HTML); инфраструктуру экспорта можно готовить параллельно
-  - **Результат / evidence:** `scripts/agent-team/build_preview_site.py`, `docs/agent-team/publishing/`, Cloudflare preview URL — ожидается подключения; закрытый [Claude Artifact](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh) уже указан отдельно
+  - **Результат / evidence:** `scripts/agent-team/build_preview_site.py`, `docs/agent-team/publishing/`, Cloudflare Pages site: https://ai-diary-935.pages.dev/ (сообщён Product Owner, проверка прямой страницы ожидается); закрытый [Claude Artifact](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh) уже указан отдельно
 
 - [ ] **S9 — Проверить итог, актуальность документации и принять решение о merge**
   - **Исполнитель:** ChatGPT (сводка), Product Owner (решение) · **Проверяет:** Product Owner
@@ -103,7 +103,7 @@
 
 **Что демонстрируем:** роли Claude/Codex, путь задачи от постановки до приёмки, раздельные треды и их конкатенацию, Documentation Impact, текущие ограничения облачной автоматизации. Отдельно показывать **реализованное в PR** и **только запланированное**.
 
-**Статус:** черновик создан Claude (`presentation/index.html`), есть ссылка на Claude Artifact; независимая проверка S7 ещё открыта. Вывод для внешнего статического preview подготовлен в S8, публикация и проверка Cloudflare URL ещё не завершены.
+**Статус:** черновик создан Claude (`presentation/index.html`), есть ссылка на Claude Artifact; независимая проверка S7 ещё открыта. Вывод для внешнего статического preview подготовлен в S8, адрес Cloudflare Pages предоставлен Product Owner, но проверка прямого URL презентации и независимая приёмка ещё не завершены.
 
 ## Acceptance criteria
 
