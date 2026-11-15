@@ -92,3 +92,7 @@ Current plan and discussion backlog: [docs/plan.md](docs/plan.md). The legacy An
 
 - [Product baseline](docs/baseline/03-product-baseline.md) — current product requirements ([PRD](docs/prd.md) is historical)
 - [Architecture](docs/architecture.md) — technical architecture decisions
+
+## Agent collaboration
+
+The proposed portable Claude Code + Codex team protocol, task history and documentation gates live in [docs/agent-team/README.md](docs/agent-team/README.md). GitHub Issues/PRs are optional adapters; the cloud agent orchestrator is not yet implemented.
