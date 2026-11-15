@@ -4,6 +4,7 @@
 **Date:** YYYY-MM-DD
 **External links:** Issue / PR / CI (необязательно)
 **Presentation:** путь к переносимой презентации или not-needed с причиной
+**Presentation preview URL:** — (опубликованная, проверенная ссылка; при отсутствии — not deployed)
 
 ## Что сделано
 
