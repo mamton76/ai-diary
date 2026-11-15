@@ -2,7 +2,8 @@
 
 **Status:** reviewing
 **Date:** 2026-11-15
-**External links:** PR добавляется после создания
+**External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
+**Presentation:** required — `presentation/index.html`, не создана
 
 ## Что сделано
 
@@ -16,6 +17,7 @@
 | Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | GitHub Actions run 43766624892 |
 | Independent review | не проводилось | — |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
+| Presentation / human review | pending — не создана | план: presentation/index.html |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
 
 ## Актуализация документации
@@ -25,6 +27,10 @@
 ## Существенные обсуждения
 
 [Cloud-first / GitHub summaries](discussion/threads/01_cloud-workflow.md) · [portable tasks / docs gate](discussion/threads/02_portability-and-documentation.md). В 00_all.md находится машинная конкатенация.
+
+## Презентация результата
+
+Для этой содержательной задачи требуется интерактивный HTML-обзор, который наглядно покажет реализованный протокол и отдельно обозначит ещё не работающий оркестратор. На текущем этапе файл не создан, приёмка не завершена.
 
 ## Что нужно от пользователя
 
