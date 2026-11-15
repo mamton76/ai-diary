@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TASK-0001 — протокол команды</title>
+<style>
+:root{
+  --bg:#f7f6f2;--surface:#fff;--ink:#1d1d1b;--muted:#5f5e58;--line:#dedbd2;
+  --accent:#2f5d8a;--accent-soft:#e3ecf5;--ok:#2e7d4f;--ok-soft:#e2f2e8;
+  --plan:#9a6a12;--plan-soft:#f8eed8;--warn:#a33b2b;--warn-soft:#f7e3df;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17181a;--surface:#212326;--ink:#ecebe6;--muted:#a5a39b;--line:#383a3e;
+  --accent:#8db6e0;--accent-soft:#25344a;--ok:#7fcf9c;--ok-soft:#1f3529;
+  --plan:#e2b867;--plan-soft:#3a3020;--warn:#f0907f;--warn-soft:#41261f;}}
+:root[data-theme="dark"]{
+  --bg:#17181a;--surface:#212326;--ink:#ecebe6;--muted:#a5a39b;--line:#383a3e;
+  --accent:#8db6e0;--accent-soft:#25344a;--ok:#7fcf9c;--ok-soft:#1f3529;
+  --plan:#e2b867;--plan-soft:#3a3020;--warn:#f0907f;--warn-soft:#41261f;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main,footer{max-width:960px;margin:0 auto;padding:0 16px}
+header{padding-top:28px}
+h1{font-size:1.6rem;margin:.2em 0}
+h2{font-size:1.25rem;margin:0 0 .6em}
+h3{font-size:1rem;margin:0 0 .3em}
+p{margin:.4em 0 .8em}
+.sub{color:var(--muted)}
+.badge{display:inline-block;font-size:.78rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-right:6px}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:2}
+nav .tabs{max-width:960px;margin:0 auto;padding:8px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+section{display:none;padding:22px 0 8px}
+section.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 12px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.ok{background:var(--ok-soft);border-color:transparent}
+.plan{background:var(--plan-soft);border-color:transparent}
+.warn{background:var(--warn-soft);border-color:transparent}
+.tag{font-size:.75rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.ok .tag{color:var(--ok)}.plan .tag{color:var(--plan)}.warn .tag{color:var(--warn)}
+ul{margin:.3em 0 .6em;padding-left:1.2em}
+code{font:.88em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--accent-soft);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
+pre{font:.82rem/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;margin:0}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.scroll{overflow-x:auto}
+.switch{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:12px}
+.switch button{border:0;background:var(--surface);color:var(--ink);padding:6px 14px;font:inherit;cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.states{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.states button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 10px;font:inherit;font-size:.9rem;cursor:pointer}
+.states button.next{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.states button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.side{background:var(--warn-soft)}
+.steps{list-style:none;padding:0;margin:0}
+.steps li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.box{flex:0 0 22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-size:.8rem;font-weight:700}
+.done .box{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.steps small{color:var(--muted);display:block}
+.legend{font-size:.85rem;color:var(--muted)}
+footer{color:var(--muted);font-size:.85rem;padding:20px 16px 40px}
+.theme{float:right;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <button class="theme" id="theme" type="button">Тема</button>
+  <span class="badge">TASK-0001</span><span class="badge">PR #10</span><span class="badge">черновик презентации</span>
+  <h1>Протокол команды Claude + Codex</h1>
+  <p class="sub">Как агенты берут задачу, обсуждают, проверяют друг друга и отдают вам результат — и что из этого уже работает, а что пока только описано.</p>
+</header>
+
+<nav aria-label="Разделы"><div class="tabs" role="tablist" id="tabs"></div></nav>
+
+<main>
+<section id="goal" data-title="Цель">
+  <h2>Зачем эта задача</h2>
+  <div class="grid">
+    <div class="card"><h3>Проблема</h3><p>Агенты работали в отдельных сессиях. Договорённости оставались в чатах, итог надо было собирать вручную, а ревью одного агента другим ничем не было оформлено.</p></div>
+    <div class="card"><h3>Что хотели получить</h3><ul><li>история задач живёт в репозитории, а не только в GitHub;</li><li>у каждой задачи есть план, проверки и итог;</li><li>независимое ревью и Documentation Impact обязательны;</li><li>вы получаете короткую сводку, а не переписку агентов.</li></ul></div>
+    <div class="card"><h3>Чего задача не делает</h3><p>Не запускает облачных агентов автоматически, не выдаёт токены, не подключает события GitHub и не меняет продукт AI Diary.</p></div>
+  </div>
+</section>
+
+<section id="beforeafter" data-title="До / после">
+  <h2>До и после</h2>
+  <div class="switch" role="group" aria-label="Режим">
+    <button type="button" data-mode="before" aria-pressed="false">До PR</button>
+    <button type="button" data-mode="after" aria-pressed="true">После PR</button>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Вопрос</th><th id="ba-head">После PR</th></tr></thead>
+    <tbody id="ba-body"></tbody>
+  </table></div>
+</section>
+
+<section id="lifecycle" data-title="Путь задачи">
+  <h2>Путь задачи: машина состояний</h2>
+  <p class="sub">Нажмите на состояние. Обведены те, в которые можно перейти дальше.</p>
+  <div class="states" id="states"></div>
+  <div class="card" id="state-info"></div>
+  <p class="legend">Возврат из <code>reviewing</code> в <code>implementing</code> — не больше двух автоматических циклов. Открытый PR ≠ <code>completed</code>.</p>
+</section>
+
+<section id="roles" data-title="Роли">
+  <h2>Роли</h2>
+  <div class="grid">
+    <div class="card"><h3>Product Owner — вы</h3><p>Ставите цель, утверждаете продуктовые и архитектурные решения, решаете споры агентов, разрешаете merge и deploy.</p></div>
+    <div class="card"><h3>Planner / Architect</h3><p>Claude или Codex. План, acceptance criteria, Documentation Impact, открытые неопределённости.</p></div>
+    <div class="card"><h3>Developer</h3><p>Обычно Claude Code Cloud. Ветка, код и документы, тесты, diff и логи.</p></div>
+    <div class="card"><h3>Independent Reviewer</h3><p>Обычно Codex Cloud. Получает исходную постановку и diff, а не самоотчёт разработчика. Автор не утверждает своё ревью.</p></div>
+    <div class="card"><h3>QA</h3><p>Роль, не обязательно отдельный агент: сверяет критерии с реальными результатами CI и тестов.</p></div>
+    <div class="card plan"><span class="tag">только описан</span><h3>Orchestrator</h3><p>Детерминированная автоматика: запускает роли, считает попытки и расходы. В этом PR <b>не реализован</b> — сейчас эту роль выполняете вы.</p></div>
+  </div>
+</section>
+
+<section id="threads" data-title="Треды">
+  <h2>Обсуждения: отдельные треды → общий файл</h2>
+  <p>Каждый смысловой вопрос задачи — отдельный файл в <code>discussion/threads/</code>. Файл <code>discussion/00_all.md</code> собирается скриптом, руками его не правят. CI проверяет, что сборка не устарела.</p>
+  <p class="legend">Пример ниже — <b>синтетический</b>: имитация на вымышленной задаче, не реальный вывод скрипта.</p>
+  <div class="grid">
+    <div><h3>threads/</h3><pre id="src"></pre></div>
+    <div><h3>00_all.md (собран)</h3><pre id="out"></pre></div>
+  </div>
+  <p style="margin-top:12px"><button type="button" class="theme" id="stale" style="float:none">Изменить тред, не пересобрав</button>
+  <span id="check" class="legend"></span></p>
+  <div class="card" style="margin-top:12px"><h3>Команды</h3>
+<pre>python3 scripts/agent-team/build_discussions.py --write
+python3 scripts/agent-team/build_discussions.py --check</pre></div>
+  <p class="legend">Формат шапки тредов совпадает с <code>skills/discussion-threads/SKILL.md</code>. Продуктовые решения по-прежнему идут через канонические треды в <code>docs/baseline/</code>; тред задачи на них только ссылается.</p>
+</section>
+
+<section id="status" data-title="Сделано / план">
+  <h2>Что реально сделано, а что только описано</h2>
+  <div class="grid">
+    <div class="card ok"><span class="tag">реализовано в PR</span><ul>
+      <li><code>docs/agent-team/</code>: правила, протокол, реестр задач, decisions;</li>
+      <li>шаблоны <code>task.md</code>, <code>result.md</code>, треда; шаблоны PR и Issue;</li>
+      <li>скрипт сборки <code>00_all.md</code> с режимом <code>--check</code> и unit-тестами;</li>
+      <li>GitHub Actions: тесты и <code>--check</code> на каждый PR;</li>
+      <li>TASK-0001 — первая задача в новом формате, с шагами и временем;</li>
+      <li><code>AGENTS.md</code> и тонкий <code>CLAUDE.md</code> ссылаются на общие правила.</li>
+    </ul></div>
+    <div class="card plan"><span class="tag">только описано</span><ul>
+      <li>автоматический запуск Claude Cloud и Codex Cloud;</li>
+      <li>маршрутизация событий GitHub к агентам;</li>
+      <li>синхронизация Issue ↔ файлы задачи;</li>
+      <li>очередь, учёт попыток и расходов;</li>
+      <li>автовозврат замечаний ревью разработчику.</li>
+    </ul><p>Всё это — отдельные будущие задачи. Сейчас передачу между агентами делаете вы.</p></div>
+  </div>
+</section>
+
+<section id="checks" data-title="Проверки">
+  <h2>Проверки и шаги TASK-0001</h2>
+  <div class="card"><h3>CI — workflow «Agent-team documentation integrity»</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>Run</th><th>Коммит</th><th>Итог</th></tr></thead>
+    <tbody>
+      <tr><td>#1 — 43766624892</td><td><code>8540d69</code> первый вариант</td><td>success</td></tr>
+      <tr><td>#3 — 43767682324</td><td><code>f52f994</code> после правок Claude</td><td>success</td></tr>
+      <tr><td>#8 — 43768679872</td><td><code>c46d495</code> правило о презентации</td><td>success</td></tr>
+    </tbody></table></div>
+  <p class="legend">Все 8 запусков на ветке до этого черновика зелёные. Запуск на коммите с этой презентацией смотрите в PR.</p></div>
+  <div class="card"><h3>Шаги</h3><ul class="steps" id="steps"></ul></div>
+</section>
+
+<section id="decide" data-title="Ваши решения">
+  <h2>Что нужно от вас</h2>
+  <div class="grid">
+    <div class="card warn"><span class="tag">подтвердить</span><h3>Два decision-файла</h3><p><code>collaboration/decisions/0001-portable-history.md</code> и <code>orchestration/decisions/0001-documentation-gate.md</code> написаны как «согласовано с Product Owner». Проверьте, что это действительно ваши решения.</p></div>
+    <div class="card warn"><span class="tag">дождаться</span><h3>S6 и S7</h3><p>Codex должен повторно проверить актуальный head PR и эту презентацию. Агенты пока сами друг друга не видят: попросите Codex об этом в его сессии.</p></div>
+    <div class="card"><span class="tag">при merge</span><h3>Squash and merge</h3><p>В ветке около 50 мелких коммитов. Squash оставит в master одну понятную запись.</p></div>
+    <div class="card"><h3>Компромисс: презентации</h3><p>Обязательная презентация для нетривиальных задач удобна для приёмки, но добавляет работу к каждой такой задаче и блокирует <code>ready-for-human</code>, пока её нет. Если окажется тяжело, порог «нетривиальности» можно поднять.</p></div>
+  </div>
+</section>
+</main>
+
+<footer>Черновик: Claude Code, 2026-11-15. Только синтетические примеры; реальных записей дневника, секретов и идентификаторов здесь нет. Открывается локально, без сервера и внешних ресурсов. Публикуется только с разрешения Product Owner.</footer>
+
+<script>
+(function(){
+  var secs=[].slice.call(document.querySelectorAll('main section'));
+  var tabs=document.getElementById('tabs');
+  function show(id){
+    secs.forEach(function(s){s.classList.toggle('on',s.id===id)});
+    [].forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===id)});
+    try{history.replaceState(null,'','#'+id)}catch(e){}
+  }
+  secs.forEach(function(s){
+    var b=document.createElement('button');b.type='button';b.role='tab';b.dataset.id=s.id;b.textContent=s.dataset.title;
+    b.onclick=function(){show(s.id)};tabs.appendChild(b);
+  });
+  var start=(location.hash||'').slice(1);
+  show(document.getElementById(start)&&start?start:'goal');
+
+  // theme
+  var root=document.documentElement;
+  document.getElementById('theme').onclick=function(){
+    var dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+  };
+
+  // before/after
+  var rows=[
+    ['Где живёт задача','В чате сессии; теряется вместе с сессией','В репозитории: tasks/active/TASK-NNNN_slug/'],
+    ['Кто проверяет','Обычно никто, или ревью оформлено как угодно','Независимый reviewer по исходной постановке и diff; автор не утверждает своё ревью'],
+    ['Документация','Обновляется, если вспомнили','Documentation Impact в каждой задаче; без него задача не закрыта'],
+    ['Обсуждения','Разбросаны по чатам и PR','Отдельные треды + собранный 00_all.md, CI проверяет актуальность'],
+    ['Что вы получаете','Переписку и diff','result.md, сводку и (для нетривиальных задач) презентацию'],
+    ['Зависимость от GitHub','Вся история в комментариях GitHub','GitHub — транспорт; история переносима как Markdown'],
+    ['Merge и deploy','Неявно','Только с вашего разрешения']
+  ];
+  var mode='after';
+  function renderBA(){
+    document.getElementById('ba-head').textContent=mode==='after'?'После PR':'До PR';
+    document.getElementById('ba-body').innerHTML=rows.map(function(r){
+      return '<tr><td>'+r[0]+'</td><td>'+(mode==='after'?r[2]:r[1])+'</td></tr>';}).join('');
+    [].forEach.call(document.querySelectorAll('[data-mode]'),function(b){b.setAttribute('aria-pressed',b.dataset.mode===mode)});
+  }
+  [].forEach.call(document.querySelectorAll('[data-mode]'),function(b){b.onclick=function(){mode=b.dataset.mode;renderBA()}});
+  renderBA();
+
+  // states
+  var S={
+    'draft':['Задача формулируется, запуск ещё не разрешён.',['ready']],
+    'ready':['Входы, границы и критерии определены. Только этот статус и ваше разрешение запускают работу.',['planning','implementing']],
+    'planning':['План и Documentation Impact проверяются.',['implementing','needs-human']],
+    'implementing':['Исполнитель меняет код и документацию в своей ветке.',['reviewing']],
+    'reviewing':['Независимое ревью, CI и проверка документации. Положительная оценка LLM не перекрывает упавший CI.',['implementing','blocked','ready-for-human']],
+    'blocked':['Ошибка или зависимость, которую автоматика не разрешит.',['ready','implementing']],
+    'needs-human':['Нужен ваш выбор по существенному вопросу.',['planning','implementing']],
+    'ready-for-human':['Критерии выполнены, PR, сводка и презентация готовы. TASK-0001 ещё не здесь: ждёт S6 и S7.',['completed']],
+    'completed':['Результат принят, папка перенесена в completed/. Дальше не меняется молча.',[]]
+  };
+  var cur='reviewing',box=document.getElementById('states');
+  Object.keys(S).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=k;b.dataset.k=k;b.onclick=function(){cur=k;renderS()};box.appendChild(b)});
+  function renderS(){
+    var nx=S[cur][1];
+    [].forEach.call(box.children,function(b){b.setAttribute('aria-pressed',b.dataset.k===cur);b.classList.toggle('next',nx.indexOf(b.dataset.k)>=0)});
+    document.getElementById('state-info').innerHTML='<h3>'+cur+(cur==='reviewing'?' — здесь сейчас TASK-0001':'')+'</h3><p>'+S[cur][0]+'</p><p class="legend">Дальше: '+(nx.length?nx.join(', '):'—')+'</p>';
+  }
+  renderS();
+
+  // threads demo (synthetic)
+  var threads={'01_storage-choice.md':'# 01 — Выбор хранилища (пример)\n**Состояние:** resolved\n...\n**Решение:** [принято] вариант B','02_retry-policy.md':'# 02 — Политика повторов (пример)\n**Состояние:** in_discussion\n...'};
+  var built=null;
+  function bundle(){return Object.keys(threads).sort().map(function(n){return '<!-- Source: threads/'+n+' -->\n\n'+threads[n]}).join('\n\n')}
+  function renderT(){
+    document.getElementById('src').textContent=Object.keys(threads).sort().map(function(n){return '── '+n+'\n'+threads[n]}).join('\n\n');
+    document.getElementById('out').textContent=built;
+    var ok=built===bundle();
+    var c=document.getElementById('check');c.textContent='--check: '+(ok?'OK, сборка актуальна':'FAIL, 00_all.md устарел — нужен --write');c.style.color=ok?'var(--ok)':'var(--warn)';
+  }
+  built=bundle();renderT();
+  var stale=document.getElementById('stale');
+  stale.onclick=function(){
+    if(built===bundle()){threads['02_retry-policy.md']+='\nновая реплика';stale.textContent='Пересобрать (--write)';}
+    else{built=bundle();stale.textContent='Изменить тред, не пересобрав';}
+    renderT();
+  };
+
+  // steps
+  var steps=[
+    [1,'S1 — каркас docs/agent-team/','ChatGPT · проверяет Claude'],
+    [1,'S2 — lifecycle, переносимые задачи, Documentation Impact','ChatGPT · проверяет Claude'],
+    [1,'S3 — треды и сборка 00_all.md','ChatGPT · проверяют CI и Claude'],
+    [1,'S4 — AGENTS.md, CLAUDE.md, шаблоны GitHub, PR','ChatGPT · проверяет Claude'],
+    [1,'S5 — ревью Claude и исправления','закрыт 2026-11-15T23:09:15+01:00'],
+    [0,'S6 — повторное ревью актуального head','Codex · ожидается'],
+    [0,'S7 — презентация (этот файл)','черновик Claude · ждёт проверки другим агентом и вами'],
+    [0,'S8 — итоговая сводка и решение о merge','ChatGPT и вы · после S6 и S7']
+  ];
+  document.getElementById('steps').innerHTML=steps.map(function(s){
+    return '<li class="'+(s[0]?'done':'')+'"><span class="box">'+(s[0]?'✓':'')+'</span><div>'+s[1]+'<small>'+s[2]+'</small></div></li>';}).join('');
+})();
+</script>
+</body>
+</html>

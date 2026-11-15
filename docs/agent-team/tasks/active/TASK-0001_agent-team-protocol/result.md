@@ -3,7 +3,7 @@
 **Status:** reviewing
 **Date:** 2026-11-15
 **External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
-**Presentation:** required — `presentation/index.html`, не создана
+**Presentation:** required — [`presentation/index.html`](presentation/index.html), черновик, ждёт независимой проверки
 
 ## Что сделано
 
@@ -14,10 +14,10 @@
 | Gate | Результат | Ссылка / лог |
 |---|---|---|
 | Acceptance criteria | частично, PR review pending | task.md |
-| Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | GitHub Actions run 43766624892 |
-| Independent review | не проводилось | — |
+| Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | первый успешный run 43766624892 (`8540d69`); после правок Claude 43767682324 (`f52f994`); каждый следующий push тоже зелёный |
+| Independent review | Claude review проведён, замечания исправлены; повторное ревью Codex актуального head — ожидается (S6) | [review](https://github.com/mamton76/ai-diary/pull/10#pullrequestreview-5913174681) |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
-| Presentation / human review | pending — не создана | план: presentation/index.html |
+| Presentation / human review | черновик создан, не проверен | [presentation/index.html](presentation/index.html) |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
 
 ## Актуализация документации
@@ -30,7 +30,7 @@
 
 ## Презентация результата
 
-Для этой содержательной задачи требуется интерактивный HTML-обзор, который наглядно покажет реализованный протокол и отдельно обозначит ещё не работающий оркестратор. На текущем этапе файл не создан, приёмка не завершена.
+Для этой содержательной задачи требуется интерактивный HTML-обзор, который наглядно покажет реализованный протокол и отдельно обозначит ещё не работающий оркестратор. Черновик создан Claude: [presentation/index.html](presentation/index.html), открывается локально без сервера. Факты, навигацию и безопасность должен проверить другой агент; приёмка не завершена.
 
 ## Что нужно от пользователя
 
