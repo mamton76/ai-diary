@@ -7,6 +7,7 @@
 **Source:** разговор / план / ссылка на существующее требование
 **Related tasks:** —
 **External links (optional):** GitHub Issue / PR / run URL
+**Presentation:** required | not-needed (с обоснованием)
 
 ## Цель и границы
 
