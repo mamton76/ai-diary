@@ -18,7 +18,7 @@
 | Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | первый успешный run 43766624892 (`8540d69`); после правок Claude 43767682324 (`f52f994`); каждый следующий push тоже зелёный |
 | Independent review | Claude review проведён, замечания исправлены; повторное ревью Codex актуального head — ожидается (S6) | [review](https://github.com/mamton76/ai-diary/pull/10#pullrequestreview-5913174681) |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
-| Presentation / human review | черновик создан, не проверен | [presentation/index.html](presentation/index.html) |
+| Presentation / human review | черновик создан, не проверен; независимый Cloudflare preview пока не опубликован | [presentation/index.html](presentation/index.html); [publishing instructions](../../../publishing/README.md) |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
 
 ## Актуализация документации
@@ -28,6 +28,13 @@
 ## Существенные обсуждения
 
 [Cloud-first / GitHub summaries](discussion/threads/01_cloud-workflow.md) · [portable tasks / docs gate](discussion/threads/02_portability-and-documentation.md). В 00_all.md находится машинная конкатенация.
+
+## Публикация preview
+
+- **Claude Artifact:** [открыть](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh) — приватный адрес уже добавлен Claude, его доступность для пользователя требует проверки.
+- **Переносимый статический сайт:** экспорт и CI подготовлены (allowlist: только TASK-0001), конфигурация: [publishing/README.md](../../../publishing/README.md).
+- **Cloudflare Pages URL:** `not deployed` — требуется подключение Cloudflare Git integration владельцем; нельзя указывать выдуманный URL.
+- После успешной публикации и проверки ссылки: обновить task.md, result.md и PR, закрыть S8 с реальным временем.
 
 ## Презентация результата
 
