@@ -1,12 +1,13 @@
 # 01 — Роли и облачный workflow команды
 
-**Task:** TASK-0001
-**State:** resolved
-**Mode:** voice-summary
-**Claim:** none
-**Owner:** Product Owner
-**Related canonical thread:** —
-**Decision destination:** docs/agent-team/collaboration/README.md; docs/agent-team/orchestration/README.md
+**Задача:** TASK-0001  
+**Статус:** решён  
+**Состояние:** resolved  
+**Claim:** none  
+**Ведёт:** —  
+**Режим фиксации:** voice-summary  
+**Связанный canonical thread:** —  
+**Куда переносим решение:** docs/agent-team/collaboration/README.md; docs/agent-team/orchestration/README.md
 
 ## Вопрос
 
@@ -24,7 +25,7 @@
 
 ## Обсуждение
 
-Пользователь — выбрана облачная разработка, GitHub достаточен как интерфейс, если доступны понятные сводки обсуждений.
+пользователь — выбрана облачная разработка, GitHub достаточен как интерфейс, если доступны понятные сводки обсуждений.
 
 Предлагаемая реализация — роли Planner, Developer, Reviewer, QA и Orchestrator логические; независимый reviewer получает diff и исходные критерии. Отдельный UI не обязателен на старте. Контроль итогового merge остаётся у пользователя.
 

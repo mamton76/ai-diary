@@ -1,12 +1,13 @@
 # NN — Тема обсуждения
 
-**Task:** TASK-NNNN
-**State:** open | in_discussion | paused | resolved
-**Mode:** written-turns | voice-summary
-**Claim:** none | active
-**Owner:** —
-**Related canonical thread:** —
-**Decision destination:** ссылка на актуальный source-doc
+**Задача:** TASK-NNNN  
+**Статус:** обсуждаем | ждём пользователя | ждём исследования | заблокирован | решён | отложен | снят  
+**Состояние:** open | in_discussion | paused | resolved  
+**Claim:** none | active  
+**Ведёт:** —  
+**Режим фиксации:** written-turns | voice-summary  
+**Связанный canonical thread:** —  
+**Куда переносим решение:** ссылка на актуальный source-doc
 
 ## Вопрос
 
@@ -22,6 +23,6 @@
 
 ## Обсуждение
 
-Пользователь / Claude / Codex / Orchestrator — явные авторы, с датой при необходимости. Не переписывать позиции друг друга; голосовую дискуссию фиксировать смысловой сводкой.
+Формат и правила — как в [`skills/discussion-threads/SKILL.md`](../../../skills/discussion-threads/SKILL.md): speaker labels `пользователь —`, `Claude —`, `Codex —`; в `written-turns` реплики пользователя переносятся максимально буквально, в `voice-summary` — смысловой сводкой; `**Решение:**` — последняя непустая строка.
 
 **Решение:** —
