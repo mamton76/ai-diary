@@ -17,6 +17,7 @@
 | Tests / build / CI | pending | — |
 | Independent review | pending | — |
 | Documentation Impact | pending | — |
+| Presentation / human review | pending / not-needed (reason) | presentation/index.html или другой путь |
 | Open blocking issues | pending | — |
 
 Не писать «тесты пройдены», если они не запускались.
