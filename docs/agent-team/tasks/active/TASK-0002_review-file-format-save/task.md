@@ -76,7 +76,7 @@
   - **Поставлен:** `2026-11-15T23:38:46Z`
   - **Закрыт:** —
   - **Зависит от:** S1
-  - **Результат / evidence:** [07/Q-01](../../../../baseline/07-file-format-v1-draft.threads/01_entry-folder-layout/00_thread.md) — сохранить текущую раскладку, ждёт подтверждения правила переноса; [07/Q-02](../../../../baseline/07-file-format-v1-draft.threads/02_readable-entry-md/00_thread.md) — решён 16.11: шапка нужна
+  - **Результат / evidence:** [07/Q-01](../../../../baseline/07-file-format-v1-draft.threads/01_entry-folder-layout/00_thread.md) — решён 16.11: сохраняем текущую раскладку, папка не переименовывается при смене даты; [07/Q-02](../../../../baseline/07-file-format-v1-draft.threads/02_readable-entry-md/00_thread.md) — решён 16.11: шапка нужна
 
 - [ ] **S4 — Дополнить 07, 08, схему и пример: разделы B и C, ответы D**
   - **Исполнитель:** Claude · **Проверяет:** Codex (S5)

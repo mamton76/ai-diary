@@ -41,7 +41,7 @@ AI-Diary/
     operations/<operationId>/ # durable input и результаты попыток
     presets/
   _formats/                   # схемы поставляемого formatVersion
-  entries/<entryId>/
+  entries/YYYY/MM/YYYY-MM-DD__<entryId>/
     ENTRY.json                # удобное текущее представление
     entry.md                  # удобный текущий committed текст
     states/<stateId>/ENTRY.json
@@ -74,7 +74,7 @@ AI-Diary/
   trash/
 ~~~
 
-Плоский entries/<entryId> предложен для отсутствия переносов при исправлении event date. Старый вариант entries/YYYY/MM/date__entryId тоже может читаться adapter через resolver; автоматического переименования существующих папок нет. Archive/Trash в этом проекте меняют lifecycle, а не обязаны физически переносить папку во время Save.
+**[Д, 16.11.2026]** Сохраняется раскладка живого дневника `entries/YYYY/MM/YYYY-MM-DD__<entryId>/`: год, месяц и дата — дата события на момент создания записи (без даты — дата создания), `entryId` стабилен. При исправлении даты события папка не переносится и не переименовывается; дата в имени — подсказка для навигации, актуальная дата — в Revision. Существующие папки не мигрируются ([07/Q-01](07-file-format-v1-draft.threads/01_entry-folder-layout/00_thread.md)). Пути в примере и схеме пока используют упрощённое `entries/entry_demo/`; обновляются в TASK-0002/S4. Archive/Trash в этом проекте меняют lifecycle, а не обязаны физически переносить папку во время Save.
 
 ### 2.1. Где находится актуальная истина
 
