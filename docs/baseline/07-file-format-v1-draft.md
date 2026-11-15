@@ -23,7 +23,7 @@
 
 Приложенные File Storage Structure, File Storage Structure with calendar projection и Project Overview использованы как исходные эскизы папок/JSON/Markdown. Старый architecture_updated.md с Android/Firebase не считается выбранной архитектурой новой версии.
 
-Новые layout, имена полей, способ публикации и алгоритмы ниже имеют статус **[П]**. Не считать этот документ выбором пользователя по открытым частям FQ-06/07/08; FQ-05 решён (SQ-01…SQ-09). В частности, сериализация времени ниже сохраняет уже известные факты; overlap фильтра согласован отдельно 18.10, но точные границы/inclusivity ещё не утверждены.
+Новые layout, имена полей, способ публикации и алгоритмы ниже имеют статус **[П]**. Не считать этот документ выбором пользователя по открытым частям FQ-06/07/08; FQ-05 решён (SQ-01…SQ-09). Правила времени события (сериализация, границы, смешанная точность, пояса) приняты в FQ-05 и описаны в §4.1 и §13–18.
 
 ## 2. Представление данных
 
@@ -38,10 +38,11 @@ AI-Diary/
   _system/
     storage_manifest.json
     commits/                  # публикации и fencing, authoritative
+    checkpoints/              # снимки карты ресурсов, опубликованные в цепочке
     operations/<operationId>/ # durable input и результаты попыток
     presets/
   _formats/                   # схемы поставляемого formatVersion
-  entries/<entryId>/
+  entries/YYYY/MM/YYYY-MM-DD__<entryId>/
     ENTRY.json                # удобное текущее представление
     entry.md                  # удобный текущий committed текст
     states/<stateId>/ENTRY.json
@@ -51,7 +52,7 @@ AI-Diary/
     draft/
       DRAFT.json              # представление текущего durable Draft
       entry.md
-      snapshots/<draftVersion>/
+      slots/<NNNNNN>/         # собственная цепочка автосейва записи, create-once
         DRAFT.json
         entry.md
     links/
@@ -63,7 +64,10 @@ AI-Diary/
   assets/<assetId>/
     ASSET.json
     original/                 # только managed
-  inbox/
+  inbox/YYYY/MM/<captureId>/  # CaptureItem: CAPTURE.json, original, source metadata
+  trackers/<trackerId>/
+    versions/<version>.json
+    events/<eventId>.json
   routines/
   runs/
   proposals/
@@ -74,7 +78,7 @@ AI-Diary/
   trash/
 ~~~
 
-Плоский entries/<entryId> предложен для отсутствия переносов при исправлении event date. Старый вариант entries/YYYY/MM/date__entryId тоже может читаться adapter через resolver; автоматического переименования существующих папок нет. Archive/Trash в этом проекте меняют lifecycle, а не обязаны физически переносить папку во время Save.
+**[Д, 16.11.2026]** Сохраняется раскладка живого дневника `entries/YYYY/MM/YYYY-MM-DD__<entryId>/`: год, месяц и дата — дата события на момент создания записи (без даты — дата создания), `entryId` стабилен. При исправлении даты события папка не переносится и не переименовывается; дата в имени — подсказка для навигации, актуальная дата — в Revision. Существующие папки не мигрируются ([07/Q-01](07-file-format-v1-draft.threads/01_entry-folder-layout/00_thread.md)). Пути в примере и схеме пока используют упрощённое `entries/entry_demo/`; обновляются в TASK-0002/S4. Archive/Trash в этом проекте меняют lifecycle, а не обязаны физически переносить папку во время Save.
 
 ### 2.1. Где находится актуальная истина
 
@@ -86,7 +90,10 @@ AI-Diary/
 - подготовленные файлы без публикации не являются committed Revision/активным catalog tag;
 - ENTRY.json, entry.md, draft/DRAFT.json, draft/entry.md и tags.json по удобным стабильным путям — **materialized views**, которые можно восстановить из опубликованных snapshots;
 - application repository всегда читает согласованный префикс публикаций, даже если materialized views ещё обновляются;
+- **[П, TASK-0002]** автосейв Draft **не** идёт через общую цепочку: у каждой записи своя цепочка create-once слотов `draft/slots/NNNNNN/` (§5.1). Общая цепочка публикует только Save, Apply, Restore, AI commit, Discard Draft, lifecycle, каталог, CaptureItem, внешние изменения и checkpoint;
+- **[П, TASK-0002]** каждые N публикаций (стартовое значение N — 1000, уточняется по метрикам OPS-008) публикуется checkpoint: полная карта ресурсов на sequence N и binding следующего слота. Холодный старт без кеша: взять последний checkpoint из `_system/checkpoints/`, проверить, что публикация с этим sequence существует и ссылается на него, затем идти по `nextSlot` до хвоста. Старые commit records не удаляются;
 - standalone reader также должен учитывать commit chain. Просто открыть entry.md можно для чтения текста, но он может отставать от последней публикации.
+- **[Д, 16.11.2026]** Удобная копия `entry.md` (и `draft/entry.md`) начинается с YAML-шапки: заголовок, дата и время события, пояс, теги текущими названиями; затем текст. `revisions/<id>/text.md` остаётся чистым текстом Revision; хеши и сравнение NO_CHANGE считаются по нему ([07/Q-02](07-file-format-v1-draft.threads/02_readable-entry-md/00_thread.md)).
 
 Это **явное изменение старого эскиза**, где ENTRY.json и entry.md выглядели независимыми текущими canonical файлами. Authoritative данные остаются в user-owned storage, а не переезжают в backend DB. Принятие такой физической организации ещё не объявляется принятым baseline.
 
@@ -120,13 +127,14 @@ Entry state описывает identity и lifecycle, а содержимое б
 | currentRevisionId | null до первого Save |
 | currentRevisionRef | FileRef либо null |
 | committedUpdatedAt | Последний content commit; null до него; autosave не меняет |
-| draftRef | Текущий durable snapshot Draft либо null |
+| origin | `{kind: USER \| SYNTHETIC, syntheticType}`; у синтетической записи обязателен тип, например `digest` (AI-19, AI-034); задаётся при создании и не меняется |
+| draftCursor | Binding слота цепочки Draft, с которого читается текущий Draft (§5.1); заменяет прежний draftRef |
 | pendingOperationId | Текущая незавершённая commit-операция либо null |
 | provenanceRefs | Raw/source references; не редактируются обычным Entry editor |
 
 Title, eventTime, tagIds и assetIds не дублируются как самостоятельная истина в Entry state. API может собирать denormalized view для списка. Это устраняет случай, когда metadata Entry от одной версии, а текст — от другой.
 
-У новой Entry после Create уже есть identity/state и durable Draft, currentRevisionId=null. Нулевая фиктивная Revision не создаётся. Lifecycle/audit mutation создаёт новый Entry state, но не content Revision. Restore из Trash не равен Restore Revision. **[Д, 18.10]** Restore из Trash всегда устанавливает lifecycle=ACTIVE, включая ранее Archived; currentRevisionId/ref, history и draftRef сохраняются. Предыдущее состояние может оставаться в audit, но не определяет target Restore. [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Permanent-delete policy остаётся FQ-08.
+У новой Entry после Create уже есть identity/state и durable Draft, currentRevisionId=null. Нулевая фиктивная Revision не создаётся. Lifecycle/audit mutation создаёт новый Entry state, но не content Revision. Restore из Trash не равен Restore Revision. **[Д, 18.10]** Restore из Trash всегда устанавливает lifecycle=ACTIVE, включая ранее Archived; currentRevisionId/ref, history и draftCursor (текущий Draft) сохраняются. Предыдущее состояние может оставаться в audit, но не определяет target Restore. [FQ-08/SQ-01](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/01_SQ-01_restore-lifecycle/00_thread.md). Permanent-delete policy остаётся FQ-08.
 
 ## 4. Полный content snapshot и Revision
 
@@ -172,17 +180,26 @@ Draft — полный snapshot с тем же content shape; максималь
 - pendingTags: новые определения с уже выделенными stable tagId, name, aliases, optional typeId, color;
 - tagEditIntents: какие tagIds явно сняты через chip и какие обозначения были известны при снятии; re-add до Save отменяет intent;
 - pendingUploads: durable upload IDs, filename, status и uploadRef на состояние upload/staging отдельно от готовых assetIds;
+- nextSlot: binding следующего create-once слота цепочки Draft этой записи (§5.1);
 - storageStatus здесь не заменяет факт успешной публикации Draft.
 
 tagIds Draft могут ссылаться на pendingTags того же Draft. Таких тегов ещё нет в активном каталоге. При Save сохраняются те же выделенные IDs, но только после проверки namespace и успешного совместного commit. Конфликт не приводит к silent rebind на чужой tagId.
 
 ### 5.1. Autosave и crash consistency
 
-В проекте autosave также публикует цельный snapshot: подготовить DRAFT.json + entry.md, проверить hashes, затем одной записью сменить draftRef при том же base/current и актуальном owner. committedUpdatedAt/currentRevisionId остаются прежними.
+**[П, пересмотрено в TASK-0002]** Автосейв публикует цельный snapshot в **собственную цепочку записи**, а не в общую цепочку дневника:
 
-snapshot directory — технический способ не порвать пару JSON/Markdown. После переключения draftRef старый autosave payload очищается, если он не нужен незавершённой операции. Приложение не предлагает autosave history, и старые Draft payload не сохраняются как постоянный архив. Короткие leftovers после crash — GC/recovery, а не функция истории.
+1. подготовить `draft/slots/NNNNNN/entry.md`, затем `DRAFT.json` со ссылкой на него по hash и с `nextSlot` — binding следующего слота;
+2. create-once `DRAFT.json` по заранее выделенному file ID, как в общей цепочке (08 §2.1): два конкурирующих автосейва одной записи не могут занять один слот;
+3. текущий Draft — последний существующий слот, если идти от `draftCursor` Entry state по `nextSlot`.
 
-Полный replay metadata chain может помнить старые draftRef; reader не обязан загружать payload уже вытесненного Draft. Rebuild сначала вычисляет актуальную карту объектов, затем загружает достижимые snapshots. Обязательная история Revision и текущий Draft при этом сохраняются.
+Entry state при автосейве не меняется; committedUpdatedAt/currentRevisionId остаются прежними. Save, Apply и Discard «потребляют» конкретный слот в общей публикации: `draftCursor` переносится на `nextSlot` потреблённого Draft, поэтому он перестаёт быть текущим. Слот, записанный после этого с устаревшим baseRevisionId или mutationEpoch, — конфликт, а не новый Draft поверх Save. Ownership/epoch проверяется при записи каждого слота.
+
+Почему так: при общей цепочке каждый сброс автосейва — отдельный create в Drive, сериализованный со всеми изменениями дневника. Это тысячи мелких commit-файлов, задержка Drive API на каждом автосейве и конкуренция разных записей за один слот. Проверяется adapter spike и метриками OPS-008.
+
+Слоты до `draftCursor` и вытесненные слоты можно очищать, если на них не ссылается незавершённая операция; долго не сохраняемый Draft можно сжать CONTROL-публикацией, переносящей `draftCursor` на последний слот. Приложение не предлагает autosave history, и старые Draft payload не сохраняются как постоянный архив. Короткие leftovers после crash — GC/recovery, а не функция истории.
+
+Rebuild сначала вычисляет актуальную карту объектов из общей цепочки (от checkpoint), затем для каждой записи находит текущий Draft по её цепочке слотов. Обязательная история Revision и текущий Draft при этом сохраняются.
 
 Локальные bounded recovery snapshots остаются отдельной страховкой по STO-05 и не становятся серверной history.
 
@@ -197,7 +214,7 @@ snapshot directory — технический способ не порвать �
 5. дописывает только отсутствующие mentions одной строкой через пробел в конце, после пустой строки у непустого body;
 6. повторное применение к тому же состоянию не меняет текст снова.
 
-Удаление hashtag при оставшемся chip не снимает relation. Перестановка/переименование уже написанных mentions не выполняется. Грамматика составных имён, boundary matching, Unicode/whitespace и выбор отображаемого написания добавляемого mention ещё требуют FQ-04; в примере намеренно используются однословные однозначные имена.
+Удаление hashtag при оставшемся chip не снимает relation. Перестановка/переименование уже написанных mentions не выполняется. Правила сравнения обозначений и грамматика hashtag mentions приняты в FQ-04 (TAG-14, 08.11.2026); точная реализация распознавания (Unicode case-fold, regex, parserVersion) — техническая детализация с тестами. В примере используются однословные однозначные имена.
 
 ## 6. Каталог Tags / Types
 
@@ -238,22 +255,24 @@ Entry Revision хранит assetIds. Asset metadata меняется отдел
 
 Draft сохраняет весь состав вложений: связи с готовыми Asset, pending upload IDs, имена файлов, статусы и ссылки на durable upload/staging records. Успешно загруженные originals сохраняются в user-owned storage и остаются достижимыми из Draft до завершения Save или явного действия пользователя; уход со страницы и повторное открытие не должны терять вложения. Pending запись не исчезает при ошибке или перезапуске. Bytes, ещё не полученные хранилищем, не выдаются за durable: если продолжить upload автоматически нельзя, Draft сохраняет attachment intent и показывает «Выберите файл повторно». Удалять staging/original, на который ссылается актуальный Draft или незавершённая операция, нельзя.
 
-**[П, физическое представление]** pendingUploads содержит uploadId, filename, status (SELECTED / UPLOADING / VERIFYING / FAILED / NEEDS_FILE) и uploadRef на durable upload record. upload record связывает uploadId, Entry/Draft, original staging locator, доступные metadata и подтверждённый progress. Resume credentials не включаются в переносимый JSON как открытые секреты. После готовности original и публикации Asset reference очередной согласованный snapshot Draft переносит intent в content.assetIds; это не content Revision. Callback upload не перезаписывает более новый текст/Draft и проверяет актуальную связь с Draft/ownership. Для готового Asset после Discard применяется принятое условное предложение soft delete, описанное ниже; cleanup orphaned partial upload — через 7 дней после утраты последней удерживающей связи (FQ-08/[SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)); late completion остаётся открытым.
+**[П, физическое представление]** pendingUploads содержит uploadId, filename, status (SELECTED / UPLOADING / VERIFYING / FAILED / NEEDS_FILE) и uploadRef на durable upload record. upload record связывает uploadId, Entry/Draft, original staging locator, доступные metadata и подтверждённый progress. Resume credentials не включаются в переносимый JSON как открытые секреты. После готовности original и публикации Asset reference очередной согласованный snapshot Draft переносит intent в content.assetIds; это не content Revision. Callback upload не перезаписывает более новый текст/Draft и проверяет актуальную связь с Draft/ownership. Для готового Asset после Discard применяется принятое условное предложение soft delete, описанное ниже; cleanup orphaned partial upload — через 7 дней после утраты последней удерживающей связи (FQ-08/[SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)); late completion после Discard — по [SQ-06](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/06_SQ-06_late-upload-completion-after-discard/00_thread.md): Draft не восстанавливается, к готовому Asset применяется сохранённый выбор пользователя из Discard.
 
 **[Д, 18.10]** При снятии связи Asset с записью, в том числе при Discard добавлений Draft, применяется одно правило: если снимаемая связь единственная, предложить удалить сам Asset; если есть другие логические связи, снять только текущую без предложения глобального удаления в этом flow. Удаление — только по явному подтверждению и означает soft delete в Asset Trash, не permanent delete. При отказе от удаления связь всё равно снимается, Asset остаётся в библиотеке; при отсутствии Active Entry links он виден в Unlinked.
 
 Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
 
-Soft delete сохраняет metadata/tombstone и исторические references; физические original bytes не стираются этим выбором. Файлы актуальных Draft/операций защищены до разрешения соответствующего flow. Cleanup неполных staging — 7 дней ([SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)); Asset Trash без автоматического срока ([SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md)); late completion остаётся открытым; отсутствие Active links не разрешает destructive GC. **История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
+Soft delete сохраняет metadata/tombstone и исторические references; физические original bytes не стираются этим выбором. Файлы актуальных Draft/операций защищены до разрешения соответствующего flow. Cleanup неполных staging — 7 дней ([SQ-05](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/05_SQ-05_orphaned-partial-upload-cleanup/00_thread.md)); Asset Trash без автоматического срока ([SQ-04](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/04_SQ-04_asset-trash-retention/00_thread.md)); late completion — [SQ-06](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/06_SQ-06_late-upload-completion-after-discard/00_thread.md); отсутствие Active links не разрешает destructive GC. **История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
 
 ## 8. Raw / AI / audit / integrations
 
 | Объект | Предложенное размещение и обязательный смысл |
 |---|---|
-| Raw input | inbox/... + immutable receipt/source refs; не обязана быть нулевой committed Revision |
+| CaptureItem (CAP-013) | `inbox/YYYY/MM/<captureId>/CAPTURE.json`: source, sourceId, idempotencyKey (повторная доставка того же source identity не создаёт дубль), receivedAt, sourceTimestamp, ссылка на оригинал и source metadata, состояние обработки INBOX / PROCESSED с entryId и operationId. Оригинал неизменяем; PROCESSED выставляется только успешным Save; один CaptureItem — максимум одна Entry. Не обязан быть нулевой committed Revision |
 | Routine | routines/<routineId>/versions/...; system presets отдельно; exact schema FQ-07 |
 | Run / AIResult | runs/<runId>/run.json — источник истины: input Revision и хеш контекста, routine/version или system workflow id, model/provider фактически использованные, параметры, validation, status, ошибка без содержимого записей, время, токены и стоимость; AIResult — отдельный файл рядом; debug/ — только при включённом debug; failed/non-mutating тоже сохраняются; индекс в БД пересобирается из этих файлов ([AQ-AI-003](04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md)) |
-| Proposal | proposals/<proposalId>/; baseRevisionId, runId, proposed result и durable resolution |
+| Proposal | proposals/<proposalId>/proposal.json: kind (DIGEST / ENTRY_CHANGE / TRACKER_EVENTS), runId, baseRevisionId, resultRef, status OPEN / ACCEPTED / PARTIALLY_ACCEPTED / REJECTED / EXPIRED, remindersSent, expiresAt, durable resolution. Устаревший дайджест можно принять позже (AQ-AI-011/SQ-02) |
+| Tracker (AQ-AI-010) | `trackers/<trackerId>/versions/<n>.json`: тип (журнал событий, шкала, счётчик, прогресс), lifecycle, период, цель, инструкции разбора, политика вопросов; новая версия не пересчитывает историю автоматически |
+| Tracker event (AI-036) | `trackers/<trackerId>/events/<eventId>.json`: canonical-данные с provenance — версия трекера, значение, дата в поясе, origin AI / USER, подтверждено ли, confidence, источник (entryId + revisionId) или ответ на вопрос, runId, состояние ACTIVE / SUPERSEDED / DELETED; сверка ревизий сохраняет eventId |
 | Apply receipt | Ссылка operationId → созданная Revision; proposal resolution публикуется вместе с Revision |
 | Catalog/lifecycle audit | Snapshot/small event в той же публикации, без лишней content Revision |
 | Calendar projection | Derived mapping/checkpoint, повторяемая доставка committed Current |
@@ -280,7 +299,7 @@ Soft delete сохраняет metadata/tombstone и исторические re
 
 ## 10. Границы готовности
 
-Собран конкретный проект core records и Save-пример; это не полный production schema registry всего продукта. Машинная схема в комплекте проверяет core Entry/Draft/Revision/TagCatalog/Operation/Publication. Asset/AI/time-policy, limits, auth, API endpoints и destructive lifecycle contracts требуют своих завершённых спецификаций.
+Собран конкретный проект core records и Save-пример; это не полный production schema registry всего продукта. Машинная схема проверяет Entry/Draft/Revision/TagCatalog/Operation/Publication, а также (TASK-0002) CaptureItem, Asset, Proposal, Run, Tracker, Tracker event и Checkpoint. Проверка комплекта: `python3 tools/format-check/check_format.py` — схема, hashes, цепочка, replay фаз и негативные случаи. Limits, auth, API endpoints и destructive lifecycle contracts требуют своих завершённых спецификаций; operationInput пока описан только для команд над Entry, входы CATALOG и LIFECYCLE — следующая итерация.
 
 Перед первым настоящим storage v1: закрыть пользовательские вопросы, проверить Drive publication primitive, дописать domain validators, провести failure injection и migration dry run на копии. Существующий storage не мигрируется этим коммитом.
 
@@ -290,7 +309,7 @@ Manual Save, при котором итоговое сохраняемое conte
 
 Перед сравнением проверяются актуальные lease/base, готовность вложений и выполняется принятая нормализация mentions. Сравниваются title и итоговый text точно, EventTimeRange со всеми сохранёнными датами/временем/точностью/timezone, набор canonical tagIds после разрешения redirects и набор assetIds. Порядок IDs не является изменением содержимого в текущей версии без ручной сортировки вложений. Текстовые пробелы, переносы строк и регистр не игнорируются; case-insensitive lookup тегов не означает case-insensitive сравнение текста. Служебные draftId/draftVersion/updatedAt, session/lease/operation metadata, file paths и Drive IDs в content equality не участвуют. Сами media bytes заново не сравниваются: Entry меняет ссылки по assetId, а Asset metadata/original имеют отдельный контракт.
 
-**[П, формат receipt]** Operation.status=NO_CHANGE; result.revisionId/revisionRef указывают на уже существующую Current, consumedDraftRef — на завершаемый snapshot. Новый Entry state имеет прежние currentRevisionId/ref и committedUpdatedAt, draftRef=null и pendingOperationId=null. Общая publication записывает Entry state + operation receipt; новый Revision payload и лишний catalog tag не создаются. Это служебная публикация, а не content Revision. Повтор возвращает исходный результат, даже если позднее появилась новая Current. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
+**[П, формат receipt]** Operation.status=NO_CHANGE; result.revisionId/revisionRef указывают на уже существующую Current, consumedDraftRef — на завершаемый snapshot. Новый Entry state имеет прежние currentRevisionId/ref и committedUpdatedAt, `draftCursor` на `nextSlot` потреблённого Draft и pendingOperationId=null. Общая publication записывает Entry state + operation receipt; новый Revision payload и лишний catalog tag не создаются. Это служебная публикация, а не content Revision. Повтор возвращает исходный результат, даже если позднее появилась новая Current. **История:** [FQ-03/SQ-02](AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/02_SQ-02_no-change-save/00_thread.md).
 
 ## 12. Updated sort и Draft — решение 18.10.2026
 

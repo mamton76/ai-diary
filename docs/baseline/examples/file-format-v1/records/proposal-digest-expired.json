@@ -1,0 +1,18 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "proposal",
+  "proposalId": "prop_digest_demo",
+  "kind": "DIGEST",
+  "runId": "run_digest_demo",
+  "entryId": null,
+  "baseRevisionId": null,
+  "resultRef": {
+    "path": "proposals/prop_digest_demo/result.md",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "createdAt": "2026-11-09T08:00:00Z",
+  "status": "EXPIRED",
+  "remindersSent": 2,
+  "expiresAt": "2026-11-16T08:00:00Z",
+  "resolution": null
+}

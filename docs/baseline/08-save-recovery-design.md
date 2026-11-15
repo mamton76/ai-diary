@@ -45,6 +45,8 @@ Domain repository предоставляет publishOnce(expectedHead, commitByt
 
 Инициализация storage — отдельный однократный bootstrap под maintenance: создаётся один выбранный manifest/genesis и проверяется его identity. Две независимо созданные папки/manifest с одинаковым именем не объединяются автоматически. Если manifest/genesis неоднозначен или повреждён, mutations запрещены до reconciliation.
 
+**[П, TASK-0002]** Тот же create-once примитив используется для собственной цепочки автосейва каждой записи (07 §5.1); общая цепочка не получает публикацию на каждый автосейв. Каждые N публикаций в цепочке публикуется checkpoint карты ресурсов (07 §2.1), чтобы холодный старт без кеша не перечитывал историю с genesis.
+
 Для cold start можно кешировать проверенный checkpoint resource map, но безусловно доверять mutable HEAD.json нельзя. Актуальность проверяется чтением nextSlot по известному ID до подтверждённого хвоста; permission/network failures дают UNKNOWN. Старые commit records остаются источником восстановления checkpoint.
 
 Предыдущий commit связывает logical path с provider ID. Для offline backup/export нужен полный набор commit records, referenced snapshots и manifest; при чтении локальной копии используются paths/hashes. Перенос на другой Drive/account требует явного rebind/bootstrap под maintenance с validation, новым storage incarnation и сохранением импортированной истории, а не слепого использования старых Drive IDs. Это часть future migration tooling, не runtime ручное редактирование manifest.
@@ -72,7 +74,7 @@ Commit содержит изменения resource map: resourceKey, before (ex
 
 Одной публикацией Save:
 
-- Entry state: currentRevisionId/ref → новая Revision; committedUpdatedAt → assigned server timestamp; draftRef → null; pendingOperationId → null.
+- Entry state: currentRevisionId/ref → новая Revision; committedUpdatedAt → assigned server timestamp; draftCursor → nextSlot потреблённого Draft (Draft перестаёт быть текущим); pendingOperationId → null.
 - Catalog state: включить новые pendingTags, если они есть.
 - Operation result: COMMITTED, тот же operationId/input fingerprint и revisionId/ref.
 - При Apply — durable proposal resolution с revisionId; при Restore — provenance restoredFromRevisionId.
@@ -143,7 +145,7 @@ Prepared candidates в operation refs сами по себе не меняют C
 | Другой tag/Entry/lease commit занял slot | Слот содержит другой operation/hash | Replay; перепроверить preconditions; safe retry или conflict, без overwrite |
 | Publication request timeout | Исход UNKNOWN | Читать точный slot ID и chain/result; не объявлять fail только по timeout |
 | Publication прошла, response потерян | В map есть COMMITTED operation result | Вернуть ту же Revision; новая не создаётся |
-| Publish прошёл, Draft files не удалены | Entry state уже имеет draftRef=null и consumed draftVersion в result | Не показывать старый Draft; idempotent physical cleanup |
+| Publish прошёл, Draft files не удалены | draftCursor Entry state уже за потреблённым слотом, consumed draftVersion в result | Не показывать старый Draft; idempotent physical cleanup |
 | Пользователь создал новый Draft после success | Новый draftId/version опубликован | Старый cleanup не удаляет его; удаляется конкретный consumed snapshot |
 | Current уже стал более новым | Исторический receipt operationId остаётся | Вернуть исходный revisionId, не менять Current назад |
 | Owner/base отозван до final publication | Новый head с epoch/base mismatch | Stop, записать conflict/failed result безопасной публикацией, сохранить Draft |
@@ -168,9 +170,9 @@ Draft autosave generation хранится только пока актуаль�
 
 Уже принято, что Calendar Timeline и индексы derived. Проект рекомендует: success Save зависит от durable canonical publication, не от Calendar, search index или thumbnail. Ошибка проекции не превращает состоявшийся commit в failed Save. Она имеет собственный retry/status.
 
-Очередь может быть operational, но её потеря не должна навсегда потерять доставку. Consumer восстанавливает pending work сравнением canonical publication/version с собственным checkpoint; idempotency key содержит storage incarnation, consumer, entryId и targetRevisionId. Для Calendar при нескольких Revision до синхронизации можно проектировать доставку актуального Current; exact integration contract/lifecycle mapping ещё INT-03/FQ-09.
+Очередь может быть operational, но её потеря не должна навсегда потерять доставку. Consumer восстанавливает pending work сравнением canonical publication/version с собственным checkpoint; idempotency key содержит storage incarnation, consumer, entryId и targetRevisionId. Для Calendar при нескольких Revision до синхронизации можно проектировать доставку актуального Current; exact integration contract/lifecycle mapping — INT-03; инвалидация и rebuild индексов — FQ-09.
 
-После restart recovery сканирует незавершённые operation refs из опубликованной map. Не рассчитывать, что background callback продолжится в умершем HTTP container. Выбор очереди/jobs API остаётся AQ-API-004; этот документ не забирает чужой active AQ-API-003 и не фиксирует HTTP endpoints.
+После restart recovery сканирует незавершённые operation refs из опубликованной map. Не рассчитывать, что background callback продолжится в умершем HTTP container. Очередь — queue-first по AQ-API-004, конкретный provider выбирается при реализации; HTTP-контракт — REST + OpenAPI (AQ-API-003) и контракт ошибок FQ-09.
 
 ## 9. Другие commands и внешние изменения
 
@@ -220,7 +222,7 @@ NO_CHANGE публикует новый Entry state с прежней Current/co
 
 ### Что не нужно выбирать пользователю сейчас
 
-JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. Правила FQ-04 приняты (TAG-14); точная реализация распознавания (Unicode, regex, parser) и её тесты — техническая детализация. FQ-05 time policy и оставшиеся части FQ-08 (late completion, physical cleanup protocol, backup retention) остаются явно открытыми; этот проект их не закрывает.
+JSON layout, FileRef/hashes, operation ID, fencing, слот публикации, восстановление views и adapter spike — техническая проработка. Реальные ограничения/изменения пользовательского поведения выносятся отдельно. Правила FQ-04 приняты (TAG-14); точная реализация распознавания (Unicode, regex, parser) и её тесты — техническая детализация. FQ-05 решён (SQ-01…SQ-09), late completion — [SQ-06](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/06_SQ-06_late-upload-completion-after-discard/00_thread.md). Открытыми остаются части FQ-08: physical cleanup protocol и backup retention; этот проект их не закрывает.
 
 ## 11. Проверки перед реализацией
 
@@ -228,11 +230,13 @@ JSON layout, FileRef/hashes, operation ID, fencing, слот публикаци�
 
 Документационный комплект имеет core JSON Schema и пример before/prepared/after. Проверяется schema, точные hashes, foreign refs, previous revision chain, pending new tag → canonical tag, consumed Draft, операция → та же Revision, отсутствие new tag в before.
 
+**Обновление 16.11.2026 (TASK-0002):** пример пересобран под раскладку `entries/YYYY/MM/YYYY-MM-DD__<entryId>/` и цепочку слотов Draft; проверка воспроизводима: `python3 tools/format-check/check_format.py` (схема, hashes, цепочка, replay трёх фаз, 8 негативных случаев).
+
 Это **не runtime тест Drive** и не доказательство distributed safety.
 
 Перед mutating release обязательны:
 
-1. Adapter spike §2.2 и failure injection на каждом шаге таблицы §6.
+1. Adapter spike §2.2 и failure injection на каждом шаге таблицы §6; в spike — конкурирующие автосейвы одной записи в её цепочке слотов, задержка автосейва и Save, рост числа файлов, обход лимита Cloud Run 32 MiB при загрузке (OPS-008).
 2. Две Entries одновременно создают одинаковые canonical name/alias; один победитель, второй conflict с сохранённым Draft.
 3. Takeover/cancel между validate и publish; старый request не может дописать после fence.
 4. Повтор Save/Apply/Restore после потери ответа и после следующего successful Save.
@@ -249,4 +253,4 @@ JSON layout, FileRef/hashes, operation ID, fencing, слот публикаци�
 
 Проверяются логические потребители по разным entryId во всех lifecycle-состояниях, в других Draft и связанных незавершённых операциях; исторические references других Entries не теряются. Несколько Revision/Draft одной и той же Entry не считаются отдельными записями; historical link той же Entry сам по себе не запрещает предложить soft delete, поскольку история/links сохраняются. При Discard рассматриваются только связи, реально исчезающие относительно восстанавливаемой Current: Asset, остающийся в Current, не является кандидатом на удаление из-за Discard. Проверка актуальна перед выполнением; при новой чужой связи выполняется только unlink. Состояние Unlinked по Active-счётчику не используется как доказательство единственности. Незавершённая операция с неизвестным исходом сначала требует reconciliation.
 
-**[П, физический протокол]** Discard и действие над Asset используют согласованный mutation/revalidation path; сначала выясняется unknown Save, затем проверяются disappearing relations и остальные потребители. Durable результат выбора привязан к конкретным Draft/assetIds; retry не повторяет диалог и не удаляет другой Asset. Исчезновение Draft не разрешает позднему callback восстановить отменённую Entry. Soft delete не удаляет media bytes; permanent deletion остаётся отдельной явной операцией из Trash. Автоматическая судьба upload, закончившегося только после уже состоявшегося Discard, ещё требует FQ-08 решения. **История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).
+**[П, физический протокол]** Discard и действие над Asset используют согласованный mutation/revalidation path; сначала выясняется unknown Save, затем проверяются disappearing relations и остальные потребители. Durable результат выбора привязан к конкретным Draft/assetIds; retry не повторяет диалог и не удаляет другой Asset. Исчезновение Draft не разрешает позднему callback восстановить отменённую Entry. Soft delete не удаляет media bytes; permanent deletion остаётся отдельной явной операцией из Trash. Судьба upload, закончившегося после уже состоявшегося Discard, решена в [SQ-06](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/06_SQ-06_late-upload-completion-after-discard/00_thread.md). **История:** [FQ-08 — снятие связи / Discard](AI-Diary-Functional-Spec-v0.1.threads/04_FQ-08_discard-uploads/00_thread.md).

@@ -1,0 +1,20 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "asset",
+  "assetId": "asset_demo_1",
+  "kind": "IMAGE",
+  "filename": "walk.jpg",
+  "description": null,
+  "mimeType": "image/jpeg",
+  "sizeBytes": 245760,
+  "createdAt": "2026-11-15T19:05:00Z",
+  "lifecycle": "ACTIVE",
+  "original": {
+    "mode": "MANAGED",
+    "ref": {
+      "path": "assets/asset_demo_1/original/walk.jpg",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+    }
+  },
+  "provenanceRefs": []
+}

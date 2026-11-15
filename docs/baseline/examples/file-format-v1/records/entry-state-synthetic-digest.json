@@ -1,0 +1,30 @@
+{
+  "formatVersion": "1.0.0-draft.1",
+  "schema": "entry-state",
+  "entryId": "entry_digest_demo",
+  "stateId": "state_digest_1",
+  "createdAt": "2026-11-16T08:00:00Z",
+  "lifecycle": "ACTIVE",
+  "origin": {
+    "kind": "SYNTHETIC",
+    "syntheticType": "digest"
+  },
+  "currentRevisionId": "rev_digest_1",
+  "currentRevisionRef": {
+    "path": "entries/2026/11/2026-11-15__entry_digest_demo/revisions/rev_digest_1/revision.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "committedUpdatedAt": "2026-11-16T08:00:00Z",
+  "pendingOperationId": null,
+  "provenanceRefs": [
+    {
+      "path": "proposals/prop_digest_demo/proposal.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001"
+    }
+  ],
+  "draftCursor": {
+    "path": "entries/2026/11/2026-11-15__entry_digest_demo/draft/slots/000001/DRAFT.json",
+    "provider": "google_drive",
+    "objectId": "EXAMPLE_PREGENERATED_DRAFT_ID_000001"
+  }
+}
