@@ -102,7 +102,7 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 [AI workflow architecture](baseline/07-ai-workflow-architecture.md) · [AQ-AI-008 resolved editor UX](baseline/04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md)
 
-**Открыты:** storage canonical AI run records vs operational DB, context assembly, prompt customization boundaries, sensitive-data/provider disclosure and consent, exact structured-output validation and repair policy (§11). Эти решения не следует незаметно заменять настройками конкретного провайдера.
+**Решены:** хранение AI run records ([AQ-AI-003](baseline/04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md)), согласие и данные для внешнего AI ([AQ-AI-006](baseline/04-open-questions.threads/48_AQ-AI-006_sensitive-data-policy/00_thread.md)), проверка structured outputs ([AQ-AI-007](baseline/04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md)). **Открыты:** context assembly (AQ-AI-004) и границы prompt customization (AQ-AI-005), см. §11. Эти решения не следует незаметно заменять настройками конкретного провайдера.
 
 ## 7. Runtime, identity, operations
 
@@ -129,7 +129,8 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 - Durable Save и recovery после прерывания операции; не подтверждать Save до commit.
 - Единственный писатель canonical-данных к первому mutating release — backend; до этого для Abacus-скриптов действуют временные операторские правила ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)).
 - Idempotent Calendar import, no duplicate Entries; сохранение raw/source metadata.
-- Calendar Timeline обновляет тот же event и не изменяет canonical diary.
+- Calendar Timeline обновляет тот же event и не изменяет canonical diary; повтор после неизвестного исхода создания event не создаёт дубль (риск S5 аудита скриптов, INT-002 «один event на Entry»).
+- Оператор видит частичный сбой: итог запуска считает упавшие элементы, а не только exit code (риск S6 аудита скриптов; AQ-OPS-001/002).
 - История revisions, Restore, provenance, assets переживают backup/restore.
 - Секреты, Google OAuth scopes, user isolation, отсутствие утечек содержимого в logs.
 - Ограничение AI spending, видимость очередей, безопасные retries.

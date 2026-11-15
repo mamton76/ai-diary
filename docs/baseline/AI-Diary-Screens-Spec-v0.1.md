@@ -14,7 +14,7 @@
 Статусы положений:
 
 - **[Б] Baseline:** подтверждённое требование или принятое решение в актуальных source-документах и тредах GitHub.
-- **[Д] Диалог:** прямое пожелание пользователя из доступных обсуждений; его включение в конкретный этап реализации может ещё не быть согласовано.
+- **[Д] Диалог:** прямое решение пользователя из обсуждений (с датой — из треда). Этап поставки задаёт [каноническая таблица этапов](03-product-baseline.md#221-канонические-этапы-продукта) и §3; та же метка в Functional Spec значит то же самое. Термины с несколькими значениями — в [глоссарии Functional Spec §3.0](AI-Diary-Functional-Spec-v0.1.md#30-глоссарий-слова-с-несколькими-значениями).
 - **[П] Предложение ТЗ:** конкретизация интерфейса в этом документе, которую нельзя считать ранее принятым пользовательским решением.
 - **[О] Открыто:** необходимое уточнение или ещё не выбранный вариант.
 - **[F] Future:** явно отложенная возможность.
@@ -252,7 +252,7 @@ Hybrid UI: активные фильтры всегда видны как chips;
 | Has open AI proposals | Отдельный Yes / No; proposals ещё не приняты и не отклонены |
 | State | Active / Archived / Trash; задаётся явным условием или preset |
 | Source | Web, Android, Google Calendar, Telegram, Import и другие источники |
-| Needs attention | Наличие unresolved review item: proposal, conflict или uncertainty; не новый lifecycle state |
+| Needs attention | Наличие актуальной причины, требующей действия пользователя: proposal, conflict, uncertainty или ошибка AI, после которой без пользователя продолжить нельзя ([FQ-06/SQ-04, SQ-05](AI-Diary-Functional-Spec-v0.1.md#производные-home-выборки)); не новый lifecycle state |
 
 Сортировки: Event date, Updated, Created — по возрастанию/убыванию; Title — A–Z/Z–A. Default — Event date newest first.
 
@@ -311,7 +311,7 @@ Hybrid UI: активные фильтры всегда видны как chips;
 | Показатель | Период | Фильтр перехода |
 |---|---|---|
 | Drafts · N | Всё время | Has draft = Yes; включая новую Entry без committed revision |
-| Needs attention · N | Всё время | Есть unresolved review item: AI proposal, conflict или uncertainty |
+| Needs attention · N | Всё время | Есть актуальная причина внимания: AI proposal, conflict, uncertainty или ошибка AI, требующая действия (FQ-06/SQ-04); ожидание и автоповтор не считаются |
 | Entries · last 7 days | Скользящие последние 7 дней | Соответствующий диапазон Event date |
 | Entries · last 30 days | Скользящие последние 30 дней | Соответствующий диапазон Event date |
 | Entries with assets · last 30 days | Скользящие последние 30 дней | Диапазон Event date AND Has assets = Yes |
@@ -374,7 +374,7 @@ Hybrid UI: активные фильтры всегда видны как chips;
 |---|---|---|
 | Active filter | ACTIVE | Открыть, редактировать, архивировать, переместить в корзину |
 | Архив | ARCHIVED, исключены из явно Active-выборок | Открыть, вернуть в активные |
-| Корзина | DELETED / Trash, soft-deleted | Восстановить; Delete permanently |
+| Корзина | TRASH, soft-deleted | Восстановить; Delete permanently |
 
 **[Д]** Archive / Restore / Delete меняют lifecycle metadata и audit history, **не создают content Revision**. Archive Entry с Draft применяется ко всей Entry вместе с Draft, после короткого confirmation; при открытии archived Entry draft доступен для продолжения редактирования. Delete Entry с committed Revision перемещает всю Entry и Draft в Trash. Для новой Entry без committed Revision Delete может полностью удалить Draft/Entry.
 
@@ -629,6 +629,18 @@ Unlinked Asset виден в Library. Soft delete сохраняет связи 
 - Read-only/informational AI может работать без mutation lease.
 - Пользователь может прервать AI mutation и начать редактирование. Отменённый job не получает право commit после потери lease, даже если внешний LLM request физически завершился.
 - Закрытие страницы не уничтожает durable job. При новом открытии перечитывается актуальное состояние.
+
+**[Д, 18.10.2026] Показ статуса фоновой AI-работы** (подробно — §26.31, [FQ-06/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/06_FQ-06_updated-sort/04_SQ-04_failed-ai-attention/00_thread.md)):
+
+| Ситуация | Показ |
+|---|---|
+| Запуск запланирован / идёт обработка | Спокойный статус «Ожидает обработки» / «AI обрабатывает» |
+| Временная ошибка, назначен автоповтор | Мягкое предупреждение «Повторим автоматически» |
+| Продолжить без пользователя нельзя | Заметное «Требует внимания» с причиной и действием; Entry попадает в Needs attention |
+
+Цвета, layout и retry-policy — вне этого решения.
+
+**[Д, 18.10.2026] Продолжение и полный повтор batch** (подробно — §26.38–26.39, [FQ-07/SQ-04](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/04_SQ-04_interrupted-batch-retry/00_thread.md), [SQ-05](AI-Diary-Functional-Spec-v0.1.threads/07_FQ-07_partial-proposal/05_SQ-05_batch-selection-snapshot/00_thread.md)): после отмены обычный повтор обрабатывает только необработанную часть того же набора; полный повтор, включая уже обработанные, — отдельное явное действие. Рабочие названия **[П]** — «Продолжить» и «Повторить всё», рядом показывается число записей набора.
 
 ### 15.3 Activity и details
 

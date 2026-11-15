@@ -122,7 +122,7 @@
 - User-owned versioned workflow definitions, trusted executors / capability profiles, Draft → Publish и snapshot Test runs по [AI workflow baseline](baseline/07-ai-workflow-architecture.md); editor UX [AQ-AI-008](baseline/04-open-questions.threads/39_AQ-AI-008_workflow-editor-ux/00_thread.md) уже описан.
 - На Entry — отдельный AI workflow runner и review/apply, без inline-AI editing в text editor.
 - Monthly AI budget + cost alerts, blocked queue `Ожидает бюджета`, ручное возобновление по default, optional auto resume.
-- Не запускать sending real personal content to external LLM до согласования [AQ-AI-006 sensitive-data policy](baseline/04-open-questions.md#aq-ai-006--sensitive-data-policy). Также закрыть [AQ-AI-003](baseline/04-open-questions.md#aq-ai-003--где-хранить-run-records), [AQ-AI-004](baseline/04-open-questions.md#aq-ai-004--context-building), [AQ-AI-005](baseline/04-open-questions.md#aq-ai-005--prompt-customization), [AQ-AI-007](baseline/04-open-questions.md#aq-ai-007--structured-outputs--validation) до соответствующей production-функции.
+- Не отправлять реальное содержимое дневника внешнему LLM, пока не реализованы правила [AQ-AI-006](baseline/04-open-questions.md#aq-ai-006--sensitive-data-policy) (PRIV-002, PRIV-005…009: согласие на провайдера, политика workflow, retention). Решения [AQ-AI-003](baseline/04-open-questions.md#aq-ai-003--где-хранить-run-records) и [AQ-AI-007](baseline/04-open-questions.md#aq-ai-007--structured-outputs--validation) приняты; [AQ-AI-004](baseline/04-open-questions.md#aq-ai-004--context-building) и [AQ-AI-005](baseline/04-open-questions.md#aq-ai-005--prompt-customization) закрыть до соответствующей production-функции.
 
 **Готово, когда:** один run с явными inputs/provider/version и spend limit воспроизводимо создаёт проверяемый результат/Proposal, пользователь может принять/отклонить его, а неудачный или отменённый run не портит canonical Entry.
 
@@ -144,6 +144,7 @@
 | Save protocol | до первой пользовательской версии: adapter spike Drive-примитива публикации (08 §2.2), проверки 08 §11 и failure injection пройдены; иначе mutating release блокируется ([FQ-03](baseline/AI-Diary-Functional-Spec-v0.1.threads/02_FQ-03_reliable-save/00_thread.md)) |
 | Single writer | к первому mutating release web единственный писатель canonical-данных — backend; Abacus-скрипты вызывают API или не пишут в canonical-хранилище ([AQ-OPS-006](baseline/04-open-questions.threads/51_AQ-OPS-006_live-scripts-interim/00_thread.md)) |
 | Operations | queued/committed/failed различаются; safe restart/retry; нет автоповтора ambiguous paid LLM |
+| Migration | до первого storage v1: migration dry run существующих файлов на копии, с backup и maintenance lock (DATA-009, VER-004, [07 §10](baseline/07-file-format-v1-draft.md)); оригиналы не уничтожаются |
 | Backup | документированные on-demand restore scripts проверены в изолированном хранилище |
 | Security | Google auth/OAuth separation, минимальные scopes, server-side credentials, no diary content in debug logs |
 | Costs | Cloud budgets/alerts; monthly AI budget и pause/notification/resume policy |

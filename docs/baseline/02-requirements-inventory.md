@@ -10,6 +10,7 @@
 - **УСТАРЕЛО** — историческое техническое или архитектурное решение; полезно как контекст, но не обязательно для новой версии.
 - **ОТКРЫТО** — вопрос не решён.
 - **ОТЛОЖЕНО** — осознанно перенесено за пределы текущих этапов; см. 06-future-questions.md.
+- **НЕ ТРЕБУЕТСЯ** — предложенное требование сознательно отклонено; пункт сохранён, чтобы не возвращаться к нему без новой причины.
 
 ## Легенда этапов
 
@@ -178,10 +179,10 @@ AI не может молча переписать то, что пользова
 **Этап:** E0  
 Несколько CaptureItems могут быть собраны в одну Entry, но один CaptureItem в MVP используется максимум для одной созданной Entry. Split одной Entry на несколько и разбор одного CaptureItem на несколько Entries не требуются сейчас и отложены до реального пользовательского сценария. Исходники и provenance сохраняются для будущего расширения. [AQ-INT-004](04-open-questions.threads/41_AQ-INT-004_capture-item-contract/00_thread.md), [FQ-ENTRY-001](06-future-questions.md#fq-entry-001--merge--split-entries).
 
-### ENTRY-010 — Lifecycle Entry: ACTIVE / ARCHIVED / DELETED
+### ENTRY-010 — Lifecycle Entry: ACTIVE / ARCHIVED / TRASH
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E2  
-Для пользовательского lifecycle достаточно `ACTIVE`, `ARCHIVED`, `DELETED`. `ACTIVE` участвует в обычных browse/search/timeline; `ARCHIVED` сохраняется, но скрывается из обычного потока по умолчанию; `DELETED` — soft delete / trash и исключается из обычных представлений, не уничтожая историю. Постоянный `DRAFT`-status для Entry не нужен: незавершённый manual edit — operational working draft, непринятый AI output — Proposal.
+Для пользовательского lifecycle достаточно `ACTIVE`, `ARCHIVED`, `TRASH` (прежнее обозначение — `DELETED`; в сериализации используется `TRASH`, см. core-record schema). `ACTIVE` участвует в обычных browse/search/timeline; `ARCHIVED` сохраняется, но скрывается из обычного потока по умолчанию; `TRASH` — soft delete / корзина и исключается из обычных представлений, не уничтожая историю. Постоянный `DRAFT`-status для Entry не нужен: незавершённый manual edit — operational working draft, непринятый AI output — Proposal.
 
 ### ENTRY-011 — Запись может иметь точное время или только дату
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -429,7 +430,7 @@ Storage имеет одну общую `formatVersion`. Migration запуска
 **Основание:** [PQ-013](04-open-questions.threads/50_PQ-013_data-exit/00_thread.md) (2026-11-08).
 
 ### DATA-011 — External canonical changes не должны приводить к silent overwrite
-**Статус:** ПОДТВЕРЖДЕНО ДЛЯ MVP  
+**Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** первая пользовательская версия  
 Прямое внешнее редактирование Drive/files не является основным штатным write path, но при update существующей entry backend должен дешёво проверить storage metadata/version token. Валидное содержательное external change фиксируется как новая immutable revision с provenance; pending update после этого проходит rebase/merge/conflict относительно нового current state. Если изменился только storage marker без content change, новая revision не нужна. Invalid/unparseable external state не перезаписывается молча и переводится в review/recovery path. Постоянный Drive watcher для первого MVP не обязателен.
 
@@ -552,7 +553,7 @@ Derived слой можно пересобрать; его рассинхрон�
 Обязательны защита от потери capture при плохой сети, safe retry и устойчивость к временной недоступности. Нужна ли полноценная offline editing + later merge model для всего web-клиента — отдельное решение.
 
 ### DATA-020 — Manual canonical file edits не являются обязательной MVP feature
-**Статус:** ПОДТВЕРЖДЕНО / ОТЛОЖЕНО  
+**Статус:** ОТЛОЖЕНО  
 **Этап:** Later  
 Canonical files должны оставаться readable/portable. Если валидное внешнее изменение content fields обнаружено, оно может быть импортировано как external manual edit и оформлено новой Entry revision. Изменения identity/system invariants или storage layout не должны silently приниматься и идут в validation/recovery. Отдельный UX/workflow для ручного редактирования canonical files не обязателен для MVP.
 
@@ -582,7 +583,7 @@ Web поставляется этапами по [канонической та�
 ### WEB-004 — Нужны search/filter/navigation
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E1  
-Минимум первого slice: текст, date/date range и tags. Status/source и другие filters можно добавить позже.
+В E1: текст, date/date range, tags, source и lifecycle status ([AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md), SEARCH-MVP-SEMANTICS); составные условия AND/OR/NOT и presets — по [Screens Spec §3](AI-Diary-Screens-Spec-v0.1.md#3-границы-этапов). Предикаты draft/AI появляются вместе с соответствующими функциями.
 
 **[Д, 08.11.2026] Calendar date-range selection UX.** Обычный клик/тап по дню открывает Entry Browser с фильтром на один день; на mobile лонгтап задаёт начало периода, тап по второму дню — конец, диапазон подсвечивается, действия `Показать записи` / `Отмена`. Даты автоматически упорядочиваются при обратном выборе. На desktop `Shift + клик` выделяет период. Кнопка `Период` с явным выбором From/To остаётся на обеих платформах, в том числе для доступности. Drag/swipe-выделение на mobile не требуется. Контракт Browser/lifecycle/timezone/period-overlap не изменяется. Подробнее: [Screens Spec C06](AI-Diary-Screens-Spec-v0.1.md).
 
@@ -805,7 +806,7 @@ Explicit ownerId не обязан дублироваться внутри ка�
 ### AI-002 — Нужна provider-independent abstraction
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E4  
-Система должна уметь работать как минимум с OpenAI, Gemini и Anthropic/Claude без переписывания продукта под конкретный vendor API.
+Архитектура должна позволять работать как минимум с OpenAI, Gemini и Anthropic/Claude без переписывания продукта под конкретный vendor API. Поставка начинается с одного подтверждённого provider/model (план P6a/P6); другие провайдеры добавляются через тот же adapter ([PQ-006](04-open-questions.threads/07_PQ-006_llm-provider-model-choice/00_thread.md)).
 
 ### AI-003 — Workflow и provider — разные уровни
 **Статус:** ПОДТВЕРЖДЕНО  
@@ -912,7 +913,7 @@ Proposal должен:
 Бесконфликтный proposal на Entry card можно Apply/Reject или открыть подробно. Stale/conflicted proposal не имеет быстрого Apply. Detailed review использует `Base | Result | Proposal`: Base/Proposal read-only, Result editable; независимые изменения auto-merge, конфликты подсвечиваются локально, пользователь выбирает Current/Proposal/manual edit. Подтверждение Result создаёт одну committed revision; до этого merge result не входит в History.
 
 ### AI-022 — Inline AI editor assistance
-**Статус:** ОТЛОЖЕНО ЗА ПРЕДЕЛЫ ПЕРВОЙ ВЕРСИИ.  
+**Статус:** ОТЛОЖЕНО  
 **Этап:** Later  
 AI-помощь непосредственно в редакторе над выделением или рабочим черновиком отложена за пределы первой версии. Отдельные AI-запуски и проверка предложений сохраняются по действующим правилам.
 
@@ -1074,7 +1075,7 @@ Search остаётся продуктовым требованием следу
 Date/date range и tags входят в ближайший следующий web slice вместе с index/search layer, а не блокируют самый первый MVP.
 
 ### SEARCH-003 — Semantic search / embeddings
-**Статус:** ОТЛОЖЕНО НА БУДУЩЕЕ  
+**Статус:** ОТЛОЖЕНО  
 **Этап:** Later  
 Semantic retrieval для cross-entry AI возможно в будущем; embeddings, vector DB и semantic query pipeline не входят в MVP. Оставить архитектурную точку расширения. Решение: [AQ-SEARCH-002](04-open-questions.threads/34_AQ-SEARCH-002_semantic-search-timing/00_thread.md).
 
@@ -1121,7 +1122,7 @@ Semantic retrieval для cross-entry AI возможно в будущем; emb
 В пользовательских настройках — месячный бюджет платных AI-вызовов, учёт расходов и предупреждения; при достижении бюджета новые платные AI-вызовы блокируются при dispatch из очереди. Задачи не удаляются, получают статус «Ожидает бюджета», отображаются пользователю с возможностью просмотра и отмены. При новом бюджетном периоде default — ручное возобновление; пользователь может включить автоматическое возобновление в настройках. Уже исполняющиеся вызовы не прерываются. Проверка/резервирование ориентировочной стоимости для параллельных работ минимизирует превышения, но абсолютный billing hard cap не гарантирует. Hosting, storage, logs/egress — облачные мониторинг и бюджетные предупреждения. Решение: [AQ-OPS-004](04-open-questions.threads/39_AQ-OPS-004_cost-guardrails/00_thread.md).
 
 ### OPS-005 — Полный observability stack enterprise-уровня
-**Статус:** УСТАРЕЛО/НЕ ТРЕБУЕТСЯ СЕЙЧАС  
+**Статус:** НЕ ТРЕБУЕТСЯ  
 **Этап:** —  
 Нужен достаточный debug/trace, но не overengineering.
 
@@ -1240,12 +1241,12 @@ Refresh tokens Google хранятся только в зашифрованно�
 # Q. Sharing
 
 ### SHARE-001 — Selective sharing потенциально полезен
-**Статус:** FUTURE / PARKED  
+**Статус:** ОТЛОЖЕНО  
 **Этап:** Later  
 Market/PRD материалы связывали sharing с retention и семейными сценариями.
 
 ### SHARE-002 — Sharing обязателен для ближайшего MVP
-**Статус:** НЕТ  
+**Статус:** НЕ ТРЕБУЕТСЯ  
 **Этап:** —  
 Selective sharing не входит в обозримый MVP и не должен сейчас определять auth/data model. Возвращаемся к access/sharing requirements только при появлении реального near-term use case.
 
@@ -1269,7 +1270,7 @@ Selective sharing не входит в обозримый MVP и не долже
 Старый Android/Firebase codebase остаётся historical prototype и не развивается в текущем цикле. К native Android возвращаемся позже при реальной потребности, вместе с offline-first.
 
 ### LEG-004 — Firebase Data Connect migration не требуется
-**Статус:** ЗАКРЫТО / НЕ ТРЕБУЕТСЯ  
+**Статус:** НЕ ТРЕБУЕТСЯ  
 **Этап:** —  
 В старом Android/Firebase/Room проекте нет уникальных ценных пользовательских данных, требующих отдельного migration tooling. Если позже обнаружится исключение, оно оформляется как отдельный scoped import/migration task.
 
@@ -1322,7 +1323,7 @@ Selective sharing не входит в обозримый MVP и не долже
 
 Их можно выбрать снова, но только после архитектурного сравнения.
 
-После архитектурного сравнения уже выбраны: Kotlin/Ktor ([AQ-API-001](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md), API-003), Google Cloud Run ([AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md), API-004), REST + JSON с OpenAPI ([AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)). Frontend framework — открытый AQ-WEB-001.
+После архитектурного сравнения уже выбраны: Kotlin/Ktor ([AQ-API-001](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md), API-003), Google Cloud Run ([AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md), API-004), REST + JSON с OpenAPI ([AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)), web — React + TypeScript + Vite SPA ([AQ-WEB-001](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)).
 
 ## Legacy / migration
 

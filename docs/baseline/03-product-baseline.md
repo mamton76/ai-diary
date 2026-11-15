@@ -186,7 +186,7 @@ Versioned состояние, которое должно восстанавли
 
 - `ACTIVE` — обычная запись, участвует в нормальном browse/search/timeline;
 - `ARCHIVED` — сохранена, но по умолчанию скрыта из обычного потока; доступна через archive/filter;
-- `DELETED` — soft-deleted / trash, исключена из обычных представлений, но сохраняется для recovery policy.
+- `TRASH` (прежнее обозначение `DELETED`) — soft-deleted / корзина, исключена из обычных представлений, но сохраняется для recovery policy.
 
 Постоянный `DRAFT`-status для Entry сейчас не нужен: незавершённое ручное редактирование хранится как operational working draft, а непринятый AI output — как Proposal.
 
@@ -670,7 +670,7 @@ Backend должен быть местом, где концентрируютс�
 - background processing;
 - LLM workflows.
 
-Язык и hosting здесь сознательно не фиксируются.
+Язык, framework и hosting выбраны отдельными решениями: Kotlin/Ktor ([AQ-API-001](04-open-questions.threads/26_AQ-API-001_backend-language-framework/00_thread.md)), Google Cloud Run ([AQ-API-002](04-open-questions.threads/22_AQ-API-002_hosting-runtime/00_thread.md)), REST + OpenAPI ([AQ-API-003](04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)), web — React + TypeScript + Vite SPA ([AQ-WEB-001](04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md)).
 
 ---
 
@@ -682,7 +682,7 @@ Search не блокирует самый первый files-only MVP. На сл
 - date/date range;
 - tags.
 
-Source/status и другие filters можно добавлять позже, если они окажутся полезны.
+В E1 также source и lifecycle status ([AQ-SEARCH-001](04-open-questions.threads/33_AQ-SEARCH-001_mvp-search-semantics/00_thread.md)); составные условия — по [Screens Spec §3](AI-Diary-Screens-Spec-v0.1.md#3-границы-этапов).
 
 Позже могут появиться:
 
@@ -888,7 +888,7 @@ read-only         editable            read-only
 
 Поскольку Drive/Calendar находятся в Google ecosystem, Google — естественный первый login method для MVP. При этом AI Diary использует собственный stable internal user/account ID, а external login identities привязываются к нему отдельно. Google account ID не является единственным внутренним identity, чтобы позже можно было добавить другие способы входа без миграции основной user model.
 
-Конкретный auth service/framework (Firebase Auth, direct OIDC или другой middleware) сейчас не фиксируется и выбирается вместе с backend/hosting.
+Backend и hosting уже выбраны (Kotlin/Ktor, Cloud Run); конкретный auth middleware (Firebase Auth, direct OIDC или другой) — implementation detail, выбирается при реализации P1 (AUTH-004). Google-разрешения запрашиваются incremental, по функциям: доступ к Drive и к Calendar — отдельные согласия ([AQ-AUTH-002](04-open-questions.threads/14_AQ-AUTH-002_google-oauth/00_thread.md)).
 
 Необходимо различать:
 

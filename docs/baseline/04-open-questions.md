@@ -892,6 +892,8 @@ Google account — естественный first path.
 
 Provider должен получать уже подготовленный context, а не сам лазить по storage.
 
+**Статус:** ОТКРЫТО (E4, до cross-entry workflows)
+
 ## AQ-AI-005 — Prompt customization
 
 Варианты:
@@ -902,6 +904,8 @@ Provider должен получать уже подготовленный conte
 - full custom workflows.
 
 Вероятен гибрид, но нужна permission/versioning model.
+
+**Статус:** ОТКРЫТО (E4, до пользовательской настройки промптов)
 
 ## AQ-AI-006 — Sensitive-data policy
 
