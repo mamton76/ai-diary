@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "requests": [
+    {
+      "request_key": "bootstrap-pr-13",
+      "id": "TASK-0002",
+      "slug": "review-file-format-save",
+      "title": "Review формата файлов v1 и протокола Save (07 / 08)",
+      "source": "https://github.com/mamton76/ai-diary/pull/13",
+      "status": "reserved-in-open-pr"
+    },
+    {
+      "request_key": "bootstrap-task-0003",
+      "id": "TASK-0003",
+      "slug": "agent-team-orchestration-mvp",
+      "title": "Единый регистратор и MVP оркестрации агентов",
+      "source": "https://github.com/mamton76/ai-diary",
+      "status": "bootstrap-in-pr"
+    }
+  ]
+}
