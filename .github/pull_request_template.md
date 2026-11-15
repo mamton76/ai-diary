@@ -34,6 +34,13 @@
 - [ ] result.md contains actual evidence and open questions
 - [ ] Final move to completed/ deferred until acceptance/DoD
 
+## Presentation / preview (nontrivial agent-team tasks)
+
+- Canonical file: `docs/agent-team/tasks/.../presentation/index.html` or N/A with reason
+- Preview URL: not deployed / verified URL (only after successful deployment)
+- Access classification: public synthetic-only / restricted
+- Checked on mobile and desktop: yes / no / not applicable
+
 ## Human decision
 
 - Is merge allowed? **No automatic merge/deploy.**
