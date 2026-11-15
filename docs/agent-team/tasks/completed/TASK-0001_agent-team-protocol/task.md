@@ -1,15 +1,15 @@
 # TASK-0001 — Протокол команды Claude + Codex
 
 **ID:** TASK-0001
-**Status:** reviewing
+**Status:** completed
 **Owner / executor:** Product Owner / ChatGPT (документация)
 **Created:** 2026-11-15
 **Source:** обсуждение Product Owner с ChatGPT от 2026-11-08 и 2026-11-15
 **Related tasks:** —
-**External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
+**External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10) (merged `2026-11-16T00:24:51+01:00`)
 **Presentation:** required (содержательная архитектурная/процессная задача)
-**Presentation source:** [`presentation/index.html`](presentation/index.html) — черновик создан, ждёт независимой проверки (S7)
-**Presentation preview URL:** https://ai-diary-935.pages.dev/ — Cloudflare Pages, адрес сообщил Product Owner; доступность напрямую не проверена из среды агента. Приватный альтернативный вариант: https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh.
+**Presentation source:** [`presentation/index.html`](presentation/index.html) — принят Product Owner (S7)
+**Presentation preview URL:** https://ai-diary-935.pages.dev/TASK-0001/index.html — Cloudflare Pages (production, `master`); открытие подтвердил Product Owner `2026-11-16T00:34:30+01:00`. Приватный вариант: https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh
 **Публичная публикация:** Product Owner явно разрешил публичный preview TASK-0001 (`2026-11-15T23:57:38+01:00`; презентация содержит только синтетические данные)
 
 ## Цель и границы
@@ -66,34 +66,34 @@
   - **Зависит от:** S4
   - **Результат / evidence:** [Claude review](https://github.com/mamton76/ai-diary/pull/10#pullrequestreview-5913174681); замечания исправлены и помечены resolved
 
-- [ ] **S6 — Проверить актуальный head PR после исправлений Claude**
+- [x] **S6 — Проверить актуальный head PR после исправлений Claude**
   - **Исполнитель:** Codex · **Проверяет:** CI
   - **Поставлен:** `2026-11-15T23:15:47+01:00`
-  - **Закрыт:** —
+  - **Закрыт:** `2026-11-16T00:34:30+01:00` — **без отдельного ревью Codex:** Product Owner принял PR, смёрджив его; повторное ревью Codex не запускалось
   - **Зависит от:** S5
-  - **Результат / evidence:** ожидается (первоначальное Codex review относится к более раннему коммиту)
+  - **Результат / evidence:** решение Product Owner; CI зелёный на финальном head `8626a11`; первоначальное Codex review относится к более раннему коммиту
 
-- [ ] **S7 — Подготовить презентацию результата для пользователя**
+- [x] **S7 — Подготовить презентацию результата для пользователя**
   - **Исполнитель:** Claude / Codex (создание), другой агент (проверка) · **Проверяет:** независимый агент и Product Owner
   - **Поставлен:** `2026-11-15T23:18:24+01:00`
-  - **Закрыт:** —
+  - **Закрыт:** `2026-11-16T00:34:30+01:00` — **без проверки другим агентом:** презентацию принял Product Owner
   - **Зависит от:** S6
-  - **Результат / evidence:** `presentation/index.html` — интерактивный обзор протокола, жизненного цикла задачи, формата тредов и проверок; на синтетических данных; черновик создан Claude, ждёт независимой проверки
+  - **Результат / evidence:** `presentation/index.html` — интерактивный обзор протокола, жизненного цикла задачи, формата тредов и проверок; на синтетических данных; создана Claude, принята Product Owner. Содержимое — снимок на момент ревью PR #10 (показывает задачу в `reviewing`)
 
-- [ ] **S8 — Опубликовать переносимый HTML через статический preview и проверить ссылку**
+- [x] **S8 — Опубликовать переносимый HTML через статический preview и проверить ссылку**
   - **Исполнитель:** ChatGPT (экспорт/CI), Product Owner (одноразовое подключение Cloudflare Pages), независимый агент (проверка)
   - **Проверяет:** CI + Product Owner в браузере
   - **Поставлен:** `2026-11-15T23:37:56+01:00`
-  - **Закрыт:** —
+  - **Закрыт:** `2026-11-16T00:34:30+01:00` — Product Owner подтвердил, что ссылка открывается; лишний Cloudflare Worker удалён, `wrangler.jsonc` убран
   - **Зависит от:** S7 (готовность HTML); инфраструктуру экспорта можно готовить параллельно
-  - **Результат / evidence:** `scripts/agent-team/build_preview_site.py`, `docs/agent-team/publishing/`, Cloudflare Pages site: https://ai-diary-935.pages.dev/ (сообщён Product Owner, проверка прямой страницы ожидается); закрытый [Claude Artifact](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh) уже указан отдельно
+  - **Результат / evidence:** `scripts/agent-team/build_preview_site.py`, `docs/agent-team/publishing/`, https://ai-diary-935.pages.dev/TASK-0001/index.html; приватный [Claude Artifact](https://claude.ai/artifact/CsuVeDtQDRRFBwH4cTSFVh)
 
-- [ ] **S9 — Проверить итог, актуальность документации и принять решение о merge**
+- [x] **S9 — Проверить итог, актуальность документации и принять решение о merge**
   - **Исполнитель:** ChatGPT (сводка), Product Owner (решение) · **Проверяет:** Product Owner
   - **Поставлен:** `2026-11-15T23:15:47+01:00`
-  - **Закрыт:** —
+  - **Закрыт:** `2026-11-16T00:24:51+01:00` — Product Owner смёрджил PR #10 (merge commit `57daf2b`)
   - **Зависит от:** S6, S7 и S8
-  - **Результат / evidence:** итоговая сводка, подтверждение пользователя, статус PR
+  - **Результат / evidence:** [PR #10](https://github.com/mamton76/ai-diary/pull/10) merged; итог в result.md; задача перенесена в completed/
 
 Отметка [x] означает выполненный шаг; `Закрыт` заполняется достоверным timestamp при закрытии. Старые неизвестные времена не подменяются временем коммита или ревью. Сам по себе план **не запускает** облачные агенты автоматически.
 
@@ -103,18 +103,18 @@
 
 **Что демонстрируем:** роли Claude/Codex, путь задачи от постановки до приёмки, раздельные треды и их конкатенацию, Documentation Impact, текущие ограничения облачной автоматизации. Отдельно показывать **реализованное в PR** и **только запланированное**.
 
-**Статус:** черновик создан Claude (`presentation/index.html`), есть ссылка на Claude Artifact; независимая проверка S7 ещё открыта. Вывод для внешнего статического preview подготовлен в S8, адрес Cloudflare Pages предоставлен Product Owner, но проверка прямого URL презентации и независимая приёмка ещё не завершены.
+**Статус:** принята Product Owner; опубликована: https://ai-diary-935.pages.dev/TASK-0001/index.html.
 
 ## Acceptance criteria
 
 - [x] Документация ролей и исполнения разделена на актуальные README и исторические decisions.
 - [x] Шаблоны task, result, discussion и GitHub adapter добавлены.
-- [x] TASK-0001 хранится в active/ с номером, кратким slug и переносимой историей.
+- [x] TASK-0001 хранилась в active/ с номером, кратким slug и переносимой историей.
 - [x] discussion/00_all.md формируется детерминированно из threads/ и может быть проверен скриптом.
 - [x] Скрипт и проверки запущены в GitHub Actions (первый успешный run 43766624892; далее каждый push зелёный, см. result.md).
-- [ ] Независимое ревью актуального PR завершено, замечания закрыты; PR утверждён.
-- [ ] Подготовлена и проверена переносимая презентация TASK-0001.
-- [ ] Публикация: статический preview TASK-0001 открыт по проверенному URL и ссылка отражена в задаче, result.md и PR; либо явно принято и задокументировано решение ограничиться приватным Claude Artifact.
+- [x] Ревью Claude проведено, замечания закрыты; PR утверждён и смёрджен Product Owner. Повторное ревью Codex не проводилось — принято решением Product Owner.
+- [x] Подготовлена переносимая презентация TASK-0001; принята Product Owner без отдельной проверки другим агентом.
+- [x] Публикация: статический preview TASK-0001 открыт по проверенному URL и ссылка отражена в задаче, result.md и PR; либо явно принято и задокументировано решение ограничиться приватным Claude Artifact.
 
 ## Documentation Impact
 
