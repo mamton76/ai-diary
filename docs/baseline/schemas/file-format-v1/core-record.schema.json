@@ -87,7 +87,8 @@
               },
               "kind": {
                 "enum": [
-                  "approximate"
+                  "approximate",
+                  "inferred"
                 ]
               },
               "evidence": {
@@ -97,25 +98,10 @@
             },
             "required": [
               "field",
-              "kind"
+              "kind",
+              "evidence"
             ],
-            "additionalProperties": false,
-            "allOf": [
-              {
-                "if": {
-                  "properties": {
-                    "kind": {
-                      "const": "approximate"
-                    }
-                  }
-                },
-                "then": {
-                  "required": [
-                    "evidence"
-                  ]
-                }
-              }
-            ]
+            "additionalProperties": false
           }
         }
       },

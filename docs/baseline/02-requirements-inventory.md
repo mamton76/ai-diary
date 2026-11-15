@@ -170,7 +170,7 @@ AI не может молча переписать то, что пользова
 ### ENTRY-008 — Явная неопределённость
 **Статус:** ПОДТВЕРЖДЕНО  
 **Этап:** E0  
-Приблизительная дата хранится как день с пометкой `approximate` и основанием (`uncertainties` — объекты `{field, kind, evidence}`); минимальная точность для Save — день; месяц/год без дня — Later ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md), 2026-11-15).  
+Приблизительная дата хранится как день с пометкой `approximate` и основанием (`uncertainties` — объекты `{field, kind, evidence}`); минимальная точность для Save — день; без основания — дата получения с пометкой `inferred` («выведено»), снимается при подтверждении пользователем ([FQ-05/SQ-08](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/08_SQ-08_date-without-evidence/00_thread.md)); месяц/год без дня — Later ([FQ-05/SQ-07](AI-Diary-Functional-Spec-v0.1.threads/05_FQ-05_period-overlap/07_SQ-07_time-precision-serialization/00_thread.md), 2026-11-15).  
 Если дата, grouping, person/place identity и т. п. неясны, система должна хранить неопределённость/review state вместо выдуманного факта.
 
 ### ENTRY-009 — Связь CaptureItems и Entries
