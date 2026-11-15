@@ -2,7 +2,7 @@
 
 **Status:** implementing — до независимого review и pilot не готово к приёмке  
 **Date:** 2026-11-16  
-**External links:** PR будет создан из `feat/agent-team-orchestration-mvp`  
+**External links:** [draft PR #14](https://github.com/mamton76/ai-diary/pull/14)  
 **Presentation:** required; not created  
 **Presentation preview URL:** not deployed
 
