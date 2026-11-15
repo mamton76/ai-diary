@@ -77,7 +77,9 @@
 
 - обязательная DB schema.
 
-## `docs/todo.md`
+## `docs/todo-legacy-android.md`
+
+До 2026-11-16 файл назывался `docs/todo.md`.
 
 Checklist реализации и roadmap.
 
