@@ -76,7 +76,7 @@
   - **Поставлен:** `2026-11-15T23:38:46Z`
   - **Закрыт:** —
   - **Зависит от:** S1
-  - **Результат / evidence:** canonical thread(s) в `07-file-format-v1-draft.threads/`
+  - **Результат / evidence:** [07/Q-01](../../../../baseline/07-file-format-v1-draft.threads/01_entry-folder-layout/00_thread.md) — сохранить текущую раскладку, ждёт подтверждения правила переноса; [07/Q-02](../../../../baseline/07-file-format-v1-draft.threads/02_readable-entry-md/00_thread.md) — без ответа, работаем в допущении «шапка»
 
 - [ ] **S4 — Дополнить 07, 08, схему и пример: разделы B и C, ответы D**
   - **Исполнитель:** Claude · **Проверяет:** Codex (S5)
