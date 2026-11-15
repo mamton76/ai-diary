@@ -1,0 +1,32 @@
+name: Agent-team documentation integrity
+
+on:
+  pull_request:
+    paths:
+      - "docs/agent-team/**"
+      - "scripts/agent-team/**"
+      - ".github/workflows/agent-team-docs.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "docs/agent-team/**"
+      - "scripts/agent-team/**"
+      - ".github/workflows/agent-team-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test discussion generator
+        run: python3 -m unittest discover -s scripts/agent-team -p "test_*.py"
+      - name: Verify generated discussion bundles
+        run: python3 scripts/agent-team/build_discussions.py --check
