@@ -8,6 +8,8 @@
 **Related tasks:** —
 **External links:** [PR #10](https://github.com/mamton76/ai-diary/pull/10)
 **Presentation:** required (содержательная архитектурная/процессная задача)
+**Presentation source:** `presentation/index.html` — ещё не создан
+**Presentation preview URL:** not deployed — публикация ещё не настроена
 
 ## Цель и границы
 
