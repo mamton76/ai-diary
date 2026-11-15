@@ -80,7 +80,7 @@ com.mamton.aidiary/
 
 ## Roadmap
 
-See [todo.md](docs/todo.md) for detailed next steps.
+Current plan and discussion backlog: [docs/plan.md](docs/plan.md). The legacy Android checklist moved to [todo-legacy-android.md](docs/todo-legacy-android.md).
 
 - **Phase 2** — Auth + cloud sync (Firebase Data Connect)
 - **Phase 3** — Edit, delete, polish, search

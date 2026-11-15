@@ -4,7 +4,7 @@
 **Статус:** предлагаемый delivery roadmap **из уже принятых архитектурных и продуктовых решений**, не календарный график. Фазы и приоритеты — рабочая организация выполнения; это **не отметки о готовом коде**.  
 **Основная архитектура:** [architecture.md](architecture.md)  
 **Требования:** [requirements inventory](baseline/02-requirements-inventory.md) · [architecture questions](baseline/04-open-questions.md)  
-**Legacy Android plan:** [todo.md](todo.md) отражает прежний стек и не является планом нового web/backend MVP.
+**Текущие шаги и вопросы к обсуждению:** [plan.md](plan.md). **Legacy Android plan:** [todo-legacy-android.md](todo-legacy-android.md) отражает прежний стек и не является планом нового web/backend MVP.
 
 **Этапы продукта:** каноническая таблица E0–E4, интеграционного этапа и Later — [03-product-baseline.md §22.1](baseline/03-product-baseline.md#221-канонические-этапы-продукта) ([PQ-012](baseline/04-open-questions.threads/47_PQ-012_mvp-stage-scope/00_thread.md)). Этот план задаёт порядок работ и сопоставляет с ними фазы P0–P7.
 
