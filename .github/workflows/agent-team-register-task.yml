@@ -1,0 +1,88 @@
+name: Register portable agent-team task
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_key:
+        description: "Unique durable idempotency key (e.g. request-20261116-abc123)"
+        required: true
+        type: string
+      slug:
+        description: "Short English kebab-case slug, 4-64 chars"
+        required: true
+        type: string
+      title:
+        description: "Human-readable title (no sensitive data)"
+        required: true
+        type: string
+      requester:
+        description: "Requester name or agent role"
+        required: true
+        type: string
+      source:
+        description: "Optional URL to approved discussion or task proposal"
+        required: false
+        type: string
+
+# A serialized registration queue plus a fast-forward-only git push.
+# The GitHub Action may write only after an authorized manual dispatch;
+# registering draft tasks does not trigger cloud agents or authorize execution.
+concurrency:
+  group: agent-team-registrar-master
+  cancel-in-progress: false
+  queue: max
+
+permissions:
+  contents: write
+
+jobs:
+  register:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      REQUEST_KEY: ${{ inputs.request_key }}
+      TASK_SLUG: ${{ inputs.slug }}
+      TASK_TITLE: ${{ inputs.title }}
+      REQUESTER: ${{ inputs.requester }}
+      SOURCE: ${{ inputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify registrar unit tests
+        run: python3 -m unittest discover -s scripts/agent-team -p 'test_register_task.py'
+      - name: Register draft in master (fast-forward with retries)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in $(seq 1 6); do
+            echo "Registration attempt $attempt / 6"
+            git fetch --no-tags origin master
+            git checkout -B task-registrar-write origin/master
+            python3 scripts/agent-team/register_task.py --validate
+            python3 scripts/agent-team/register_task.py \
+              --request-key "$REQUEST_KEY" \
+              --slug "$TASK_SLUG" \
+              --title "$TASK_TITLE" \
+              --requester "$REQUESTER" \
+              --source "$SOURCE"
+            git add docs/agent-team/tasks
+            if git diff --cached --quiet; then
+              echo "Request already registered. Nothing to commit."
+              exit 0
+            fi
+            git commit -m "chore(agent-team): register approved draft task"
+            if git push origin HEAD:master; then
+              echo "Task safely committed to master"
+              exit 0
+            fi
+            echo "Push did not succeed. Will fetch latest master and retry."
+          done
+          echo "::error::Registration failed. Check branch protection / contents:write permissions / CI logs."
+          exit 1
