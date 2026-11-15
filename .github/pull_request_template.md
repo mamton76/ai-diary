@@ -1,8 +1,11 @@
-## Canonical task
+## Canonical task or requirements thread
 
-- Task ID / link to task.md:
+Заполнить одно из двух; неприменимые разделы ниже пометить «N/A».
+
+- Agent-team task: Task ID / link to task.md:
+- Requirements thread (`docs/baseline/*.threads/`), если PR оформляет решения по требованиям без задачи agent-team:
 - Related Issue (optional):
-- Independent Reviewer / report:
+- Independent Reviewer / report (для agent-team задач):
 
 ## What changed
 
@@ -23,7 +26,7 @@
 - If none: reason:
 - New/changed requirements or architecture decisions requiring human approval:
 
-## Portable task history
+## Portable task history (только для agent-team задач)
 
 - [ ] task.md reflects current scope/status
 - [ ] Discussion threads preserve substantive decisions and disagreements
