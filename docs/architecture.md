@@ -59,6 +59,8 @@ Optional later: remote MCP adapter → same backend/domain API.
 
 **API:** REST + JSON, контракт и схемы описаны OpenAPI contract-first ([AQ-API-003](baseline/04-open-questions.threads/27_AQ-API-003_api-style/00_thread.md)). Read/list/search — обычные request/response операции. Изменения canonical state — **queue-first commands**: Save, Apply, Restore, tag mutations, capture processing и AI/indexing. Accepted/queued ≠ committed/saved. UI показывает `Сохранено` только после подтверждённого durable commit ([AQ-API-004](baseline/04-open-questions.threads/28_AQ-API-004_background-processing/00_thread.md)).
 
+**Контракт ошибок и повторов** ([FQ-09](baseline/AI-Diary-Functional-Spec-v0.1.threads/08_FQ-09_api-errors-index-migrations/00_thread.md)): RFC 9457 problem details с машинным `code`; мутации с `Idempotency-Key` → `202` и ресурс операции; конфликт базы или потеря lease — `409` при приёме команды или тот же `code` в исходе операции, если обнаружены при commit; клиентские повторы только для временных сбоев; `503 MAINTENANCE` во время миграции.
+
 **Web:** полноценный адаптивный интерфейс с одним API; бизнес-правила остаются в backend. Первый рабочий поток — список/чтение существующих Entries, затем search/filters, edit/revision/history, tags, AI workflows. Reusable EntryPanel используется в view/edit/proposal review. Текстовый editor первого релиза поддерживает bold/italic/lists/links и хранит текст как Markdown; встроенный inline-AI editing не нужен ([AQ-WEB-003](baseline/04-open-questions.threads/43_AQ-WEB-003_editor-semantics/00_thread.md)).
 
 **Frontend:** React + TypeScript + Vite SPA, обычный проект в репозитории, TypeScript-клиент из OpenAPI ([AQ-WEB-001](baseline/04-open-questions.threads/59_AQ-WEB-001_frontend-stack/00_thread.md), [AQ-WEB-006](baseline/04-open-questions.threads/60_AQ-WEB-006_sites-role/00_thread.md)); на телефоне — всё из E0–E2 ([AQ-WEB-002](baseline/04-open-questions.threads/61_AQ-WEB-002_mobile-scope/00_thread.md)). **Не зафиксировано:** конкретный frontend hosting (WEB-008). Обновление UI — SSE (API-009, AQ-WEB-004); revision UX — PQ-004/PQ-011, этап E2 (AQ-WEB-005). См. §11, не принимать эти решения по умолчанию.
@@ -93,6 +95,8 @@ Optional later: remote MCP adapter → same backend/domain API.
 Минимальный provider-neutral adapter для LLM text/structured outputs нормализует usage, errors и declared capabilities; модели/provider добавляются постепенно. Ключи остаются server-side, silent fallback к другой модели не допускается.
 
 Workflow definitions — **user-owned versioned canonical data**; runtime/engine — backend. User workflow Draft → immutable Publish; system workflows versioned read-only. Trusted/versioned executors и least-privilege capability profiles являются отдельными объектами; Run фиксирует конкретные versions/bindings и overrides. MVP flow — linear steps + simple conditions; output contracts versioned. AI не переписывает молча пользовательские изменения. Run logs охватывают success/failure/canceled и указывают на inputs/results/proposals без копирования личного содержимого в логи.
+
+**Run records и проверка ответов AI** ([AQ-AI-003](baseline/04-open-questions.threads/62_AQ-AI-003_run-records/00_thread.md), [AQ-AI-007](baseline/04-open-questions.threads/63_AQ-AI-007_structured-outputs/00_thread.md)): `runs/<runId>/run.json` в Drive — источник истины, в БД — пересобираемый индекс; JSON Schema и проверка на нашей стороне, одна автоматическая попытка исправления.
 
 **Первый продуктовый AI** ([AQ-AI-012](baseline/04-open-questions.threads/58_AQ-AI-012_ai-runtime-first-stage/00_thread.md), [PQ-019](baseline/04-open-questions.threads/57_PQ-019_digest-first-stage/00_thread.md)): только в Kotlin backend — два системных workflow в коде (извлечение данных из записи, недельный дайджест), параллельно E0 и первой версии; до этого — прототип ценности через внешнего ассистента без записи в дневник.
 
@@ -138,19 +142,16 @@ Workflow definitions — **user-owned versioned canonical data**; runtime/engine
 
 Важная последовательность: **basic canonical backend / CaptureItem → ранние Calendar Inbox + read-only Calendar Timeline → минимальный web → полноценные revisions/edit/search → Telegram → AI workflows**. Отдельный ранний MCP spike допускается после появления basic API/Calendar path и не тормозит основные этапы. План — последовательность интеграционных проверок, не обещание, что текущий код соответствует ей.
 
-## 11. Нерешённые вопросы (по source 04-open-questions.md на 2026-11-08)
+## 11. Нерешённые вопросы (по source 04-open-questions.md на 2026-11-15)
 
 **Web:** открытых вопросов нет (AQ-WEB-001…006 решены).
 
-**AI (7):**
-- [AQ-AI-003](baseline/04-open-questions.md#aq-ai-003--где-хранить-run-records) — где durable run records.
+**AI (4):**
 - [AQ-AI-004](baseline/04-open-questions.md#aq-ai-004--context-building) — context selection/assembly.
 - [AQ-AI-005](baseline/04-open-questions.md#aq-ai-005--prompt-customization) — user overrides/user-defined prompts boundary.
-- [AQ-AI-007](baseline/04-open-questions.md#aq-ai-007--structured-outputs--validation) — schema validation and repair.
 - [AQ-AI-009](baseline/04-open-questions.md#aq-ai-009--навык-для-внешнего-ассистента-с-текущими-трекерами) — навык внешнего ассистента с текущими трекерами.
-- [AQ-AI-010](baseline/04-open-questions.md#aq-ai-010--модель-трекеров-и-политика-вопросов) — модель трекеров и политика вопросов.
-- [AQ-AI-011](baseline/04-open-questions.md#aq-ai-011--детали-дайджеста-и-детекции-эпизодов) — детали дайджеста и детекции эпизодов.
+- [AQ-AI-011](baseline/04-open-questions.md#aq-ai-011--детали-дайджеста-и-детекции-эпизодов) — детали дайджеста: пустая неделя и непринятый дайджест решены 15.11; частота и эпизоды — E4.
 
-**Уже решены, не спрашивать заново:** AQ-WEB-001 (React + TS + Vite SPA), AQ-WEB-002 (паритет на телефоне по этапам), AQ-WEB-006 (обычный клиент, не Sites), AQ-WEB-003 Markdown editor, AQ-WEB-004 (SSE), AQ-WEB-005 (revision UX, E2), AQ-AI-006 (данные для внешнего AI), AQ-AI-008 workflow editor UX. Подробные требования находятся в source inventory/screens specs.
+**Уже решены, не спрашивать заново:** AQ-WEB-001 (React + TS + Vite SPA), AQ-WEB-002 (паритет на телефоне по этапам), AQ-WEB-006 (обычный клиент, не Sites), AQ-WEB-003 Markdown editor, AQ-WEB-004 (SSE), AQ-WEB-005 (revision UX, E2), AQ-AI-006 (данные для внешнего AI), AQ-AI-008 workflow editor UX, AQ-AI-003 (run records в Drive, индекс в БД), AQ-AI-007 (JSON Schema, одна попытка исправления), AQ-AI-010 (модель трекеров). Подробные требования находятся в source inventory/screens specs.
 
-Не закрывать оставшиеся 7 вопросов AI без отдельного решения; не выдавать технические drafts file format/Save recovery за утверждённый release design.
+Не закрывать оставшиеся 4 вопроса AI без отдельного решения; не выдавать технические drafts file format/Save recovery за утверждённый release design.

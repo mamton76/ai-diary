@@ -76,6 +76,11 @@
 | 59 | AQ-WEB-001 | Frontend stack | решён | ✅ resolved | none | — | [📁](59_AQ-WEB-001_frontend-stack/) | [00_thread.md](59_AQ-WEB-001_frontend-stack/00_thread.md) | inventory WEB-007 / architecture / plan |
 | 60 | AQ-WEB-006 | ChatGPT Sites или обычный web-проект | решён | ✅ resolved | none | — | [📁](60_AQ-WEB-006_sites-role/) | [00_thread.md](60_AQ-WEB-006_sites-role/00_thread.md) | inventory / architecture / plan |
 | 61 | AQ-WEB-002 | Feature parity на телефоне | решён | ✅ resolved | none | — | [📁](61_AQ-WEB-002_mobile-scope/) | [00_thread.md](61_AQ-WEB-002_mobile-scope/00_thread.md) | product baseline §12.2/§22.1 / Screens Spec / inventory |
+| 62 | AQ-AI-003 | Где хранить run records | решён | ✅ resolved | none | — | [📁](62_AQ-AI-003_run-records/) | [00_thread.md](62_AQ-AI-003_run-records/00_thread.md) | inventory AI-010/OPS-RUN-LOG / 07-file-format / architecture §6 |
+| 63 | AQ-AI-007 | Structured outputs / validation | решён | ✅ resolved | none | — | [📁](63_AQ-AI-007_structured-outputs/) | [00_thread.md](63_AQ-AI-007_structured-outputs/00_thread.md) | inventory AI-030/AI-037 / 07-ai-workflow-architecture / Functional Spec |
+| 64 | AQ-AI-011 | Детали дайджеста и детекции эпизодов | открыт (E4) | 🟢 open | none | — | [📁](64_AQ-AI-011_digest-details/) | [00_thread.md](64_AQ-AI-011_digest-details/00_thread.md) | inventory AI-034 / Functional Spec AI-18 |
+| 64.1 | AQ-AI-011/SQ-01 | Пустая неделя | решён | ✅ resolved | none | — | [📁](64_AQ-AI-011_digest-details/01_SQ-01_empty-week/) | [00_thread.md](64_AQ-AI-011_digest-details/01_SQ-01_empty-week/00_thread.md) | inventory AI-034 / Functional Spec AI-18 |
+| 64.2 | AQ-AI-011/SQ-02 | Непринятый дайджест | решён | ✅ resolved | none | — | [📁](64_AQ-AI-011_digest-details/02_SQ-02_unaccepted-digest/) | [00_thread.md](64_AQ-AI-011_digest-details/02_SQ-02_unaccepted-digest/00_thread.md) | inventory AI-034 / Functional Spec AI-18 |
 
 ## Быстрая легенда lifecycle
 
