@@ -19,6 +19,7 @@
 | Independent review | Claude review проведён, замечания исправлены; повторное ревью Codex актуального head — ожидается (S6) | [review](https://github.com/mamton76/ai-diary/pull/10#pullrequestreview-5913174681) |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
 | Presentation / human review | черновик создан, не проверен; независимый Cloudflare preview пока не опубликован | [presentation/index.html](presentation/index.html); [publishing instructions](../../../publishing/README.md) |
+| Static preview export CI | ожидает нового запуска GitHub Actions после добавления build_preview_site.py | scripts/agent-team/build_preview_site.py, test_build_preview_site.py |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
 
 ## Актуализация документации
