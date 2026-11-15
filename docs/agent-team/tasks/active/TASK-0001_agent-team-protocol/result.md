@@ -13,7 +13,7 @@
 | Gate | Результат | Ссылка / лог |
 |---|---|---|
 | Acceptance criteria | частично, PR review pending | task.md |
-| Tests / build / CI | ожидает проверки | scripts/agent-team/ |
+| Tests / build / CI | **passed**: Python unit tests и discussion bundle --check | GitHub Actions run 43766624892 |
 | Independent review | не проводилось | — |
 | Documentation Impact | затронуты инструкции агентов и новые документы | AGENTS.md, CLAUDE.md, docs/agent-team/ |
 | Open blocking issues | нет блокеров для описания протокола; реализация автоматизации вне scope | orchestration/README.md |
