@@ -69,7 +69,7 @@ AI-Diary/
   proposals/
   indexes/                    # derived, не обязательны на первом срезе
   exports/
-  backups/
+  backups/                    # регулярные копии и копии перед миграцией (STO-09, DATA-023)
   migrations/
   trash/
 ~~~
